@@ -19,6 +19,30 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
+/**
+ * Class Ho_Recurring_Model_Profile_Item
+ *
+ * @method int getProfileId()
+ * @method setProfileId(int $value)
+ * @method string getSku()
+ * @method setSku(string $value)
+ * @method string getName()
+ * @method setName(string $value)
+ * @method float getPrice()
+ * @method setPrice(float $value)
+ * @method int getQty()
+ * @method setQty(int $value)
+ * @method bool getOnce()
+ * @method setOnce(bool $value)
+ * @method string getCreatedAt()
+ * @method setCreatedAt(string $value)
+ * @method int getStatus()
+ * @method setStatus(int $value)
+ */
 class Ho_Recurring_Model_Profile_Item extends Mage_Core_Model_Abstract
 {
+    protected function _construct ()
+    {
+        $this->_init('ho_recurring/profile_item');
+    }
 }

@@ -19,6 +19,10 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Model_Profile_Order_History extends Mage_Core_Model_Abstract
+class Ho_Recurring_Model_Resource_Profile_Quote_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
+    protected function _construct()
+    {
+        $this->_init('ho_recurring/profile_quote');
+    }
 }

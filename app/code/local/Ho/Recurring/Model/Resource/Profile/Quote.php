@@ -20,25 +20,15 @@
  */
 
 /**
- * Class Ho_Recurring_Model_Profile
+ * Class Ho_Recurring_Model_Resource_Profile_Quote
  *
- * @method int getOrderId()
- * @method setOrderId(int $value)
- * @method int getBillingAgreementId()
- * @method setBillingAgreementId(int $value)
+ * @method int getQuoteId()
+ * @method setQuoteId(int $value)
  */
-class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
+class Ho_Recurring_Model_Resource_Profile_Quote extends Mage_Core_Model_Resource_Db_Abstract
 {
-    protected function _construct ()
+    public function _construct()
     {
-        $this->_init('ho_recurring/profile');
-    }
-
-    /**
-     * @return Mage_Sales_Model_Quote
-     */
-    public function createQuote()
-    {
-        return Mage::getModel('ho_recurring/service_profile')->createQuote();
+        $this->_init('ho_recurring/profile_quote', 'entity_id');
     }
 }
