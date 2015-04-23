@@ -40,7 +40,35 @@
         <models>
             <ho_recurring>
                 <class>Ho_Recurring_Model</class>
+                <resourceModel>ho_recurring_resource</resourceModel>
             </ho_recurring>
+            <ho_recurring_resource>
+                <class>Ho_Recurring_Model_Resource</class>
+                <entities>
+                    <profile>
+                        <table>ho_recurring_profile</table>
+                    </profile>
+                    <profile_address>
+                        <table>ho_recurring_profile_address</table>
+                    </profile_address>
+                    <profile_item>
+                        <table>ho_recurring_profile_item</table>
+                    </profile_item>
+                    <profile_quote>
+                        <table>ho_recurring_profile_quote</table>
+                    </profile_quote>
+                    <profile_order>
+                        <table>ho_recurring_profile_order</table>
+                    </profile_order>
+                </entities>
+            </ho_recurring_resource>
         </models>
+        <resources>
+            <ho_recurring_setup>
+                <setup>
+                    <module>Ho_Recurring</module>
+                </setup>
+            </ho_recurring_setup>
+        </resources>
     </global>
 </config>
