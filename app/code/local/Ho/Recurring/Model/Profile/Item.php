@@ -41,6 +41,9 @@
  */
 class Ho_Recurring_Model_Profile_Item extends Mage_Core_Model_Abstract
 {
+    const STATUS_ACTIVE     = 1;
+    const STATUS_INACTIVE   = 0;
+
     protected function _construct ()
     {
         $this->_init('ho_recurring/profile_item');

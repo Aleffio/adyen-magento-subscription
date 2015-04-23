@@ -41,4 +41,14 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     {
         return Mage::getModel('ho_recurring/service_profile')->createQuote();
     }
+
+    /**
+     * @return Ho_Recurring_Model_Resource_Profile_Item_Collection
+     */
+    public function getItems()
+    {
+        return Mage::getModel('ho_recurring/profile_item')
+            ->getCollection()
+            ->addFieldToFilter('profile_id', $this->getId());
+    }
 }

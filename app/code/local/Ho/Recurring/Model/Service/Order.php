@@ -27,6 +27,29 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
      */
     public function createProfile(Mage_Sales_Model_Order $order)
     {
-        return Mage::getModel('ho_recurring/profile');
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::getModel('ho_recurring/profile');
+
+        $profile->setOrderId($order->getId());
+        $profile->save();
+
+        foreach ($order->getAllVisibleItems() as $orderItem) {
+            /** @var Mage_Sales_Model_Order_Item $orderItem */
+            /** @var Ho_Recurring_Model_Profile_Item $item */
+            $item = Mage::getModel('ho_recurring/profile_item');
+            $item->setProfileId($profile->getId());
+
+            $item->setSku($orderItem->getSku());
+            $item->setName($orderItem->getName());
+            $item->setPrice($orderItem->getPrice());
+            $item->setQty($orderItem->getQtyOrdered());
+            $item->setOnce(0);
+            $item->setCreatedAt(now());
+            $item->setStatus($item::STATUS_ACTIVE);
+
+            $item->save();
+        }
+
+        return $profile;
     }
 }
