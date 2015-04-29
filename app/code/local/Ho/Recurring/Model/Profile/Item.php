@@ -24,6 +24,8 @@
  *
  * @method int getProfileId()
  * @method setProfileId(int $value)
+ * @method int getProductId()
+ * @method setProductId(int $value)
  * @method string getSku()
  * @method setSku(string $value)
  * @method string getName()

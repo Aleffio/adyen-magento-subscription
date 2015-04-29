@@ -39,6 +39,7 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
             $item = Mage::getModel('ho_recurring/profile_item');
             $item->setProfileId($profile->getId());
 
+            $item->setProductId($orderItem->getProductId());
             $item->setSku($orderItem->getSku());
             $item->setName($orderItem->getName());
             $item->setPrice($orderItem->getPrice());
