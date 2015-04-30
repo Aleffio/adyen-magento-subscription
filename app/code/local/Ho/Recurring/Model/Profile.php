@@ -22,10 +22,18 @@
 /**
  * Class Ho_Recurring_Model_Profile
  *
+ * @method int getCustomerId()
+ * @method $this setCustomerId(int $value)
  * @method int getOrderId()
- * @method setOrderId(int $value)
+ * @method $this setOrderId(int $value)
  * @method int getBillingAgreementId()
- * @method setBillingAgreementId(int $value)
+ * @method $this setBillingAgreementId(int $value)
+ * @method int getStoreId()
+ * @method $this setStoreId(int $value)
+ * @method string getPaymentMethod()
+ * @method $this setPaymentMethod(string $value)
+ * @method string getShippingMethod()
+ * @method $this setShippingMethod(string $value)
  */
 class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 {

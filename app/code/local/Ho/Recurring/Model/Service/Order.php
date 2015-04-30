@@ -28,10 +28,14 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
     public function createProfile(Mage_Sales_Model_Order $order)
     {
         /** @var Ho_Recurring_Model_Profile $profile */
-        $profile = Mage::getModel('ho_recurring/profile');
-
-        $profile->setOrderId($order->getId());
-        $profile->save();
+        $profile = Mage::getModel('ho_recurring/profile')
+            ->setCustomerId($order->getCustomerId())
+            ->setOrderId($order->getId())
+            ->setBillingAgreementId(0) // @todo Set correct billing agreement ID
+            ->setStoreId($order->getStoreId())
+            ->setPaymentMethod($order->getPayment()->getMethod())
+            ->setShippingMethod($order->getShippingMethod())
+            ->save();
 
         foreach ($order->getAllVisibleItems() as $orderItem) {
             /** @var Mage_Sales_Model_Order_Item $orderItem */
