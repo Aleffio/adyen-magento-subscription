@@ -19,10 +19,18 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
+/**
+ * Class Ho_Recurring_Model_Profile_Order
+ *
+ * @method int getProfileId()
+ * @method setProfileId(int $value)
+ * @method int getOrderId()
+ * @method setOrderId(int $value)
+ */
 class Ho_Recurring_Model_Profile_Order extends Mage_Core_Model_Abstract
 {
-    public function _construct()
+    protected function _construct()
     {
-        $this->_init('ho_recurring/profile_order', 'entity_id');
+        $this->_init('ho_recurring/profile_order');
     }
 }

@@ -19,9 +19,17 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
+/**
+ * Class Ho_Recurring_Model_Profile_Quote
+ *
+ * @method int getProfileId()
+ * @method setProfileId(int $value)
+ * @method int getQuoteId()
+ * @method setQuoteId(int $value)
+ */
 class Ho_Recurring_Model_Profile_Quote extends Mage_Core_Model_Abstract
 {
-    protected function _construct ()
+    protected function _construct()
     {
         $this->_init('ho_recurring/profile_quote');
     }
