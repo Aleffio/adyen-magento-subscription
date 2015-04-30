@@ -29,8 +29,8 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
     {
         $order = $profile->getOriginalOrder();
 
-        $customerId = $order->getCustomerId();
-        $storeId = $order->getStoreId();
+        $customerId = $profile->getCustomerId();
+        $storeId = $profile->getStoreId();
 
         $customer = Mage::getModel('customer/customer')->load($customerId);
         $quote = Mage::getModel('sales/quote')->assignCustomer($customer);
@@ -69,11 +69,11 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
         $quote->getShippingAddress()->collectTotals();
 
         // Set shipping method
-        $shippingMethod = $order->getShippingMethod();
+        $shippingMethod = $profile->getShippingMethod();
         $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
 
         // Set payment method
-        $paymentMethod = $order->getPayment()->getMethod();
+        $paymentMethod = $profile->getPaymentMethod();
         $quote->getPayment()->importData(array('method' => $paymentMethod));
 
         $quote->collectTotals();
