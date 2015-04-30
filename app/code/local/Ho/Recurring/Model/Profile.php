@@ -39,7 +39,14 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function createQuote()
     {
-        return Mage::getModel('ho_recurring/service_profile')->createQuote($this);
+        $quote = Mage::getModel('ho_recurring/service_profile')->createQuote($this);
+
+        Mage::getModel('ho_recurring/profile_quote')
+            ->setProfileId($this->getId())
+            ->setQuoteId($quote->getId())
+            ->save();
+
+        return $quote;
     }
 
     /**
@@ -52,6 +59,11 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         $service = Mage::getModel('sales/service_quote', $quote);
         $service->submitAll();
         $order = $service->getOrder();
+
+        Mage::getModel('ho_recurring/profile_order')
+            ->setProfileId($this->getId())
+            ->setOrderId($order->getId())
+            ->save();
 
         return $order;
     }
