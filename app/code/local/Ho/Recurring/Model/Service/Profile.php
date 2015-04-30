@@ -22,10 +22,63 @@
 class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
 {
     /**
+     * @param Ho_Recurring_Model_Profile $profile
      * @return Mage_Sales_Model_Quote
      */
-    public function createQuote()
+    public function createQuote(Ho_Recurring_Model_Profile $profile)
     {
-        return Mage::getModel('sales/quote');
+        $order = $profile->getOriginalOrder();
+
+        $customerId = $order->getCustomerId();
+        $storeId = $order->getStoreId();
+
+        $customer = Mage::getModel('customer/customer')->load($customerId);
+        $quote = Mage::getModel('sales/quote')->assignCustomer($customer);
+        $quote->setStoreId($storeId);
+
+        // Add order items to quote
+        foreach ($profile->getItems() as $item) {
+            /** @var Ho_Recurring_Model_Profile_Item $item */
+            $productId = $item->getProductId();
+            $product = Mage::getModel('catalog/product')->load($productId);
+
+            $quoteItem = Mage::getModel('sales/quote_item')->setProduct($product);
+            $quoteItem->setQuote($quote);
+            $quoteItem->setQty('1');
+            $quoteItem->setStoreId($storeId);
+            $quote->addItem($quoteItem);
+        }
+
+        // Set shipping address data
+        /** @var Mage_Sales_Model_Quote_Address $shippingAddress */
+        $shippingAddress = $quote->getShippingAddress()
+            ->addData($order->getShippingAddress()->getData())
+            ->setData('email', $customer->getEmail());
+
+        // Set billing address data
+        /** @var Mage_Sales_Model_Quote_Address $billingAddress */
+        $billingAddress = $quote->getBillingAddress()
+            ->addData($order->getBillingAddress()->getData())
+            ->setData('email', $customer->getEmail());
+
+        // Collect shipping rates
+        $shippingAddress->setStockId($order->getStockId());
+        $shippingAddress->setCollectShippingRates(true);
+        $shippingAddress->collectShippingRates();
+
+        $quote->getShippingAddress()->collectTotals();
+
+        // Set shipping method
+        $shippingMethod = 'freeshipping_freeshipping'; //$order->getShippingMethod();
+        $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
+
+        // Set payment method
+        $paymentMethod = $order->getPayment()->getMethod();
+        $quote->getPayment()->importData(array('method' => $paymentMethod));
+
+        $quote->collectTotals();
+        $quote->save();
+
+        return $quote;
     }
 }
