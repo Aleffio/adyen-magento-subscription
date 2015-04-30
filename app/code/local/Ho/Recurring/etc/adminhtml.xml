@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <sales>
+            <children>
+                <ho_recurring_profiles translate="title" module="ho_recurring">
+                    <title>Recurring Profiles</title>
+                    <action>ho_recurring/adminhtml_profile</action>
+                    <sort_order>100</sort_order>
+                </ho_recurring_profiles>
+            </children>
+        </sales>
+    </menu>
+    <acl>
+        <resources>
+            <all>
+                <title>Allow Everything</title>
+            </all>
+            <admin>
+                <children>
+                    <sales>
+                        <children>
+                            <ho_recurring_profiles translate="title">
+                                <title>H&amp;O Recurring Profiles</title>
+                            </ho_recurring_profiles>
+                        </children>
+                    </sales>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

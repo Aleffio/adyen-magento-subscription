@@ -71,4 +71,16 @@
             </ho_recurring_setup>
         </resources>
     </global>
+
+    <admin>
+        <routers>
+            <ho_recurring>
+                <use>admin</use>
+                <args>
+                    <module>Ho_Recurring</module>
+                    <frontName>ho_recurring</frontName>
+                </args>
+            </ho_recurring>
+        </routers>
+    </admin>
 </config>
