@@ -69,7 +69,7 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
         $quote->getShippingAddress()->collectTotals();
 
         // Set shipping method
-        $shippingMethod = 'freeshipping_freeshipping'; //$order->getShippingMethod();
+        $shippingMethod = $order->getShippingMethod();
         $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
 
         // Set payment method
