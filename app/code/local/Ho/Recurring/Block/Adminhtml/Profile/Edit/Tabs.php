@@ -37,6 +37,12 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs extends Mage_Adminhtml_Bloc
             'content' => $this->getLayout()->createBlock('ho_recurring/adminhtml_profile_edit_tabs_general')->toHtml(),
         ));
 
+        $this->addTab('products', array(
+            'label' => Mage::helper('ho_recurring')->__('Recurring Products'),
+            'title' => Mage::helper('ho_recurring')->__('Recurring Products'),
+            'content' => $this->getLayout()->createBlock('ho_recurring/adminhtml_profile_edit_tabs_products')->toHtml(),
+        ));
+
         return parent::_beforeToHtml();
     }
 }
