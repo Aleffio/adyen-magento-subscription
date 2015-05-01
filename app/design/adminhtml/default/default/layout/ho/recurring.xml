@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout>
+    <ho_recurring_adminhtml_profile_index>
+        <reference name="content">
+            <block type="ho_recurring/adminhtml_profile" name="adminhtml_ho_profile.grid.container" />
+        </reference>
+    </ho_recurring_adminhtml_profile_index>
+</layout>

@@ -1,3 +1,4 @@
 # Ho_Recurring
 app/code/local/Ho/Recurring/                                    app/code/local/Ho/Recurring/
 app/etc/modules/Ho_Recurring.xml                                app/etc/modules/Ho_Recurring.xml
+app/design/adminhtml/default/default/layout/ho/*                app/design/adminhtml/default/default/layout/ho/

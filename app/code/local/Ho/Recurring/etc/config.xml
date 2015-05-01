@@ -83,4 +83,14 @@
             </ho_recurring>
         </routers>
     </admin>
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <ho_recurring module="ho_recurring">
+                    <file>ho/recurring.xml</file>
+                </ho_recurring>
+            </updates>
+        </layout>
+    </adminhtml>
 </config>
