@@ -57,4 +57,39 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     {
         $this->_forward('edit');
     }
+
+    public function editAction()
+    {
+        $this->_initAction();
+
+        $id  = $this->getRequest()->getParam('id');
+        $model = Mage::getModel('ho_recurring/profile');
+
+        if ($id) {
+            $model->load($id);
+
+            if (!$model->getId()) {
+                Mage::getSingleton('adminhtml/session')->addError(Mage::helper('ho_recurring')->__('This profile no longer exists.'));
+                $this->_redirect('*/*/');
+
+                return;
+            }
+        }
+
+        $this->_title($model->getId() ? $model->getName() : Mage::helper('ho_recurring')->__('New Profile'));
+
+        $data = Mage::getSingleton('adminhtml/session')->getProfileData(true);
+        if (!empty($data)) {
+            $model->setData($data);
+        }
+
+        Mage::register('ho_recurring', $model);
+
+        $this->_addBreadcrumb(
+            $id ? Mage::helper('ho_recurring')->__('Edit Profile') : Mage::helper('ho_recurring')->__('New Profile'),
+            $id ? Mage::helper('ho_recurring')->__('Edit Profile') : Mage::helper('ho_recurring')->__('New Profile'))
+            ->_addContent($this->getLayout()->createBlock('ho_recurring/adminhtml_profile_edit'))
+            ->_addLeft($this->getLayout()->createBlock('ho_recurring/adminhtml_profile_edit_tabs'))
+            ->renderLayout();
+    }
 }
