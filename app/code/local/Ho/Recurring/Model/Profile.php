@@ -22,14 +22,22 @@
 /**
  * Class Ho_Recurring_Model_Profile
  *
+ * @method int getStatus()
+ * @method $this setStatus(int $value)
  * @method int getCustomerId()
  * @method $this setCustomerId(int $value)
+ * @method string getCustomerName()
+ * @method $this setCustomerName(string $value)
  * @method int getOrderId()
  * @method $this setOrderId(int $value)
  * @method int getBillingAgreementId()
  * @method $this setBillingAgreementId(int $value)
  * @method int getStoreId()
  * @method $this setStoreId(int $value)
+ * @method datetime getCreatedAt()
+ * @method $this setCreatedAt(datetime $value)
+ * @method datetime getEndsAt()
+ * @method $this setEndsAt(datetime $value)
  * @method string getPaymentMethod()
  * @method $this setPaymentMethod(string $value)
  * @method string getShippingMethod()
