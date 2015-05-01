@@ -65,6 +65,13 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             'index'     => 'entity_id',
         ));
 
+        $this->addColumn('status', array(
+            'header'    => $helper->__('Status'),
+            'index'     => 'status',
+            'type'      => 'options',
+            'options'   => Mage::getModel('ho_recurring/profile')->getStatuses(),
+        ));
+
         $this->addColumn('customer_email', array(
             'header'    => $helper->__('Customer Email'),
             'index'     => 'email',
@@ -78,11 +85,6 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
         $this->addColumn('payment_method', array(
             'header'    => $helper->__('Payment method'),
             'index'     => 'payment_method',
-        ));
-
-        $this->addColumn('status', array(
-            'header'    => $helper->__('Status'),
-            'index'     => 'status',
         ));
 
         $this->addColumn('created_at', array(

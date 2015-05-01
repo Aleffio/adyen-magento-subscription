@@ -108,4 +108,21 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     {
         return Mage::getModel('sales/order')->load($this->getOrderId());
     }
+
+    /**
+     * @return array
+     */
+    public function getStatuses()
+    {
+        $helper = Mage::helper('ho_recurring');
+
+        return array(
+            self::STATUS_INACTIVE           => $helper->__('Inactive'),
+            self::STATUS_ACTIVE             => $helper->__('Active'),
+            self::STATUS_CANCELED           => $helper->__('Canceled'),
+            self::STATUS_EXPIRED            => $helper->__('Expired'),
+            self::STATUS_AWAITING_PAYMENT   => $helper->__('Awaiting Payment'),
+            self::STATUS_AGREEMENT_EXPIRED  => $helper->__('Agreement Expired'),
+        );
+    }
 }
