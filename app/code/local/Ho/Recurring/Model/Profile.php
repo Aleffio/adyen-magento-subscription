@@ -22,8 +22,8 @@
 /**
  * Class Ho_Recurring_Model_Profile
  *
- * @method int getStatus()
- * @method $this setStatus(int $value)
+ * @method string getStatus()
+ * @method $this setStatus(string $value)
  * @method int getCustomerId()
  * @method $this setCustomerId(int $value)
  * @method string getCustomerName()
@@ -45,6 +45,13 @@
  */
 class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 {
+    const STATUS_INACTIVE           = 'inactive';
+    const STATUS_ACTIVE             = 'active';
+    const STATUS_CANCELED           = 'canceled';
+    const STATUS_EXPIRED            = 'expired';
+    const STATUS_AWAITING_PAYMENT   = 'awaiting_payment';
+    const STATUS_AGREEMENT_EXPIRED  = 'agreement_expired';
+
     protected function _construct ()
     {
         $this->_init('ho_recurring/profile');

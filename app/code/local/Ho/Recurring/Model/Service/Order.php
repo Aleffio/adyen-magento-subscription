@@ -27,10 +27,11 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
      */
     public function createProfile(Mage_Sales_Model_Order $order)
     {
-        // @todo Fill new column values (created_at, updated_at, customer_name, status)
         /** @var Ho_Recurring_Model_Profile $profile */
         $profile = Mage::getModel('ho_recurring/profile')
+            ->setStatus(Ho_Recurring_Model_Profile::STATUS_ACTIVE)
             ->setCustomerId($order->getCustomerId())
+            ->setCustomerName($order->getCustomerName())
             ->setOrderId($order->getId())
             ->setBillingAgreementId(0) // @todo Set correct billing agreement ID
             ->setStoreId($order->getStoreId())
