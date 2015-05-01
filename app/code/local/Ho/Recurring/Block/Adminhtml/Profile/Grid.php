@@ -44,7 +44,28 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
 
     protected function _prepareCollection()
     {
+        /** @var Ho_Recurring_Model_Resource_Profile_Collection $collection */
         $collection = Mage::getResourceModel($this->_getCollectionClass());
+
+        $collection->join(array('customer' => 'customer/entity'), 'customer_id = customer.entity_id', 'email');
+
+        $customerResource = Mage::getSingleton('customer/customer')->getResource();
+        $customerFirstNameAttr = $customerResource->getAttribute('firstname');
+        $customerLastNameAttr = $customerResource->getAttribute('lastname');
+        $collection->getSelect()
+            ->joinLeft(array('cusFirstnameTb' => $customerFirstNameAttr->getBackend()->getTable()),
+                'main_table.customer_id = cusFirstnameTb.entity_id AND cusFirstnameTb.attribute_id = ' . $customerFirstNameAttr->getId()
+                . ' AND cusFirstnameTb.entity_type_id = ' . $customerResource->getTypeId(),
+                array('cusFirstnameTb.value')
+            );
+
+        $collection->getSelect()
+            ->joinLeft(array('cusLastnameTb' => $customerLastNameAttr->getBackend()->getTable()),
+                'main_table.customer_id = cusLastnameTb.entity_id AND cusLastnameTb.attribute_id = ' . $customerLastNameAttr->getId()
+                . ' AND cusLastnameTb.entity_type_id = ' . $customerResource->getTypeId(),
+                array('customer_name' => "CONCAT(cusFirstnameTb.value, ' ', cusLastnameTb.value)")
+            );
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -63,12 +84,13 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
 
         $this->addColumn('customer_email', array(
             'header'    => $helper->__('Customer Email'),
-            'index'     => 'customer_id',
+            'index'     => 'email',
         ));
 
         $this->addColumn('customer_name', array(
             'header'    => $helper->__('Name'),
-            'index'     => 'customer_id',
+            'index'     => 'customer_name',
+            'filter_condition_callback' => array($this, 'customerNameFilter'),
         ));
 
         $this->addColumn('payment_method', array(
@@ -116,6 +138,22 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             ));
 
         return parent::_prepareColumns();
+    }
+
+    public function customerNameFilter($collection, $column)
+    {
+        $filterValue = $column->getFilter()->getValue();
+        if (!is_null($filterValue)) {
+            $filterValue = trim($filterValue);
+            $filterValue = preg_replace('/[\s]+/', ' ', $filterValue);
+
+            $whereArr = array();
+            $whereArr[] = $collection->getConnection()->quoteInto("cusFirstnameTb.value LIKE ?", '%' . $filterValue . '%');
+            $whereArr[] = $collection->getConnection()->quoteInto("cusLastnameTb.value LIKE ?", '%' . $filterValue . '%');
+            $whereArr[] = $collection->getConnection()->quoteInto("CONCAT(cusFirstnameTb.value, ' ', cusLastnameTb.value) LIKE ?", '%' . $filterValue . '%');
+            $where = implode(' OR ', $whereArr);
+            $collection->getSelect()->where($where);
+        }
     }
 
     public function getRowUrl($row)
