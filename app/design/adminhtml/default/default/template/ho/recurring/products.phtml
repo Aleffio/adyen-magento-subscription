@@ -66,6 +66,8 @@
         </table>
     </div>
 </div>
-<br />
-<?php // @todo show order totals ?>
-<?php echo $this->getChildHtml('order_totals'); ?>
+
+<div class="box-right entry-edit">
+    <div class="entry-edit-head"><h4><?php echo Mage::helper('sales')->__('Totals') ?></h4></div>
+    <div id="order-totals" class="order-totals"><?php echo $this->getChildHtml('order_totals') ?></div>
+</div>

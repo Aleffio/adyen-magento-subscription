@@ -50,18 +50,33 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminh
         return parent::_prepareForm();
     }
 
+    /**
+     * @return string
+     */
     public function getTabLabel()
     {
         return Mage::helper('ho_recurring')->__('General');
     }
+
+    /**
+     * @return string
+     */
     public function getTabTitle()
     {
         return Mage::helper('ho_recurring')->__('General');
     }
+
+    /**
+     * @return bool
+     */
     public function canShowTab()
     {
         return true;
     }
+
+    /**
+     * @return bool
+     */
     public function isHidden()
     {
         return false;

@@ -20,7 +20,7 @@
  */
 
 class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Adminhtml_Block_Template
-implements Mage_Adminhtml_Block_Widget_Tab_Interface
+    implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     public function __construct()
     {
@@ -43,24 +43,35 @@ implements Mage_Adminhtml_Block_Widget_Tab_Interface
         return Mage::registry('ho_recurring');
     }
 
+    /**
+     * @return string
+     */
     public function getTabLabel()
     {
         return Mage::helper('ho_recurring')->__('Products');
     }
+
+    /**
+     * @return string
+     */
     public function getTabTitle()
     {
         return Mage::helper('ho_recurring')->__('Products');
     }
+
+    /**
+     * @return bool
+     */
     public function canShowTab()
     {
         return true;
     }
+
+    /**
+     * @return bool
+     */
     public function isHidden()
     {
         return false;
-    }
-    public function getAfter()
-    {
-        return 'general';
     }
 }

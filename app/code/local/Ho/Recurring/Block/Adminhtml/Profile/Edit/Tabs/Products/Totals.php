@@ -23,11 +23,11 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products_Totals extends Mag
 {
     public function getSource()
     {
-        // @todo correctly retrieve data
-        return Mage::getModel('sales/order')->load(19);
+        return $this->getOrder();
     }
     public function getOrder()
     {
-        return $this->getSource();
+        // @todo correctly retrieve data
+        return Mage::getModel('sales/order')->load(19);
     }
 }
