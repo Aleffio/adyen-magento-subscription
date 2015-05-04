@@ -91,8 +91,6 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $this->_addBreadcrumb(
             $id ? Mage::helper('ho_recurring')->__('Edit Profile') : Mage::helper('ho_recurring')->__('New Profile'),
             $id ? Mage::helper('ho_recurring')->__('Edit Profile') : Mage::helper('ho_recurring')->__('New Profile'))
-            ->_addContent($this->getLayout()->createBlock('ho_recurring/adminhtml_profile_edit'))
-            ->_addLeft($this->getLayout()->createBlock('ho_recurring/adminhtml_profile_edit_tabs'))
             ->renderLayout();
     }
 }

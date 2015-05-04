@@ -19,8 +19,8 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Adminhtml_Block_Widget_Form
-//implements Mage_Adminhtml_Block_Widget_Tab_Interface
+class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Adminhtml_Block_Template
+implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     public function __construct()
     {
@@ -41,5 +41,26 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
     public function getProfile()
     {
         return Mage::registry('ho_recurring');
+    }
+
+    public function getTabLabel()
+    {
+        return Mage::helper('ho_recurring')->__('Products');
+    }
+    public function getTabTitle()
+    {
+        return Mage::helper('ho_recurring')->__('Products');
+    }
+    public function canShowTab()
+    {
+        return true;
+    }
+    public function isHidden()
+    {
+        return false;
+    }
+    public function getAfter()
+    {
+        return 'general';
     }
 }

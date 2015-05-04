@@ -20,6 +20,7 @@
  */
 
 class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminhtml_Block_Widget_Form
+    implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     protected function _prepareForm()
     {
@@ -38,10 +39,31 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminh
                 'name'      => 'entity_id',
             ));
         }
+        $fieldset->addField('status', 'text', array(
+            'name'      => 'status',
+            'label'     => $helper->__('Status'),
+        ));
 
         $form->setValues($model->getData());
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    public function getTabLabel()
+    {
+        return Mage::helper('ho_recurring')->__('General');
+    }
+    public function getTabTitle()
+    {
+        return Mage::helper('ho_recurring')->__('General');
+    }
+    public function canShowTab()
+    {
+        return true;
+    }
+    public function isHidden()
+    {
+        return false;
     }
 }

@@ -43,6 +43,7 @@
  */
 class Ho_Recurring_Model_Profile_Item extends Mage_Core_Model_Abstract
 {
+    // @todo change status to varchar (same as profile model)
     const STATUS_ACTIVE     = 1;
     const STATUS_INACTIVE   = 0;
 

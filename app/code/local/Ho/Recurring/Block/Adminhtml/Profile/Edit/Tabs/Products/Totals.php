@@ -19,13 +19,15 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
+class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products_Totals extends Mage_Adminhtml_Block_Sales_Totals
 {
-    public function __construct()
+    public function getSource()
     {
-        parent::__construct();
-        $this->setId('profile_tabs');
-        $this->setDestElementId('edit_form');
-        $this->setTitle(Mage::helper('ho_recurring')->__('Manage Profile'));
+        // @todo correctly retrieve data
+        return Mage::getModel('sales/order')->load(19);
+    }
+    public function getOrder()
+    {
+        return $this->getSource();
     }
 }
