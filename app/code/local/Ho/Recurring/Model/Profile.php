@@ -92,13 +92,47 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @param bool $active
      * @return Ho_Recurring_Model_Resource_Profile_Item_Collection
      */
-    public function getItems()
+    public function getItems($active = true)
     {
-        return Mage::getModel('ho_recurring/profile_item')
+        $items = Mage::getModel('ho_recurring/profile_item')
             ->getCollection()
             ->addFieldToFilter('profile_id', $this->getId());
+
+        if ($active) {
+            $items->addFieldToFilter('status', Ho_Recurring_Model_Profile_Item::STATUS_ACTIVE);
+        }
+
+        return $items;
+    }
+
+    /**
+     * @return Mage_Sales_Model_Resource_Order_Collection
+     */
+    public function getOrders()
+    {
+        return Mage::getModel('sales/order')
+            ->getCollection()
+            ->addFieldToFilter('entity_id', array('in' => $this->getOrderIds()));
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderIds()
+    {
+        $profileOrders = Mage::getModel('ho_recurring/profile_order')
+            ->getCollection()
+            ->addFieldToFilter('profile_id', $this->getId());
+
+        $orderIds = array();
+        foreach ($profileOrders as $profileOrder) {
+            $orderIds[] = $profileOrder->getOrderId();
+        }
+
+        return $orderIds;
     }
 
     /**
