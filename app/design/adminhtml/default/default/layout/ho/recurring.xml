@@ -33,11 +33,13 @@
         </reference>
         <reference name="left">
             <block type="ho_recurring/adminhtml_profile_edit_tabs" name="profile_edit_tabs">
-                <block name="product_test_block" type="ho_recurring/adminhtml_profile_edit_tabs_products" template="ho/recurring/products.phtml">
+                <block name="profile_general_block" type="ho_recurring/adminhtml_profile_edit_tabs_general" template="ho/recurring/general.phtml">
+                </block>
+                <block name="profile_products_block" type="ho_recurring/adminhtml_profile_edit_tabs_products" template="ho/recurring/products.phtml">
                     <block type="ho_recurring/adminhtml_profile_edit_tabs_products_totals" name="order_totals" template="sales/order/totals.phtml" />
                 </block>
-                <action method="addTab"><name>profile_general</name><block>ho_recurring/adminhtml_profile_edit_tabs_general</block></action>
-                <action method="addTab"><name>profile_products</name><block>product_test_block</block></action>
+                <action method="addTab"><name>profile_general</name><block>profile_general_block</block></action>
+                <action method="addTab"><name>profile_products</name><block>profile_products_block</block></action>
                 <action method="addTab"><name>profile_past_orders</name><block>ho_recurring/adminhtml_profile_edit_tabs_pastOrders</block></action>
                 <action method="addTab"><name>profile_upcoming_orders</name><block>ho_recurring/adminhtml_profile_edit_tabs_upcomingOrders</block></action>
             </block>

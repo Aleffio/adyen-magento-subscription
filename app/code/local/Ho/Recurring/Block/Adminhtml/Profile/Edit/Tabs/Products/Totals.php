@@ -21,13 +21,27 @@
 
 class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products_Totals extends Mage_Adminhtml_Block_Sales_Totals
 {
+    /**
+     * @return Mage_Sales_Model_Order
+     */
     public function getSource()
     {
         return $this->getOrder();
     }
+
+    /**
+     * @return Mage_Sales_Model_Order
+     */
     public function getOrder()
     {
-        // @todo correctly retrieve data
-        return Mage::getModel('sales/order')->load(19);
+        return $this->getProfile()->getOriginalOrder();
+    }
+
+    /**
+     * @return Ho_Recurring_Model_Profile
+     */
+    public function getProfile()
+    {
+        return Mage::registry('ho_recurring');
     }
 }

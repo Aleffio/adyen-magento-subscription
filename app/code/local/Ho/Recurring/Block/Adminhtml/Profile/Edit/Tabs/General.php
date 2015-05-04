@@ -19,35 +19,23 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminhtml_Block_Widget_Form
+class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminhtml_Block_Widget
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
-    protected function _prepareForm()
+    /**
+     * @return Mage_Sales_Model_Order
+     */
+    public function getOrder()
     {
-        $helper = Mage::helper('ho_recurring');
+        return $this->getProfile()->getOriginalOrder();
+    }
 
-        /** @var Ho_Recurring_Model_Profile $model */
-        $model = Mage::registry('ho_recurring');
-
-        $form = new Varien_Data_Form();
-
-        $fieldset = $form->addFieldset('base_fieldset', array(
-            'legend'    => $helper->__('Profile Information'),
-        ));
-        if ($model->getId()) {
-            $fieldset->addField('entity_id', 'hidden', array(
-                'name'      => 'entity_id',
-            ));
-        }
-        $fieldset->addField('status', 'text', array(
-            'name'      => 'status',
-            'label'     => $helper->__('Status'),
-        ));
-
-        $form->setValues($model->getData());
-        $this->setForm($form);
-
-        return parent::_prepareForm();
+    /**
+     * @return Ho_Recurring_Model_Profile
+     */
+    public function getProfile()
+    {
+        return Mage::registry('ho_recurring');
     }
 
     /**
