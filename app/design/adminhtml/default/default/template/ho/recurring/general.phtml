@@ -60,19 +60,19 @@
         <table cellspacing="0" class="form-list">
             <tr>
                 <td class="label"><label><?=Mage::helper('ho_recurring')->__('Created at'); ?></label></td>
-                <td class="value"><strong><?=$_order->getCreatedAt(); ?></strong></td>
+                <td class="value"><strong><?=$_profile->getCreatedAt(); ?></strong></td>
             </tr>
             <tr>
                 <td class="label"><label><?=Mage::helper('ho_recurring')->__('Upcoming shipment'); ?></label></td>
-                <td class="value"><strong><?php // @todo fill ?></strong></td>
+                <td class="value"><strong><?=$_profile->getNextOrderAt(); ?></strong></td>
             </tr>
             <tr>
                 <td class="label"><label><?=Mage::helper('ho_recurring')->__('Term'); ?></label></td>
-                <td class="value"><strong><?php // @todo fill ?></strong></td>
+                <td class="value"><strong><?=$_profile->getTermLabel(); ?></strong></td>
             </tr>
             <tr>
                 <td class="label"><label><?=Mage::helper('ho_recurring')->__('Runs until'); ?></label></td>
-                <td class="value"><strong><?php // @todo fill ?></strong></td>
+                <td class="value"><strong><?=$_profile->getEndsAt(); ?></strong></td>
             </tr>
         </table>
     </div>

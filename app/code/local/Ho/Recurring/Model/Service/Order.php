@@ -35,6 +35,9 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
             ->setOrderId($order->getId())
             ->setBillingAgreementId(0) // @todo Set correct billing agreement ID
             ->setStoreId($order->getStoreId())
+            ->setEndsAt('2015-10-01 12:00:00') // @todo Set correct ending date
+            ->setTerm(Ho_Recurring_Model_Profile::TERM_3_MONTHS) // @todo Set correct term
+            ->setNextOrderAt('2015-06-01 12:00:00') // @todo Set correct date
             ->setPaymentMethod($order->getPayment()->getMethod())
             ->setShippingMethod($order->getShippingMethod())
             ->save();
