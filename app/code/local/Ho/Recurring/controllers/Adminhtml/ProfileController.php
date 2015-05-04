@@ -58,6 +58,9 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $this->_forward('edit');
     }
 
+    /**
+     * @todo page title is not showing
+     */
     public function editAction()
     {
         $this->_initAction();
