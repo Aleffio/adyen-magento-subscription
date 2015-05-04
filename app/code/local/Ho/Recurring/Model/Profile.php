@@ -212,4 +212,12 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             self::STATUS_AGREEMENT_EXPIRED  => $helper->__('Agreement Expired'),
         );
     }
+
+    /**
+     * @return string
+     */
+    public function getStatusLabel()
+    {
+        return $this->getStatuses()[$this->getStatus()];
+    }
 }

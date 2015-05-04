@@ -19,9 +19,14 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminhtml_Block_Widget
+class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminhtml_Block_Sales_Order_View_Info
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
+    protected function _beforeToHtml()
+    {
+        Mage_Adminhtml_Block_Sales_Order_Abstract::_beforeToHtml();
+    }
+
     /**
      * @return Mage_Sales_Model_Order
      */
@@ -36,6 +41,14 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminh
     public function getProfile()
     {
         return Mage::registry('ho_recurring');
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerViewUrl()
+    {
+        return $this->getUrl('adminhtml/customer/edit', array('id' => $this->getOrder()->getCustomerId()));
     }
 
     /**

@@ -34,6 +34,7 @@
         <reference name="left">
             <block type="ho_recurring/adminhtml_profile_edit_tabs" name="profile_edit_tabs">
                 <block name="profile_general_block" type="ho_recurring/adminhtml_profile_edit_tabs_general" template="ho/recurring/general.phtml">
+                    <block type="adminhtml/sales_order_payment" name="order_payment"/>
                 </block>
                 <block name="profile_products_block" type="ho_recurring/adminhtml_profile_edit_tabs_products" template="ho/recurring/products.phtml">
                     <block type="ho_recurring/adminhtml_profile_edit_tabs_products_totals" name="order_totals" template="sales/order/totals.phtml" />

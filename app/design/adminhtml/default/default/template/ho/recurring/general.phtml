@@ -21,6 +21,63 @@
 ?>
 <?php /** @var Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General $this */ ?>
 <?php $_order = $this->getOrder(); ?>
+<?php $_profile = $this->getProfile(); ?>
+
+<div class="box-left">
+    <!--General Info-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-general-info"><?php echo Mage::helper('ho_recurring')->__('General Information'); ?></h4>
+        </div>
+    </div>
+    <div class="fieldset">
+        <table cellspacing="0" class="form-list">
+            <tr>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Customer') ?></label></td>
+                <td class="value">
+                    <a href="<?=$this->getCustomerViewUrl(); ?>" target="_blank"><strong><?=$this->htmlEscape($_order->getCustomerName()); ?></strong></a>
+                </td>
+            </tr>
+            <tr>
+                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Status'); ?></label></td>
+                <td class="value"><?=$_profile->getStatusLabel();?></td>
+            </tr>
+            <tr>
+                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Created from'); ?></label></td>
+                <td class="value"><strong><?=$this->getOrderStoreName(); ?></strong></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="box-right">
+    <!--Profile Info-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-profile-info"><?php echo Mage::helper('ho_recurring')->__('Profile Information'); ?></h4>
+        </div>
+    </div>
+    <div class="fieldset">
+        <table cellspacing="0" class="form-list">
+            <tr>
+                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Created at'); ?></label></td>
+                <td class="value"><strong><?=$_order->getCreatedAt(); ?></strong></td>
+            </tr>
+            <tr>
+                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Upcoming shipment'); ?></label></td>
+                <td class="value"><strong><?php // @todo fill ?></strong></td>
+            </tr>
+            <tr>
+                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Term'); ?></label></td>
+                <td class="value"><strong><?php // @todo fill ?></strong></td>
+            </tr>
+            <tr>
+                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Runs until'); ?></label></td>
+                <td class="value"><strong><?php // @todo fill ?></strong></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="clear"></div>
 
 <div class="box-left">
     <!--Billing Address-->
@@ -45,3 +102,47 @@
     </div>
 </div>
 <div class="clear"></div>
+
+<div class="box-left">
+    <!--Payment Info-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-billing-address"><?=Mage::helper('ho_recurring')->__('Payment Information'); ?></h4>
+        </div>
+        <fieldset>
+            <?php echo $this->getChildHtml('order_payment'); ?>
+            <div><?php echo Mage::helper('sales')->__('Order was placed using %s', $_order->getOrderCurrencyCode()) ?></div>
+        </fieldset>
+    </div>
+</div>
+<div class="box-right">
+    <!--Shipping Info-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-shipping-address"><?=Mage::helper('ho_recurring')->__('Shipping &amp; Handling Information'); ?></h4>
+        </div>
+        <fieldset>
+            <?php  if ($_order->getTracksCollection()->count()) : ?>
+                <a href="#" id="linkId" onclick="popWin('<?php echo $this->helper('shipping')->getTrackingPopupUrlBySalesModel($_order) ?>','trackorder','width=800,height=600,resizable=yes,scrollbars=yes')" title="<?php echo $this->__('Track Order') ?>"><?php echo $this->__('Track Order') ?></a>
+                <br/>
+            <?php endif; ?>
+            <?php if ($_order->getShippingDescription()): ?>
+                <strong><?php echo $this->escapeHtml($_order->getShippingDescription()) ?></strong>
+
+                <?php if ($this->helper('tax')->displayShippingPriceIncludingTax()): ?>
+                    <?php $_excl = $this->displayShippingPriceInclTax($_order); ?>
+                <?php else: ?>
+                    <?php $_excl = $this->displayPriceAttribute('shipping_amount', false, ' '); ?>
+                <?php endif; ?>
+                <?php $_incl = $this->displayShippingPriceInclTax($_order); ?>
+
+                <?php echo $_excl; ?>
+                <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                    (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                <?php endif; ?>
+            <?php else: ?>
+                <?php echo $this->helper('sales')->__('No shipping information available'); ?>
+            <?php endif; ?>
+        </fieldset>
+    </div>
+</div>
