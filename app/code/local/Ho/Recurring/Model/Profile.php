@@ -64,20 +64,26 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     {
         $quote = Mage::getModel('ho_recurring/service_profile')->createQuote($this);
 
-        Mage::getModel('ho_recurring/profile_quote')
-            ->setProfileId($this->getId())
-            ->setQuoteId($quote->getId())
-            ->save();
+        $this->saveQuoteAtProfile($quote);
 
         return $quote;
     }
 
     /**
+     * @param Mage_Sales_Model_Quote|null $quote
      * @return Mage_Sales_Model_Order
      */
-    public function createOrder()
+    public function createOrder(Mage_Sales_Model_Quote $quote = null)
     {
-        $quote = $this->createQuote();
+        if (!$quote) {
+            $quote = $this->createQuote();
+        }
+        else {
+            $this->saveQuoteAtProfile($quote);
+
+            $quote->collectTotals();
+            $quote->save();
+        }
 
         $service = Mage::getModel('sales/service_quote', $quote);
         $service->submitAll();
@@ -89,6 +95,26 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             ->save();
 
         return $order;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Quote $quote
+     * @throws Exception
+     */
+    public function saveQuoteAtProfile(Mage_Sales_Model_Quote $quote)
+    {
+        $profileQuote = Mage::getModel('ho_recurring/profile_quote')
+            ->getCollection()
+            ->addFieldToFilter('profile_id', $this->getId())
+            ->addFieldToFilter('quote_id', $quote->getId())
+            ->getFirstItem();
+
+        if (!$profileQuote->getId()) {
+            Mage::getModel('ho_recurring/profile_quote')
+                ->setProfileId($this->getId())
+                ->setQuoteId($quote->getId())
+                ->save();
+        }
     }
 
     /**
