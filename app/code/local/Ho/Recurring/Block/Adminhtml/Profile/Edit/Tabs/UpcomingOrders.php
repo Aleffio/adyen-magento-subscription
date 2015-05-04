@@ -22,6 +22,62 @@
 class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrders extends Mage_Adminhtml_Block_Widget_Grid
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->setId('upcoming_orders_grid');
+        $this->setDefaultSort('created_at', 'desc');
+        $this->setUseAjax(true);
+    }
+
+    protected function _prepareCollection()
+    {
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::registry('ho_recurring');
+
+        $collection = Mage::getModel('sales/quote')
+            ->getCollection()
+            ->addFieldToFilter('entity_id', $profile->getQuoteIds());
+
+        $this->setCollection($collection);
+
+        return parent::_prepareCollection();
+    }
+
+    protected function _prepareColumns()
+    {
+        $helper = Mage::helper('ho_recurring');
+
+        $this->addColumn('entity_id', array(
+            'header'    => $helper->__('Quote #'),
+            'index'     => 'entity_id',
+        ));
+
+        $this->addColumn('created_at', array(
+            'header'    => $helper->__('Created At'),
+            'index'     => 'created_at',
+            'type'      => 'datetime',
+            'width'     => '100px',
+        ));
+
+        $this->addColumn('base_grand_total', array(
+            'header' => Mage::helper('sales')->__('G.T. (Base)'),
+            'index' => 'base_grand_total',
+            'type'  => 'currency',
+            'currency' => 'base_currency_code',
+        ));
+
+        $this->addColumn('grand_total', array(
+            'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
+            'index' => 'grand_total',
+            'type'  => 'currency',
+            'currency' => 'quote_currency_code',
+        ));
+
+        return parent::_prepareColumns();
+    }
+
     /**
      * @return string
      */

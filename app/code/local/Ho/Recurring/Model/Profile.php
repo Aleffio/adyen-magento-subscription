@@ -162,6 +162,33 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @param bool $withoutOrder When true, only return quote IDs that are not (yet) an order
+     * @return array
+     */
+    public function getQuoteIds($withoutOrder = true)
+    {
+        $profileQuotes = Mage::getModel('ho_recurring/profile_quote')
+            ->getCollection()
+            ->addFieldToFilter('profile_id', $this->getId());
+
+        $quoteIds = array();
+        foreach ($profileQuotes as $profileQuote) {
+            $quoteIds[] = $profileQuote->getQuoteId();
+        }
+
+        if ($withoutOrder) {
+            $orders = Mage::getModel('sales/order')
+                ->getCollection()
+                ->addFieldToFilter('quote_id', array('in' => $quoteIds));
+            foreach ($orders as $order) {
+                $quoteIds = array_diff($quoteIds, array($order->getQuoteId()));
+            }
+        }
+
+        return $quoteIds;
+    }
+
+    /**
      * @return Mage_Sales_Model_Order
      */
     public function getOriginalOrder()
