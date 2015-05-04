@@ -36,8 +36,10 @@
                 <block name="product_test_block" type="ho_recurring/adminhtml_profile_edit_tabs_products" template="ho/recurring/products.phtml">
                     <block type="ho_recurring/adminhtml_profile_edit_tabs_products_totals" name="order_totals" template="sales/order/totals.phtml" />
                 </block>
-                <action method="addTab"><name>profile_edit_tabs_general</name><block>ho_recurring/adminhtml_profile_edit_tabs_general</block></action>
-                <action method="addTab"><name>profile_edit_tabs_products</name><block>product_test_block</block></action>
+                <action method="addTab"><name>profile_general</name><block>ho_recurring/adminhtml_profile_edit_tabs_general</block></action>
+                <action method="addTab"><name>profile_products</name><block>product_test_block</block></action>
+                <action method="addTab"><name>profile_past_orders</name><block>ho_recurring/adminhtml_profile_edit_tabs_pastOrders</block></action>
+                <action method="addTab"><name>profile_upcoming_orders</name><block>ho_recurring/adminhtml_profile_edit_tabs_upcomingOrders</block></action>
             </block>
         </reference>
     </ho_recurring_adminhtml_profile_edit>
