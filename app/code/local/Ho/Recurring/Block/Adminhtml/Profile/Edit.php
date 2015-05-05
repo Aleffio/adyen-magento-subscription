@@ -29,12 +29,18 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
         parent::__construct();
 
         $this->_removeButton('save');
+
+        $this->_addButton('create_quote', array(
+                'label' => Mage::helper('ho_export')->__('Create Quote'),
+                'onclick' => "setLocation('{$this->getUrl('*/*/createQuote',
+                    array('id' => $this->getProfile()->getId()))}')",
+            ), 10
+        );
     }
 
     public function getHeaderText()
     {
-        /** @var Ho_Recurring_Model_Profile $profile */
-        $profile = Mage::registry('ho_recurring');
+        $profile = $this->getProfile();
 
         if ($profile->getId()) {
             return Mage::helper('ho_recurring')->__('Recurring Profile <i>#%s</i> of <i>%s</i>',
@@ -43,5 +49,13 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
         else {
             return Mage::helper('ho_recurring')->__('New Profile');
         }
+    }
+
+    /**
+     * @return Ho_Recurring_Model_Profile
+     */
+    public function getProfile()
+    {
+        return Mage::registry('ho_recurring');
     }
 }
