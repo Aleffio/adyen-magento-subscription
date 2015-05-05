@@ -109,6 +109,26 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
     }
 
     /**
+     * Disable filter and sorting for every column
+     *
+     * @param string $columnId
+     * @param array $column
+     * @throws Exception
+     * @return Mage_Adminhtml_Block_Widget_Grid
+     */
+    public function addColumn($columnId, $column)
+    {
+        $default = array(
+            'filter'    => false,
+            'sortable'  => false,
+        );
+
+        $column = array_merge($column, $default);
+
+        return parent::addColumn($columnId, $column);
+    }
+
+    /**
      * @return string
      */
     public function getTabLabel()
