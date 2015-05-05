@@ -64,11 +64,6 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         $this->_init('ho_recurring/profile');
     }
 
-    public function getUpcomingShippingDate()
-    {
-
-    }
-
     /**
      * @return Mage_Sales_Model_Quote
      */
@@ -101,10 +96,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         $service->submitAll();
         $order = $service->getOrder();
 
-        Mage::getModel('ho_recurring/profile_order')
-            ->setProfileId($this->getId())
-            ->setOrderId($order->getId())
-            ->save();
+        $this->saveOrderAtProfile($order);
 
         return $order;
     }
@@ -125,6 +117,26 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             Mage::getModel('ho_recurring/profile_quote')
                 ->setProfileId($this->getId())
                 ->setQuoteId($quote->getId())
+                ->save();
+        }
+    }
+
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @throws Exception
+     */
+    public function saveOrderAtProfile(Mage_Sales_Model_Order $order)
+    {
+        $profileOrder = Mage::getModel('ho_recurring/profile_order')
+            ->getCollection()
+            ->addFieldToFilter('profile_id', $this->getId())
+            ->addFieldToFilter('order_id', $order->getId())
+            ->getFirstItem();
+
+        if (!$profileOrder->getId()) {
+            Mage::getModel('ho_recurring/profile_order')
+                ->setProfileId($this->getId())
+                ->setOrderId($order->getId())
                 ->save();
         }
     }

@@ -49,17 +49,19 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
             $item->setProfileId($profile->getId());
 
             $item->setProductId($orderItem->getProductId())
-            ->setSku($orderItem->getSku())
-            ->setName($orderItem->getName())
-            ->setPrice($orderItem->getPrice())
-            ->setPriceInclTax($orderItem->getPriceInclTax())
-            ->setQty($orderItem->getQtyOrdered())
-            ->setOnce(0)
-            ->setCreatedAt(now())
-            ->setStatus($item::STATUS_ACTIVE);
+                ->setSku($orderItem->getSku())
+                ->setName($orderItem->getName())
+                ->setPrice($orderItem->getPrice())
+                ->setPriceInclTax($orderItem->getPriceInclTax())
+                ->setQty($orderItem->getQtyOrdered())
+                ->setOnce(0)
+                ->setCreatedAt(now())
+                ->setStatus($item::STATUS_ACTIVE);
 
             $item->save();
         }
+
+        $profile->saveOrderAtProfile($order);
 
         return $profile;
     }
