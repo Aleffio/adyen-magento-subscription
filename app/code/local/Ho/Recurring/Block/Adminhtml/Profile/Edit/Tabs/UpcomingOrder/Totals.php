@@ -19,7 +19,7 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products_Totals extends Mage_Adminhtml_Block_Sales_Totals
+class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder_Totals extends Mage_Adminhtml_Block_Sales_Totals
 {
     /**
      * @return Mage_Sales_Model_Order
@@ -34,7 +34,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products_Totals extends Mag
      */
     public function getOrder()
     {
-        return $this->getProfile()->getOriginalOrder();
+        return $this->getProfile()->getQuote();
     }
 
     /**
