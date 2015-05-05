@@ -19,28 +19,63 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Adminhtml_Block_Template
+class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Adminhtml_Block_Widget_Grid
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     public function __construct()
     {
-        $this->setTemplate('ho/recurring/products.phtml');
+        parent::__construct();
+
+        $this->setId('upcoming_orders_grid');
+        $this->setDefaultSort('created_at', 'desc');
+        $this->setUseAjax(true);
     }
 
-    /**
-     * @return Ho_Recurring_Model_Resource_Profile_Item_Collection
-     */
-    public function getItemsCollection()
+    protected function _prepareCollection()
     {
-        return $this->getProfile()->getItems();
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::registry('ho_recurring');
+
+        $collection = Mage::getModel('sales/quote')
+            ->getCollection()
+            ->addFieldToFilter('entity_id', $profile->getQuoteIds());
+
+        $this->setCollection($collection);
+
+        return parent::_prepareCollection();
     }
 
-    /**
-     * @return Ho_Recurring_Model_Profile
-     */
-    public function getProfile()
+    protected function _prepareColumns()
     {
-        return Mage::registry('ho_recurring');
+        $helper = Mage::helper('ho_recurring');
+
+        $this->addColumn('entity_id', array(
+            'header'    => $helper->__('Quote #'),
+            'index'     => 'entity_id',
+        ));
+
+        $this->addColumn('created_at', array(
+            'header'    => $helper->__('Created At'),
+            'index'     => 'created_at',
+            'type'      => 'datetime',
+            'width'     => '100px',
+        ));
+
+        $this->addColumn('base_grand_total', array(
+            'header' => Mage::helper('sales')->__('G.T. (Base)'),
+            'index' => 'base_grand_total',
+            'type'  => 'currency',
+            'currency' => 'base_currency_code',
+        ));
+
+        $this->addColumn('grand_total', array(
+            'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
+            'index' => 'grand_total',
+            'type'  => 'currency',
+            'currency' => 'quote_currency_code',
+        ));
+
+        return parent::_prepareColumns();
     }
 
     /**
