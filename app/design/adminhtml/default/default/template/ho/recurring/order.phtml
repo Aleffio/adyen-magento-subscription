@@ -51,13 +51,13 @@
                 <tbody class="<?php echo $i%2 ? 'even' : 'odd'; ?>">
                 <tr>
                     <td><?=$_item->getName(); ?></td>
-                    <td><?=$helper->formatPrice($_item->getPrice()); ?></td>
+                    <td><?=$helper->formatPrice($_item->getPriceInclTax()); ?></td>
                     <td><?=$_item->getQty(); ?></td>
                     <td><?=$helper->formatPrice($_item->getRowTotal()); ?></td>
                     <td><?=$helper->formatPrice($_item->getTaxAmount()); ?></td>
                     <td><?=number_format($_item->getTaxPercent(), 0); ?>%</td>
                     <td><?=$helper->formatPrice($_item->getDiscountAmount()); ?></td>
-                    <td><?=$helper->formatPrice($_item->getRowTotal()); ?></td>
+                    <td><?=$helper->formatPrice($_item->getRowTotalInclTax()); ?></td>
                 </tr>
                 </tbody>
             <?php $i++; endforeach; ?>
