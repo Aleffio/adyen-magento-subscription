@@ -97,9 +97,9 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             'index'     => 'ends_at',
         ));
 
-        $this->addColumn('next_shipment', array(
+        $this->addColumn('next_order_at', array(
             'header'    => $helper->__('Next shipment'),
-            // @todo Show date of next order
+            'index'     => 'next_order_at',
         ));
 
         $this->addColumn('action',

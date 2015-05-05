@@ -57,11 +57,13 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder extends Mage_
     }
 
     /**
+     * Don't show tab if there is no quote
+     *
      * @return bool
      */
     public function canShowTab()
     {
-        return true;
+        return $this->getProfile()->getQuote();
     }
 
     /**

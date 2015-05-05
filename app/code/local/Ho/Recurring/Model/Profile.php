@@ -201,11 +201,15 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @return Mage_Sales_Model_Quote
+     * @return Mage_Sales_Model_Quote|null
      */
     public function getQuote()
     {
-        $quoteId = array_values($this->getQuoteIds())[0];
+        $quoteIds = $this->getQuoteIds();
+
+        if (!$quoteIds) return null;
+
+        $quoteId = array_values($quoteIds)[0];
 
         // Note: The quote won't load if we don't set the store ID
         $quote = Mage::getModel('sales/quote')

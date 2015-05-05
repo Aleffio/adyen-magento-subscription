@@ -33,12 +33,17 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_PastOrders extends Mage_Adm
 
     protected function _prepareCollection()
     {
-        /** @var Ho_Recurring_Model_Profile $profile */
-        $profile = Mage::registry('ho_recurring');
+        $profile = $this->getProfile();
 
-        $collection = Mage::getModel('sales/order')
-            ->getCollection()
-            ->addFieldToFilter('entity_id', $profile->getOrderIds());
+        $orderIds = $profile->getOrderIds();
+        if ($orderIds) {
+            $collection = Mage::getModel('sales/order')
+                ->getCollection()
+                ->addFieldToFilter('entity_id', $orderIds);
+        }
+        else {
+            $collection = array();
+        }
 
         $this->setCollection($collection);
 
@@ -106,6 +111,14 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_PastOrders extends Mage_Adm
     }
 
     /**
+     * @return Ho_Recurring_Model_Profile
+     */
+    public function getProfile()
+    {
+        return Mage::registry('ho_recurring');
+    }
+
+    /**
      * @return string
      */
     public function getTabLabel()
@@ -122,11 +135,13 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_PastOrders extends Mage_Adm
     }
 
     /**
+     * Don't show tab if there are no orders
+     *
      * @return bool
      */
     public function canShowTab()
     {
-        return true;
+        return $this->getProfile()->getOrderIds();
     }
 
     /**
