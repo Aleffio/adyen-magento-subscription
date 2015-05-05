@@ -20,12 +20,12 @@
  */
 ?>
 <?php /** @var Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder $this */ ?>
+<?php $helper = Mage::helper('core'); ?>
+
 <div class="grid np">
     <div class="hor-scroll">
         <table cellspacing="0" class="data order-tables">
-            <col width="1" />
-            <col width="100" />
-            <col width="1" />
+            <col />
             <col width="1" />
             <col width="1" />
             <col width="1" />
@@ -35,32 +35,30 @@
             <col width="1" />
             <thead>
             <tr class="headings">
-                <th><?php echo $this->helper('ho_recurring')->__('SKU') ?></th>
-                <th><?php echo $this->helper('ho_recurring')->__('Product') ?></th>
-                <th><?php echo $this->helper('ho_recurring')->__('Price') ?></th>
-                <th class="a-center"><?php echo $this->helper('ho_recurring')->__('Qty') ?></th>
-                <th><?php echo $this->helper('ho_recurring')->__('Row total') ?></th>
-                <th><?php echo $this->helper('ho_recurring')->__('Once') ?></th>
-                <th><?php echo $this->helper('ho_recurring')->__('Added at') ?></th>
-                <th><?php echo $this->helper('ho_recurring')->__('Status') ?></th>
-                <th class="last"><?php echo $this->helper('ho_recurring')->__('Action') ?></th>
+                <th><?php echo $this->helper('sales')->__('Product') ?></th>
+                <th><?php echo $this->helper('sales')->__('Price') ?></th>
+                <th><?php echo $this->helper('sales')->__('Qty') ?></th>
+                <th><?php echo $this->helper('sales')->__('Subtotal') ?></th>
+                <th><span class="nobr"><?php echo $this->helper('sales')->__('Tax Amount') ?></span></th>
+                <th><span class="nobr"><?php echo $this->helper('sales')->__('Tax Percent') ?></span></th>
+                <th><span class="nobr"><?php echo $this->helper('sales')->__('Discount Amount') ?></span></th>
+                <th class="last"><span class="nobr"><?php echo $this->helper('sales')->__('Row Total') ?></span></th>
             </tr>
             </thead>
-            <?php $_items = $this->getItemsCollection() ?>
+            <?php $_items = $this->getItemsCollection(); ?>
             <?php $i = 1; foreach ($_items as $_item): ?>
-                <?php /** @var Ho_Recurring_Model_Profile_Item $_item */ ?>
+                <?php /** @var Mage_Sales_Model_Quote_Item $_item */ ?>
                 <tbody class="<?php echo $i%2 ? 'even' : 'odd'; ?>">
-                    <tr>
-                        <td><?=$_item->getSku(); ?></td>
-                        <td><?=$_item->getName(); ?></td>
-                        <td><?=$_item->getPrice(); ?></td>
-                        <td><?=$_item->getQty(); ?></td>
-                        <td><?=$_item->getRowTotal(); ?></td>
-                        <td><?=$_item->getOnce(); ?></td>
-                        <td><?=$_item->getCreatedAt(); ?></td>
-                        <td><?=$_item->getStatus(); ?></td>
-                        <td><?php // @todo Actions ?></td>
-                    </tr>
+                <tr>
+                    <td><?=$_item->getName(); ?></td>
+                    <td><?=$helper->formatPrice($_item->getPrice()); ?></td>
+                    <td><?=$_item->getQty(); ?></td>
+                    <td><?=$helper->formatPrice($_item->getRowTotal()); ?></td>
+                    <td><?=$helper->formatPrice($_item->getTaxAmount()); ?></td>
+                    <td><?=number_format($_item->getTaxPercent(), 0); ?>%</td>
+                    <td><?=$helper->formatPrice($_item->getDiscountAmount()); ?></td>
+                    <td><?=$helper->formatPrice($_item->getRowTotal()); ?></td>
+                </tr>
                 </tbody>
             <?php $i++; endforeach; ?>
         </table>

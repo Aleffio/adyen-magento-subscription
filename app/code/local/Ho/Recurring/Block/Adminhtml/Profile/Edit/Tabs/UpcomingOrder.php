@@ -22,17 +22,14 @@
 class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder extends Mage_Adminhtml_Block_Template
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
-    public function __construct()
-    {
-        $this->setTemplate('ho/recurring/products.phtml');
-    }
-
     /**
-     * @return Ho_Recurring_Model_Resource_Profile_Item_Collection
+     * @return Mage_Sales_Model_Resource_Quote_Item_Collection
      */
     public function getItemsCollection()
     {
-        return $this->getProfile()->getItems();
+        $quote = $this->getProfile()->getQuote();
+
+        return $quote->getItemsCollection();
     }
 
     /**

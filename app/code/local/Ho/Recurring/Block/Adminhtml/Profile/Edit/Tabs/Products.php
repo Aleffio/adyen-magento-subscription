@@ -26,7 +26,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
     {
         parent::__construct();
 
-        $this->setId('upcoming_orders_grid');
+        $this->setId('products_grid');
         $this->setDefaultSort('created_at', 'desc');
         $this->setUseAjax(true);
     }
@@ -36,9 +36,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
         /** @var Ho_Recurring_Model_Profile $profile */
         $profile = Mage::registry('ho_recurring');
 
-        $collection = Mage::getModel('sales/quote')
-            ->getCollection()
-            ->addFieldToFilter('entity_id', $profile->getQuoteIds());
+        $collection = $profile->getItems();
 
         $this->setCollection($collection);
 
@@ -49,30 +47,54 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
     {
         $helper = Mage::helper('ho_recurring');
 
-        $this->addColumn('entity_id', array(
-            'header'    => $helper->__('Quote #'),
-            'index'     => 'entity_id',
+        $this->addColumn('sku', array(
+            'header'    => $helper->__('SKU'),
+            'index'     => 'sku',
         ));
 
-        $this->addColumn('created_at', array(
-            'header'    => $helper->__('Created At'),
-            'index'     => 'created_at',
-            'type'      => 'datetime',
+        $this->addColumn('name', array(
+            'header'    => $helper->__('Product Name'),
+            'index'     => 'name',
             'width'     => '100px',
         ));
 
-        $this->addColumn('base_grand_total', array(
-            'header' => Mage::helper('sales')->__('G.T. (Base)'),
-            'index' => 'base_grand_total',
-            'type'  => 'currency',
-            'currency' => 'base_currency_code',
+        $this->addColumn('price', array(
+            'header'    => $helper->__('Price'),
+            'index'     => 'price',
+            'type'      => 'currency',
+            'currency'  => 'base_currency_code',
         ));
 
-        $this->addColumn('grand_total', array(
-            'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
-            'index' => 'grand_total',
-            'type'  => 'currency',
-            'currency' => 'quote_currency_code',
+        $this->addColumn('qty', array(
+            'header'    => $helper->__('Qty'),
+            'index'     => 'qty',
+        ));
+
+        $this->addColumn('row_total', array(
+            'header'    => $helper->__('Row Total'),
+            // @todo fill
+        ));
+
+        $this->addColumn('once', array(
+            'header'    => $helper->__('Once'),
+            'index'     => 'once',
+        ));
+
+        $this->addColumn('created_at', array(
+            'header'    => $helper->__('Added at'),
+            'index'     => 'created_at',
+            'type'      => 'datetime',
+        ));
+
+        $this->addColumn('status', array(
+            'header'    => $helper->__('Status'),
+            'index'     => 'status',
+            // @todo render
+        ));
+
+        $this->addColumn('action', array(
+            'header'    => $helper->__('Action'),
+            // @todo render
         ));
 
         return parent::_prepareColumns();
