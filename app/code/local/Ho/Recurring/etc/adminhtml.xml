@@ -3,6 +3,9 @@
     <menu>
         <sales>
             <children>
+                <recurring_profile>
+                    <disabled>1</disabled>
+                </recurring_profile>
                 <ho_recurring_profiles translate="title" module="ho_recurring">
                     <title>Recurring Profiles</title>
                     <action>ho_recurring/adminhtml_profile</action>
