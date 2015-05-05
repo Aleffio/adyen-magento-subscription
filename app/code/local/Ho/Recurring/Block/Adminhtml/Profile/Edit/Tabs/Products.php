@@ -65,6 +65,13 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
             'currency'  => 'base_currency_code',
         ));
 
+        $this->addColumn('price_incl_tax', array(
+            'header'    => $helper->__('Price Incl VAT'),
+            'index'     => 'price_incl_tax',
+            'type'      => 'currency',
+            'currency'  => 'base_currency_code',
+        ));
+
         $this->addColumn('qty', array(
             'header'    => $helper->__('Qty'),
             'index'     => 'qty',
@@ -72,7 +79,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
 
         $this->addColumn('row_total', array(
             'header'    => $helper->__('Row Total'),
-            // @todo fill
+            'renderer'  => 'Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Renderer_RowTotal',
         ));
 
         $this->addColumn('once', array(
@@ -89,7 +96,8 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
         $this->addColumn('status', array(
             'header'    => $helper->__('Status'),
             'index'     => 'status',
-            // @todo render
+            'type'      => 'options',
+            'options'   => Mage::getModel('ho_recurring/profile_item')->getStatuses(),
         ));
 
         $this->addColumn('action', array(

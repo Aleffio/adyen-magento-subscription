@@ -22,33 +22,55 @@
 /**
  * Class Ho_Recurring_Model_Profile_Item
  *
+ * @method string getStatus()
+ * @method $this setStatus(string $value)
  * @method int getProfileId()
- * @method setProfileId(int $value)
+ * @method $this setProfileId(int $value)
  * @method int getProductId()
- * @method setProductId(int $value)
+ * @method $this setProductId(int $value)
  * @method string getSku()
- * @method setSku(string $value)
+ * @method $this setSku(string $value)
  * @method string getName()
- * @method setName(string $value)
+ * @method $this setName(string $value)
  * @method float getPrice()
- * @method setPrice(float $value)
+ * @method $this setPrice(float $value)
+ * @method float getPriceInclTax()
+ * @method $this setPriceInclTax(float $value)
  * @method int getQty()
- * @method setQty(int $value)
+ * @method $this setQty(int $value)
  * @method bool getOnce()
- * @method setOnce(bool $value)
+ * @method $this setOnce(bool $value)
  * @method string getCreatedAt()
- * @method setCreatedAt(string $value)
- * @method int getStatus()
- * @method setStatus(int $value)
+ * @method $this setCreatedAt(string $value)
  */
 class Ho_Recurring_Model_Profile_Item extends Mage_Core_Model_Abstract
 {
-    // @todo change status to varchar (same as profile model)
-    const STATUS_ACTIVE     = 1;
-    const STATUS_INACTIVE   = 0;
+    const STATUS_ACTIVE     = 'active';
+    const STATUS_EXPIRED    = 'expired';
 
     protected function _construct ()
     {
         $this->_init('ho_recurring/profile_item');
+    }
+
+    /**
+     * @return array
+     */
+    public function getStatuses()
+    {
+        $helper = Mage::helper('ho_recurring');
+
+        return array(
+            self::STATUS_ACTIVE             => $helper->__('Active'),
+            self::STATUS_EXPIRED            => $helper->__('Expired'),
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusLabel()
+    {
+        return $this->getStatuses()[$this->getStatus()];
     }
 }
