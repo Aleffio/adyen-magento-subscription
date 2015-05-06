@@ -100,13 +100,24 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             Mage::throwException(Mage::helper('ho_recurring')->__('Can\'t create order: No quote created yet.'));
         }
 
+        // Collect quote totals
         $quote->collectTotals();
         $quote->save();
 
+        // Create order
         $service = Mage::getModel('sales/service_quote', $quote);
         $service->submitAll();
         $order = $service->getOrder();
 
+        // Create invoice and set to paid
+        $invoice = $order->prepareInvoice();
+        $invoice->pay();
+        $invoice->save();
+
+        // Change order status after creating invoice
+        $invoice->getOrder()->setIsInProcess(true)->save();
+
+        // Save order to profile order history
         $this->saveOrderAtProfile($order);
 
         return $order;
