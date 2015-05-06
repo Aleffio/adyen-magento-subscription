@@ -65,6 +65,16 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @return Ho_Recurring_Model_Resource_Profile_Collection
+     */
+    public function getActiveProfiles()
+    {
+        return $this
+            ->getCollection()
+            ->addFieldToFilter('status', Ho_Recurring_Model_Profile::STATUS_ACTIVE);
+    }
+
+    /**
      * @return Mage_Sales_Model_Quote
      */
     public function createQuote()

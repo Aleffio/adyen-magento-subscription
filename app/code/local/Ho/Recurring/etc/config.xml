@@ -93,4 +93,25 @@
             </updates>
         </layout>
     </adminhtml>
+
+    <crontab>
+        <jobs>
+            <ho_recurring_create_quotes>
+                <schedule>
+                    <cron_expr>15 1 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ho_recurring/observer::createQuotes</model>
+                </run>
+            </ho_recurring_create_quotes>
+            <ho_recurring_create_orders>
+                <schedule>
+                    <cron_expr>0 1 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ho_recurring/observer::createOrders</model>
+                </run>
+            </ho_recurring_create_orders>
+        </jobs>
+    </crontab>
 </config>
