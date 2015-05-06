@@ -24,22 +24,19 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     /**
      * Initialize profile pages layout
      *
-     * @todo Can't load layout, throws errors or doesn't load anything after calling _initAction
-     * Maybe because of XML of ho_recurring_adminhtml_profile_edit handle?
-     *
      * @return $this
      */
     protected function _initAction()
     {
         $helper = Mage::helper('ho_recurring');
 
-//        $this->loadLayout()
-//            ->_setActiveMenu('sales/ho_recurring_profiles')
-//            ->_title($helper->__('Sales'))
-//            ->_title($helper->__('Recurring Profiles'));
-//
-//        $this->_addBreadcrumb($helper->__('Sales'), $helper->__('Sales'))
-//            ->_addBreadcrumb($helper->__('Recurring Profiles'), $helper->__('Recurring Profiles'));
+        $this->loadLayout()
+            ->_setActiveMenu('sales/ho_recurring_profiles')
+            ->_title($helper->__('Sales'))
+            ->_title($helper->__('Recurring Profiles'));
+
+        $this->_addBreadcrumb($helper->__('Sales'), $helper->__('Sales'))
+            ->_addBreadcrumb($helper->__('Recurring Profiles'), $helper->__('Recurring Profiles'));
 
         return $this;
     }
@@ -66,7 +63,9 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
      */
     public function editAction()
     {
-        $this->_initAction();
+        // @todo Can't load layout, throws errors or doesn't load anything after calling _initAction
+        // Maybe because of XML of ho_recurring_adminhtml_profile_edit handle?
+//        $this->_initAction();
 
         $id  = $this->getRequest()->getParam('id');
         $model = Mage::getModel('ho_recurring/profile');
@@ -91,7 +90,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
         Mage::register('ho_recurring', $model);
 
-        // @see _initAction
+        // @see to do before commented _initAction
 //        $this->_addBreadcrumb(
 //            $id ? Mage::helper('ho_recurring')->__('Edit Profile') : Mage::helper('ho_recurring')->__('New Profile'),
 //            $id ? Mage::helper('ho_recurring')->__('Edit Profile') : Mage::helper('ho_recurring')->__('New Profile'))
