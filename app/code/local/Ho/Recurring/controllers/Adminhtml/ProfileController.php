@@ -108,11 +108,42 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
             if ($profile->getId()) {
                 try {
-                    $profile->createQuote();
+                    $quote = $profile->createQuote();
+
+                    Mage::getSingleton('adminhtml/session')->addSuccess(
+                        Mage::helper('ho_recurring')->__('Quote successfully created (#%s)', $quote->getId())
+                    );
                 }
                 catch (Mage_Core_Exception $e) {
                     Mage::getSingleton('adminhtml/session')->addError(
                         Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
+                    );
+                }
+            }
+        }
+
+        $this->_redirectReferer();
+    }
+
+    /**
+     * Create profile order
+     */
+    public function createOrderAction()
+    {
+        if ($profileId = $this->getRequest()->getParam('id')) {
+            $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+            if ($profile->getId()) {
+                try {
+                    $order = $profile->createOrder();
+
+                    Mage::getSingleton('adminhtml/session')->addSuccess(
+                        Mage::helper('ho_recurring')->__('Order successfully created (#%s)', $order->getIncrementId())
+                    );
+                }
+                catch (Mage_Core_Exception $e) {
+                    Mage::getSingleton('adminhtml/session')->addError(
+                        Mage::helper('ho_recurring')->__('An error occurred while trying to create a order for this profile: ' . $e->getMessage())
                     );
                 }
             }

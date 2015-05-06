@@ -36,6 +36,15 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
                     array('id' => $this->getProfile()->getId()))}')",
             ), 10
         );
+
+        if ($this->getProfile()->getQuoteId()) {
+            $this->_addButton('create_order', array(
+                    'label' => Mage::helper('ho_export')->__('Create Order'),
+                    'onclick' => "setLocation('{$this->getUrl('*/*/createOrder',
+                        array('id' => $this->getProfile()->getId()))}')",
+               ), 20
+            );
+        }
     }
 
     public function getHeaderText()
