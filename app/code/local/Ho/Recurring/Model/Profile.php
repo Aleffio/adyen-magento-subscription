@@ -110,6 +110,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         $order = $service->getOrder();
 
         // Create invoice and set to paid
+        // @todo billing agreement payment
         $invoice = $order->prepareInvoice();
         $invoice->pay();
         $invoice->save();

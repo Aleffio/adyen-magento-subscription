@@ -31,7 +31,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
         $this->_removeButton('save');
 
         $this->_addButton('create_quote', array(
-                'label' => Mage::helper('ho_export')->__('Create Quote'),
+                'label' => Mage::helper('ho_recurring')->__('Create Quote'),
                 'onclick' => "setLocation('{$this->getUrl('*/*/createQuote',
                     array('id' => $this->getProfile()->getId()))}')",
             ), 10
@@ -39,7 +39,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
 
         if ($this->getProfile()->getQuoteId()) {
             $this->_addButton('create_order', array(
-                    'label' => Mage::helper('ho_export')->__('Create Order'),
+                    'label' => Mage::helper('ho_recurring')->__('Create Order'),
                     'onclick' => "setLocation('{$this->getUrl('*/*/createOrder',
                         array('id' => $this->getProfile()->getId()))}')",
                ), 20

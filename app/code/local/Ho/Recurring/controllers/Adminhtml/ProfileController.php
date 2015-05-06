@@ -98,6 +98,34 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     }
 
     /**
+     * Delete profile
+     */
+    public function deleteAction()
+    {
+        if ($profileId = $this->getRequest()->getParam('id')) {
+            /** @var Ho_Recurring_Model_Profile $profile */
+            $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+            if ($profile->getId()) {
+                try {
+                    $profile->delete();
+
+                    Mage::getSingleton('adminhtml/session')->addSuccess(
+                        Mage::helper('ho_recurring')->__('The profile has been successfully deleted')
+                    );
+                }
+                catch (Mage_Core_Exception $e) {
+                    Mage::getSingleton('adminhtml/session')->addError(
+                        Mage::helper('ho_recurring')->__('An error occurred while trying to delete this profile')
+                    );
+                }
+            }
+        }
+
+        $this->_redirect('*/*/');
+    }
+
+    /**
      * Create profile quote
      */
     public function createQuoteAction()
