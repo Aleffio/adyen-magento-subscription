@@ -83,14 +83,15 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     public function createOrder(Mage_Sales_Model_Quote $quote = null)
     {
         if (!$quote) {
-            $quote = $this->createQuote();
+            $quote = $this->getQuote();
         }
-        else {
-            $this->saveQuoteAtProfile($quote);
 
-            $quote->collectTotals();
-            $quote->save();
+        if (!$quote->getId()) {
+            Mage::throwException(Mage::helper('ho_recurring')->__('Can\'t create order: No quote created yet.'));
         }
+
+        $quote->collectTotals();
+        $quote->save();
 
         $service = Mage::getModel('sales/service_quote', $quote);
         $service->submitAll();
@@ -102,23 +103,23 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * Only one quote of each profile can be saved
+     *
      * @param Mage_Sales_Model_Quote $quote
      * @throws Exception
      */
     public function saveQuoteAtProfile(Mage_Sales_Model_Quote $quote)
     {
+        /** @var Ho_Recurring_Model_Profile_Quote $profileQuote */
         $profileQuote = Mage::getModel('ho_recurring/profile_quote')
             ->getCollection()
             ->addFieldToFilter('profile_id', $this->getId())
-            ->addFieldToFilter('quote_id', $quote->getId())
             ->getFirstItem();
 
-        if (!$profileQuote->getId()) {
-            Mage::getModel('ho_recurring/profile_quote')
-                ->setProfileId($this->getId())
-                ->setQuoteId($quote->getId())
-                ->save();
-        }
+        $profileQuote
+            ->setProfileId($this->getId())
+            ->setQuoteId($quote->getId())
+            ->save();
     }
 
     /**
@@ -139,6 +140,12 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
                 ->setOrderId($order->getId())
                 ->save();
         }
+
+        $profileQuote = Mage::getModel('ho_recurring/profile_quote')
+            ->getCollection()
+            ->addFieldToFilter('profile_id', $this->getId())
+            ->getFirstItem()
+            ->delete();
     }
 
     /**
@@ -186,30 +193,19 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @param bool $withoutOrder When true, only return quote IDs that are not (yet) an order
-     * @return array
+     * @return int
      */
-    public function getQuoteIds($withoutOrder = true)
+    public function getQuoteId()
     {
-        $profileQuotes = Mage::getModel('ho_recurring/profile_quote')
+        /** @var Ho_Recurring_Model_Profile_Quote $profileQuote */
+        $profileQuote = Mage::getModel('ho_recurring/profile_quote')
             ->getCollection()
-            ->addFieldToFilter('profile_id', $this->getId());
+            ->addFieldToFilter('profile_id', $this->getId())
+            ->getFirstItem();
 
-        $quoteIds = array();
-        foreach ($profileQuotes as $profileQuote) {
-            $quoteIds[] = $profileQuote->getQuoteId();
-        }
+        $quoteId = $profileQuote->getQuoteId();
 
-        if ($withoutOrder) {
-            $orders = Mage::getModel('sales/order')
-                ->getCollection()
-                ->addFieldToFilter('quote_id', array('in' => $quoteIds));
-            foreach ($orders as $order) {
-                $quoteIds = array_diff($quoteIds, array($order->getQuoteId()));
-            }
-        }
-
-        return $quoteIds;
+        return $quoteId;
     }
 
     /**
@@ -217,11 +213,9 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function getQuote()
     {
-        $quoteIds = $this->getQuoteIds();
+        $quoteId = $this->getQuoteId();
 
-        if (!$quoteIds) return null;
-
-        $quoteId = array_values($quoteIds)[0];
+        if (!$quoteId) return null;
 
         // Note: The quote won't load if we don't set the store ID
         $quote = Mage::getModel('sales/quote')
