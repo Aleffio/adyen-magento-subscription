@@ -28,5 +28,7 @@ class Ho_Recurring_Block_Adminhtml_Profile extends Mage_Adminhtml_Block_Widget_G
         $this->_headerText = Mage::helper('ho_recurring')->__('Recurring Profiles');
 
         parent::__construct();
+
+        $this->removeButton('add');
     }
 }
