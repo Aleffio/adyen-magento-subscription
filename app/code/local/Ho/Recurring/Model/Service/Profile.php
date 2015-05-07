@@ -83,7 +83,7 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
         }
 
         // Set billing agreement data
-        $methodInstance->initRecurringProfileQuotePaymentInfo($profile->getBillingAgreement(), $quote->getPayment());
+        $methodInstance->initBillingAgreementPaymentInfo($profile->getBillingAgreement(), $quote->getPayment());
 
         $quote->collectTotals();
         $quote->save();
