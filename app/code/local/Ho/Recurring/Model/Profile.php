@@ -125,7 +125,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             $order = $service->getOrder();
 
             // Place payment
-            $order->place();
+//            $order->place()
 
             // Save order to profile order history
             $this->saveOrderAtProfile($order);
