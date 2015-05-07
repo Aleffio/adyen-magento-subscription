@@ -44,6 +44,22 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminh
     }
 
     /**
+     * @return Adyen_Payment_Model_Billing_Agreement
+     */
+    public function getBillingAgreement()
+    {
+        return $this->getProfile()->getBillingAgreement();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBillingAgreementViewUrl()
+    {
+        return $this->getUrl('adminhtml/sales_billing_agreement/view', array('agreement' => $this->getBillingAgreement()->getId()));
+    }
+
+    /**
      * @return string
      */
     public function getCustomerViewUrl()

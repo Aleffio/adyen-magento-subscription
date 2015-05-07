@@ -22,6 +22,7 @@
 <?php /** @var Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General $this */ ?>
 <?php $_order = $this->getOrder(); ?>
 <?php $_profile = $this->getProfile(); ?>
+<?php $_billingAgreement = $this->getBillingAgreement(); ?>
 
 <div class="box-left">
     <!--General Info-->
@@ -107,12 +108,33 @@
     <!--Payment Info-->
     <div class="entry-edit">
         <div class="entry-edit-head">
-            <h4 class="icon-head head-billing-address"><?=Mage::helper('ho_recurring')->__('Payment Information'); ?></h4>
+            <h4 class="icon-head head-billing-address"><?=Mage::helper('ho_recurring')->__('Billing Agreement Information'); ?></h4>
         </div>
-        <fieldset>
-            <?php echo $this->getChildHtml('order_payment'); ?>
-            <div><?php echo Mage::helper('sales')->__('Order was placed using %s', $_order->getOrderCurrencyCode()) ?></div>
-        </fieldset>
+        <div class="fieldset">
+            <table cellspacing="0" class="form-list">
+                <tr>
+                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Reference ID'); ?></label></td>
+                    <td class="value"><strong><a href="<?=$this->getBillingAgreementViewUrl();?>" target="_blank">
+                                <?=$_billingAgreement->getReferenceId(); ?></a></strong></td>
+                </tr>
+                <tr>
+                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Status'); ?></label></td>
+                    <td class="value"><strong><?=$_billingAgreement->getStatusLabel(); ?></strong></td>
+                </tr>
+                <tr>
+                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Method code'); ?></label></td>
+                    <td class="value"><strong><?=$_billingAgreement->getMethodCode(); ?></strong></td>
+                </tr>
+                <tr>
+                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Created At'); ?></label></td>
+                    <td class="value"><strong><?=$_billingAgreement->getCreatedAt(); ?></strong></td>
+                </tr>
+                <tr>
+                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Label'); ?></label></td>
+                    <td class="value"><strong><?=$_billingAgreement->getAgreementLabel(); ?></strong></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 <div class="box-right">
