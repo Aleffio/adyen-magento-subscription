@@ -25,6 +25,9 @@
         <Ho_Recurring>
             <active>true</active>
             <codePool>local</codePool>
+            <depends>
+                <Adyen_Payment />
+            </depends>
         </Ho_Recurring>
     </modules>
 </config>

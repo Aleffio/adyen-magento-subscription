@@ -109,14 +109,17 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         $service->submitAll();
         $order = $service->getOrder();
 
+        // Place payment
+        $order->place();
+
         // Create invoice and set to paid
         // @todo billing agreement payment
-        $invoice = $order->prepareInvoice();
-        $invoice->pay();
-        $invoice->save();
+//        $invoice = $order->prepareInvoice();
+//        $invoice->pay();
+//        $invoice->save();
 
         // Change order status after creating invoice
-        $invoice->getOrder()->setIsInProcess(true)->save();
+//        $invoice->getOrder()->setIsInProcess(true)->save();
 
         // Save order to profile order history
         $this->saveOrderAtProfile($order);
@@ -253,6 +256,14 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     public function getOriginalOrder()
     {
         return Mage::getModel('sales/order')->load($this->getOrderId());
+    }
+
+    /**
+     * @return Adyen_Payment_Model_Billing_Agreement
+     */
+    public function getBillingAgreement()
+    {
+        return Mage::getModel('adyen/billing_agreement')->load($this->getBillingAgreementId());
     }
 
     /**
