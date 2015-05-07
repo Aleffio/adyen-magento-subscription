@@ -87,6 +87,8 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 
             $this->saveQuoteAtProfile($quote);
 
+            $this->setActive();
+
             return $quote;
         }
         catch (Exception $e) {
@@ -127,6 +129,8 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 
             // Save order to profile order history
             $this->saveOrderAtProfile($order);
+
+            $this->setActive();
 
             return $order;
         }
@@ -288,6 +292,15 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         }
 
         return false;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function setActive()
+    {
+        $this->setStatus(self::STATUS_ACTIVE);
+        $this->save();
     }
 
     /**
