@@ -24,6 +24,7 @@
  *
  * @method string getStatus()
  * @method $this setStatus(string $value)
+ * @method $this setErrorMessage(string $value)
  * @method int getCustomerId()
  * @method $this setCustomerId(int $value)
  * @method string getCustomerName()
@@ -49,8 +50,10 @@
  */
 class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 {
-    const STATUS_INACTIVE           = 'inactive';
     const STATUS_ACTIVE             = 'active';
+    const STATUS_INACTIVE           = 'inactive';
+    const STATUS_QUOTE_ERROR        = 'quote_error';
+    const STATUS_ORDER_ERROR        = 'order_error';
     const STATUS_CANCELED           = 'canceled';
     const STATUS_EXPIRED            = 'expired';
     const STATUS_AWAITING_PAYMENT   = 'awaiting_payment';
@@ -79,11 +82,20 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function createQuote()
     {
-        $quote = Mage::getModel('ho_recurring/service_profile')->createQuote($this);
+        try {
+            $quote = Mage::getModel('ho_recurring/service_profile')->createQuote($this);
 
-        $this->saveQuoteAtProfile($quote);
+            $this->saveQuoteAtProfile($quote);
 
-        return $quote;
+            return $quote;
+        }
+        catch (Exception $e) {
+            $this->setStatus(self::STATUS_QUOTE_ERROR);
+            $this->setErrorMessage($e->getMessage());
+            $this->save();
+
+            Ho_Recurring_Exception::throwException($e->getMessage());
+        }
     }
 
     /**
@@ -92,39 +104,39 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function createOrder(Mage_Sales_Model_Quote $quote = null)
     {
-        if (!$quote) {
-            $quote = $this->getQuote();
+        try {
+            if (!$quote) {
+                $quote = $this->getQuote();
+            }
+
+            if (!$quote->getId()) {
+                Mage::throwException(Mage::helper('ho_recurring')->__('Can\'t create order: No quote created yet.'));
+            }
+
+            // Collect quote totals
+            $quote->collectTotals();
+            $quote->save();
+
+            // Create order
+            $service = Mage::getModel('sales/service_quote', $quote);
+            $service->submitAll();
+            $order = $service->getOrder();
+
+            // Place payment
+            $order->place();
+
+            // Save order to profile order history
+            $this->saveOrderAtProfile($order);
+
+            return $order;
         }
+        catch (Exception $e) {
+            $this->setStatus(self::STATUS_ORDER_ERROR);
+            $this->setErrorMessage($e->getMessage());
+            $this->save();
 
-        if (!$quote->getId()) {
-            Mage::throwException(Mage::helper('ho_recurring')->__('Can\'t create order: No quote created yet.'));
+            Ho_Recurring_Exception::throwException($e->getMessage());
         }
-
-        // Collect quote totals
-        $quote->collectTotals();
-        $quote->save();
-
-        // Create order
-        $service = Mage::getModel('sales/service_quote', $quote);
-        $service->submitAll();
-        $order = $service->getOrder();
-
-        // Place payment
-        $order->place();
-
-        // Create invoice and set to paid
-        // @todo billing agreement payment
-//        $invoice = $order->prepareInvoice();
-//        $invoice->pay();
-//        $invoice->save();
-
-        // Change order status after creating invoice
-//        $invoice->getOrder()->setIsInProcess(true)->save();
-
-        // Save order to profile order history
-        $this->saveOrderAtProfile($order);
-
-        return $order;
     }
 
     /**
@@ -267,6 +279,18 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @return bool|string
+     */
+    public function getErrorMessage()
+    {
+        if ($this->getStatus() == self::STATUS_QUOTE_ERROR || $this->getStatus() == self::STATUS_ORDER_ERROR) {
+            return $this->getData('error_message');
+        }
+
+        return false;
+    }
+
+    /**
      * @return array
      */
     public function getStatuses()
@@ -274,8 +298,10 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         $helper = Mage::helper('ho_recurring');
 
         return array(
-            self::STATUS_INACTIVE           => $helper->__('Inactive'),
             self::STATUS_ACTIVE             => $helper->__('Active'),
+            self::STATUS_INACTIVE           => $helper->__('Inactive'),
+            self::STATUS_QUOTE_ERROR        => $helper->__('Quote Creation Error'),
+            self::STATUS_ORDER_ERROR        => $helper->__('Order Creation Error'),
             self::STATUS_CANCELED           => $helper->__('Canceled'),
             self::STATUS_EXPIRED            => $helper->__('Expired'),
             self::STATUS_AWAITING_PAYMENT   => $helper->__('Awaiting Payment'),
