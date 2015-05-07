@@ -21,6 +21,12 @@
  */
 -->
 <layout>
+    <default>
+        <reference name="head">
+            <action method="addCss"><stylesheet>ho/recurring/css/recurring.css</stylesheet></action>
+        </reference>
+    </default>
+
     <ho_recurring_adminhtml_profile_index>
         <reference name="content">
             <block type="ho_recurring/adminhtml_profile" name="adminhtml_ho_profile.grid.container" />

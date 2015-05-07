@@ -70,6 +70,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             'index'     => 'status',
             'type'      => 'options',
             'options'   => Mage::getModel('ho_recurring/profile')->getStatuses(),
+            'renderer'  => 'Ho_Recurring_Block_Adminhtml_Profile_Renderer_Status',
         ));
 
         $this->addColumn('customer_email', array(

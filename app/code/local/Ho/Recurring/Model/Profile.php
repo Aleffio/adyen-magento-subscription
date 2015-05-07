@@ -310,11 +310,29 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @param string $status
      * @return string
      */
-    public function getStatusLabel()
+    public function getStatusLabel($status = null)
     {
-        return $this->getStatuses()[$this->getStatus()];
+        return $this->getStatuses()[$status ? $status : $this->getStatus()];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatusColors()
+    {
+        return array(
+            self::STATUS_ACTIVE             => 'green',
+            self::STATUS_INACTIVE           => 'gray',
+            self::STATUS_QUOTE_ERROR        => 'red',
+            self::STATUS_ORDER_ERROR        => 'red',
+            self::STATUS_CANCELED           => 'yellow',
+            self::STATUS_EXPIRED            => 'orange',
+            self::STATUS_AWAITING_PAYMENT   => 'blue',
+            self::STATUS_AGREEMENT_EXPIRED  => 'orange',
+        );
     }
 
     /**
