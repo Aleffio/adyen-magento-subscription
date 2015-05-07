@@ -33,7 +33,7 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
             ->setCustomerId($order->getCustomerId())
             ->setCustomerName($order->getCustomerName())
             ->setOrderId($order->getId())
-            ->setBillingAgreementId(0) // @todo Set correct billing agreement ID
+            ->setBillingAgreementId($this->_getBillingAgreementId($order))
             ->setStoreId($order->getStoreId())
             ->setEndsAt('2015-10-01 12:00:00') // @todo Set correct ending date
             ->setTerm(Ho_Recurring_Model_Profile::TERM_3_MONTHS) // @todo Set correct term
@@ -64,5 +64,24 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
         $profile->saveOrderAtProfile($order);
 
         return $profile;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return int
+     */
+    protected function _getBillingAgreementId(Mage_Sales_Model_Order $order)
+    {
+        /** @var Mage_Core_Model_Resource $resource */
+        $resource = Mage::getSingleton('core/resource');
+        $connection = $resource->getConnection('core_read');
+        $select = $connection->select();
+
+        $select->from($resource->getTableName('sales/billing_agreement_order'));
+        $select->reset(Zend_Db_Select::COLUMNS);
+        $select->columns('agreement_id');
+        $select->where('order_id = ?', $order->getId());
+
+        return $connection->fetchOne($select);
     }
 }
