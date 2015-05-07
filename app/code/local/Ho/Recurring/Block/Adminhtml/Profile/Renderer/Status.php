@@ -28,12 +28,9 @@ class Ho_Recurring_Block_Adminhtml_Profile_Renderer_Status extends Mage_Adminhtm
     public function render(Varien_Object $row)
     {
         $profile = Mage::getModel('ho_recurring/profile');
-        $colors = $profile->getStatusColors();
 
         $value = $row->getData($this->getColumn()->getIndex());
 
-        $class = sprintf('status-bar status-bar-%s', $colors[$value]);
-
-        return '<span class="' . $class . '"><span>' . $profile->getStatusLabel($value) . '</span></span>';
+        return $profile->renderStatusBar($value);
     }
 }

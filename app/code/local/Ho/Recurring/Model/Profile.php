@@ -310,7 +310,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @param string $status
+     * @param string|null $status
      * @return string
      */
     public function getStatusLabel($status = null)
@@ -333,6 +333,30 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             self::STATUS_AWAITING_PAYMENT   => 'blue',
             self::STATUS_AGREEMENT_EXPIRED  => 'orange',
         );
+    }
+
+    /**
+     * @param string|null $status
+     * @return string
+     */
+    public function getStatusColor($status = null)
+    {
+        return $this->getStatusColors()[$status ? $status : $this->getStatus()];
+    }
+
+    /**
+     * @param string|null $status
+     * @return string
+     */
+    public function renderStatusBar($status = null)
+    {
+        if (is_null($status)) {
+            $status = $this->getStatus();
+        }
+
+        $class = sprintf('status-bar status-bar-%s', $this->getStatusColor($status));
+
+        return '<span class="' . $class . '"><span>' . $this->getStatusLabel($status) . '</span></span>';
     }
 
     /**

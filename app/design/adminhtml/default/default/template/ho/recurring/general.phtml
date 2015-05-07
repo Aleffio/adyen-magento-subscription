@@ -41,7 +41,7 @@
             </tr>
             <tr>
                 <td class="label"><label><?=Mage::helper('ho_recurring')->__('Status'); ?></label></td>
-                <td class="value"><?=$_profile->getStatusLabel();?></td>
+                <td class="value"><?=$_profile->renderStatusBar();?></td>
             </tr>
             <?php if ($_profile->getErrorMessage()): ?>
                 <tr>
