@@ -4,3 +4,4 @@ app/etc/modules/Ho_Recurring.xml                                app/etc/modules/
 app/design/adminhtml/default/default/layout/ho/*                app/design/adminhtml/default/default/layout/ho/
 app/design/adminhtml/default/default/template/ho/*              app/design/adminhtml/default/default/template/ho/
 skin/adminhtml/default/default/ho/recurring                     skin/adminhtml/default/default/ho/recurring
+shell/*                                                         shell/

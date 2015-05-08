@@ -77,7 +77,7 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
         $quote->getPayment()->importData(array('method' => $paymentMethod));
         $methodInstance = $quote->getPayment()->getMethodInstance();
 
-        if (! method_exists($methodInstance, 'initRecurringProfileQuotePaymentInfo')) {
+        if (! method_exists($methodInstance, 'initBillingAgreementPaymentInfo')) {
             Ho_Recurring_Exception::throwException(
                 Mage::helper('ho_recurring')->__('Payment method %s does not support Ho_Recurring', $methodInstance->getCode()));
         }

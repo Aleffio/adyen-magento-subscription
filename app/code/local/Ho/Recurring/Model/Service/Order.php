@@ -27,18 +27,21 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
      */
     public function createProfile(Mage_Sales_Model_Order $order)
     {
+
+        $billingAgreement = $this->_getBillingAgreement($order);
+
         /** @var Ho_Recurring_Model_Profile $profile */
         $profile = Mage::getModel('ho_recurring/profile')
             ->setStatus(Ho_Recurring_Model_Profile::STATUS_ACTIVE)
             ->setCustomerId($order->getCustomerId())
             ->setCustomerName($order->getCustomerName())
             ->setOrderId($order->getId())
-            ->setBillingAgreementId($this->_getBillingAgreementId($order))
+            ->setBillingAgreementId($billingAgreement->getId())
             ->setStoreId($order->getStoreId())
             ->setEndsAt('2015-10-01 12:00:00') // @todo Set correct ending date
             ->setTerm(Ho_Recurring_Model_Profile::TERM_3_MONTHS) // @todo Set correct term
             ->setNextOrderAt('2015-06-01 12:00:00') // @todo Set correct date
-            ->setPaymentMethod($order->getPayment()->getMethod())
+            ->setPaymentMethod($billingAgreement->getMethodCode())
             ->setShippingMethod($order->getShippingMethod())
             ->save();
 
@@ -68,9 +71,9 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
 
     /**
      * @param Mage_Sales_Model_Order $order
-     * @return int
+     * @return Mage_Sales_Model_Billing_Agreement
      */
-    protected function _getBillingAgreementId(Mage_Sales_Model_Order $order)
+    protected function _getBillingAgreement(Mage_Sales_Model_Order $order)
     {
         /** @var Mage_Core_Model_Resource $resource */
         $resource = Mage::getSingleton('core/resource');
@@ -82,6 +85,11 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
         $select->columns('agreement_id');
         $select->where('order_id = ?', $order->getId());
 
-        return $connection->fetchOne($select);
+        $billingAgreementId = $connection->fetchOne($select);
+        if (! $billingAgreementId) {
+            Ho_Recurring_Exception::throwException('Could not find billing agreement for order '.$order->getIncrementId());
+        }
+
+        return Mage::getModel('sales/billing_agreement')->load($billingAgreementId);
     }
 }
