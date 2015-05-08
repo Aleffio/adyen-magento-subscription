@@ -37,3 +37,5 @@
 
 .status-bar-gray { background-position:0 -112px; }
 .status-bar-gray span { background-position:100% -112px; padding:0 7px 0 0; }
+
+.dummy-fieldset { display: none; }

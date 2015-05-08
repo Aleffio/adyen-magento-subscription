@@ -27,6 +27,13 @@
         </reference>
     </default>
 
+    <adminhtml_catalog_product_edit>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>ho/recurring/js/jquery-1.11.3.min.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>ho/recurring/js/recurring.js</name><params/></action>
+        </reference>
+    </adminhtml_catalog_product_edit>
+
     <ho_recurring_adminhtml_profile_index>
         <reference name="content">
             <block type="ho_recurring/adminhtml_profile" name="adminhtml_ho_profile.grid.container" />

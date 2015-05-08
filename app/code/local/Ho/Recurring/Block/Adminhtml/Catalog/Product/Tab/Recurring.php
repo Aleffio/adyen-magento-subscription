@@ -22,6 +22,9 @@
 class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Adminhtml_Block_Widget_Form
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
+    /**
+     * @return Mage_Adminhtml_Block_Widget_Form
+     */
     protected function _prepareForm()
     {
         /** @var Mage_Catalog_Model_Product $product */
@@ -31,73 +34,100 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
 
         $form = new Varien_Data_Form();
 
-        $fieldset = $form->addFieldset('base_fieldset', array(
+        $fieldset = $form->addFieldset('recurring_profiles_fieldset', array(
             'legend'    => $helper->__('Recurring Profile'),
         ));
+
+        /** @var Mage_Adminhtml_Block_Widget_Button $addProfileButton */
+        $addProfileButton = $this->getLayout()->createBlock('adminhtml/widget_button')
+            ->setData(array(
+                'label'     => Mage::helper('ho_recurring')->__('Add New Profile'),
+                'onclick'   => 'addRecurringProductProfile()',
+                'class'     => 'add',
+            ));
+
+        $fieldset->setHeaderBar($addProfileButton->toHtml());
 
         $productProfiles = Mage::getModel('ho_recurring/product_profile')
             ->getCollection()
             ->addFieldToFilter('product_id', $product->getId())
             ->setOrder('sort_order', Zend_Db_Select::SQL_ASC);
 
+        $this->_renderProfileFieldset($fieldset);
+
         foreach ($productProfiles as $profile) {
-            $profileFieldset = $fieldset->addFieldset('profile[' . $profile->getId() . ']', array(
-                'legend'    => $helper->__('Profile'),
-            ));
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][label]', 'text', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][label]',
-                'label'     => $helper->__('Label'),
-                'required'  => true,
-            ))->setValue($profile->getLabel());
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][website_id]', 'select', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][website_id]',
-                'label'     => $helper->__('Website'),
-                'values'    => Mage::getSingleton('adminhtml/system_store')->getWebsiteValuesForForm(true),
-            ))->setValue($profile->getWebsiteId());
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][customer_group_id]', 'select', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][customer_group_id]',
-                'label'     => $helper->__('Customer Group'),
-                'values'    => Mage::getSingleton('adminhtml/system_config_source_customer_group')->toOptionArray(),
-            ))->setValue($profile->getCustomerGroupId());
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][term]', 'text', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][term]',
-                'label'     => $helper->__('Billing Period'),
-            ))->setValue($profile->getTerm());
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][term_type]', 'select', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][term_type]',
-                'label'     => $helper->__('Billing Period Type'),
-                'values'    => Mage::getSingleton('ho_recurring/system_config_source_term')->toOptionArray(true),
-            ))->setValue($profile->getTermType());
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][min_billing_cycles]', 'text', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][min_billing_cycles]',
-                'label'     => $helper->__('Min. Billing Cycles'),
-            ))->setValue($profile->getMinBillingCycles());
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][max_billing_cycles]', 'text', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][max_billing_cycles]',
-                'label'     => $helper->__('Max. Billing Cycles'),
-            ))->setValue($profile->getMaxBillingCycles());
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][qty]', 'text', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][qty]',
-                'label'     => $helper->__('Qty in Profile'),
-            ))->setValue($profile->getQty());
-
-            $profileFieldset->addField('product_profile[' . $profile->getId() . '][price]', 'text', array(
-                'name'      => 'product_profile[' . $profile->getId() . '][price]',
-                'label'     => $helper->__('Price'),
-            ))->setValue($profile->getPrice());
+            $this->_renderProfileFieldset($fieldset, $profile);
         }
 
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    /**
+     * @param Varien_Data_Form_Element_Fieldset $parentFieldset
+     * @param Ho_Recurring_Model_Product_Profile $profile
+     */
+    protected function _renderProfileFieldset(
+        Varien_Data_Form_Element_Fieldset $parentFieldset,
+        Ho_Recurring_Model_Product_Profile $profile = null)
+    {
+        $helper = Mage::helper('ho_recurring');
+
+        $elementId = 'product_profile[' . ($profile ? $profile->getId() : '') . ']';
+
+        $profileFieldset = $parentFieldset->addFieldset($elementId, array(
+            'legend'    => $helper->__($profile ? 'Profile <em>' . $profile->getLabel() . '</em>' : 'New Profile'),
+            'class'     => 'profile-fieldset' . (!$profile ? ' dummy-fieldset' : ''),
+        ));
+
+        $profileFieldset->addField($elementId . '[label]', 'text', array(
+            'name'      => $elementId . '[label]',
+            'label'     => $helper->__('Label'),
+        ))->setValue($profile ? $profile->getLabel() : '');
+
+        $profileFieldset->addField($elementId . '[website_id]', 'select', array(
+            'name'      => $elementId . '[website_id]',
+            'label'     => $helper->__('Website'),
+            'values'    => Mage::getSingleton('adminhtml/system_store')->getWebsiteValuesForForm(true),
+        ))->setValue($profile ? $profile->getWebsiteId() : '');
+
+        $profileFieldset->addField($elementId . '[customer_group_id]', 'select', array(
+            'name'      => $elementId . '[customer_group_id]',
+            'label'     => $helper->__('Customer Group'),
+            'values'    => Mage::getSingleton('adminhtml/system_config_source_customer_group')->toOptionArray(),
+        ))->setValue($profile ? $profile->getCustomerGroupId() : '');
+
+        $profileFieldset->addField($elementId . '[term]', 'text', array(
+            'name'      => $elementId . '[term]',
+            'label'     => $helper->__('Billing Period'),
+        ))->setValue($profile ? $profile->getTerm() : '');
+
+        $profileFieldset->addField($elementId . '[term_type]', 'select', array(
+            'name'      => $elementId . '[term_type]',
+            'label'     => $helper->__('Billing Period Type'),
+            'values'    => Mage::getSingleton('ho_recurring/system_config_source_term')->toOptionArray(true),
+        ))->setValue($profile ? $profile->getTermType() : '');
+
+        $profileFieldset->addField($elementId . '[min_billing_cycles]', 'text', array(
+            'name'      => $elementId . '[min_billing_cycles]',
+            'label'     => $helper->__('Min. Billing Cycles'),
+        ))->setValue($profile ? $profile->getMinBillingCycles() : '');
+
+        $profileFieldset->addField($elementId . '[max_billing_cycles]', 'text', array(
+            'name'      => $elementId . '[max_billing_cycles]',
+            'label'     => $helper->__('Max. Billing Cycles'),
+        ))->setValue($profile ? $profile->getMaxBillingCycles() : '');
+
+        $profileFieldset->addField($elementId . '[qty]', 'text', array(
+            'name'      => $elementId . '[qty]',
+            'label'     => $helper->__('Qty in Profile'),
+        ))->setValue($profile ? $profile->getQty() : '');
+
+        $profileFieldset->addField($elementId . '[price]', 'text', array(
+            'name'      => $elementId . '[price]',
+            'label'     => $helper->__('Price'),
+        ))->setValue($profile ? $profile->getPrice() : '');
     }
 
     /**
