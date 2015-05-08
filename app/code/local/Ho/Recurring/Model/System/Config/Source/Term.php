@@ -18,5 +18,27 @@
  * @license     H&O Commercial License (http://www.h-o.nl/license)
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
-?>
-<?php /** @var Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring $this */ ?>
+
+class Ho_Recurring_Model_System_Config_Source_Term
+{
+    protected $_options;
+
+    /**
+     * @return array
+     */
+    public function toOptionArray()
+    {
+        if (!$this->_options) {
+            $options = Mage::getModel('ho_recurring/product_profile')->getTermTypes();
+
+            array_unshift($options, array(
+                'value' => '',
+                'label' => Mage::helper('ho_recurring')->__('-- Please Select --'),
+            ));
+
+            $this->_options = $options;
+        }
+
+        return $this->_options;
+    }
+}

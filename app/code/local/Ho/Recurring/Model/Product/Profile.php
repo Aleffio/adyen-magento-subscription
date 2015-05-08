@@ -47,8 +47,30 @@
  */
 class Ho_Recurring_Model_Product_Profile extends Mage_Core_Model_Abstract
 {
+    const TERM_TYPE_DAY     = 'day';
+    const TERM_TYPE_WEEK    = 'week';
+    const TERM_TYPE_MONTH   = 'month';
+    const TERM_TYPE_QUARTER = 'quarter';
+    const TERM_TYPE_YEAR    = 'year';
+
     protected function _construct ()
     {
         $this->_init('ho_recurring/product_profile');
+    }
+
+    /**
+     * @return array
+     */
+    public function getTermTypes()
+    {
+        $helper = Mage::helper('ho_recurring');
+
+        return array(
+            self::TERM_TYPE_DAY     => $helper->__('Day'),
+            self::TERM_TYPE_WEEK    => $helper->__('Week'),
+            self::TERM_TYPE_MONTH   => $helper->__('Month'),
+            self::TERM_TYPE_QUARTER => $helper->__('Quarter'),
+            self::TERM_TYPE_YEAR    => $helper->__('Year'),
+        );
     }
 }
