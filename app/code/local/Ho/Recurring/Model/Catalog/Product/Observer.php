@@ -34,10 +34,24 @@ class Ho_Recurring_Model_Catalog_Product_Observer extends Mage_Core_Model_Abstra
 
         $this->_saved = true;
 
+        /** @var Mage_Catalog_Model_Product $product */
         $product = $observer->getEvent()->getProduct();
 
         try {
-            //$product->save();
+            $productProfiles = $this->_getRequest()->getPost('product_profile');
+
+            foreach ($productProfiles as $id => $profileData) {
+                $profile = Mage::getModel('ho_recurring/product_profile')->load($id);
+
+                if (!$profile->getId()) {
+                    echo 'doesnt exist yet<br/>';
+                    $profile->setProductId($product->getId());
+                }
+
+                $profile->addData($profileData);
+
+                $profile->save();
+            }
         }
         catch (Exception $e) {
             Mage::getSingleton('adminhtml/session')->addError(
@@ -47,14 +61,6 @@ class Ho_Recurring_Model_Catalog_Product_Observer extends Mage_Core_Model_Abstra
                 )
             );
         }
-    }
-
-    /**
-     * @return Mage_Catalog_Model_Product $product
-     */
-    public function getProduct()
-    {
-        return Mage::registry('product');
     }
 
     /**
