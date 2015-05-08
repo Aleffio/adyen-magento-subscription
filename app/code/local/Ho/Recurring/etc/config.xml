@@ -92,6 +92,17 @@
                 </ho_recurring>
             </updates>
         </layout>
+        <events>
+            <catalog_product_save_after>
+                <observers>
+                    <ho_recurring_save_recurring_product_data>
+                        <type>singleton</type>
+                        <class>ho_recurring/catalog_product_observer</class>
+                        <method>saveRecurringProductData</method>
+                    </ho_recurring_save_recurring_product_data>
+                </observers>
+            </catalog_product_save_after>
+        </events>
     </adminhtml>
 
     <crontab>

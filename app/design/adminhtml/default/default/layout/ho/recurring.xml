@@ -52,4 +52,13 @@
             </block>
         </reference>
     </ho_recurring_adminhtml_profile_edit>
+
+    <adminhtml_catalog_product_edit>
+        <reference name="product_tabs">
+            <action method="addTab">
+                <name>ho_recurring_profile_tab</name>
+                <block>ho_recurring/adminhtml_catalog_product_tab_recurring</block>
+            </action>
+        </reference>
+    </adminhtml_catalog_product_edit>
 </layout>
