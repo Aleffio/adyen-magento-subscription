@@ -300,6 +300,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     public function setActive()
     {
         $this->setStatus(self::STATUS_ACTIVE);
+        $this->setErrorMessage(null);
         $this->save();
     }
 
