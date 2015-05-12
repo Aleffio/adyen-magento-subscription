@@ -40,6 +40,7 @@ class Ho_Recurring_Model_Catalog_Product_Observer extends Mage_Core_Model_Abstra
         try {
             $productProfiles = $this->_getRequest()->getPost('product_profile');
 
+            $i = 1;
             foreach ($productProfiles as $id => $profileData) {
                 $profile = Mage::getModel('ho_recurring/product_profile')->load($id);
 
@@ -48,8 +49,10 @@ class Ho_Recurring_Model_Catalog_Product_Observer extends Mage_Core_Model_Abstra
                 }
 
                 $profile->addData($profileData);
+                $profile->setSortOrder($i * 10);
 
                 $profile->save();
+                $i++;
             }
         }
         catch (Exception $e) {
