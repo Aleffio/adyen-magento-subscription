@@ -39,3 +39,23 @@
 .status-bar-gray span { background-position:100% -112px; padding:0 7px 0 0; }
 
 .dummy-fieldset { display: none; }
+
+.ui-state-highlight {
+  height: 316px;
+  margin-bottom: 15px;
+  border: 1px solid #ffac47;
+  background: #fff;
+}
+
+.profile-fieldset {
+  cursor: pointer;
+}
+.profile-fieldset tr:first-child {
+  outline: 1px solid #d6d6d6;
+}
+.profile-fieldset tr:first-child td {
+  background-color: #fff !important;
+}
+.profile-fieldset tr:first-child td:last-child {
+  background: #fff url(../../../../default/images/arrow_sort_move.gif) no-repeat right 10px center !important;
+}

@@ -23,14 +23,15 @@ var $_dummyFieldsetClass    = 'dummy-fieldset';
 var $_dummyProfileId        = false;
 
 jQuery(function($){
-    _getDummyFieldset().prev().addClass($_dummyFieldsetClass);
+    jQuery('#recurring_profiles_fieldset').sortable({
+        placeholder: "ui-state-highlight"
+    });
 });
 
 function addRecurringProductProfile()
 {
     var $fieldset = _getParentFieldset();
     var $profileFieldset = _getDummyFieldset();
-    var $header = $profileFieldset.prev();
 
     var $newProfileFieldset = $profileFieldset.clone();
     var newProfileId = _getNewDummyProfileId();

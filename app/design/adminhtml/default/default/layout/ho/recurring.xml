@@ -30,6 +30,7 @@
     <adminhtml_catalog_product_edit>
         <reference name="head">
             <action method="addItem"><type>skin_js</type><name>ho/recurring/js/jquery-1.11.3.min.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>ho/recurring/js/jquery-ui.min.js</name><params/></action>
             <action method="addItem"><type>skin_js</type><name>ho/recurring/js/recurring.js</name><params/></action>
         </reference>
     </adminhtml_catalog_product_edit>

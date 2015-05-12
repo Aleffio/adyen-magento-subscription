@@ -77,10 +77,13 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
         $elementId = $profile ? 'product_profile[' . $profile->getId() . ']' : 'dummy_profile[]';
 
         $profileFieldset = $parentFieldset->addFieldset($elementId, array(
-            'legend'    => $helper->__($profile ? 'Profile <em>' . $profile->getLabel() . '</em>' : 'New Profile'),
-            'class'     => 'profile-fieldset' . (!$profile ? ' dummy-fieldset' : ''),
+            'class'     => 'ui-sortable-handle profile-fieldset' . (!$profile ? ' dummy-fieldset' : ''),
         ));
 
+        $profileFieldset->addField('title-' . ($profile ? $profile->getId() : ''), 'note', array(
+            'label'     => $helper->__($profile ? 'Profile:' : 'New Profile'),
+            'text'      => $profile ? '<em>' . $profile->getLabel() . '</em>' : '',
+        ));
         $profileFieldset->addField($elementId . '[label]', 'text', array(
             'name'      => $elementId . '[label]',
             'label'     => $helper->__('Label'),
