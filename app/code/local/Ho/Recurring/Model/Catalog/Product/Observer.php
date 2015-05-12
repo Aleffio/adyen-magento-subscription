@@ -38,10 +38,17 @@ class Ho_Recurring_Model_Catalog_Product_Observer extends Mage_Core_Model_Abstra
         $product = $observer->getEvent()->getProduct();
 
         try {
-            $productProfiles = $this->_getRequest()->getPost('product_profile');
+            $productProfilesData = $this->_getRequest()->getPost('product_profile');
+
+            /** @var array $productProfileIds */
+            $productProfileIds = Mage::getModel('ho_recurring/product_profile')
+                ->getCollection()
+                ->addFieldToFilter('product_id', $product->getId())
+                ->getAllIds();
 
             $i = 1;
-            foreach ($productProfiles as $id => $profileData) {
+            // Save profiles
+            foreach ($productProfilesData as $id => $profileData) {
                 $profile = Mage::getModel('ho_recurring/product_profile')->load($id);
 
                 if (!$profile->getId()) {
@@ -51,8 +58,19 @@ class Ho_Recurring_Model_Catalog_Product_Observer extends Mage_Core_Model_Abstra
                 $profile->addData($profileData);
                 $profile->setSortOrder($i * 10);
 
+                if (in_array($id, $productProfileIds)) {
+                    $productProfileIds = array_diff($productProfileIds, array($id));
+                }
+
                 $profile->save();
                 $i++;
+            }
+
+            // Delete profiles
+            foreach($productProfileIds as $profileId) {
+                Mage::getModel('ho_recurring/product_profile')
+                    ->load($profileId)
+                    ->delete();
             }
         }
         catch (Exception $e) {

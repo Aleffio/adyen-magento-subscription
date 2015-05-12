@@ -81,6 +81,15 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
             'class'     => 'ui-sortable-handle profile-fieldset' . (!$profile ? ' dummy-fieldset' : ''),
         ));
 
+        $button = $this->getLayout()->createBlock('adminhtml/widget_button')
+            ->setData(array(
+                'label'   => 'Delete Profile',
+                'onclick' => 'return false;',
+                'class'   => 'delete delete-product-profile',
+            ));
+        $button->setName('delete_profile');
+        $profileFieldset->setHeaderBar($button->toHtml());
+
         $profileFieldset->addField($elementId . '[label]', 'text', array(
             'name'      => $elementId . '[label]',
             'label'     => $helper->__('Label'),

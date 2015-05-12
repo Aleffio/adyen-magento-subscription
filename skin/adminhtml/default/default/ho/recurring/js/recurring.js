@@ -19,6 +19,7 @@
  */
 
 var $_profilesFieldsetId    = 'recurring_profiles_fieldset';
+var $_fieldsetContainer     = 'profile-fieldset-container';
 var $_dummyFieldsetClass    = 'dummy-fieldset';
 var $_dummyProfileId        = false;
 
@@ -27,7 +28,7 @@ jQuery(function($) {
 
     // Wrap fieldset head and fieldset in containers; this is done so the items can be sorted
     $fieldset.find('.entry-edit-head').each(function() {
-        jQuery(this).next().andSelf().wrapAll('<div class="profile-fieldset-container" />');
+        jQuery(this).next().andSelf().wrapAll('<div class="' + $_fieldsetContainer + '" />');
     });
 
     // Hide dummy fieldset header
@@ -36,6 +37,11 @@ jQuery(function($) {
     // Make profiles sortable
     $fieldset.sortable({
         placeholder: "ui-state-highlight"
+    });
+
+    // Trigger delete function
+    jQuery('.delete-product-profile').click(function() {
+        deleteProductProfile(jQuery(this));
     });
 });
 
@@ -80,4 +86,11 @@ function _getNewDummyProfileId()
     }
 
     return 'new-' + $_dummyProfileId;
+}
+
+function deleteProductProfile(deleteButton)
+{
+    if (confirm('Are you sure?')) {
+        deleteButton.parents('.' + $_fieldsetContainer).remove();
+    }
 }
