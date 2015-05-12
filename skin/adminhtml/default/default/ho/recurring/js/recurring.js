@@ -18,8 +18,9 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-var $_profilesFieldsetId = 'recurring_profiles_fieldset';
-var $_dummyFieldsetClass = 'dummy-fieldset';
+var $_profilesFieldsetId    = 'recurring_profiles_fieldset';
+var $_dummyFieldsetClass    = 'dummy-fieldset';
+var $_dummyProfileId        = false;
 
 jQuery(function($){
     _getDummyFieldset().prev().addClass($_dummyFieldsetClass);
@@ -31,7 +32,19 @@ function addRecurringProductProfile()
     var $profileFieldset = _getDummyFieldset();
     var $header = $profileFieldset.prev();
 
-    $fieldset.append($profileFieldset.clone().removeClass($_dummyFieldsetClass));
+    var $newProfileFieldset = $profileFieldset.clone();
+    var newProfileId = _getNewDummyProfileId();
+
+    $newProfileFieldset.find('select, input').each(function() {
+        jQuery(this).attr('name',
+            jQuery(this).attr('name').replace(
+                'dummy_profile\[\]',
+                'product_profile\[' + newProfileId + '\]'
+            )
+        );
+    });
+
+    $fieldset.append($newProfileFieldset.removeClass($_dummyFieldsetClass));
 }
 
 function _getParentFieldset()
@@ -41,4 +54,16 @@ function _getParentFieldset()
 function _getDummyFieldset()
 {
     return _getParentFieldset().find('.' + $_dummyFieldsetClass);
+}
+
+function _getNewDummyProfileId()
+{
+    if ($_dummyProfileId === false) {
+        $_dummyProfileId = 1;
+    }
+    else {
+        $_dummyProfileId++;
+    }
+
+    return 'new-' + $_dummyProfileId;
 }

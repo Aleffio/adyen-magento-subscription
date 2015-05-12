@@ -74,7 +74,7 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
     {
         $helper = Mage::helper('ho_recurring');
 
-        $elementId = 'product_profile[' . ($profile ? $profile->getId() : '') . ']';
+        $elementId = $profile ? 'product_profile[' . $profile->getId() . ']' : 'dummy_profile[]';
 
         $profileFieldset = $parentFieldset->addFieldset($elementId, array(
             'legend'    => $helper->__($profile ? 'Profile <em>' . $profile->getLabel() . '</em>' : 'New Profile'),

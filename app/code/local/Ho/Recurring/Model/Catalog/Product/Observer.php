@@ -38,15 +38,12 @@ class Ho_Recurring_Model_Catalog_Product_Observer extends Mage_Core_Model_Abstra
         $product = $observer->getEvent()->getProduct();
 
         try {
-            return;
-            // @todo Fix input field names for newly added profiles
             $productProfiles = $this->_getRequest()->getPost('product_profile');
 
             foreach ($productProfiles as $id => $profileData) {
                 $profile = Mage::getModel('ho_recurring/product_profile')->load($id);
 
                 if (!$profile->getId()) {
-                    echo 'doesnt exist yet<br/>';
                     $profile->setProductId($product->getId());
                 }
 
