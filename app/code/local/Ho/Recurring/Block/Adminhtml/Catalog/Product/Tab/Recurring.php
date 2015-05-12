@@ -36,6 +36,7 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
 
         $fieldset = $form->addFieldset('recurring_profiles_fieldset', array(
             'legend'    => $helper->__('Recurring Profile'),
+            'comment'   => $helper->__('To sort the profiles, you can drag and drop the fieldsets.'),
         ));
 
         /** @var Mage_Adminhtml_Block_Widget_Button $addProfileButton */
