@@ -22,15 +22,26 @@ var $_profilesFieldsetId    = 'recurring_profiles_fieldset';
 var $_dummyFieldsetClass    = 'dummy-fieldset';
 var $_dummyProfileId        = false;
 
-jQuery(function($){
-    jQuery('#recurring_profiles_fieldset').sortable({
+jQuery(function($) {
+    var $fieldset = _getMainFieldset();
+
+    // Wrap fieldset head and fieldset in containers; this is done so the items can be sorted
+    $fieldset.find('.entry-edit-head').each(function() {
+        jQuery(this).next().andSelf().wrapAll('<div class="profile-fieldset-container" />');
+    });
+
+    // Hide dummy fieldset header
+    _getDummyFieldset().children().addClass($_dummyFieldsetClass);
+
+    // Make profiles sortable
+    $fieldset.sortable({
         placeholder: "ui-state-highlight"
     });
 });
 
 function addRecurringProductProfile()
 {
-    var $fieldset = _getParentFieldset();
+    var $fieldset = _getMainFieldset();
     var $profileFieldset = _getDummyFieldset();
 
     var $newProfileFieldset = $profileFieldset.clone();
@@ -45,16 +56,18 @@ function addRecurringProductProfile()
         );
     });
 
-    $fieldset.append($newProfileFieldset.removeClass($_dummyFieldsetClass));
+    $newProfileFieldset.children().removeClass($_dummyFieldsetClass);
+
+    $fieldset.append($newProfileFieldset);
 }
 
-function _getParentFieldset()
+function _getMainFieldset()
 {
     return jQuery('#' + $_profilesFieldsetId);
 }
 function _getDummyFieldset()
 {
-    return _getParentFieldset().find('.' + $_dummyFieldsetClass);
+    return _getMainFieldset().find('.' + $_dummyFieldsetClass).parent();
 }
 
 function _getNewDummyProfileId()

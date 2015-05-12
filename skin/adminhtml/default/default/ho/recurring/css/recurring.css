@@ -50,12 +50,3 @@
 .profile-fieldset {
   cursor: pointer;
 }
-.profile-fieldset tr:first-child {
-  outline: 1px solid #d6d6d6;
-}
-.profile-fieldset tr:first-child td {
-  background-color: #fff !important;
-}
-.profile-fieldset tr:first-child td:last-child {
-  background: #fff url(../../../../default/images/arrow_sort_move.gif) no-repeat right 10px center !important;
-}
