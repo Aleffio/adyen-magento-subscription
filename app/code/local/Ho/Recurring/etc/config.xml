@@ -80,12 +80,20 @@
                         <class>ho_recurring/observer</class>
                         <method>addRecurringProductProfilesOption</method>
                     </ho_recurring_add_recurring_profiles_options>
-                    <extra_options>
+                    <ho_recurring_add_recurring_profiles_options_to_quote>
                         <class>ho_recurring/observer</class>
                         <method>addRecurringProductProfileToQuote</method>
-                    </extra_options>
+                    </ho_recurring_add_recurring_profiles_options_to_quote>
                 </observers>
             </catalog_product_load_after>
+            <sales_convert_quote_item_to_order_item>
+                <observers>
+                    <ho_recurring_add_recurring_profiles_options_to_order>
+                        <class>ho_recurring/observer</class>
+                        <method>addRecurringProductProfileToOrder</method>
+                    </ho_recurring_add_recurring_profiles_options_to_order>
+                </observers>
+            </sales_convert_quote_item_to_order_item>
         </events>
     </global>
 
