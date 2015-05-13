@@ -22,6 +22,8 @@
 /**
  * Class Ho_Recurring_Model_Profile_Address
  *
+ * @todo The profile address table is not in use right now
+ *
  * @method int getAddressId()
  * @method setAddressId(int $value)
  */

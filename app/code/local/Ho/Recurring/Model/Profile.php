@@ -39,8 +39,10 @@
  * @method $this setCreatedAt(datetime $value)
  * @method datetime getEndsAt()
  * @method $this setEndsAt(datetime $value)
- * @method string getTerm()
- * @method $this setTerm(string $value)
+ * @method int getTerm()
+ * @method $this setTerm(int $value)
+ * @method string getTermType()
+ * @method $this setTermType(string $value)
  * @method datetime getNextOrderAt()
  * @method $this setNextOrderAt(datetime $value)
  * @method string getPaymentMethod()
@@ -58,9 +60,6 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     const STATUS_EXPIRED            = 'expired';
     const STATUS_AWAITING_PAYMENT   = 'awaiting_payment';
     const STATUS_AGREEMENT_EXPIRED  = 'agreement_expired';
-
-    const TERM_3_MONTHS             = '3_month';
-    const TERM_6_MONTHS             = '6_month';
 
     protected function _construct ()
     {
@@ -376,14 +375,9 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     /**
      * @return array
      */
-    public function getTerms()
+    public function getTermTypes()
     {
-        $helper = Mage::helper('ho_recurring');
-
-        return array(
-            self::TERM_3_MONTHS     => $helper->__('3 months'),
-            self::TERM_6_MONTHS     => $helper->__('6 months'),
-        );
+        return Mage::getModel('ho_recurring/product_profile')->getTermTypes();
     }
 
     /**
@@ -391,6 +385,6 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function getTermLabel()
     {
-        return $this->getTerms()[$this->getTerm()];
+        return $this->getTerm() . ' ' . $this->getTermTypes()[$this->getTermType()];
     }
 }

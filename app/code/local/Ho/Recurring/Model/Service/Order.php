@@ -23,49 +23,61 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
 {
     /**
      * @param Mage_Sales_Model_Order $order
-     * @return Ho_Recurring_Model_Profile
      */
     public function createProfile(Mage_Sales_Model_Order $order)
     {
         $billingAgreement = $this->_getBillingAgreement($order);
 
-        /** @var Ho_Recurring_Model_Profile $profile */
-        $profile = Mage::getModel('ho_recurring/profile')
-            ->setStatus(Ho_Recurring_Model_Profile::STATUS_ACTIVE)
-            ->setCustomerId($order->getCustomerId())
-            ->setCustomerName($order->getCustomerName())
-            ->setOrderId($order->getId())
-            ->setBillingAgreementId($billingAgreement->getId())
-            ->setStoreId($order->getStoreId())
-            ->setEndsAt('2015-10-01 12:00:00') // @todo Set correct ending date
-            ->setTerm(Ho_Recurring_Model_Profile::TERM_3_MONTHS) // @todo Set correct term
-            ->setNextOrderAt('2015-06-01 12:00:00') // @todo Set correct date
-            ->setPaymentMethod($billingAgreement->getMethodCode())
-            ->setShippingMethod($order->getShippingMethod())
-            ->save();
+        // Create a profile for each order item
+        // @todo Check if order items can be merged in one profile (same term, billing cycles, etc)
 
+        /** @var Mage_Sales_Model_Order_Item $orderItem */
         foreach ($order->getAllVisibleItems() as $orderItem) {
-            /** @var Mage_Sales_Model_Order_Item $orderItem */
+            /** @var Ho_Recurring_Model_Product_Profile $productProfile */
+            $productProfile = $this->_getProductProfile($orderItem);
+
+            if (!$productProfile) {
+                // No recurring product profile found, no recurring profile needs to be created
+                continue;
+            }
+
+            /** @var Ho_Recurring_Model_Profile $profile */
+            $profile = Mage::getModel('ho_recurring/profile')
+                ->setStatus(Ho_Recurring_Model_Profile::STATUS_ACTIVE)
+                ->setCustomerId($order->getCustomerId())
+                ->setCustomerName($order->getCustomerName())
+                ->setOrderId($order->getId())
+                ->setBillingAgreementId($billingAgreement->getId())
+                ->setStoreId($order->getStoreId())
+                ->setEndsAt('2015-10-01 12:00:00') // @todo Set correct ending date
+                ->setTerm($productProfile->getTerm())
+                ->setTermType($productProfile->getTermType())
+                ->setNextOrderAt('2015-06-01 12:00:00') // @todo Set correct date
+                ->setPaymentMethod($billingAgreement->getMethodCode())
+                ->setShippingMethod($order->getShippingMethod())
+                ->save();
+
             /** @var Ho_Recurring_Model_Profile_Item $item */
             $item = Mage::getModel('ho_recurring/profile_item');
             $item->setProfileId($profile->getId());
 
-            $item->setProductId($orderItem->getProductId())
+            $item->setStatus($item::STATUS_ACTIVE)
+                ->setProductId($orderItem->getProductId())
                 ->setSku($orderItem->getSku())
                 ->setName($orderItem->getName())
-                ->setPrice($orderItem->getPrice())
-                ->setPriceInclTax($orderItem->getPriceInclTax())
-                ->setQty($orderItem->getQtyOrdered())
+                ->setLabel($productProfile->getLabel())
+                ->setPrice($productProfile->getPrice())
+                ->setPriceInclTax($productProfile->getPrice()) // @todo Is now same price as price column
+                ->setQty($productProfile->getQty())
                 ->setOnce(0)
-                ->setCreatedAt(now())
-                ->setStatus($item::STATUS_ACTIVE);
+                ->setMinBillingCycles($productProfile->getMinBillingCycles())
+                ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
+                ->setCreatedAt(now());
 
             $item->save();
+
+            $profile->saveOrderAtProfile($order);
         }
-
-        $profile->saveOrderAtProfile($order);
-
-        return $profile;
     }
 
     /**
@@ -90,5 +102,39 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
         }
 
         return Mage::getModel('sales/billing_agreement')->load($billingAgreementId);
+    }
+
+    /**
+     * @param Mage_Sales_Model_Order_Item $orderItem
+     * @return Ho_Recurring_Model_Product_Profile
+     */
+    protected function _getProductProfile(Mage_Sales_Model_Order_Item $orderItem)
+    {
+        $productOptions = $orderItem->getProductOptions();
+
+        if (!array_key_exists('additional_options', $productOptions)) {
+            return false;
+        }
+
+        $additionalOptions = $productOptions['additional_options'];
+
+        $recurringProductProfileId = false;
+        foreach ($additionalOptions as $additionalOption) {
+            if ($additionalOption['label'] == Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID) {
+                $recurringProductProfileId = $additionalOption['value'];
+            }
+        }
+
+        if (!$recurringProductProfileId) {
+            return false;
+        }
+
+        $recurringProductProfile = Mage::getModel('ho_recurring/product_profile')->load($recurringProductProfileId);
+
+        if (!$recurringProductProfile->getId()) {
+            return false;
+        }
+
+        return $recurringProductProfile;
     }
 }
