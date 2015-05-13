@@ -25,9 +25,9 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
     {
         parent::__construct();
 
-        $this->setDefaultSort('name');
+        $this->setDefaultSort('created_at');
         $this->setId('ho_recurring_profile_grid');
-        $this->setDefaultDir('asc');
+        $this->setDefaultDir('desc');
         $this->setSaveParametersInSession(true);
     }
 
