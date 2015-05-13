@@ -126,6 +126,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         $action = Mage::app()->getFrontController()->getAction();
 
         if ($action->getFullActionName() == 'checkout_cart_add') {
+            $productId = $action->getRequest()->getParam('product');
             $options = $action->getRequest()->getParam('options');
 
             if (array_key_exists($productProfileOptionId, $options)) {
@@ -133,6 +134,13 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
 
                 /** @var Mage_Catalog_Model_Product $product */
                 $product = $observer->getProduct();
+
+                if ($product->getId() != $productId) {
+                    // Only add custom options if this is the product that is actually added to the cart
+                    // This is done because there can be other products added to the cart automatically after
+                    // a product is added, at which we don't want to save the additional recurring options
+                    return;
+                }
 
                 $additionalOptions = array();
                 if ($additionalOption = $product->getCustomOption('additional_options')) {
