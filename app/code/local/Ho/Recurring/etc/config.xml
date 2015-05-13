@@ -73,6 +73,20 @@
                 </setup>
             </ho_recurring_setup>
         </resources>
+        <events>
+            <catalog_product_load_after>
+                <observers>
+                    <ho_recurring_add_recurring_profiles_options>
+                        <class>ho_recurring/observer</class>
+                        <method>addRecurringProductProfilesOption</method>
+                    </ho_recurring_add_recurring_profiles_options>
+                    <extra_options>
+                        <class>ho_recurring/observer</class>
+                        <method>addRecurringProductProfileToQuote</method>
+                    </extra_options>
+                </observers>
+            </catalog_product_load_after>
+        </events>
     </global>
 
     <admin>

@@ -27,7 +27,6 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
      */
     public function createProfile(Mage_Sales_Model_Order $order)
     {
-
         $billingAgreement = $this->_getBillingAgreement($order);
 
         /** @var Ho_Recurring_Model_Profile $profile */

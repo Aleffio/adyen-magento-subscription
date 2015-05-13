@@ -53,6 +53,8 @@ class Ho_Recurring_Model_Product_Profile extends Mage_Core_Model_Abstract
     const TERM_TYPE_QUARTER = 'quarter';
     const TERM_TYPE_YEAR    = 'year';
 
+    const CUSTOM_OPTION_ID = 'recurring_product_profile';
+
     protected function _construct ()
     {
         $this->_init('ho_recurring/product_profile');
