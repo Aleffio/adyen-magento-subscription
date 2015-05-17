@@ -36,14 +36,22 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products
 
     protected function _prepareCollection()
     {
-        $this->setCollection($this->_getProfile()->getItemCollection());
+        $collection = $this->_getProfile()->getItemCollection();
+        $collection->addRowTotalInclTax();
+        $this->setCollection($collection);
 
         return parent::_prepareCollection();
     }
 
     protected function _prepareColumns()
     {
+        /** @var Ho_Recurring_Helper_Data $helper */
         $helper = Mage::helper('ho_recurring');
+
+        $currencyCode = (string) Mage::getStoreConfig(
+            Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE,
+            $this->_getProfile()->getStoreId()
+        );
 
         $this->addColumn('sku', array(
             'header'    => $helper->__('SKU'),
@@ -59,50 +67,66 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products
         ));
 
         $this->addColumn('price', array(
-            'header'    => $helper->__('Price'),
+            'header'    => $helper->__('Price') .' '. $helper->__('Excl. Tax'),
             'index'     => 'price',
             'type'      => 'currency',
             'currency'  => 'base_currency_code',
-            'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
-            'sortable'  => false
+            'currency_code' => $currencyCode,
+            'sortable'  => false,
+            'width'     => 60
         ));
 
         $this->addColumn('price_incl_tax', array(
-            'header'    => $helper->__('Price Incl VAT'),
+            'header'    => $helper->__('Price') .' '. $helper->__('Incl. Tax'),
             'index'     => 'price_incl_tax',
             'type'      => 'currency',
             'currency'  => 'base_currency_code',
-            'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
-            'sortable'  => false
+            'currency_code' => $currencyCode,
+            'sortable'  => false,
+            'width'     => 60
         ));
 
         $this->addColumn('qty', array(
             'header'    => $helper->__('Qty'),
             'type'      => 'number',
             'index'     => 'qty',
-            'sortable'  => false
+            'sortable'  => false,
+            'width'     => 40
         ));
 
-        $this->addColumn('row_total', array(
+        $this->addColumn('row_total_incl_tax', array(
             'header'    => $helper->__('Row Total'),
-            'index'     => 'price_incl_tax',
+            'index'     => 'row_total_incl_tax',
             'type'      => 'currency',
             'currency'  => 'base_currency_code',
-            'renderer'  => 'ho_recurring/adminhtml_profile_edit_tabs_renderer_rowTotal',
-            'sortable'  => false
+            'currency_code' => $currencyCode,
+            'sortable'  => false,
+            'width'     => 60
         ));
 
-        $this->addColumn('once', array(
-            'header'    => $helper->__('Once'),
-            'index'     => 'once',
-            'sortable'  => false
+        $this->addColumn('min_billing_cycles', array(
+            'header'    => $helper->__('Min. B.C.'),
+            'type'      => 'number',
+            'index'     => 'min_billing_cycles',
+            'sortable'  => false,
+            'width'     => 1
+        ));
+
+        $this->addColumn('max_billing_cycles', array(
+            'header'    => $helper->__('Max. B.C.'),
+            'index'     => 'max_billing_cycles',
+            'type'      => 'number',
+            'title'     => 'sdfasdfasf',
+            'sortable'  => false,
+            'width'     => 1
         ));
 
         $this->addColumn('created_at', array(
             'header'    => $helper->__('Added at'),
             'index'     => 'created_at',
             'type'      => 'datetime',
-            'sortable'  => false
+            'sortable'  => false,
+            'width'     => 140
         ));
 
         $this->addColumn('status', array(
@@ -110,12 +134,14 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products
             'index'     => 'status',
             'type'      => 'options',
             'options'   => Mage::getModel('ho_recurring/profile_item')->getStatuses(),
-            'sortable'  => false
+            'sortable'  => false,
+            'width'     => 80
         ));
 
         $this->addColumn('action', array(
             'header'    => $helper->__('Action'),
-            'sortable'  => false
+            'sortable'  => false,
+            'width'     => 80
             // @todo render
         ));
 
