@@ -48,7 +48,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         $i = 0;
         foreach ($profiles as $profile) {
             /** @var Ho_Recurring_Model_Profile $profile */
-            if (!$profile->getQuoteId()) {
+            if (!$profile->getActiveQuote()->getId()) {
                 $profile->createQuote();
             }
 

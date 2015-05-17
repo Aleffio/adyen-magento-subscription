@@ -21,9 +21,12 @@
 
 class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
 {
+
     /**
      * @param Ho_Recurring_Model_Profile $profile
+     *
      * @return Mage_Sales_Model_Quote
+     * @throws Ho_Recurring_Exception|Exception
      */
     public function createQuote(Ho_Recurring_Model_Profile $profile)
     {
@@ -32,7 +35,7 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
                 Ho_Recurring_Exception::throwException('Can not create quote from profile');
             }
 
-            if ($quote = $profile->getQuote()) {
+            if ($quote = $profile->getActiveQuote()) {
                 Ho_Recurring_Exception::throwException('There is already an active quote present for this profile');
             }
 
@@ -44,7 +47,7 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
             $quote->setIsActive(false); //always create an inactive quote, else it shows up on the frontend.
 
             // Add order items to quote
-            foreach ($profile->getItems() as $profileItem) {
+            foreach ($profile->getItemCollection() as $profileItem) {
                 /** @var Ho_Recurring_Model_Profile_Item $profileItem */
                 $productId = $profileItem->getProductId();
                 $product = Mage::getModel('catalog/product')->load($productId);
@@ -61,7 +64,6 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
                 $quoteItem->getProduct()->setIsSuperMode(true);
                 $quoteItem->checkData();
             }
-
 
             // Set billing address data
             /** @var Mage_Sales_Model_Quote_Address $billingAddress */
@@ -89,17 +91,28 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
             $methodInstance = $quote->getPayment()->getMethodInstance();
 
             if (! method_exists($methodInstance, 'initBillingAgreementPaymentInfo')) {
-                Ho_Recurring_Exception::throwException(
-                    Mage::helper('ho_recurring')->__('Payment method %s does not support Ho_Recurring', $methodInstance->getCode()));
+                Ho_Recurring_Exception::throwException(Mage::helper('ho_recurring')->__(
+                    'Payment method %s does not support Ho_Recurring', $methodInstance->getCode()
+                ));
             }
 
             // Set billing agreement data
+            /** @noinspection PhpUndefinedMethodInspection */
             $methodInstance->initBillingAgreementPaymentInfo($profile->getBillingAgreement(), $quote->getPayment());
 
             $quote->collectTotals();
-            $quote->save();
+            $profile->setActiveQuote($quote);
+            $quoteAdditional = $profile->getActiveQuoteAdditional(true);
+            $quoteAdditional->setScheduledAt($profile->calculateNextScheduleDate());
 
-            $profile->saveQuoteAtProfile($quote);
+            Mage::getModel('core/resource_transaction')
+                ->addObject($quote)
+                ->addObject($profile)
+                ->save();
+
+            //we save in a second step because
+            $quoteAdditional->setQuote($quote)->save();
+
             return $quote;
 
         } catch (Exception $e) {

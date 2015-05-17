@@ -29,7 +29,15 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder_Totals
      */
     public function getQuote()
     {
-        return $this->getProfile()->getQuote();
+        return $this->getProfile()->getActiveQuote();
+    }
+
+    /**
+     * @return Ho_Recurring_Model_Profile_Quote
+     */
+    public function getQuoteAdditional()
+    {
+        return $this->getProfile()->getActiveQuoteAdditional();
     }
 
     /**

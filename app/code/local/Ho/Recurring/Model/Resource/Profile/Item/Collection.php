@@ -25,4 +25,11 @@ class Ho_Recurring_Model_Resource_Profile_Item_Collection extends Mage_Core_Mode
     {
         $this->_init('ho_recurring/profile_item');
     }
+
+    public function addRowTotalInclTax()
+    {
+        $this->getSelect()->columns(['row_total_incl_tax' => new Zend_Db_Expr('price_incl_tax * qty')]);
+
+        return $this;
+    }
 }

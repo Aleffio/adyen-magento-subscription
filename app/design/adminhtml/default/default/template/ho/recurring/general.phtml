@@ -69,14 +69,20 @@
         <table cellspacing="0" class="form-list">
             <tr>
                 <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Created at'); ?></label></td>
-                <td class="value"><strong><?php echo $_profile->getCreatedAt(); ?></strong></td>
+                <td class="value"><strong><?php echo $_profile->getCreatedAtFormatted(); ?></strong></td>
             </tr>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Upcoming shipment'); ?></label></td>
-                <td class="value"><strong><?php echo $_profile->getNextOrderAt(); ?></strong></td>
+                <td class="value">
+                    <?php if ($quoteAdditional = $_profile->getActiveQuoteAdditional()): ?>
+                    <strong><?php echo $quoteAdditional->getScheduledAtFormatted(); ?></strong>
+                    <?php else: ?>
+                    <strong><?php echo $this->__('Not Scheduled') ?></strong>
+                    <?php endif; ?>
+                </td>
             </tr>
             <tr>
-                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Term'); ?></label></td>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Period'); ?></label></td>
                 <td class="value"><strong><?php echo $_profile->getTermLabel(); ?></strong></td>
             </tr>
             <tr>

@@ -26,13 +26,81 @@
  * @method Ho_Recurring_Model_Profile_Quote setProfileId(int $value)
  * @method int getQuoteId()
  * @method Ho_Recurring_Model_Profile_Quote setQuoteId(int $value)
+ * @method string getScheduledAt()
+ * @method Ho_Recurring_Model_Profile_Quote setScheduledAt(string $value)
  * @method int getEntityId()
  * @method Ho_Recurring_Model_Profile_Quote setEntityId(int $value)
+ * @method int getOrderId()
+ * @method Ho_Recurring_Model_Profile_Quote setOrderId(int $value)
  */
 class Ho_Recurring_Model_Profile_Quote extends Mage_Core_Model_Abstract
 {
     protected function _construct()
     {
         $this->_init('ho_recurring/profile_quote');
+    }
+
+    public function getScheduledAtFormatted()
+    {
+        /** @noinspection PhpParamsInspection */
+        return Mage::helper('core')->formatDate($this->getScheduledAt(), 'medium', true);
+    }
+
+    /**
+     * @param Ho_Recurring_Model_Profile $profile
+     * @return Ho_Recurring_Model_Profile_Quote
+     */
+    public function setProfile(Ho_Recurring_Model_Profile $profile)
+    {
+        $this->setData('_profile', $profile);
+        $this->setProfileId($profile->getId());
+        return $this;
+    }
+
+
+    /**
+     * @return Ho_Recurring_Model_Profile
+     */
+    public function getProfile()
+    {
+        if (! $this->hasData('_profile')) {
+            // Note: The quote won't load if we don't set the store ID
+            $quote = Mage::getModel('ho_recurring/profile')
+                ->load($this->getProfileId());
+
+            $this->setData('_profile', $quote);
+        }
+
+        return $this->getData('_profile');
+    }
+
+
+    /**
+     * @param Mage_Sales_Model_Quote $quote
+     * @return Ho_Recurring_Model_Profile_Quote
+     */
+    public function setQuote(Mage_Sales_Model_Quote $quote)
+    {
+        $this->setData('_quote', $quote);
+        $this->setQuoteId($quote->getId());
+        return $this;
+    }
+
+
+    /**
+     * @return Mage_Sales_Model_Quote
+     */
+    public function getQuote()
+    {
+        if (! $this->hasData('_quote')) {
+            // Note: The quote won't load if we don't set the store ID
+            $quote = Mage::getModel('sales/quote')
+                ->setStoreId($this->getProfile()->getStoreId())
+                ->load($this->getQuoteId());
+
+            $this->setData('_quote', $quote);
+        }
+
+        return $this->getData('_quote');
     }
 }

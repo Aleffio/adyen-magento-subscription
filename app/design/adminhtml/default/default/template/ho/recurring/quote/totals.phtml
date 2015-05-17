@@ -33,14 +33,17 @@
 </table>
 <div class="divider"></div>
 <div class="order-totals-bottom">
+    <p>
+        <?php echo $this->__('Order will be automatically created at:') ?><br />
+        <strong><?php echo $this->getQuoteAdditional()->getScheduledAtFormatted(); ?></strong>
+    </p>
     <?php if ($this->getProfile()->canCreateOrder()): ?>
     <p>
         <?php echo $this->getButtonHtml(
-            Mage::helper('sales')->__('Create Order'),
+            Mage::helper('ho_recurring')->__('Create Order Now'),
             "setLocation('{$this->getUrl('*/*/createOrder', ['id' => $this->getProfile()->getId()])}')",
             'save'
         ); ?>
     </p>
     <?php endif; ?>
 </div>
-

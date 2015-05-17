@@ -27,7 +27,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder extends Mage_
      */
     public function getItemsCollection()
     {
-        $quote = $this->getProfile()->getQuote();
+        $quote = $this->getProfile()->getActiveQuote();
 
         return $quote->getItemsCollection();
     }
@@ -63,7 +63,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder extends Mage_
      */
     public function canShowTab()
     {
-        return $this->getProfile()->getQuote();
+        return $this->getProfile()->getActiveQuote();
     }
 
     /**
