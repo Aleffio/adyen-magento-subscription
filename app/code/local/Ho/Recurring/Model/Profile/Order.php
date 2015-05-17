@@ -23,9 +23,11 @@
  * Class Ho_Recurring_Model_Profile_Order
  *
  * @method int getProfileId()
- * @method $this setProfileId(int $value)
+ * @method Ho_Recurring_Model_Profile_Order setProfileId(int $value)
+ * @method int getEntityId()
+ * @method Ho_Recurring_Model_Profile_Order setEntityId(int $value)
  * @method int getOrderId()
- * @method $this setOrderId(int $value)
+ * @method Ho_Recurring_Model_Profile_Order setOrderId(int $value)
  */
 class Ho_Recurring_Model_Profile_Order extends Mage_Core_Model_Abstract
 {

@@ -24,8 +24,10 @@
  *
  * @todo The profile address table is not in use right now
  *
+ * @method int getProfileId()
+ * @method Ho_Recurring_Model_Profile_Address setProfileId(int $value)
  * @method int getAddressId()
- * @method setAddressId(int $value)
+ * @method Ho_Recurring_Model_Profile_Address setAddressId(int $value)
  */
 class Ho_Recurring_Model_Profile_Address extends Mage_Core_Model_Abstract
 {

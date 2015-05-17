@@ -23,9 +23,11 @@
  * Class Ho_Recurring_Model_Profile_Quote
  *
  * @method int getProfileId()
- * @method $this setProfileId(int $value)
+ * @method Ho_Recurring_Model_Profile_Quote setProfileId(int $value)
  * @method int getQuoteId()
- * @method $this setQuoteId(int $value)
+ * @method Ho_Recurring_Model_Profile_Quote setQuoteId(int $value)
+ * @method int getEntityId()
+ * @method Ho_Recurring_Model_Profile_Quote setEntityId(int $value)
  */
 class Ho_Recurring_Model_Profile_Quote extends Mage_Core_Model_Abstract
 {
