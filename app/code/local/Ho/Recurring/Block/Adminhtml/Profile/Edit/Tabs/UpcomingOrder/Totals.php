@@ -19,22 +19,57 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder_Totals extends Mage_Adminhtml_Block_Sales_Totals
+class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder_Totals
+    extends Mage_Adminhtml_Block_Sales_Order_Create_Totals
 {
     /**
-     * @return Mage_Sales_Model_Order
+     * Retrieve quote model object
+     *
+     * @return Mage_Sales_Model_Quote
      */
-    public function getSource()
+    public function getQuote()
     {
-        return $this->getOrder();
+        return $this->getProfile()->getQuote();
     }
 
     /**
-     * @return Mage_Sales_Model_Order
+     * Retrieve customer model object
+     *
+     * @return Mage_Customer_Model_Customer
      */
-    public function getOrder()
+    public function getCustomer()
     {
-        return $this->getProfile()->getQuote();
+        return $this->getProfile()->getCustomer();
+    }
+
+    /**
+     * Retrieve customer identifier
+     *
+     * @return int
+     */
+    public function getCustomerId()
+    {
+        return $this->getProfile()->getCustomerId();
+    }
+
+    /**
+     * Retrieve store model object
+     *
+     * @return Mage_Core_Model_Store
+     */
+    public function getStore()
+    {
+        return Mage::app()->getStore($this->getProfile()->getStoreId());
+    }
+
+    /**
+     * Retrieve store identifier
+     *
+     * @return int
+     */
+    public function getStoreId()
+    {
+        return $this->getProfile()->getStoreId();
     }
 
     /**

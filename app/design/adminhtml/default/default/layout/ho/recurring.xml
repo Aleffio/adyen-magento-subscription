@@ -51,7 +51,8 @@
                     <block type="adminhtml/sales_order_payment" name="order_payment"/>
                 </block>
                 <block name="profile_upcoming_order_block" type="ho_recurring/adminhtml_profile_edit_tabs_upcomingOrder" template="ho/recurring/order.phtml">
-                    <block type="ho_recurring/adminhtml_profile_edit_tabs_upcomingOrder_totals" name="order_totals" template="sales/order/totals.phtml" />
+                    <block type="ho_recurring/adminhtml_profile_edit_tabs_upcomingOrder_totals"
+                           name="order_totals" template="ho/recurring/quote/totals.phtml"  />
                 </block>
                 <action method="addTab"><name>profile_general</name><block>profile_general_block</block></action>
                 <action method="addTab"><name>profile_products</name><block>ho_recurring/adminhtml_profile_edit_tabs_products</block></action>
