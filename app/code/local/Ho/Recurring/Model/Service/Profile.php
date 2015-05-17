@@ -27,14 +27,13 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
      */
     public function createQuote(Ho_Recurring_Model_Profile $profile)
     {
-        $order = $profile->getOriginalOrder();
-
         $customerId = $profile->getCustomerId();
         $storeId = $profile->getStoreId();
 
         $customer = Mage::getModel('customer/customer')->load($customerId);
         $quote = Mage::getModel('sales/quote')->assignCustomer($customer);
         $quote->setStoreId($storeId);
+        $quote->setIsActive(false);
 
         // Add order items to quote
         foreach ($profile->getItems() as $item) {
@@ -49,22 +48,20 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
             $quote->addItem($quoteItem);
         }
 
-        // Set shipping address data
-        /** @var Mage_Sales_Model_Quote_Address $shippingAddress */
-        $shippingAddress = $quote->getShippingAddress()
-            ->addData($order->getShippingAddress()->getData())
-            ->setData('email', $customer->getEmail());
-
         // Set billing address data
         /** @var Mage_Sales_Model_Quote_Address $billingAddress */
-        $billingAddress = $quote->getBillingAddress()
-            ->addData($order->getBillingAddress()->getData())
+        $quote->getBillingAddress()
+            ->addData($profile->getBillingAddressData())
             ->setData('email', $customer->getEmail());
 
-        // Collect shipping rates
-        $shippingAddress->setStockId($order->getStockId());
-        $shippingAddress->setCollectShippingRates(true);
-        $shippingAddress->collectShippingRates();
+        // Set shipping address data
+        /** @var Mage_Sales_Model_Quote_Address $shippingAddress */
+        $quote->getShippingAddress()
+            ->addData($profile->getShippingAddressData())
+            ->setData('email', $customer->getEmail())
+            ->setStockId($profile->getStockId())
+            ->setCollectShippingRates(true)
+            ->collectShippingRates();
 
         $quote->getShippingAddress()->collectTotals();
 
@@ -74,7 +71,7 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
 
         // Set payment method
         $paymentMethod = $profile->getPaymentMethod();
-        $quote->getPayment()->importData(array('method' => $paymentMethod));
+        $quote->getPayment()->importData(array('method' => $profile->getBillingAgreement()->getMethodCode()));
         $methodInstance = $quote->getPayment()->getMethodInstance();
 
         if (! method_exists($methodInstance, 'initBillingAgreementPaymentInfo')) {
