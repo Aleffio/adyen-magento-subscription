@@ -43,8 +43,6 @@
  * @method $this setTerm(int $value)
  * @method string getTermType()
  * @method $this setTermType(string $value)
- * @method datetime getNextOrderAt()
- * @method $this setNextOrderAt(datetime $value)
  * @method string getPaymentMethod()
  * @method $this setPaymentMethod(string $value)
  * @method string getShippingMethod()
@@ -77,40 +75,16 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 
     /**
      * @deprecated The profile model can't know about the service model
-     *             It is the service models resposibility to convert the profile to a quote.
-     * @return Mage_Sales_Model_Quote
-     */
-    public function createQuote()
-    {
-        try {
-            $quote = Mage::getModel('ho_recurring/service_profile')->createQuote($this);
-
-            $this->saveQuoteAtProfile($quote);
-            $this->setActive();
-            $this->save();
-
-            return $quote;
-        }
-        catch (Exception $e) {
-            $this->setStatus(self::STATUS_QUOTE_ERROR);
-            $this->setErrorMessage($e->getMessage());
-            $this->save();
-
-            Ho_Recurring_Exception::throwException($e->getMessage());
-        }
-    }
-
-    /**
-     * @deprecated The profile model can't know about the service model
      *             It is the service models resposibility to convert the quote to an order.
      * @param Mage_Sales_Model_Quote|null $quote
      * @return Mage_Sales_Model_Order
      */
     public function createOrder(Mage_Sales_Model_Quote $quote = null)
     {
+        Mage::throwException('SHouldnt be used');
         try {
             if (!$quote) {
-                $quote = $this->getQuote();
+                $quote = $this->getActiveQuote();
             }
 
             if (!$quote->getId()) {
@@ -146,27 +120,57 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         }
     }
 
-    /**
-     * Only one quote of each profile can be saved
-     *
-     * @param Mage_Sales_Model_Quote $quote
-     * @throws Exception
-     */
-    public function saveQuoteAtProfile(Mage_Sales_Model_Quote $quote)
-    {
-        /** @var Ho_Recurring_Model_Profile_Quote $profileQuote */
-        $profileQuote = Mage::getModel('ho_recurring/profile_quote')
-            ->getCollection()
-            ->addFieldToFilter('profile_id', $this->getId())
-            ->getFirstItem();
 
-        $profileQuote
-            ->setProfileId($this->getId())
-            ->setQuoteId($quote->getId())
-            ->save();
+    /**
+     * @return Ho_Recurring_Model_Profile_Quote
+     */
+    protected function _getActiveQuoteAdditional()
+    {
+        if (! $this->hasData('_active_quote_additional')) {
+            $quoteAdd = Mage::getResourceModel('ho_recurring/profile_quote_collection')
+                        ->addFieldToFilter('profile_id', $this->getId())
+                        ->addFieldToFilter('order_id', ['null' => true])
+                        ->getFirstItem();
+            $this->setData('_active_quote_additional', $quoteAdd);
+        }
+        return $this->getData('_active_quote_additional');
     }
 
     /**
+     * Only one quote of each profile can be saved
+     *
+     * @return Ho_Recurring_Model_Profile_Quote
+     */
+    public function getActiveQuoteAdditional($instantiateNew = false)
+    {
+        $quoteAdditional = $this->_getActiveQuoteAdditional();
+
+        if (! $quoteAdditional || ! $quoteAdditional->getId()) {
+            if (! $instantiateNew) {
+                return null;
+            }
+            $quoteAdditional = Mage::getModel('ho_recurring/profile_quote');
+        }
+
+        $quoteAdditional
+            ->setProfile($this)
+            ->setQuote($this->getActiveQuote());
+
+        return $quoteAdditional;
+    }
+
+    /**
+     * @return Ho_Recurring_Model_Resource_Profile_Quote_Collection
+     */
+    public function getQuoteAdditionalCollection()
+    {
+        return Mage::getResourceModel('ho_recurring/profile_quote_collection')
+            ->addFieldToFilter('profile_id', $this->getId());
+    }
+
+    /**
+     * @deprecated
+     * @todo Move this to the resource model of the quote, should be silent.
      * @param Mage_Sales_Model_Order $order
      * @throws Exception
      */
@@ -259,37 +263,34 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return $orderIds;
     }
 
-    /**
-     * @return int
-     */
-    public function getQuoteId()
+    public function setActiveQuote(Mage_Sales_Model_Quote $quote)
     {
-        /** @var Ho_Recurring_Model_Profile_Quote $profileQuote */
-        $profileQuote = Mage::getModel('ho_recurring/profile_quote')
-            ->getCollection()
-            ->addFieldToFilter('profile_id', $this->getId())
-            ->getFirstItem();
-
-        $quoteId = $profileQuote->getQuoteId();
-
-        return $quoteId;
+        $this->setData('_active_quote', $quote);
+        return $this;
     }
-
     /**
      * @return Mage_Sales_Model_Quote|null
      */
-    public function getQuote()
+    public function getActiveQuote()
     {
-        $quoteId = $this->getQuoteId();
+        if (! $this->hasData('_active_quote')) {
+            /** @var Ho_Recurring_Model_Profile_Quote $quoteAdditional */
+            $quoteAdditional = $this->_getActiveQuoteAdditional();
 
-        if (!$quoteId) return null;
+            if (! $quoteAdditional || ! $quoteAdditional->getId()) {
+                $this->setData('_active_quote', null);
+                return null;
+            }
 
-        // Note: The quote won't load if we don't set the store ID
-        $quote = Mage::getModel('sales/quote')
-            ->setStoreId($this->getStoreId())
-            ->load($quoteId);
+            // Note: The quote won't load if we don't set the store ID
+            $quote = Mage::getModel('sales/quote')
+                ->setStoreId($this->getStoreId())
+                ->load($quoteAdditional->getQuoteId());
 
-        return $quote;
+            $this->setData('_active_quote', $quote);
+        }
+
+        return $this->getData('_active_quote');
     }
 
     /**
@@ -299,6 +300,51 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     public function getOriginalOrder()
     {
         return Mage::getModel('sales/order')->load($this->getOrderId());
+    }
+
+    public function calculateNextScheduleDate()
+    {
+        /** @var Ho_Recurring_Model_Profile_Quote $quoteAddCollection */
+        $latestQuoteSchedule = $this->getQuoteAdditionalCollection()
+            ->addFieldToFilter('order_id', ['notnull' => true])
+            ->setOrder('scheduled_at', Varien_Data_Collection::SORT_ORDER_DESC)
+            ->getFirstItem();
+
+        $lastScheduleDate = $this->getCreatedAt();
+        if ($latestQuoteSchedule->getId()) {
+            $lastScheduleDate = $latestQuoteSchedule->getScheduledAt();
+        }
+
+        $timezone = new DateTimeZone(Mage::getStoreConfig(
+            Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
+        ));
+        $schedule = new DateTime($lastScheduleDate, $timezone);
+
+        $dateInterval = null;
+        switch ($this->getTermType()) {
+            case Ho_Recurring_Model_Product_Profile::TERM_TYPE_DAY:
+                $dateInterval = new DateInterval(sprintf('P%sD',$this->getTerm()));
+                break;
+            case Ho_Recurring_Model_Product_Profile::TERM_TYPE_WEEK:
+                $dateInterval = new DateInterval(sprintf('P%sW',$this->getTerm()));
+                break;
+            case Ho_Recurring_Model_Product_Profile::TERM_TYPE_MONTH:
+                $dateInterval = new DateInterval(sprintf('P%sM',$this->getTerm()));
+                break;
+            case Ho_Recurring_Model_Product_Profile::TERM_TYPE_QUARTER:
+                $dateInterval = new DateInterval(sprintf('P%sM',$this->getTerm()*3));
+                break;
+            case Ho_Recurring_Model_Product_Profile::TERM_TYPE_YEAR:
+                $dateInterval = new DateInterval(sprintf('P%sY',$this->getTerm()));
+                break;
+        }
+        if (! isset($dateInterval)) {
+            Ho_Recurring_Exception::throwException('Could not calculate a correct date interval');
+        }
+
+        $schedule->add($dateInterval);
+
+        return $schedule->format('Y-m-d H:i:s');
     }
 
     /**
@@ -463,9 +509,9 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function canCreateQuote()
     {
-//        if ($this->getQuoteId()) {
-//            return false;
-//        }
+        if ($this->getActiveQuote()) {
+            return false;
+        }
 
         if (! in_array($this->getStatus(), $this->getActiveStatuses())) {
             return false;
@@ -480,7 +526,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function canCreateOrder()
     {
-        if (! $this->getQuoteId()) {
+        if (! $this->getActiveQuote()) {
             return false;
         }
 
@@ -490,4 +536,11 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 
         return true;
     }
+
+    public function getCreatedAtFormatted()
+    {
+        /** @noinspection PhpParamsInspection */
+        return Mage::helper('core')->formatDate($this->getCreatedAt(), 'medium', true);
+    }
+
 }
