@@ -82,7 +82,8 @@ $connection->modifyColumn($productProfileTable, 'max_billing_cycles', [
 
 $connection->modifyColumn($productProfileTable, 'qty', [
     'type' => Varien_Db_Ddl_Table::TYPE_DECIMAL,
-    'length' => '12,4',
+    'scale'     => 4,
+    'precision' => 12,
     'default' => 0,
     'nullable' => false,
 ]);
