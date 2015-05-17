@@ -37,17 +37,13 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
         return Mage::app()->getStore($storeId);
     }
 
-    protected function _getCollectionClass()
-    {
-        return 'ho_recurring/profile_collection';
-    }
-
     protected function _prepareCollection()
     {
         /** @var Ho_Recurring_Model_Resource_Profile_Collection $collection */
-        $collection = Mage::getResourceModel($this->_getCollectionClass());
-
-        $collection->join(array('customer' => 'customer/entity'), 'customer_id = customer.entity_id', 'email');
+        $collection = Mage::getResourceModel('ho_recurring/profile_collection');
+        $collection->addEmailToSelect();
+        $collection->addNameToSelect();
+        $collection->addBillingAgreementToSelect();
 
         $this->setCollection($collection);
 
@@ -58,70 +54,77 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
     {
         $helper = Mage::helper('ho_recurring');
 
-        $this->addColumn('entity_id', array(
+        $this->addColumn('entity_id', [
             'header'    => $helper->__('ID'),
             'align'     =>'right',
             'width'     => '80px',
             'index'     => 'entity_id',
-        ));
+        ]);
 
-        $this->addColumn('status', array(
+        $this->addColumn('status', [
             'header'    => $helper->__('Status'),
             'index'     => 'status',
             'type'      => 'options',
             'options'   => Mage::getModel('ho_recurring/profile')->getStatuses(),
             'renderer'  => 'Ho_Recurring_Block_Adminhtml_Profile_Renderer_Status',
-        ));
+        ]);
 
-        $this->addColumn('customer_email', array(
+        $this->addColumn('customer_email', [
             'header'    => $helper->__('Customer Email'),
-            'index'     => 'email',
-        ));
+            'index'     => 'customer_email',
+        ]);
 
-        $this->addColumn('customer_name', array(
+        $this->addColumn('customer_name', [
             'header'    => $helper->__('Name'),
             'index'     => 'customer_name',
-        ));
+        ]);
 
-        $this->addColumn('payment_method', array(
+        $this->addColumn('ba_method_code', [
+            'type'      => 'options',
             'header'    => $helper->__('Payment method'),
-            'index'     => 'payment_method',
-        ));
+            'index'     => 'ba_method_code',
+            'options'   => Mage::helper('payment')->getAllBillingAgreementMethods()
+        ]);
 
-        $this->addColumn('created_at', array(
+        $this->addColumn('ba_reference_id', [
+            'header'    => $helper->__('Billing Agreement'),
+            'index'     => 'ba_reference_id',
+        ]);
+
+        $this->addColumn('created_at', [
             'header'    => $helper->__('Created at'),
             'index'     => 'created_at',
-        ));
+            'type'      => 'datetime'
+        ]);
 
-        $this->addColumn('ends_at', array(
+        $this->addColumn('ends_at', [
             'header'    => $helper->__('Ends at'),
             'index'     => 'ends_at',
-        ));
+            'type'      => 'datetime'
+        ]);
 
-        $this->addColumn('next_order_at', array(
+        $this->addColumn('next_order_at', [
             'header'    => $helper->__('Next shipment'),
             'index'     => 'next_order_at',
-        ));
+            'type'      => 'datetime'
+        ]);
 
-        $this->addColumn('action',
-            array(
-                'header'    => $helper->__('Actions'),
-                'width'     => '200px',
-                'type'      => 'action',
-                'getter'    => 'getId',
-                'actions'   => array(
-                    array(
-                        'caption' => $helper->__('View'),
-                        'url'     => array(
-                            'base'  => '*/*/edit',
-                            'params'=> array('store'=>$this->getRequest()->getParam('store'))
-                        ),
-                        'field'   => 'id'
-                    ),
-                ),
-                'filter'    => false,
-                'sortable'  => false,
-            ));
+        $this->addColumn('action', [
+            'header'    => $helper->__('Actions'),
+            'width'     => '1',
+            'type'      => 'action',
+            'getter'    => 'getId',
+            'actions'   => [[
+                'caption' => $helper->__('View'),
+                'url'     => [
+                    'base'  => '*/*/edit',
+                    'params'=> ['store' => $this->getRequest()->getParam('store')]
+                ],
+                'field'   => 'id'
+            ]],
+            'filter'    => false,
+            'sortable'  => false,
+        ]);
 
         return parent::_prepareColumns();
     }

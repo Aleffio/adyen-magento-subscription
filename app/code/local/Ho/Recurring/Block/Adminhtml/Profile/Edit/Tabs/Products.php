@@ -28,6 +28,8 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
 
         $this->setId('products_grid');
         $this->setDefaultSort('created_at', 'desc');
+        $this->setFilterVisibility(false);
+        $this->setPagerVisibility(false);
         $this->setUseAjax(true);
     }
 
