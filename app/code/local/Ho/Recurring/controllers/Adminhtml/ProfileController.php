@@ -97,28 +97,68 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
             $this->loadLayout()->renderLayout();
     }
 
+    public function cancelProfileAction()
+    {
+        $profileId = $this->getRequest()->getParam('id');
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        if (! $profile->getId()) {
+            Mage::getSingleton('adminhtml/session')->addSuccess(
+                Mage::helper('ho_recurring')->__('Could not find profile')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        $reason = $this->getRequest()->getParam('reason');
+        if (! $reason) {
+            Mage::getSingleton('adminhtml/session')->addSuccess(
+                Mage::helper('ho_recurring')->__('No stop reason given')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        $profile->setErrorMessage($reason);
+        $profile->setStatus($profile::STATUS_CANCELED);
+        $profile->save();
+
+        Mage::getSingleton('adminhtml/session')->addSuccess(
+            Mage::helper('ho_recurring')->__('Profile %s successfully cancelled', $profile->getId())
+        );
+        $this->_redirect('*/*/');
+    }
+
     /**
      * Delete profile
      */
     public function deleteAction()
     {
-        if ($profileId = $this->getRequest()->getParam('id')) {
-            /** @var Ho_Recurring_Model_Profile $profile */
-            $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+        $profileId = $this->getRequest()->getParam('id');
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
 
-            if ($profile->getId()) {
-                try {
-                    $profile->delete();
+        if (! $profile->getId()) {
+            Mage::getSingleton('adminhtml/session')->addSuccess(
+                Mage::helper('ho_recurring')->__('Could not find profile')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
 
-                    Mage::getSingleton('adminhtml/session')->addSuccess(
-                        Mage::helper('ho_recurring')->__('The profile has been successfully deleted')
-                    );
-                }
-                catch (Mage_Core_Exception $e) {
-                    Mage::getSingleton('adminhtml/session')->addError(
-                        Mage::helper('ho_recurring')->__('An error occurred while trying to delete this profile')
-                    );
-                }
+        if ($profile->getId()) {
+            try {
+                $profile->delete();
+
+                Mage::getSingleton('adminhtml/session')->addSuccess(
+                    Mage::helper('ho_recurring')->__('The profile has been successfully deleted')
+                );
+            }
+            catch (Mage_Core_Exception $e) {
+                Mage::getSingleton('adminhtml/session')->addError(
+                    Mage::helper('ho_recurring')->__('An error occurred while trying to delete this profile')
+                );
             }
         }
 
@@ -135,13 +175,15 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
             if ($profile->getId()) {
                 try {
-                    $quote = $profile->createQuote();
+                    $quote = Mage::getSingleton('ho_recurring/service_profile')->createQuote($profile);
 
                     Mage::getSingleton('adminhtml/session')->addSuccess(
-                        Mage::helper('ho_recurring')->__('Quote successfully created (#%s)', $quote->getId())
+                        Mage::helper('ho_recurring')->__('Quote (#%s) successfully created', $quote->getId())
                     );
                 }
                 catch (Mage_Core_Exception $e) {
+                    $profile->save();
+
                     Mage::getSingleton('adminhtml/session')->addError(
                         Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
                     );

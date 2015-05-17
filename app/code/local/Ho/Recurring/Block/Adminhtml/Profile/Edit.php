@@ -32,7 +32,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
         $this->_removeButton('reset');
 
         if ($this->getProfile()->canCancel()) {
-            $url = $this->getUrl('*/*/stopProfile', ['id' => $this->getProfile()->getId(), 'reason' => '%s']);
+            $url = $this->getUrl('*/*/cancelProfile', ['id' => $this->getProfile()->getId(), 'reason' => '%s']);
             $js = <<<JS
                 var reason = prompt('{$this->helper('ho_recurring')->__("Please provide a reason why the profile is stopped")}');
                 if (reason) {
