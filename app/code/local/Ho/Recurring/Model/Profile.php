@@ -136,9 +136,10 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return $this->getData('_active_quote_additional');
     }
 
+
     /**
      * Only one quote of each profile can be saved
-     *
+     * @param bool $instantiateNew
      * @return Ho_Recurring_Model_Profile_Quote
      */
     public function getActiveQuoteAdditional($instantiateNew = false)
@@ -168,32 +169,30 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             ->addFieldToFilter('profile_id', $this->getId());
     }
 
+
     /**
-     * @deprecated
-     * @todo Move this to the resource model of the quote, should be silent.
      * @param Mage_Sales_Model_Order $order
+     *
+     * @return Ho_Recurring_Model_Profile_Order|null|Varien_Object
      * @throws Exception
      */
-    public function saveOrderAtProfile(Mage_Sales_Model_Order $order)
+    public function getOrderAdditional(Mage_Sales_Model_Order $order, $instantiateNew = false)
     {
-        $profileOrder = Mage::getModel('ho_recurring/profile_order')
+        $orderAdditional = Mage::getModel('ho_recurring/profile_order')
             ->getCollection()
             ->addFieldToFilter('profile_id', $this->getId())
             ->addFieldToFilter('order_id', $order->getId())
             ->getFirstItem();
 
-        if (!$profileOrder->getId()) {
-            Mage::getModel('ho_recurring/profile_order')
-                ->setProfileId($this->getId())
-                ->setOrderId($order->getId())
-                ->save();
+        if (!$orderAdditional->getId()) {
+            if (! $instantiateNew) {
+                return null;
+            }
+            $orderAdditional = Mage::getModel('ho_recurring/profile_order');
         }
 
-        $profileQuote = Mage::getModel('ho_recurring/profile_quote')
-            ->getCollection()
-            ->addFieldToFilter('profile_id', $this->getId())
-            ->getFirstItem()
-            ->delete();
+        $orderAdditional->setOrder($order)->setProfile($this);
+        return $orderAdditional;
     }
 
 

@@ -35,4 +35,62 @@ class Ho_Recurring_Model_Profile_Order extends Mage_Core_Model_Abstract
     {
         $this->_init('ho_recurring/profile_order');
     }
+
+    /**
+     * @param Ho_Recurring_Model_Profile $profile
+     * @return Ho_Recurring_Model_Profile_Order
+     */
+    public function setProfile(Ho_Recurring_Model_Profile $profile)
+    {
+        $this->setData('_profile', $profile);
+        $this->setProfileId($profile->getId());
+        return $this;
+    }
+
+
+    /**
+     * @return Ho_Recurring_Model_Profile
+     */
+    public function getProfile()
+    {
+        if (! $this->hasData('_profile')) {
+            // Note: The order won't load if we don't set the store ID
+            $order = Mage::getModel('ho_recurring/profile')
+                ->load($this->getProfileId());
+
+            $this->setData('_profile', $order);
+        }
+
+        return $this->getData('_profile');
+    }
+
+
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return Ho_Recurring_Model_Profile_Order
+     */
+    public function setOrder(Mage_Sales_Model_Order $order)
+    {
+        $this->setData('_order', $order);
+        $this->setOrderId($order->getId());
+        return $this;
+    }
+
+
+    /**
+     * @return Mage_Sales_Model_Order
+     */
+    public function getOrder()
+    {
+        if (! $this->hasData('_order')) {
+            // Note: The order won't load if we don't set the store ID
+            $order = Mage::getModel('sales/order')
+                ->setStoreId($this->getProfile()->getStoreId())
+                ->load($this->getOrderId());
+
+            $this->setData('_order', $order);
+        }
+
+        return $this->getData('_order');
+    }
 }

@@ -103,4 +103,35 @@ class Ho_Recurring_Model_Profile_Quote extends Mage_Core_Model_Abstract
 
         return $this->getData('_quote');
     }
+
+
+
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return Ho_Recurring_Model_Profile_Order
+     */
+    public function setOrder(Mage_Sales_Model_Order $order)
+    {
+        $this->setData('_order', $order);
+        $this->setOrderId($order->getId());
+        return $this;
+    }
+
+
+    /**
+     * @return Mage_Sales_Model_Order
+     */
+    public function getOrder()
+    {
+        if (! $this->hasData('_order')) {
+            // Note: The order won't load if we don't set the store ID
+            $order = Mage::getModel('sales/order')
+                ->setStoreId($this->getProfile()->getStoreId())
+                ->load($this->getOrderId());
+
+            $this->setData('_order', $order);
+        }
+
+        return $this->getData('_order');
+    }
 }

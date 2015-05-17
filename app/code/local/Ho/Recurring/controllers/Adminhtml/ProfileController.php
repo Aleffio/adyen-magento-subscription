@@ -182,8 +182,6 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
                     );
                 }
                 catch (Mage_Core_Exception $e) {
-                    $profile->save();
-
                     Mage::getSingleton('adminhtml/session')->addError(
                         Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
                     );
@@ -204,7 +202,12 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
             if ($profile->getId()) {
                 try {
-                    $order = $profile->createOrder();
+                    $quote = $profile->getActiveQuote();
+                    if (! $quote) {
+                        Ho_Recurring_Exception::throwException('Can\'t create order: No quote created yet.');
+                    }
+
+                    $order = Mage::getSingleton('ho_recurring/service_quote')->createOrder($quote, $profile);
 
                     Mage::getSingleton('adminhtml/session')->addSuccess(
                         Mage::helper('ho_recurring')->__('Order successfully created (#%s)', $order->getIncrementId())

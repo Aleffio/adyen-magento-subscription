@@ -19,7 +19,7 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
+class Ho_Recurring_Model_Service_Order
 {
     /**
      * @param Mage_Sales_Model_Order $order

@@ -19,7 +19,7 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
+class Ho_Recurring_Model_Service_Profile
 {
 
     /**
@@ -113,11 +113,17 @@ class Ho_Recurring_Model_Service_Profile extends Mage_Core_Model_Abstract
             //we save in a second step because
             $quoteAdditional->setQuote($quote)->save();
 
-            return $quote;
+            if ($profile->getStatus() == $profile::STATUS_QUOTE_ERROR) {
+                $profile->setStatus($profile::STATUS_ACTIVE);
+            }
+            $profile->setErrorMessage(null);
+            $profile->save();
 
+            return $quote;
         } catch (Exception $e) {
             $profile->setStatus($profile::STATUS_QUOTE_ERROR);
             $profile->setErrorMessage($e->getMessage());
+            $profile->save();
             throw $e;
         }
     }
