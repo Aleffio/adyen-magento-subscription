@@ -34,38 +34,38 @@
             <col width="1" />
             <col width="1" />
             <thead>
-            <tr class="headings">
-                <th><?php echo $this->helper('sales')->__('Product') ?></th>
-                <th><?php echo $this->helper('sales')->__('Price') ?></th>
-                <th><?php echo $this->helper('sales')->__('Qty') ?></th>
-                <th><?php echo $this->helper('sales')->__('Subtotal') ?></th>
-                <th><span class="nobr"><?php echo $this->helper('sales')->__('Tax Amount') ?></span></th>
-                <th><span class="nobr"><?php echo $this->helper('sales')->__('Tax Percent') ?></span></th>
-                <th><span class="nobr"><?php echo $this->helper('sales')->__('Discount Amount') ?></span></th>
-                <th class="last"><span class="nobr"><?php echo $this->helper('sales')->__('Row Total') ?></span></th>
-            </tr>
+                <tr class="headings">
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Product') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Price') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Qty') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Subtotal') ?></th>
+                    <th class="no-link"><span class="nobr"><?php echo $this->helper('sales')->__('Tax Amount') ?></span></th>
+                    <th class="no-link"><span class="nobr"><?php echo $this->helper('sales')->__('Tax Percent') ?></span></th>
+                    <th class="no-link"><span class="nobr"><?php echo $this->helper('sales')->__('Discount Amount') ?></span></th>
+                    <th class="no-link last"><span class="nobr"><?php echo $this->helper('sales')->__('Row Total') ?></span></th>
+                </tr>
             </thead>
+            <tbody>
             <?php $_items = $this->getItemsCollection(); ?>
             <?php $i = 1; foreach ($_items as $_item): ?>
                 <?php /** @var Mage_Sales_Model_Quote_Item $_item */ ?>
-                <tbody class="<?php echo $i%2 ? 'even' : 'odd'; ?>">
-                <tr>
+                <tr class="<?php echo $i%2 ? 'even' : 'odd'; ?>">
                     <td><?php echo $_item->getName(); ?></td>
                     <td><?php echo $helper->formatPrice($_item->getPriceInclTax()); ?></td>
-                    <td><?php echo $_item->getQty(); ?></td>
+                    <td><?php echo $_item->getQty() * 1; ?></td>
                     <td><?php echo $helper->formatPrice($_item->getRowTotal()); ?></td>
                     <td><?php echo $helper->formatPrice($_item->getTaxAmount()); ?></td>
                     <td><?php echo number_format($_item->getTaxPercent(), 0); ?>%</td>
                     <td><?php echo $helper->formatPrice($_item->getDiscountAmount()); ?></td>
-                    <td><?php echo $helper->formatPrice($_item->getRowTotalInclTax()); ?></td>
+                    <td class="last"><?php echo $helper->formatPrice($_item->getRowTotalInclTax()); ?></td>
                 </tr>
-                </tbody>
             <?php $i++; endforeach; ?>
+            </tbody>
         </table>
     </div>
 </div>
 
-<br /><br />
+<br />
 
 <div class="box-right entry-edit">
     <div class="entry-edit-head"><h4><?php echo Mage::helper('sales')->__('Totals') ?></h4></div>

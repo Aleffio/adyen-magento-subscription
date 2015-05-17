@@ -77,6 +77,6 @@ class Ho_Recurring_Model_Profile_Item extends Mage_Core_Model_Abstract
      */
     public function getStatusLabel()
     {
-        return $this->getStatuses()[$this->getStatus()];
+        return self::getStatuses()[$this->getStatus()];
     }
 }

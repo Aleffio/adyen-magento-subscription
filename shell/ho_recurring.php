@@ -83,6 +83,19 @@ class Ho_Recurring_Shell extends Mage_Shell_Abstract
 
 		Mage::getSingleton('ho_recurring/service_order')->createProfile($order);
    	}
+
+
+	public function createQuotesAction()
+	{
+		$message = Mage::getSingleton('ho_recurring/observer')->createQuotes();
+		echo $message."\n";
+	}
+
+	public function createOrdersAction()
+	{
+		$message = Mage::getSingleton('ho_recurring/observer')->createOrders();
+		echo $message."\n";
+	}
 }
 
 

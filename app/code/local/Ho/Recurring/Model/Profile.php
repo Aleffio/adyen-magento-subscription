@@ -56,21 +56,11 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     const STATUS_CANCELED           = 'canceled';
     const STATUS_EXPIRED            = 'expired';
     const STATUS_AWAITING_PAYMENT   = 'awaiting_payment';
-    const STATUS_AGREEMENT_EXPIRED  = 'agreement_expired';
+    const STATUS_PAYMENT_ERROR     = 'payment_error';
 
     protected function _construct ()
     {
         $this->_init('ho_recurring/profile');
-    }
-
-    /**
-     * @return Ho_Recurring_Model_Resource_Profile_Collection
-     */
-    public function getActiveProfiles()
-    {
-        return $this
-            ->getCollection()
-            ->addFieldToFilter('status', Ho_Recurring_Model_Profile::STATUS_ACTIVE);
     }
 
     /**
@@ -301,7 +291,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return Mage::getModel('sales/order')->load($this->getOrderId());
     }
 
-    public function calculateNextScheduleDate()
+    public function calculateNextScheduleDate($asObject = false)
     {
         /** @var Ho_Recurring_Model_Profile_Quote $quoteAddCollection */
         $latestQuoteSchedule = $this->getQuoteAdditionalCollection()
@@ -343,8 +333,14 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 
         $schedule->add($dateInterval);
 
+        if ($asObject) {
+            return $schedule;
+        }
+
         return $schedule->format('Y-m-d H:i:s');
     }
+
+
 
     /**
      * @return Adyen_Payment_Model_Billing_Agreement
@@ -359,11 +355,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function getErrorMessage()
     {
-        if ($this->getStatus() == self::STATUS_QUOTE_ERROR || $this->getStatus() == self::STATUS_ORDER_ERROR) {
-            return $this->getData('error_message');
-        }
-
-        return false;
+        return $this->getData('error_message');
     }
 
     /**
@@ -379,7 +371,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     /**
      * @return array
      */
-    public function getStatuses()
+    public static function getStatuses()
     {
         $helper = Mage::helper('ho_recurring');
 
@@ -390,26 +382,45 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             self::STATUS_CANCELED           => $helper->__('Canceled'),
             self::STATUS_EXPIRED            => $helper->__('Expired'),
             self::STATUS_AWAITING_PAYMENT   => $helper->__('Awaiting Payment'),
-            self::STATUS_AGREEMENT_EXPIRED  => $helper->__('Agreement Expired'),
+            self::STATUS_PAYMENT_ERROR     => $helper->__('Payment Error'),
         ];
     }
 
-    public function getActiveStatuses()
+
+    /**
+     * @return array
+     */
+    public static function getScheduleQuoteStatuses()
     {
         return [
             self::STATUS_ACTIVE,
-            self::STATUS_QUOTE_ERROR,
-            self::STATUS_ORDER_ERROR,
-            self::STATUS_AWAITING_PAYMENT
+            self::STATUS_QUOTE_ERROR
         ];
     }
 
-    public function getInactiveStatuses()
+
+    /**
+     * @return array
+     */
+    public static function getPlaceOrderStatuses()
+    {
+        return [
+            self::STATUS_ACTIVE,
+            self::STATUS_ORDER_ERROR,
+            self::STATUS_PAYMENT_ERROR
+        ];
+    }
+
+
+    /**
+     * @return array
+     */
+    public static function getInactiveStatuses()
     {
         return [
             self::STATUS_CANCELED,
             self::STATUS_EXPIRED,
-            self::STATUS_AGREEMENT_EXPIRED
+            self::STATUS_PAYMENT_ERROR
         ];
     }
 
@@ -419,7 +430,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function getStatusLabel($status = null)
     {
-        return $this->getStatuses()[$status ? $status : $this->getStatus()];
+        return self::getStatuses()[$status ? $status : $this->getStatus()];
     }
 
     /**
@@ -434,7 +445,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             self::STATUS_CANCELED           => 'lightgray',
             self::STATUS_EXPIRED            => 'orange',
             self::STATUS_AWAITING_PAYMENT   => 'blue',
-            self::STATUS_AGREEMENT_EXPIRED  => 'orange',
+            self::STATUS_PAYMENT_ERROR     => 'orange',
         );
     }
 
@@ -444,7 +455,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function getStatusColor($status = null)
     {
-        return $this->getStatusColors()[$status ? $status : $this->getStatus()];
+        return self::getStatusColors()[$status ? $status : $this->getStatus()];
     }
 
     /**
@@ -512,7 +523,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             return false;
         }
 
-        if (! in_array($this->getStatus(), $this->getActiveStatuses())) {
+        if (! in_array($this->getStatus(), self::getScheduleQuoteStatuses())) {
             return false;
         }
 
@@ -529,7 +540,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             return false;
         }
 
-        if (! in_array($this->getStatus(), $this->getActiveStatuses())) {
+        if (! in_array($this->getStatus(), self::getPlaceOrderStatuses())) {
             return false;
         }
 

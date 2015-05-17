@@ -26,16 +26,38 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function createQuotes()
     {
-        $profiles = Mage::getModel('ho_recurring/profile')->getActiveProfiles();
+        $profileCollection = Mage::getResourceModel('ho_recurring/profile_collection');
+        $profileCollection->addScheduleQuoteFilter();
 
-        $i = 0;
-        foreach ($profiles as $profile) {
-            /** @var Ho_Recurring_Model_Profile $profile */
-            $profile->createQuote();
-            $i++;
+        if ($profileCollection->count() <= 0) {
+            return '';
         }
 
-        return Mage::helper('ho_recurring')->__('Quotes created for %s profiles', $i);
+        $timezone = new DateTimeZone(Mage::getStoreConfig(
+            Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
+        ));
+        $scheduleBefore = new DateTime('now', $timezone);
+        $scheduleBefore->add(new DateInterval('P2W'));
+
+        $successCount = 0;
+        $failureCount = 0;
+        foreach ($profileCollection as $profile) {
+            /** @var Ho_Recurring_Model_Profile $profile */
+            $scheduleDate = $profile->calculateNextScheduleDate(true);
+            if ($scheduleDate < $scheduleBefore) {
+                try {
+                    Mage::getSingleton('ho_recurring/service_profile')->createQuote($profile);
+                    $successCount++;
+                } catch (Exception $e) {
+                    Ho_Recurring_Exception::logException($e);
+                    $failureCount++;
+                }
+            }
+        }
+
+        return Mage::helper('ho_recurring')->__(
+            'Quotes created, %s success full, %s failed', $successCount, $failureCount
+        );
     }
 
     /**
@@ -43,20 +65,35 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function createOrders()
     {
-        $profiles = Mage::getModel('ho_recurring/profile')->getActiveProfiles();
+        $profileCollection = Mage::getResourceModel('ho_recurring/profile_collection');
+        $profileCollection->addPlaceOrderFilter();
 
-        $i = 0;
-        foreach ($profiles as $profile) {
-            /** @var Ho_Recurring_Model_Profile $profile */
-            if (!$profile->getActiveQuote()->getId()) {
-                $profile->createQuote();
-            }
-
-            $profile->createOrder();
-            $i++;
+        if ($profileCollection->count() <= 0) {
+            return '';
         }
 
-        return Mage::helper('ho_recurring')->__('Orders created for %s profiles', $i);
+        $successCount = 0;
+        $failureCount = 0;
+        foreach ($profileCollection as $profile) {
+            /** @var Ho_Recurring_Model_Profile $profile */
+
+            try {
+                $quote = $profile->getActiveQuote();
+                if (! $quote) {
+                    Ho_Recurring_Exception::throwException('Can\'t create order: No quote created yet.');
+                }
+
+                Mage::getSingleton('ho_recurring/service_quote')->createOrder($profile->getActiveQuote(), $profile);
+                $successCount++;
+            } catch (Exception $e) {
+                Ho_Recurring_Exception::logException($e);
+                $failureCount++;
+            }
+        }
+
+        return Mage::helper('ho_recurring')->__(
+            'Quotes created, %s success full, %s failed', $successCount, $failureCount
+        );
     }
 
     /**
@@ -128,7 +165,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         /** @var Mage_Checkout_CartController $action */
         $action = Mage::app()->getFrontController()->getAction();
 
-        if (! in_array($action->getFullActionName(), ['checkout_cart_updateItemOptions', 'checkout_cart_add'])) {
+        if (! $action || ! in_array($action->getFullActionName(), ['checkout_cart_updateItemOptions', 'checkout_cart_add'])) {
             return;
         }
 

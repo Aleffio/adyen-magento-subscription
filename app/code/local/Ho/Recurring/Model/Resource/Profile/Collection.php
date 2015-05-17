@@ -111,6 +111,10 @@ class Ho_Recurring_Model_Resource_Profile_Collection extends Mage_Core_Model_Res
         return $this;
     }
 
+
+    /**
+     * @return $this
+     */
     public function addBillingAgreementToSelect()
     {
         $this->getSelect()->joinInner(
@@ -118,6 +122,40 @@ class Ho_Recurring_Model_Resource_Profile_Collection extends Mage_Core_Model_Res
             'ba.agreement_id = main_table.billing_agreement_id',
             ['ba_method_code' => 'method_code', 'ba_reference_id' => 'reference_id']
         );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function addScheduleQuoteFilter()
+    {
+        $this->addFieldToFilter('status', array('in' => Ho_Recurring_Model_Profile::getScheduleQuoteStatuses()));
+        $this->getSelect()->joinLeft(
+            ['profile_quote' => $this->getTable('ho_recurring/profile_quote')],
+            'main_table.entity_id = profile_quote.profile_id AND profile_quote.order_id IS NULL',
+            ['scheduled_at']
+        );
+        $this->getSelect()->where('scheduled_at IS NULL');
+
+        return $this;
+    }
+
+
+    /**
+     * @return $this
+     */
+    public function addPlaceOrderFilter()
+    {
+        $this->addFieldToFilter('status', array('in' => Ho_Recurring_Model_Profile::getPlaceOrderStatuses()));
+        $this->getSelect()->joinLeft(
+            ['profile_quote' => $this->getTable('ho_recurring/profile_quote')],
+            'main_table.entity_id = profile_quote.profile_id',
+            ['scheduled_at']
+        );
+
+        $this->getSelect()->where("scheduled_at < ".now()."'");
 
         return $this;
     }
