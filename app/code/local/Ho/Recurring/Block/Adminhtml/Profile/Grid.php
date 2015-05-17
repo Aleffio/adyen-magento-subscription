@@ -57,7 +57,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
         $this->addColumn('entity_id', [
             'header'    => $helper->__('ID'),
             'align'     =>'right',
-            'width'     => '80px',
+            'width'     => 1,
             'index'     => 'entity_id',
         ]);
 
@@ -65,13 +65,20 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             'header'    => $helper->__('Status'),
             'index'     => 'status',
             'type'      => 'options',
-            'options'   => Mage::getModel('ho_recurring/profile')->getStatuses(),
+            'options'   => Ho_Recurring_Model_Profile::getStatuses(),
             'renderer'  => 'Ho_Recurring_Block_Adminhtml_Profile_Renderer_Status',
+            'filter_index' => 'main_table.status'
+        ]);
+
+        $this->addColumn('error_message', [
+            'header'    => $helper->__('Error Message'),
+            'index'     => 'error_message',
         ]);
 
         $this->addColumn('customer_email', [
             'header'    => $helper->__('Customer Email'),
             'index'     => 'customer_email',
+            'filter_index' => 'ce.email'
         ]);
 
         $this->addColumn('customer_name', [
@@ -83,12 +90,14 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             'type'      => 'options',
             'header'    => $helper->__('Payment method'),
             'index'     => 'ba_method_code',
-            'options'   => Mage::helper('payment')->getAllBillingAgreementMethods()
+            'options'   => Mage::helper('payment')->getAllBillingAgreementMethods(),
+            'filter_index' => 'ba.method_code'
         ]);
 
         $this->addColumn('ba_reference_id', [
             'header'    => $helper->__('Billing Agreement'),
             'index'     => 'ba_reference_id',
+            'filter_index' => 'ba.reference_id'
         ]);
 
         $this->addColumn('created_at', [
@@ -97,17 +106,17 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             'type'      => 'datetime'
         ]);
 
-        $this->addColumn('ends_at', [
-            'header'    => $helper->__('Ends at'),
-            'index'     => 'ends_at',
-            'type'      => 'datetime'
-        ]);
-
-        $this->addColumn('next_order_at', [
-            'header'    => $helper->__('Next shipment'),
-            'index'     => 'next_order_at',
-            'type'      => 'datetime'
-        ]);
+//        $this->addColumn('ends_at', [
+//            'header'    => $helper->__('Ends at'),
+//            'index'     => 'ends_at',
+//            'type'      => 'datetime'
+//        ]);
+//
+//        $this->addColumn('next_order_at', [
+//            'header'    => $helper->__('Next shipment'),
+//            'index'     => 'next_order_at',
+//            'type'      => 'datetime'
+//        ]);
 
         $this->addColumn('action', [
             'header'    => $helper->__('Actions'),
