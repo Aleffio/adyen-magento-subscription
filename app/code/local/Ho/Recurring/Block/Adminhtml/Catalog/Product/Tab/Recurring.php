@@ -94,6 +94,7 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
         $profileFieldset->addField($elementId . '[label]', 'text', array(
             'name'      => $elementId . '[label]',
             'label'     => $helper->__('Label'),
+//            'required'  => true,
         ))->setValue($profile ? $profile->getLabel() : '');
 
         $profileFieldset->addField($elementId . '[website_id]', 'select', array(
@@ -110,19 +111,24 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
 
         $profileFieldset->addField($elementId . '[term]', 'text', array(
             'name'      => $elementId . '[term]',
-            'label'     => $helper->__('Billing Period'),
+//            'required'  => true,
+//            'class' => 'validate-digits validate-digits-range digits-range-1-3153600000',
+            'label'     => $helper->__('Billing Frequency'),
         ))->setValue($profile ? $profile->getTerm() : '');
 
         $profileFieldset->addField($elementId . '[term_type]', 'select', array(
             'name'      => $elementId . '[term_type]',
-            'label'     => $helper->__('Billing Period Type'),
+            'label'     => $helper->__('Billing Period Unit'),
+//            'required'  => true,
             'values'    => Mage::getSingleton('ho_recurring/system_config_source_term')->toOptionArray(true),
         ))->setValue($profile ? $profile->getTermType() : '');
 
         $profileFieldset->addField($elementId . '[min_billing_cycles]', 'text', array(
             'name'      => $elementId . '[min_billing_cycles]',
+//            'required'  => true,
+//            'class'     => 'validate-digits validate-digits-range digits-range-1-3153600000',
             'label'     => $helper->__('Min. Billing Cycles'),
-        ))->setValue($profile ? $profile->getMinBillingCycles() : '');
+        ))->setValue($profile ? $profile->getMinBillingCycles() : '1');
 
         $profileFieldset->addField($elementId . '[max_billing_cycles]', 'text', array(
             'name'      => $elementId . '[max_billing_cycles]',
@@ -131,8 +137,10 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
 
         $profileFieldset->addField($elementId . '[qty]', 'text', array(
             'name'      => $elementId . '[qty]',
+//            'required'  => true,
+//            'class'     => 'validate-number',
             'label'     => $helper->__('Qty in Profile'),
-        ))->setValue($profile ? $profile->getQty() : '');
+        ))->setValue($profile ? $profile->getQty() * 1 : '1');
 
         $profileFieldset->addField($elementId . '[price]', 'text', array(
             'name'      => $elementId . '[price]',
