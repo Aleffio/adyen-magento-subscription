@@ -53,7 +53,6 @@
 class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 {
     const STATUS_ACTIVE             = 'active';
-    const STATUS_INACTIVE           = 'inactive';
     const STATUS_QUOTE_ERROR        = 'quote_error';
     const STATUS_ORDER_ERROR        = 'order_error';
     const STATUS_CANCELED           = 'canceled';
@@ -301,7 +300,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     {
         $this->setStatus(self::STATUS_ACTIVE);
         $this->setErrorMessage(null);
-        $this->save();
+        return $this;
     }
 
     /**
@@ -311,16 +310,34 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     {
         $helper = Mage::helper('ho_recurring');
 
-        return array(
+        return [
             self::STATUS_ACTIVE             => $helper->__('Active'),
-            self::STATUS_INACTIVE           => $helper->__('Inactive'),
             self::STATUS_QUOTE_ERROR        => $helper->__('Quote Creation Error'),
             self::STATUS_ORDER_ERROR        => $helper->__('Order Creation Error'),
             self::STATUS_CANCELED           => $helper->__('Canceled'),
             self::STATUS_EXPIRED            => $helper->__('Expired'),
             self::STATUS_AWAITING_PAYMENT   => $helper->__('Awaiting Payment'),
             self::STATUS_AGREEMENT_EXPIRED  => $helper->__('Agreement Expired'),
-        );
+        ];
+    }
+
+    public function getActiveStatuses()
+    {
+        return [
+            self::STATUS_ACTIVE,
+            self::STATUS_QUOTE_ERROR,
+            self::STATUS_ORDER_ERROR,
+            self::STATUS_AWAITING_PAYMENT
+        ];
+    }
+
+    public function getInactiveStatuses()
+    {
+        return [
+            self::STATUS_CANCELED,
+            self::STATUS_EXPIRED,
+            self::STATUS_AGREEMENT_EXPIRED
+        ];
     }
 
     /**
