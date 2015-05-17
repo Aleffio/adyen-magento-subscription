@@ -205,10 +205,9 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      * @param bool $active
      * @return Ho_Recurring_Model_Resource_Profile_Item_Collection
      */
-    public function getItems($active = true)
+    public function getItemCollection($active = true)
     {
-        $items = Mage::getModel('ho_recurring/profile_item')
-            ->getCollection()
+        $items = Mage::getResourceModel('ho_recurring/profile_item_collection')
             ->addFieldToFilter('profile_id', $this->getId());
 
         if ($active) {
@@ -216,6 +215,16 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         }
 
         return $items;
+    }
+
+    /**
+     * @deprecated Please use getItemCollection
+     * @param bool $active
+     * @return Ho_Recurring_Model_Resource_Profile_Item_Collection
+     */
+    public function getItems($active = true)
+    {
+        return $this->getItemCollection($active);
     }
 
     /**
