@@ -187,6 +187,20 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             ->delete();
     }
 
+
+    /**
+     * @return Mage_Customer_Model_Customer
+     */
+    public function getCustomer()
+    {
+        if (! $this->hasData('_customer')) {
+            $customer = Mage::getModel('customer/customer')->load($this->getCustomerId());
+            $this->setData('_customer', $customer);
+        }
+
+        return $this->_getData('_customer');
+    }
+
     /**
      * @param bool $active
      * @return Ho_Recurring_Model_Resource_Profile_Item_Collection
