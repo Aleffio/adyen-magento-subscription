@@ -76,6 +76,8 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @deprecated The profile model can't know about the service model
+     *             It is the service models resposibility to convert the profile to a quote.
      * @return Mage_Sales_Model_Quote
      */
     public function createQuote()
@@ -84,8 +86,8 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             $quote = Mage::getModel('ho_recurring/service_profile')->createQuote($this);
 
             $this->saveQuoteAtProfile($quote);
-
             $this->setActive();
+            $this->save();
 
             return $quote;
         }
@@ -99,6 +101,8 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @deprecated The profile model can't know about the service model
+     *             It is the service models resposibility to convert the quote to an order.
      * @param Mage_Sales_Model_Quote|null $quote
      * @return Mage_Sales_Model_Order
      */
@@ -129,6 +133,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             $this->saveOrderAtProfile($order);
 
             $this->setActive();
+            $this->save();
 
             return $order;
         }
@@ -437,7 +442,6 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     {
         return $this->getOriginalOrder()->getBillingAddress()->getData();
     }
-
 
     /**
      * @todo remove hard dependency on original order
