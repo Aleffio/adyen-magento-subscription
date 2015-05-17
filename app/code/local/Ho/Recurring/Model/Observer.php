@@ -60,7 +60,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Load recurring product profiles as custom option at product
+     * Load recurring product profiles as custom option at product.
      *
      * @todo Loading this custom option causes the loading of this option in the Custom Options tab in the backend,
      * @todo this must be avoided
@@ -71,6 +71,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     public function addRecurringProductProfilesOption(Varien_Event_Observer $observer)
     {
         /** @var Mage_Catalog_Model_Product $product */
+        /** @noinspection PhpUndefinedMethodInspection */
         $product = $observer->getProduct();
 
         /** @var Mage_Catalog_Model_Product_Option $option */
@@ -109,55 +110,64 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         $product->addOption($option);
 
         // Set the has_options attribute to true, or else the custom options won't be loaded on the frontend
+        /** @noinspection PhpUndefinedMethodInspection */
         $product->setHasOptions(true);
+        /** @noinspection PhpUndefinedMethodInspection */
+        $product->setRequiredOptions(true);
     }
 
     /**
      * Add the selected recurring product profile to the quote item, when one is selected
      *
-     * @event catalog_product_load_after
+     *
+     * @event catalog_product_load_after @todo use a better event, this gets called way to often.
      * @param Varien_Event_Observer $observer
      */
     public function addRecurringProductProfileToQuote(Varien_Event_Observer $observer)
     {
-        $productProfileOptionId = Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID;
-
         /** @var Mage_Checkout_CartController $action */
         $action = Mage::app()->getFrontController()->getAction();
 
-        if ($action->getFullActionName() == 'checkout_cart_add') {
-            $productId = $action->getRequest()->getParam('product');
-            $options = $action->getRequest()->getParam('options');
-
-            if (array_key_exists($productProfileOptionId, $options)) {
-                $recurringOption = $options[$productProfileOptionId];
-
-                /** @var Mage_Catalog_Model_Product $product */
-                $product = $observer->getProduct();
-
-                if ($product->getId() != $productId) {
-                    // Only add custom options if this is the product that is actually added to the cart
-                    // This is done because there can be other products added to the cart automatically after
-                    // a product is added, at which we don't want to save the additional recurring options
-                    return;
-                }
-
-                $additionalOptions = array();
-                if ($additionalOption = $product->getCustomOption('additional_options')) {
-                    $additionalOptions = (array) unserialize($additionalOption->getValue());
-                }
-
-                // Add the product profile ID to the additional options array
-                $additionalOptions[] = array(
-                    'label' => $productProfileOptionId,
-                    'value' => $recurringOption,
-                );
-
-                $product
-                    ->addCustomOption('additional_options', serialize($additionalOptions));
-            }
+        if (! in_array($action->getFullActionName(), ['checkout_cart_updateItemOptions', 'checkout_cart_add'])) {
+            return;
         }
-    }
+
+        $productId = $action->getRequest()->getParam('product');
+        $options = $action->getRequest()->getParam('options');
+        if (! $options) {
+            return;
+        }
+
+        if (! array_key_exists(Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID, $options)) {
+            return;
+        }
+
+        $recurringOption = $options[Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID];
+
+        /** @var Mage_Catalog_Model_Product $product */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $product = $observer->getProduct();
+
+        if ($product->getId() != $productId) {
+            // Only add custom options if this is the product that is actually added to the cart
+            // This is done because there can be other products added to the cart automatically after
+            // a product is added, at which we don't want to save the additional recurring options
+            return;
+        }
+
+        $additionalOptions = array();
+        if ($additionalOption = $product->getCustomOption('additional_options')) {
+            $additionalOptions = (array) unserialize($additionalOption->getValue());
+        }
+
+        // Add the product profile ID to the additional options array
+        $additionalOptions[] = array(
+            'label' => Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID,
+            'value' => $recurringOption,
+        );
+
+        $product->addCustomOption('additional_options', serialize($additionalOptions));
+}
 
     /**
      * Save additional (recurring) product options (added in addRecurringProductProfileToQuote)
@@ -169,8 +179,10 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     public function addRecurringProductProfileToOrder(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+        /** @noinspection PhpUndefinedMethodInspection */
         $quoteItem = $observer->getItem();
         /** @var Mage_Sales_Model_Order_Item $orderItem */
+        /** @noinspection PhpUndefinedMethodInspection */
         $orderItem = $observer->getOrderItem();
 
         if ($additionalOptions = $quoteItem->getOptionByCode('additional_options')) {
