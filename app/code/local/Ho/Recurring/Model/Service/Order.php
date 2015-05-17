@@ -66,8 +66,8 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
                 ->setSku($orderItem->getSku())
                 ->setName($orderItem->getName())
                 ->setLabel($productProfile->getLabel())
-                ->setPrice($productProfile->getPrice())
-                ->setPriceInclTax($productProfile->getPrice()) // @todo Is now same price as price column
+                ->setPrice($orderItem->getPrice())
+                ->setPriceInclTax($orderItem->getPriceInclTax())
                 ->setQty($productProfile->getQty())
                 ->setOnce(0)
                 ->setMinBillingCycles($productProfile->getMinBillingCycles())
