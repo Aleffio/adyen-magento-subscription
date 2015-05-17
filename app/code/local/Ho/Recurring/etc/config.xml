@@ -23,7 +23,7 @@
 <config>
     <modules>
         <Ho_Recurring>
-            <version>0.10.0</version>
+            <version>0.13.0</version>
         </Ho_Recurring>
     </modules>
     <global>
@@ -94,6 +94,14 @@
                     </ho_recurring_add_recurring_profiles_options_to_order>
                 </observers>
             </sales_convert_quote_item_to_order_item>
+            <sales_order_invoice_register>
+                <observers>
+                    <ho_recurring_convert_order_to_profile>
+                        <class>ho_recurring/observer</class>
+                        <method>convertOrderToProfile</method>
+                    </ho_recurring_convert_order_to_profile>
+                </observers>
+            </sales_order_invoice_register>
         </events>
     </global>
 
