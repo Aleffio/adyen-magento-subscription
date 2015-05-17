@@ -19,7 +19,8 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Adminhtml_Block_Widget_Grid
+class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products
+    extends Mage_Adminhtml_Block_Widget_Grid
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     public function __construct()
@@ -35,12 +36,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
 
     protected function _prepareCollection()
     {
-        /** @var Ho_Recurring_Model_Profile $profile */
-        $profile = Mage::registry('ho_recurring');
-
-        $collection = $profile->getItems();
-
-        $this->setCollection($collection);
+        $this->setCollection($this->_getProfile()->getItemCollection());
 
         return parent::_prepareCollection();
     }
@@ -52,12 +48,14 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
         $this->addColumn('sku', array(
             'header'    => $helper->__('SKU'),
             'index'     => 'sku',
+            'sortable'  => false
         ));
 
         $this->addColumn('name', array(
             'header'    => $helper->__('Product Name'),
             'index'     => 'name',
             'width'     => '100px',
+            'sortable'  => false
         ));
 
         $this->addColumn('price', array(
@@ -65,6 +63,8 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
             'index'     => 'price',
             'type'      => 'currency',
             'currency'  => 'base_currency_code',
+            'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
+            'sortable'  => false
         ));
 
         $this->addColumn('price_incl_tax', array(
@@ -72,27 +72,37 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
             'index'     => 'price_incl_tax',
             'type'      => 'currency',
             'currency'  => 'base_currency_code',
+            'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
+            'sortable'  => false
         ));
 
         $this->addColumn('qty', array(
             'header'    => $helper->__('Qty'),
+            'type'      => 'number',
             'index'     => 'qty',
+            'sortable'  => false
         ));
 
         $this->addColumn('row_total', array(
             'header'    => $helper->__('Row Total'),
-            'renderer'  => 'Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Renderer_RowTotal',
+            'index'     => 'price_incl_tax',
+            'type'      => 'currency',
+            'currency'  => 'base_currency_code',
+            'renderer'  => 'ho_recurring/adminhtml_profile_edit_tabs_renderer_rowTotal',
+            'sortable'  => false
         ));
 
         $this->addColumn('once', array(
             'header'    => $helper->__('Once'),
             'index'     => 'once',
+            'sortable'  => false
         ));
 
         $this->addColumn('created_at', array(
             'header'    => $helper->__('Added at'),
             'index'     => 'created_at',
             'type'      => 'datetime',
+            'sortable'  => false
         ));
 
         $this->addColumn('status', array(
@@ -100,10 +110,12 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
             'index'     => 'status',
             'type'      => 'options',
             'options'   => Mage::getModel('ho_recurring/profile_item')->getStatuses(),
+            'sortable'  => false
         ));
 
         $this->addColumn('action', array(
             'header'    => $helper->__('Action'),
+            'sortable'  => false
             // @todo render
         ));
 
@@ -111,23 +123,11 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products extends Mage_Admin
     }
 
     /**
-     * Disable filter and sorting for every column
-     *
-     * @param string $columnId
-     * @param array $column
-     * @throws Exception
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return Ho_Recurring_Model_Profile
      */
-    public function addColumn($columnId, $column)
+    protected function _getProfile()
     {
-        $default = array(
-            'filter'    => false,
-            'sortable'  => false,
-        );
-
-        $column = array_merge($column, $default);
-
-        return parent::addColumn($columnId, $column);
+        return Mage::registry('ho_recurring');
     }
 
     /**
