@@ -193,4 +193,18 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
             $orderItem->setProductOptions($options);
         }
     }
+
+
+    public function convertOrderToProfile(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Order $order */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $order = $observer->getOrder();
+        $profiles = Mage::getSingleton('ho_recurring/service_order')->createProfile($order);
+
+        foreach ($profiles as $profile) {
+            $message = Mage::helper('ho_recurring')->__("Created a recurring profile (#%s) from order.", $profile->getId());
+            $order->addStatusHistoryComment($message);
+        }
+    }
 }

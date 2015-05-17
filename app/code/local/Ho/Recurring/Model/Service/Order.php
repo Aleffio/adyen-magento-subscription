@@ -31,6 +31,7 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
         // Create a profile for each order item
         // @todo Check if order items can be merged in one profile (same term, billing cycles, etc)
 
+        $profiles = [];
         /** @var Mage_Sales_Model_Order_Item $orderItem */
         foreach ($order->getAllVisibleItems() as $orderItem) {
             /** @var Ho_Recurring_Model_Product_Profile $productProfile */
@@ -53,7 +54,6 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
                 ->setTerm($productProfile->getTerm())
                 ->setTermType($productProfile->getTermType())
                 ->setNextOrderAt('2015-06-01 12:00:00') // @todo Set correct date
-                ->setPaymentMethod($billingAgreement->getMethodCode())
                 ->setShippingMethod($order->getShippingMethod())
                 ->save();
 
@@ -74,10 +74,13 @@ class Ho_Recurring_Model_Service_Order extends Mage_Core_Model_Abstract
                 ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
                 ->setCreatedAt(now());
 
+            //@todo add the items to the profile and call $profile save so it runs in a transaction.
             $item->save();
 
             $profile->saveOrderAtProfile($order);
+            $profiles[] = $profile;
         }
+        return $profiles;
     }
 
     /**
