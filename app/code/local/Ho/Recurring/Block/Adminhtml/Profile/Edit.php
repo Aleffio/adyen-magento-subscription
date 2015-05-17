@@ -30,20 +30,20 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
 
         $this->_removeButton('save');
 
-        $this->_addButton('create_quote', array(
+        if (! $this->getProfile()->getQuote()) {
+            $this->_addButton('create_quote', [
                 'label' => Mage::helper('ho_recurring')->__('Create Quote'),
                 'onclick' => "setLocation('{$this->getUrl('*/*/createQuote',
-                    array('id' => $this->getProfile()->getId()))}')",
-            ), 10
-        );
+                    ['id' => $this->getProfile()->getId()])}')",
+            ], 10);
+        }
 
         if ($this->getProfile()->getQuoteId()) {
-            $this->_addButton('create_order', array(
-                    'label' => Mage::helper('ho_recurring')->__('Create Order'),
-                    'onclick' => "setLocation('{$this->getUrl('*/*/createOrder',
-                        array('id' => $this->getProfile()->getId()))}')",
-               ), 20
-            );
+            $this->_addButton('create_order', [
+                'label' => Mage::helper('ho_recurring')->__('Create Order'),
+                'onclick' => "setLocation('{$this->getUrl('*/*/createOrder',
+                    ['id' => $this->getProfile()->getId()])}')",
+           ], 20);
         }
     }
 
@@ -52,7 +52,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
         $profile = $this->getProfile();
 
         if ($profile->getId()) {
-            return Mage::helper('ho_recurring')->__('Recurring Profile <i>#%s</i> of <i>%s</i>',
+            return Mage::helper('ho_recurring')->__('Recurring Profile <i>#%s</i> for <i>%s</i>',
                 $profile->getId(), $profile->getCustomerName());
         }
         else {
