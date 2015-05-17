@@ -36,22 +36,24 @@
             <tr>
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Customer') ?></label></td>
                 <td class="value">
-                    <a href="<?=$this->getCustomerViewUrl(); ?>" target="_blank"><strong><?=$this->htmlEscape($_order->getCustomerName()); ?></strong></a>
+                    <a href="<?php echo $this->getCustomerViewUrl(); ?>" target="_blank">
+                        <strong><?php echo $this->escapeHtml($_order->getCustomerName()); ?></strong>
+                    </a>
                 </td>
             </tr>
             <tr>
-                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Status'); ?></label></td>
-                <td class="value"><?=$_profile->renderStatusBar();?></td>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Status'); ?></label></td>
+                <td class="value"><?php echo $_profile->renderStatusBar();?></td>
             </tr>
             <?php if ($_profile->getErrorMessage()): ?>
                 <tr>
-                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Error Messsage'); ?></label></td>
-                    <td class="value"><?=$_profile->getErrorMessage();?></td>
+                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Error Messsage'); ?></label></td>
+                    <td class="value"><?php echo $_profile->getErrorMessage();?></td>
                 </tr>
             <?php endif; ?>
             <tr>
-                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Created from'); ?></label></td>
-                <td class="value"><strong><?=$this->getOrderStoreName(); ?></strong></td>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Created from'); ?></label></td>
+                <td class="value"><strong><?php echo $this->getOrderStoreName(); ?></strong></td>
             </tr>
         </table>
     </div>
@@ -66,20 +68,20 @@
     <div class="fieldset">
         <table cellspacing="0" class="form-list">
             <tr>
-                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Created at'); ?></label></td>
-                <td class="value"><strong><?=$_profile->getCreatedAt(); ?></strong></td>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Created at'); ?></label></td>
+                <td class="value"><strong><?php echo $_profile->getCreatedAt(); ?></strong></td>
             </tr>
             <tr>
-                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Upcoming shipment'); ?></label></td>
-                <td class="value"><strong><?=$_profile->getNextOrderAt(); ?></strong></td>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Upcoming shipment'); ?></label></td>
+                <td class="value"><strong><?php echo $_profile->getNextOrderAt(); ?></strong></td>
             </tr>
             <tr>
-                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Term'); ?></label></td>
-                <td class="value"><strong><?=$_profile->getTermLabel(); ?></strong></td>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Term'); ?></label></td>
+                <td class="value"><strong><?php echo $_profile->getTermLabel(); ?></strong></td>
             </tr>
             <tr>
-                <td class="label"><label><?=Mage::helper('ho_recurring')->__('Runs until'); ?></label></td>
-                <td class="value"><strong><?=$_profile->getEndsAt(); ?></strong></td>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Runs until'); ?></label></td>
+                <td class="value"><strong><?php echo $_profile->getEndsAt(); ?></strong></td>
             </tr>
         </table>
     </div>
@@ -114,30 +116,30 @@
     <!--Payment Info-->
     <div class="entry-edit">
         <div class="entry-edit-head">
-            <h4 class="icon-head head-billing-address"><?=Mage::helper('ho_recurring')->__('Billing Agreement Information'); ?></h4>
+            <h4 class="icon-head head-billing-address"><?php echo Mage::helper('ho_recurring')->__('Billing Agreement Information'); ?></h4>
         </div>
         <div class="fieldset">
             <table cellspacing="0" class="form-list">
                 <tr>
-                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Reference ID'); ?></label></td>
-                    <td class="value"><strong><a href="<?=$this->getBillingAgreementViewUrl();?>" target="_blank">
-                                <?=$_billingAgreement->getReferenceId(); ?></a></strong></td>
+                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Reference ID'); ?></label></td>
+                    <td class="value"><strong><a href="<?php echo $this->getBillingAgreementViewUrl();?>" target="_blank">
+                                <?php echo $_billingAgreement->getReferenceId(); ?></a></strong></td>
                 </tr>
                 <tr>
-                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Status'); ?></label></td>
-                    <td class="value"><strong><?=$_billingAgreement->getStatusLabel(); ?></strong></td>
+                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Status'); ?></label></td>
+                    <td class="value"><strong><?php echo $_billingAgreement->getStatusLabel(); ?></strong></td>
                 </tr>
                 <tr>
-                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Method code'); ?></label></td>
-                    <td class="value"><strong><?=$_billingAgreement->getMethodCode(); ?></strong></td>
+                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Method code'); ?></label></td>
+                    <td class="value"><strong><?php echo $_billingAgreement->getMethodCode(); ?></strong></td>
                 </tr>
                 <tr>
-                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Created At'); ?></label></td>
-                    <td class="value"><strong><?=$_billingAgreement->getCreatedAt(); ?></strong></td>
+                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Created At'); ?></label></td>
+                    <td class="value"><strong><?php echo $_billingAgreement->getCreatedAt(); ?></strong></td>
                 </tr>
                 <tr>
-                    <td class="label"><label><?=Mage::helper('ho_recurring')->__('Label'); ?></label></td>
-                    <td class="value"><strong><?=$_billingAgreement->getAgreementLabel(); ?></strong></td>
+                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Label'); ?></label></td>
+                    <td class="value"><strong><?php echo $_billingAgreement->getAgreementLabel(); ?></strong></td>
                 </tr>
             </table>
         </div>
@@ -147,7 +149,7 @@
     <!--Shipping Info-->
     <div class="entry-edit">
         <div class="entry-edit-head">
-            <h4 class="icon-head head-shipping-address"><?=Mage::helper('ho_recurring')->__('Shipping &amp; Handling Information'); ?></h4>
+            <h4 class="icon-head head-shipping-address"><?php echo Mage::helper('ho_recurring')->__('Shipping &amp; Handling Information'); ?></h4>
         </div>
         <fieldset>
             <?php  if ($_order->getTracksCollection()->count()) : ?>

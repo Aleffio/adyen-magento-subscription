@@ -50,14 +50,14 @@
                 <?php /** @var Mage_Sales_Model_Quote_Item $_item */ ?>
                 <tbody class="<?php echo $i%2 ? 'even' : 'odd'; ?>">
                 <tr>
-                    <td><?=$_item->getName(); ?></td>
-                    <td><?=$helper->formatPrice($_item->getPriceInclTax()); ?></td>
-                    <td><?=$_item->getQty(); ?></td>
-                    <td><?=$helper->formatPrice($_item->getRowTotal()); ?></td>
-                    <td><?=$helper->formatPrice($_item->getTaxAmount()); ?></td>
-                    <td><?=number_format($_item->getTaxPercent(), 0); ?>%</td>
-                    <td><?=$helper->formatPrice($_item->getDiscountAmount()); ?></td>
-                    <td><?=$helper->formatPrice($_item->getRowTotalInclTax()); ?></td>
+                    <td><?php echo $_item->getName(); ?></td>
+                    <td><?php echo $helper->formatPrice($_item->getPriceInclTax()); ?></td>
+                    <td><?php echo $_item->getQty(); ?></td>
+                    <td><?php echo $helper->formatPrice($_item->getRowTotal()); ?></td>
+                    <td><?php echo $helper->formatPrice($_item->getTaxAmount()); ?></td>
+                    <td><?php echo number_format($_item->getTaxPercent(), 0); ?>%</td>
+                    <td><?php echo $helper->formatPrice($_item->getDiscountAmount()); ?></td>
+                    <td><?php echo $helper->formatPrice($_item->getRowTotalInclTax()); ?></td>
                 </tr>
                 </tbody>
             <?php $i++; endforeach; ?>
@@ -65,7 +65,12 @@
     </div>
 </div>
 
+<br /><br />
+
 <div class="box-right entry-edit">
     <div class="entry-edit-head"><h4><?php echo Mage::helper('sales')->__('Totals') ?></h4></div>
-    <div id="order-totals" class="order-totals"><?php echo $this->getChildHtml('order_totals') ?></div>
+    <div id="order-totals" class="order-totals">
+        <?php echo $this->getChildHtml('order_totals') ?>
+    </div>
 </div>
+
