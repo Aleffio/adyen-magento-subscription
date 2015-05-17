@@ -29,21 +29,33 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Wid
         parent::__construct();
 
         $this->_removeButton('save');
+        $this->_removeButton('reset');
 
-        if (! $this->getProfile()->getQuote()) {
+        if ($this->getProfile()->canCancel()) {
+            $url = $this->getUrl('*/*/stopProfile', ['id' => $this->getProfile()->getId(), 'reason' => '%s']);
+            $js = <<<JS
+                var reason = prompt('{$this->helper('ho_recurring')->__("Please provide a reason why the profile is stopped")}');
+                if (reason) {
+                    var url = '{$url}';
+                    url = url.replace('%s', encodeURIComponent(reason));
+                    setLocation(url);
+                }
+JS;
+
+            $this->_addButton('stop_profile', [
+                'class'     => 'delete',
+                'label' => Mage::helper('ho_recurring')->__('Stop Profile'),
+                'onclick' => $js,
+            ], 10);
+        }
+
+
+        if ($this->getProfile()->canCreateQuote()) {
             $this->_addButton('create_quote', [
                 'label' => Mage::helper('ho_recurring')->__('Create Quote'),
                 'onclick' => "setLocation('{$this->getUrl('*/*/createQuote',
                     ['id' => $this->getProfile()->getId()])}')",
-            ], 10);
-        }
-
-        if ($this->getProfile()->getQuoteId()) {
-            $this->_addButton('create_order', [
-                'label' => Mage::helper('ho_recurring')->__('Create Order'),
-                'onclick' => "setLocation('{$this->getUrl('*/*/createOrder',
-                    ['id' => $this->getProfile()->getId()])}')",
-           ], 20);
+            ], 20);
         }
     }
 
