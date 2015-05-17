@@ -55,8 +55,8 @@
                 </block>
                 <action method="addTab"><name>profile_general</name><block>profile_general_block</block></action>
                 <action method="addTab"><name>profile_products</name><block>ho_recurring/adminhtml_profile_edit_tabs_products</block></action>
-                <action method="addTab"><name>profile_past_orders</name><block>ho_recurring/adminhtml_profile_edit_tabs_pastOrders</block></action>
                 <action method="addTab"><name>profile_upcoming_order</name><block>profile_upcoming_order_block</block></action>
+                <action method="addTab"><name>profile_past_orders</name><block>ho_recurring/adminhtml_profile_edit_tabs_pastOrders</block></action>
             </block>
         </reference>
     </ho_recurring_adminhtml_profile_edit>
