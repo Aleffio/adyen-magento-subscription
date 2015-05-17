@@ -212,8 +212,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
                     Mage::getSingleton('adminhtml/session')->addSuccess(
                         Mage::helper('ho_recurring')->__('Order successfully created (#%s)', $order->getIncrementId())
                     );
-                }
-                catch (Mage_Core_Exception $e) {
+                } catch (Exception $e) {
                     Mage::getSingleton('adminhtml/session')->addError(
                         Mage::helper('ho_recurring')->__('An error occurred while trying to create a order for this profile: ' . $e->getMessage())
                     );
