@@ -35,7 +35,9 @@ class Ho_Recurring_Model_Service_Quote
     ) {
         try {
             if (! $profile->canCreateOrder()) {
-                Ho_Recurring_Exception::throwException('Can not create quote from profile');
+                Ho_Recurring_Exception::throwException(
+                    Mage::helper('ho_recurring')->__('Not allowed to create order from quote')
+                );
             }
 
             $quote->collectTotals();
@@ -58,6 +60,12 @@ class Ho_Recurring_Model_Service_Quote
                 ->save();
 
             return $service->getOrder();
+
+        } catch (Mage_Payment_Exception $e) {
+            $profile->setStatus($profile::STATUS_PAYMENT_ERROR);
+            $profile->setErrorMessage($e->getMessage());
+            $profile->save();
+            throw $e;
         } catch (Exception $e) {
             $profile->setStatus($profile::STATUS_ORDER_ERROR);
             $profile->setErrorMessage($e->getMessage());
