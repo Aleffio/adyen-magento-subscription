@@ -425,4 +425,43 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     {
         return $this->getOriginalOrder()->getShippingAddress()->getData();
     }
+
+    public function canCancel()
+    {
+        return $this->getStatus() != self::STATUS_CANCELED;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function canCreateQuote()
+    {
+//        if ($this->getQuoteId()) {
+//            return false;
+//        }
+
+        if (! in_array($this->getStatus(), $this->getActiveStatuses())) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function canCreateOrder()
+    {
+        if (! $this->getQuoteId()) {
+            return false;
+        }
+
+        if (! in_array($this->getStatus(), $this->getActiveStatuses())) {
+            return false;
+        }
+
+        return true;
+    }
 }
