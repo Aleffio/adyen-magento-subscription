@@ -22,31 +22,36 @@
 /**
  * Class Ho_Recurring_Model_Profile
  *
- * @method string getStatus()
- * @method $this setStatus(string $value)
- * @method $this setErrorMessage(string $value)
- * @method int getCustomerId()
- * @method $this setCustomerId(int $value)
- * @method string getCustomerName()
- * @method $this setCustomerName(string $value)
- * @method int getOrderId()
- * @method $this setOrderId(int $value)
+ * @method string getErrorMessage()
+ * @method Ho_Recurring_Model_Profile setErrorMessage(string $value)
+ * @method string getStoreId()
+ * @method Ho_Recurring_Model_Profile setStoreId(string $value)
+ * @method string getNextOrderAt()
+ * @method Ho_Recurring_Model_Profile setNextOrderAt(string $value)
+ * @method string getCreatedAt()
+ * @method Ho_Recurring_Model_Profile setCreatedAt(string $value)
+ * @method int getEntityId()
+ * @method Ho_Recurring_Model_Profile setEntityId(int $value)
+ * @method string getStockId()
+ * @method Ho_Recurring_Model_Profile setStockId(string $value)
  * @method int getBillingAgreementId()
- * @method $this setBillingAgreementId(int $value)
- * @method int getStoreId()
- * @method $this setStoreId(int $value)
- * @method datetime getCreatedAt()
- * @method $this setCreatedAt(datetime $value)
- * @method datetime getEndsAt()
- * @method $this setEndsAt(datetime $value)
- * @method int getTerm()
- * @method $this setTerm(int $value)
- * @method string getTermType()
- * @method $this setTermType(string $value)
- * @method string getPaymentMethod()
- * @method $this setPaymentMethod(string $value)
+ * @method Ho_Recurring_Model_Profile setBillingAgreementId(int $value)
  * @method string getShippingMethod()
- * @method $this setShippingMethod(string $value)
+ * @method Ho_Recurring_Model_Profile setShippingMethod(string $value)
+ * @method int getTerm()
+ * @method Ho_Recurring_Model_Profile setTerm(int $value)
+ * @method string getCustomerName()
+ * @method Ho_Recurring_Model_Profile setCustomerName(string $value)
+ * @method string getEndsAt()
+ * @method Ho_Recurring_Model_Profile setEndsAt(string $value)
+ * @method int getCustomerId()
+ * @method Ho_Recurring_Model_Profile setCustomerId(int $value)
+ * @method int getOrderId()
+ * @method Ho_Recurring_Model_Profile setOrderId(int $value)
+ * @method string getTermType()
+ * @method Ho_Recurring_Model_Profile setTermType(string $value)
+ * @method string getStatus()
+ * @method Ho_Recurring_Model_Profile setStatus(string $value)
  */
 class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 {
@@ -348,14 +353,6 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     public function getBillingAgreement()
     {
         return Mage::getModel('adyen/billing_agreement')->load($this->getBillingAgreementId());
-    }
-
-    /**
-     * @return bool|string
-     */
-    public function getErrorMessage()
-    {
-        return $this->getData('error_message');
     }
 
     /**

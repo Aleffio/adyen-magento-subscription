@@ -45,6 +45,7 @@ class Ho_Recurring_Model_Service_Order
             /** @var Ho_Recurring_Model_Profile $profile */
             $profile = Mage::getModel('ho_recurring/profile')
                 ->setStatus(Ho_Recurring_Model_Profile::STATUS_ACTIVE)
+                ->setStockId($order->getStockId())
                 ->setCustomerId($order->getCustomerId())
                 ->setCustomerName($order->getCustomerName())
                 ->setOrderId($order->getId())
@@ -77,7 +78,22 @@ class Ho_Recurring_Model_Service_Order
             //@todo add the items to the profile and call $profile save so it runs in a transaction.
             $item->save();
 
-            $profile->saveOrderAtProfile($order);
+            $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
+            $profile->setActiveQuote($quote);
+            $orderAdditional = $profile->getOrderAdditional($order, true)->save();
+            $quoteAdditional = $profile->getActiveQuoteAdditional(true)->setOrder($order)->save();
+
+            $profile->setErrorMessage(null);
+            if ($profile->getStatus() == $profile::STATUS_ORDER_ERROR) {
+                $profile->setStatus($profile::STATUS_ACTIVE);
+            }
+
+            Mage::getModel('core/resource_transaction')
+                ->addObject($profile)
+                ->addObject($orderAdditional)
+                ->addObject($quoteAdditional)
+                ->save();
+
             $profiles[] = $profile;
         }
         return $profiles;
