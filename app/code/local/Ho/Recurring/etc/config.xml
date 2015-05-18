@@ -31,6 +31,12 @@
             <ho_recurring>
                 <class>Ho_Recurring_Block</class>
             </ho_recurring>
+            <adminhtml>
+                <rewrite>
+                    <sales_order_create_header>Ho_Recurring_Block_Adminhtml_Sales_Order_Create_Header</sales_order_create_header>
+                    <sales_order_create>Ho_Recurring_Block_Adminhtml_Sales_Order_Create</sales_order_create>
+                </rewrite>
+            </adminhtml>
         </blocks>
         <helpers>
             <ho_recurring>
@@ -135,6 +141,14 @@
                     </ho_recurring_save_recurring_product_data>
                 </observers>
             </catalog_product_save_after>
+            <create_order_session_quote_initialized>
+                <observers>
+                    <ho_recurring>
+                        <class>ho_recurring/observer</class>
+                        <method>addAdminhtmlSalesOrderCreateHandles</method>
+                    </ho_recurring>
+                </observers>
+            </create_order_session_quote_initialized>
         </events>
     </adminhtml>
 

@@ -40,6 +40,12 @@
     <?php if ($this->getProfile()->canCreateOrder()): ?>
     <p>
         <?php echo $this->getButtonHtml(
+            Mage::helper('ho_recurring')->__('Edit Quote'),
+            "window.open('{$this->getUrl('*/*/editQuote', ['id' => $this->getProfile()->getId()])}','edit_quote')",
+            'edit'
+        ); ?>
+        &nbsp;
+        <?php echo $this->getButtonHtml(
             Mage::helper('ho_recurring')->__('Create Order Now'),
             "setLocation('{$this->getUrl('*/*/createOrder', ['id' => $this->getProfile()->getId()])}')",
             'save'

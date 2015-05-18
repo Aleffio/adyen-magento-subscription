@@ -23,13 +23,11 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder extends Mage_
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     /**
-     * @return Mage_Sales_Model_Resource_Quote_Item_Collection
+     * @return array
      */
-    public function getItemsCollection()
+    public function getAllVisibleItems()
     {
-        $quote = $this->getProfile()->getActiveQuote();
-
-        return $quote->getItemsCollection();
+        return $this->getProfile()->getActiveQuote()->getAllVisibleItems();
     }
 
     /**

@@ -244,4 +244,18 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
             $order->addStatusHistoryComment($message);
         }
     }
+
+
+    public function addAdminhtmlSalesOrderCreateHandles(Varien_Event_Observer $observer)
+    {
+        $profileId = Mage::app()->getRequest()->getParam('profile');
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        if (! $profile->getId()) {
+            return;
+        }
+
+        Mage::register('current_profile', $profile);
+        Mage::app()->getLayout()->getUpdate()->addHandle('ho_recurring_active_quote_edit');
+    }
 }

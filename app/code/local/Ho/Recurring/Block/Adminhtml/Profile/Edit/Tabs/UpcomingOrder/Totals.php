@@ -87,4 +87,20 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder_Totals
     {
         return Mage::registry('ho_recurring');
     }
+
+    public function renderTotals($area = null, $colspan = 1)
+    {
+        $html = '';
+        foreach($this->getTotals() as $total) {
+            /** @var Mage_Sales_Model_Quote_Address_Total $total */
+            if ($total->getArea() != $area && $area != -1) {
+                continue;
+            }
+            if (! $total->getValue()) {
+                continue;
+            }
+            $html .= $this->renderTotal($total, $area, $colspan);
+        }
+        return $html;
+    }
 }

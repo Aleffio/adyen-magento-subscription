@@ -222,4 +222,24 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
         $this->_redirectReferer();
     }
+
+    public function editQuoteAction()
+    {
+        $profileId = $this->getRequest()->getParam('id');
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        if (! $profile->getId()) {
+            Ho_Recurring_Exception::throwException('Can\'t create order: No quote created yet.');
+            $this->_redirectReferer();
+        }
+
+        $activeQuote = $profile->getActiveQuote();
+
+        Mage::getSingleton('adminhtml/session_quote')
+            ->setCustomerId($activeQuote->getCustomerId())
+            ->setStoreId($activeQuote->getStoreId())
+            ->setQuoteId($activeQuote->getId());
+
+        $this->_redirect('adminhtml/sales_order_create/index', ['profile' => $profile->getId()]);
+    }
 }
