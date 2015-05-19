@@ -125,7 +125,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $profile->save();
 
         Mage::getSingleton('adminhtml/session')->addSuccess(
-            Mage::helper('ho_recurring')->__('Profile %s successfully cancelled', $profile->getId())
+            Mage::helper('ho_recurring')->__('Profile %s successfully cancelled', $profile->getIncrementId())
         );
         $this->_redirect('*/*/');
     }
