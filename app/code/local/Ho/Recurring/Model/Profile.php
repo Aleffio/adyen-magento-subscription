@@ -441,7 +441,8 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function getTermLabel()
     {
-        return $this->getTerm() . ' ' . $this->getTermTypes()[$this->getTermType()];
+        $termTypeLabel = $this->getTermTypes()[$this->getTermType()];
+        return Mage::helper('ho_recurring')->__("Every %s %s", $this->getTerm(), $termTypeLabel);
     }
 
 

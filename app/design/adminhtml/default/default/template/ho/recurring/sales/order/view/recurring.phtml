@@ -1,0 +1,67 @@
+<?php
+/**
+ * Ho_Recurring
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the H&O Commercial License
+ * that is bundled with this package in the file LICENSE_HO.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.h-o.nl/license
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to info@h-o.com so we can send you a copy immediately.
+ *
+ * @category  Ho
+ * @package   Ho_Recurring
+ * @author    Paul Hachmang – H&O <info@h-o.nl>
+ * @copyright 2015 Copyright © H&O (http://www.h-o.nl/)
+ * @license   H&O Commercial License (http://www.h-o.nl/license)
+ */
+
+/** @var $this Ho_Recurring_Block_Adminhtml_Sales_Order_View_Recurring */
+
+$_profileQuoteAdd = $this->getProfileQuoteAdditionalInfo();
+$_profile = $this->getProfile();
+?>
+<div class="box-right">
+    <!--Recurring Information-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-account">Related Profile</h4>
+        </div>
+    </div>
+    <div class="fieldset">
+        <table cellspacing="0" class="form-list">
+            <tr>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Profile ID') ?></label></td>
+                <td class="value">
+                    <a href="<?php echo $this->getUrl('ho_recurring/adminhtml_profile/edit', ['id' => $this->getProfile()->getId()]); ?>">
+                        <strong>#<?php echo $_profile->getIncrementId(); ?></strong>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Profile Status'); ?></label></td>
+                <td class="value">
+                    <strong><?php echo $_profile->getStatusLabel($_profile->getStatus());?></strong>
+                </td>
+            </tr>
+            <?php if ($_profileQuoteAdd): ?>
+            <tr>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Period Date') ?></label></td>
+                <td class="value">
+                    <strong><?php echo $_profile->getTermLabel(); ?></strong>
+                </td>
+            </tr>
+            <tr>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Schedule Date') ?></label></td>
+                <td class="value">
+                    <strong><?php echo $_profileQuoteAdd->getScheduledAtFormatted(); ?></strong>
+                </td>
+            </tr>
+            <?php endif; ?>
+        </table>
+    </div>
+</div>
+<?php echo $this->getChildHtml(); ?>

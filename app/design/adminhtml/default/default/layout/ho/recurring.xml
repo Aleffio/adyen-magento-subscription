@@ -47,10 +47,14 @@
         </reference>
         <reference name="left">
             <block type="ho_recurring/adminhtml_profile_edit_tabs" name="profile_edit_tabs">
-                <block name="profile_general_block" type="ho_recurring/adminhtml_profile_edit_tabs_general" template="ho/recurring/general.phtml">
+                <block name="profile_general_block"
+                       type="ho_recurring/adminhtml_profile_edit_tabs_general"
+                       template="ho/recurring/profile/view/info.phtml">
                     <block type="adminhtml/sales_order_payment" name="order_payment"/>
                 </block>
-                <block name="profile_upcoming_order_block" type="ho_recurring/adminhtml_profile_edit_tabs_upcomingOrder" template="ho/recurring/order.phtml">
+                <block name="profile_upcoming_order_block"
+                       type="ho_recurring/adminhtml_profile_edit_tabs_upcomingOrder"
+                       template="ho/recurring/profile/view/upcoming/items.phtml">
                     <block type="ho_recurring/adminhtml_profile_edit_tabs_upcomingOrder_totals"
                            name="order_totals" template="ho/recurring/quote/totals.phtml"  />
                 </block>
@@ -64,10 +68,28 @@
 
     <adminhtml_catalog_product_edit>
         <reference name="product_tabs">
-            <action method="addTab">
+            <action method="addTabAfter">
                 <name>ho_recurring_profile_tab</name>
                 <block>ho_recurring/adminhtml_catalog_product_tab_recurring</block>
+                <after>categories</after>
             </action>
         </reference>
     </adminhtml_catalog_product_edit>
+
+    <adminhtml_sales_order_view>
+        <reference name="order_tab_info">
+            <action method="unsetChild"><child>order_info</child></action>
+            <block type="ho_recurring/adminhtml_sales_order_view_recurring"
+                   name="ho_recurring_info"
+                   template="ho/recurring/sales/order/view/recurring.phtml">
+                <action method="insert"><name>order_info</name></action>
+            </block>
+            <action method="insert">
+                <name>ho_recurring_info</name>
+                <sibling>order_messages</sibling>
+                <after>1</after>
+                <alias>order_info</alias>
+            </action>
+        </reference>
+    </adminhtml_sales_order_view>
 </layout>
