@@ -69,54 +69,6 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @deprecated The profile model can't know about the service model
-     *             It is the service models resposibility to convert the quote to an order.
-     * @param Mage_Sales_Model_Quote|null $quote
-     * @return Mage_Sales_Model_Order
-     */
-    public function createOrder(Mage_Sales_Model_Quote $quote = null)
-    {
-        Mage::throwException('SHouldnt be used');
-        try {
-            if (!$quote) {
-                $quote = $this->getActiveQuote();
-            }
-
-            if (!$quote->getId()) {
-                Mage::throwException(Mage::helper('ho_recurring')->__('Can\'t create order: No quote created yet.'));
-            }
-
-            // Collect quote totals
-            $quote->collectTotals();
-            $quote->save();
-
-            // Create order
-            $service = Mage::getModel('sales/service_quote', $quote);
-            $service->submitAll();
-            $order = $service->getOrder();
-
-            // Place payment
-//            $order->place()
-
-            // Save order to profile order history
-            $this->saveOrderAtProfile($order);
-
-            $this->setActive();
-            $this->save();
-
-            return $order;
-        }
-        catch (Exception $e) {
-            $this->setStatus(self::STATUS_ORDER_ERROR);
-            $this->setErrorMessage($e->getMessage());
-            $this->save();
-
-            Ho_Recurring_Exception::throwException($e->getMessage());
-        }
-    }
-
-
-    /**
      * @return Ho_Recurring_Model_Profile_Quote
      */
     protected function _getActiveQuoteAdditional()
