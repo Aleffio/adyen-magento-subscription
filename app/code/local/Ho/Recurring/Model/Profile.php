@@ -68,6 +68,11 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         $this->_init('ho_recurring/profile');
     }
 
+    public function getIncrementId()
+    {
+        return $this->getId();
+    }
+
     /**
      * @return Ho_Recurring_Model_Profile_Quote
      */

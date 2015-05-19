@@ -36,8 +36,8 @@ class Ho_Recurring_Block_Adminhtml_Sales_Order_Create_Header
 
 
         $out = Mage::helper('ho_recurring')->__(
-            'Edit Upcoming Orer for Profile #%s for %s in %s',
-            $profile->getId(),
+            'Edit Upcoming Order for Profile #%s for %s in %s',
+            $profile->getIncrementId(),
             $profile->getCustomer()->getName(),
             $this->getStore()->getName()
         );
