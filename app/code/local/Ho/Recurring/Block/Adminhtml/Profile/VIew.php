@@ -86,6 +86,18 @@ JS;
         return Mage::registry('ho_recurring');
     }
 
+    /**
+     * Get URL for back (reset) button
+     *
+     * @return string
+     */
+    public function getBackUrl()
+    {
+        if ($this->isEdit()) {
+            return $this->getUrl('*/*/view', array('id' => $this->getProfile()->getId()));
+        }
+        return $this->getUrl('*/*/');
+    }
 
     /**
      * @param $section

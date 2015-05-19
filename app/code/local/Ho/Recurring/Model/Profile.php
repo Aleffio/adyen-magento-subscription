@@ -309,6 +309,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 
         if ($validate) {
             $billingAgreement->isValid();
+            $billingAgreement->verifyToken();
 
             if ($billingAgreement->getStatus() !== $billingAgreement::STATUS_ACTIVE) {
                 Ho_Recurring_Exception::throwException(

@@ -40,9 +40,9 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Info_BillingAgreement
      */
     public function getBACollection()
     {
-        $collection = Mage::getResourceModel('sales/billing_agreement_collection')
-            ->addFieldToFilter('customer_id', $this->getProfile()->getCustomerId())
-            ->addFieldToFilter('status', Mage_Sales_Model_Billing_Agreement::STATUS_ACTIVE);
+
+        $collection = Mage::getModel('sales/billing_agreement')
+            ->getAvailableCustomerBillingAgreements($this->getProfile()->getCustomerId());
         return $collection;
     }
 

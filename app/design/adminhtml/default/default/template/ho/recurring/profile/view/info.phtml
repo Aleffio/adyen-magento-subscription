@@ -158,8 +158,8 @@
                     <td class="value"><strong><?php echo $_billingAgreement->getStatusLabel(); ?></strong></td>
                 </tr>
                 <tr>
-                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Method code'); ?></label></td>
-                    <td class="value"><strong><?php echo $_billingAgreement->getMethodCode(); ?></strong></td>
+                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Method'); ?></label></td>
+                    <td class="value"><strong><?php echo $_billingAgreement->getPaymentMethodInstance()->getTitle(); ?></strong></td>
                 </tr>
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Created At'); ?></label></td>
