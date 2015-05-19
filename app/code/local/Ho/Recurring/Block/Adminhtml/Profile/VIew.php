@@ -29,7 +29,9 @@ class Ho_Recurring_Block_Adminhtml_Profile_View extends Mage_Adminhtml_Block_Wid
 
         parent::__construct();
 
-        $this->_removeButton('save');
+        if (! $this->isEdit()) {
+            $this->_removeButton('save');
+        }
         $this->_removeButton('reset');
 
         if ($this->getProfile()->canCancel()) {
@@ -54,6 +56,7 @@ JS;
         if ($this->getProfile()->canCreateQuote()) {
             $this->_addButton('create_quote', [
                 'label' => Mage::helper('ho_recurring')->__('Create Quote'),
+                'class' => 'add',
                 'onclick' => "setLocation('{$this->getUrl('*/*/createQuote',
                     ['id' => $this->getProfile()->getId()])}')",
             ], 20);
@@ -81,5 +84,26 @@ JS;
     public function getProfile()
     {
         return Mage::registry('ho_recurring');
+    }
+
+
+    /**
+     * @param $section
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function isEdit($section = null)
+    {
+        $editSection = $this->getRequest()->getParam('section');
+        if (!$editSection) {
+            return false;
+        }
+
+        if ($section === null) {
+            return true;
+        }
+
+        return $section == $this->getRequest()->getParam('section');
     }
 }

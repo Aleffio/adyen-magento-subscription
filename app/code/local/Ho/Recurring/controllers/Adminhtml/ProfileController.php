@@ -66,7 +66,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     }
 
     /**
-     * @todo page title is not showing
+     * View Action
      */
     public function viewAction()
     {
@@ -74,7 +74,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $helper = Mage::helper('ho_recurring');
 
         if (! $profile->getId()) {
-            Mage::getSingleton('adminhtml/session')->addError($helper->__('This profile no longer exists.'));
+            $this->_getSession()->addError($helper->__('This profile no longer exists.'));
             $this->_redirect('*/*/');
             return;
         }
@@ -83,9 +83,33 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
              ->_title($helper->__('Recurring Profile #%s for %s',
                  $profile->getIncrementId(), $profile->getCustomerName()));
 
-        $data = Mage::getSingleton('adminhtml/session')->getProfileData(true);
+        $this->loadLayout();
+        $this->_setActiveMenu('sales/ho_recurring_profiles');
+        $this->renderLayout();
+    }
+
+
+    /**
+     * Edit Action
+     */
+    public function editAction()
+    {
+        $profile = $this->_initProfile();
+        $helper = Mage::helper('ho_recurring');
+
+        if (! $profile->getId()) {
+            $this->_getSession()->addError($helper->__('This profile no longer exists.'));
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        $this->_title($helper->__('Sales'))
+             ->_title($helper->__('Edit Recurring Profile #%s for %s',
+                 $profile->getIncrementId(), $profile->getCustomerName()));
+
+        $data = $this->_getSession()->getProfileData(true);
         if (!empty($data)) {
-            $profile->setData($data);
+            $profile->addData($data);
         }
 
         $this->loadLayout();
@@ -93,6 +117,48 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $this->renderLayout();
     }
 
+
+    public function saveAction()
+    {
+        $profile = $this->_initProfile();
+        $helper = Mage::helper('ho_recurring');
+
+        if (! $profile->getId()) {
+            $this->_getSession()->addError($helper->__('This profile no longer exists.'));
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        $postData = $this->getRequest()->getPost('profile');
+
+        try {
+            //@todo move this logic to the model its self.
+            if (isset($postData['billing_agreement_id'])) {
+                $billingAgreementId = $postData['billing_agreement_id'];
+                $billingAgreement = Mage::getModel('sales/billing_agreement')
+                    ->load($billingAgreementId);
+                $profile->setBillingAgreement($billingAgreement, true);
+            }
+
+            $profile->save();
+
+            $this->_getSession()->setProfileData(null);
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Profile successfully saved')
+            );
+            $this->_redirect('*/*/view', ['id' => $profile->getId()]);
+        } catch (Exception $e) {
+            Ho_Recurring_Exception::logException($e);
+
+            $this->_getSession()->setProfileData($postData);
+            $this->_getSession()->addError($helper->__('There was an error saving the profile: %s', $e->getMessage()));
+            $this->_redirectReferer();
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
     public function cancelProfileAction()
     {
         $profileId = $this->getRequest()->getParam('id');
@@ -100,7 +166,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
 
         if (! $profile->getId()) {
-            Mage::getSingleton('adminhtml/session')->addSuccess(
+            $this->_getSession()->addSuccess(
                 Mage::helper('ho_recurring')->__('Could not find profile')
             );
             $this->_redirect('*/*/');
@@ -109,7 +175,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
         $reason = $this->getRequest()->getParam('reason');
         if (! $reason) {
-            Mage::getSingleton('adminhtml/session')->addSuccess(
+            $this->_getSession()->addSuccess(
                 Mage::helper('ho_recurring')->__('No stop reason given')
             );
             $this->_redirect('*/*/');
@@ -120,7 +186,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $profile->setStatus($profile::STATUS_CANCELED);
         $profile->save();
 
-        Mage::getSingleton('adminhtml/session')->addSuccess(
+        $this->_getSession()->addSuccess(
             Mage::helper('ho_recurring')->__('Profile %s successfully cancelled', $profile->getIncrementId())
         );
         $this->_redirect('*/*/');
@@ -136,7 +202,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
 
         if (! $profile->getId()) {
-            Mage::getSingleton('adminhtml/session')->addSuccess(
+            $this->_getSession()->addSuccess(
                 Mage::helper('ho_recurring')->__('Could not find profile')
             );
             $this->_redirect('*/*/');
@@ -147,12 +213,12 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
             try {
                 $profile->delete();
 
-                Mage::getSingleton('adminhtml/session')->addSuccess(
+                $this->_getSession()->addSuccess(
                     Mage::helper('ho_recurring')->__('The profile has been successfully deleted')
                 );
             }
             catch (Mage_Core_Exception $e) {
-                Mage::getSingleton('adminhtml/session')->addError(
+                $this->_getSession()->addError(
                     Mage::helper('ho_recurring')->__('An error occurred while trying to delete this profile')
                 );
             }
@@ -173,12 +239,12 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
                 try {
                     $quote = Mage::getSingleton('ho_recurring/service_profile')->createQuote($profile);
 
-                    Mage::getSingleton('adminhtml/session')->addSuccess(
+                    $this->_getSession()->addSuccess(
                         Mage::helper('ho_recurring')->__('Quote (#%s) successfully created', $quote->getId())
                     );
                 }
                 catch (Mage_Core_Exception $e) {
-                    Mage::getSingleton('adminhtml/session')->addError(
+                    $this->_getSession()->addError(
                         Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
                     );
                 }
@@ -205,11 +271,11 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
                     $order = Mage::getSingleton('ho_recurring/service_quote')->createOrder($quote, $profile);
 
-                    Mage::getSingleton('adminhtml/session')->addSuccess(
+                    $this->_getSession()->addSuccess(
                         Mage::helper('ho_recurring')->__('Order successfully created (#%s)', $order->getIncrementId())
                     );
                 } catch (Exception $e) {
-                    Mage::getSingleton('adminhtml/session')->addError(
+                    $this->_getSession()->addError(
                         Mage::helper('ho_recurring')->__('An error occurred while trying to create a order for this profile: ' . $e->getMessage())
                     );
                 }
@@ -219,6 +285,11 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $this->_redirectReferer();
     }
 
+    protected function _getSession()
+    {
+        return Mage::getSingleton('adminhtml/session');
+    }
+    
     public function editQuoteAction()
     {
         $profileId = $this->getRequest()->getParam('id');

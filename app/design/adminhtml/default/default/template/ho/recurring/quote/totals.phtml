@@ -48,7 +48,7 @@
         <?php echo $this->getButtonHtml(
             Mage::helper('ho_recurring')->__('Create Order Now'),
             "setLocation('{$this->getUrl('*/*/createOrder', ['id' => $this->getProfile()->getId()])}')",
-            'save'
+            'add'
         ); ?>
     </p>
     <?php endif; ?>

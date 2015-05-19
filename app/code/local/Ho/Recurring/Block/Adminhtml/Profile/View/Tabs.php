@@ -25,7 +25,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs extends Mage_Adminhtml_Bloc
     {
         parent::__construct();
         $this->setId('profile_tabs');
-        $this->setDestElementId('view_form');
+        $this->setDestElementId('edit_form');
         $this->setTitle(Mage::helper('ho_recurring')->__('Manage Profile'));
     }
 }

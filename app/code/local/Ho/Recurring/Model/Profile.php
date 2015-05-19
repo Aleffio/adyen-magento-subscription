@@ -304,13 +304,36 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
 
+    public function setBillingAgreement(Mage_Sales_Model_Billing_Agreement $billingAgreement, $validate = false)
+    {
+
+        if ($validate) {
+            $billingAgreement->isValid();
+
+            if ($billingAgreement->getStatus() !== $billingAgreement::STATUS_ACTIVE) {
+                Ho_Recurring_Exception::throwException(
+                    Mage::helper('ho_recurring')->__('Billing Agreement %s not active', $billingAgreement->getReferenceId()));
+            }
+        }
+
+        $this->setBillingAgreementId($billingAgreement->getId());
+        $this->setData('_billing_agreement', $billingAgreement);
+        return $this;
+    }
 
     /**
-     * @return Adyen_Payment_Model_Billing_Agreement
+     * @return Mage_Sales_Model_Billing_Agreement
      */
     public function getBillingAgreement()
     {
-        return Mage::getModel('adyen/billing_agreement')->load($this->getBillingAgreementId());
+        if (! $this->hasData('_billing_agreement')) {
+            $billingAgreement = Mage::getModel('sales/billing_agreement')
+                ->load($this->getBillingAgreementId());
+
+            $this->setData('_billing_agreement', $billingAgreement);
+        }
+
+        return $this->getData('_billing_agreement');
     }
 
     /**

@@ -65,6 +65,16 @@
         </reference>
     </ho_recurring_adminhtml_profile_view>
 
+    <ho_recurring_adminhtml_profile_edit>
+        <update handle="ho_recurring_adminhtml_profile_view"/>
+        <reference name="profile_info_block">
+            <block type="ho_recurring/adminhtml_profile_edit_info_billingAgreement"
+                   name="profile_edit_billing_agreement"
+                   template="ho/recurring/profile/edit/info/billing_agreement.phtml"/>
+            <!--<block type="ho_recurring/adminhtml_profile_edit_shipping_address" name="profile_edit_shipping_address"/>-->
+        </reference>
+    </ho_recurring_adminhtml_profile_edit>
+
     <adminhtml_catalog_product_edit>
         <reference name="product_tabs">
             <action method="addTabAfter">
