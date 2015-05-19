@@ -30,10 +30,11 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     {
         $helper = Mage::helper('ho_recurring');
 
+        $this->_title($helper->__('Sales'))
+             ->_title($helper->__('Recurring Profiles'));
+
         $this->loadLayout()
-            ->_setActiveMenu('sales/ho_recurring_profiles')
-            ->_title($helper->__('Sales'))
-            ->_title($helper->__('Recurring Profiles'));
+            ->_setActiveMenu('sales/ho_recurring_profiles');
 
         $this->_addBreadcrumb($helper->__('Sales'), $helper->__('Sales'))
             ->_addBreadcrumb($helper->__('Recurring Profiles'), $helper->__('Recurring Profiles'));
@@ -50,51 +51,46 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
             ->renderLayout();
     }
 
+
     /**
-     * Create new profile
+     * @return Ho_Recurring_Model_Profile
      */
-    public function newAction()
+    protected function _initProfile()
     {
-        $this->_forward('edit');
+        $profileId  = $this->getRequest()->getParam('id');
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        Mage::register('ho_recurring', $profile);
+
+        return $profile;
     }
 
     /**
      * @todo page title is not showing
      */
-    public function editAction()
+    public function viewAction()
     {
-        // @todo Can't load layout, throws errors or doesn't load anything after calling _initAction
-        // Maybe because of XML of ho_recurring_adminhtml_profile_edit handle?
-//        $this->_initAction();
+        $profile = $this->_initProfile();
+        $helper = Mage::helper('ho_recurring');
 
-        $id  = $this->getRequest()->getParam('id');
-        $model = Mage::getModel('ho_recurring/profile');
-
-        if ($id) {
-            $model->load($id);
-
-            if (!$model->getId()) {
-                Mage::getSingleton('adminhtml/session')->addError(Mage::helper('ho_recurring')->__('This profile no longer exists.'));
-                $this->_redirect('*/*/');
-
-                return;
-            }
+        if (! $profile->getId()) {
+            Mage::getSingleton('adminhtml/session')->addError($helper->__('This profile no longer exists.'));
+            $this->_redirect('*/*/');
+            return;
         }
 
-        $this->_title($model->getId() ? $model->getName() : Mage::helper('ho_recurring')->__('New Profile'));
+        $this->_title($helper->__('Sales'))
+             ->_title($helper->__('Recurring Profile #%s for %s',
+                 $profile->getIncrementId(), $profile->getCustomerName()));
 
         $data = Mage::getSingleton('adminhtml/session')->getProfileData(true);
         if (!empty($data)) {
-            $model->setData($data);
+            $profile->setData($data);
         }
 
-        Mage::register('ho_recurring', $model);
-
-        // @see to do before commented _initAction
-//        $this->_addBreadcrumb(
-//            $id ? Mage::helper('ho_recurring')->__('Edit Profile') : Mage::helper('ho_recurring')->__('New Profile'),
-//            $id ? Mage::helper('ho_recurring')->__('Edit Profile') : Mage::helper('ho_recurring')->__('New Profile'))
-            $this->loadLayout()->renderLayout();
+        $this->loadLayout();
+        $this->_setActiveMenu('sales/ho_recurring_profiles');
+        $this->renderLayout();
     }
 
     public function cancelProfileAction()

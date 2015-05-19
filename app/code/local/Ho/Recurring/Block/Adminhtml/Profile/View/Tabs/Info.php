@@ -19,7 +19,8 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminhtml_Block_Sales_Order_View_Info
+class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Info
+    extends Mage_Adminhtml_Block_Sales_Order_View_Info
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     protected function _beforeToHtml()
@@ -72,7 +73,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminh
      */
     public function getTabLabel()
     {
-        return Mage::helper('ho_recurring')->__('General');
+        return Mage::helper('adminhtml')->__('Information');
     }
 
     /**
@@ -80,7 +81,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_General extends Mage_Adminh
      */
     public function getTabTitle()
     {
-        return Mage::helper('ho_recurring')->__('General');
+        return Mage::helper('adminhtml')->__('Information');
     }
 
     /**

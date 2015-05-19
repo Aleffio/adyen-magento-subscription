@@ -19,9 +19,8 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products
+class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Info_Products
     extends Mage_Adminhtml_Block_Widget_Grid
-    implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     public function __construct()
     {
@@ -138,13 +137,6 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products
             'width'     => 80
         ));
 
-        $this->addColumn('action', array(
-            'header'    => $helper->__('Action'),
-            'sortable'  => false,
-            'width'     => 80
-            // @todo render
-        ));
-
         return parent::_prepareColumns();
     }
 
@@ -154,37 +146,5 @@ class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_Products
     protected function _getProfile()
     {
         return Mage::registry('ho_recurring');
-    }
-
-    /**
-     * @return string
-     */
-    public function getTabLabel()
-    {
-        return Mage::helper('ho_recurring')->__('Products');
-    }
-
-    /**
-     * @return string
-     */
-    public function getTabTitle()
-    {
-        return Mage::helper('ho_recurring')->__('Products');
-    }
-
-    /**
-     * @return bool
-     */
-    public function canShowTab()
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isHidden()
-    {
-        return false;
     }
 }

@@ -19,7 +19,8 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_UpcomingOrder extends Mage_Adminhtml_Block_Template
+class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_UpcomingOrder
+    extends Mage_Adminhtml_Block_Template
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     /**

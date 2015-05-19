@@ -19,7 +19,8 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit_Tabs_PastOrders extends Mage_Adminhtml_Block_Widget_Grid
+class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_PastOrders
+    extends Mage_Adminhtml_Block_Widget_Grid
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     public function __construct()

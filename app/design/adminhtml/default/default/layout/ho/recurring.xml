@@ -41,30 +41,29 @@
         </reference>
     </ho_recurring_adminhtml_profile_index>
 
-    <ho_recurring_adminhtml_profile_edit>
+    <ho_recurring_adminhtml_profile_view>
         <reference name="content">
-            <block type="ho_recurring/adminhtml_profile_edit" />
+            <block type="ho_recurring/adminhtml_profile_view" />
         </reference>
         <reference name="left">
-            <block type="ho_recurring/adminhtml_profile_edit_tabs" name="profile_edit_tabs">
-                <block name="profile_general_block"
-                       type="ho_recurring/adminhtml_profile_edit_tabs_general"
+            <block type="ho_recurring/adminhtml_profile_view_tabs" name="profile_view_tabs">
+                <block name="profile_info_block"
+                       type="ho_recurring/adminhtml_profile_view_tabs_info"
                        template="ho/recurring/profile/view/info.phtml">
-                    <block type="adminhtml/sales_order_payment" name="order_payment"/>
+                    <block type="ho_recurring/adminhtml_profile_view_tabs_info_products" name="profile_products"/>
                 </block>
                 <block name="profile_upcoming_order_block"
-                       type="ho_recurring/adminhtml_profile_edit_tabs_upcomingOrder"
+                       type="ho_recurring/adminhtml_profile_view_tabs_upcomingOrder"
                        template="ho/recurring/profile/view/upcoming/items.phtml">
-                    <block type="ho_recurring/adminhtml_profile_edit_tabs_upcomingOrder_totals"
+                    <block type="ho_recurring/adminhtml_profile_view_tabs_upcomingOrder_totals"
                            name="order_totals" template="ho/recurring/quote/totals.phtml"  />
                 </block>
-                <action method="addTab"><name>profile_general</name><block>profile_general_block</block></action>
-                <action method="addTab"><name>profile_products</name><block>ho_recurring/adminhtml_profile_edit_tabs_products</block></action>
+                <action method="addTab"><name>profile_info</name><block>profile_info_block</block></action>
                 <action method="addTab"><name>profile_upcoming_order</name><block>profile_upcoming_order_block</block></action>
-                <action method="addTab"><name>profile_past_orders</name><block>ho_recurring/adminhtml_profile_edit_tabs_pastOrders</block></action>
+                <action method="addTab"><name>profile_past_orders</name><block>ho_recurring/adminhtml_profile_view_tabs_pastOrders</block></action>
             </block>
         </reference>
-    </ho_recurring_adminhtml_profile_edit>
+    </ho_recurring_adminhtml_profile_view>
 
     <adminhtml_catalog_product_edit>
         <reference name="product_tabs">

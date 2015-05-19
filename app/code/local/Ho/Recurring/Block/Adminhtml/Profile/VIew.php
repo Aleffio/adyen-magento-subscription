@@ -19,12 +19,13 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
+class Ho_Recurring_Block_Adminhtml_Profile_View extends Mage_Adminhtml_Block_Widget_Form_Container
 {
     public function __construct()
     {
         $this->_blockGroup = 'ho_recurring';
         $this->_controller = 'adminhtml_profile';
+        $this->_mode = 'view';
 
         parent::__construct();
 
@@ -64,8 +65,10 @@ JS;
         $profile = $this->getProfile();
 
         if ($profile->getId()) {
-            return Mage::helper('ho_recurring')->__('Recurring Profile <i>#%s</i> for <i>%s</i>',
-                $profile->getId(), $profile->getCustomerName());
+            return Mage::helper('ho_recurring')->__('Recurring Profile %s for %s',
+                sprintf('<i>#%s</i>', $profile->getIncrementId()),
+                sprintf('<i>%s</i>', $profile->getCustomerName())
+            );
         }
         else {
             return Mage::helper('ho_recurring')->__('New Profile');
