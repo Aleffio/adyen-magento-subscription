@@ -52,6 +52,7 @@
  * @method Ho_Recurring_Model_Profile setTermType(string $value)
  * @method string getStatus()
  * @method Ho_Recurring_Model_Profile setStatus(string $value)
+ * @method Ho_Recurring_Model_Resource_Profile _getResource()
  */
 class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 {
@@ -124,9 +125,9 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 
     /**
      * @param Mage_Sales_Model_Order $order
+     * @param bool                   $instantiateNew
      *
      * @return Ho_Recurring_Model_Profile_Order|null|Varien_Object
-     * @throws Exception
      */
     public function getOrderAdditional(Mage_Sales_Model_Order $order, $instantiateNew = false)
     {
