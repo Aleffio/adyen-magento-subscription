@@ -25,4 +25,22 @@ class Ho_Recurring_Model_Resource_Profile extends Mage_Core_Model_Resource_Db_Ab
     {
         $this->_init('ho_recurring/profile', 'entity_id');
     }
+
+    public function loadByOrder(
+        Ho_Recurring_Model_Profile $object,
+        Mage_Sales_Model_Order $order
+    ) {
+        $orderSelect = Mage::getResourceModel('ho_recurring/profile_order_collection')
+            ->addFieldToFilter('order_id', $order->getId())
+            ->getSelect();
+
+        $orderSelect->reset($orderSelect::COLUMNS);
+        $orderSelect->columns('profile_id');
+
+        $profileId = $this->_getConnection('read')->fetchOne($orderSelect);
+
+        $this->load($object, $profileId);
+
+        return $this;
+    }
 }

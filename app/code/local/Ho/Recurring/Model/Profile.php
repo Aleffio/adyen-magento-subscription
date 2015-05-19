@@ -507,4 +507,15 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return Mage::helper('core')->formatDate($this->getCreatedAt(), 'medium', true);
     }
 
+
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return $this
+     */
+    public function loadByOrder(Mage_Sales_Model_Order $order)
+    {
+        $this->_getResource()->loadByOrder($this, $order);
+        return $this;
+    }
+
 }
