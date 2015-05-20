@@ -22,8 +22,6 @@
 /**
  * Class Ho_Recurring_Model_Profile_Address
  *
- * @todo The profile address table is not in use right now
- *
  * @method int getProfileId()
  * @method Ho_Recurring_Model_Profile_Address setProfileId(int $value)
  * @method int getAddressId()
@@ -31,6 +29,12 @@
  */
 class Ho_Recurring_Model_Profile_Address extends Mage_Core_Model_Abstract
 {
+    const ADDRESS_SOURCE_CUSTOMER = 1;
+    const ADDRESS_SOURCE_ORDER    = 2;
+
+    const ADDRESS_TYPE_BILLING  = 1;
+    const ADDRESS_TYPE_SHIPPING = 2;
+
     protected function _construct ()
     {
         $this->_init('ho_recurring/profile_address');
