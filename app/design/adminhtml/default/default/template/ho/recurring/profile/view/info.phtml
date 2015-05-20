@@ -72,7 +72,7 @@
                 <td class="value"><strong><?php echo $_profile->getCreatedAtFormatted(); ?></strong></td>
             </tr>
             <tr>
-                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Upcoming shipment'); ?></label></td>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Scheduled Order'); ?></label></td>
                 <td class="value">
                     <?php if ($quoteAdditional = $_profile->getActiveQuoteAdditional()): ?>
                     <strong><?php echo $quoteAdditional->getScheduledAtFormatted(); ?></strong>

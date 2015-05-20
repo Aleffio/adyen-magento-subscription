@@ -61,15 +61,6 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             'index'     => 'entity_id',
         ]);
 
-        $this->addColumn('status', [
-            'header'    => $helper->__('Status'),
-            'index'     => 'status',
-            'type'      => 'options',
-            'options'   => Ho_Recurring_Model_Profile::getStatuses(),
-            'renderer'  => 'Ho_Recurring_Block_Adminhtml_Profile_Renderer_Status',
-            'filter_index' => 'main_table.status'
-        ]);
-
         $this->addColumn('error_message', [
             'header'    => $helper->__('Error Message'),
             'index'     => 'error_message',
@@ -117,6 +108,15 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
 //            'index'     => 'next_order_at',
 //            'type'      => 'datetime'
 //        ]);
+
+        $this->addColumn('status', [
+            'header'    => $helper->__('Status'),
+            'index'     => 'status',
+            'type'      => 'options',
+            'options'   => Ho_Recurring_Model_Profile::getStatuses(),
+            'renderer'  => 'Ho_Recurring_Block_Adminhtml_Profile_Renderer_Status',
+            'filter_index' => 'main_table.status'
+        ]);
 
         $this->addColumn('action', [
             'header'    => $helper->__('Actions'),

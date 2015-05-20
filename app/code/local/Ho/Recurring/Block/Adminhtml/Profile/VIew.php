@@ -55,7 +55,7 @@ JS;
 
         if ($this->getProfile()->canCreateQuote()) {
             $this->_addButton('create_quote', [
-                'label' => Mage::helper('ho_recurring')->__('Create Quote'),
+                'label' => Mage::helper('ho_recurring')->__('Schedule Order'),
                 'class' => 'add',
                 'onclick' => "setLocation('{$this->getUrl('*/*/createQuote',
                     ['id' => $this->getProfile()->getId()])}')",

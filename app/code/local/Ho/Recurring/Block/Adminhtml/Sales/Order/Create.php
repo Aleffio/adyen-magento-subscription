@@ -46,7 +46,7 @@ var confirm = window.confirm('{$confirm}'); if(confirm) { order.submit() }
 JS;
         $this->_updateButton('save', 'onclick', $js);
 
-        $this->_addButton('save_upcomming', [
+        $this->_addButton('save_scheduled', [
             'label' => Mage::helper('ho_recurring')->__('Finish Editing'),
             'class' => 'save',
             'onclick' => "window.opener.location.reload(false); window.close()",

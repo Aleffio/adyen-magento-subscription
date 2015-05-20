@@ -19,7 +19,7 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_UpcomingOrder
+class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Scheduled
     extends Mage_Adminhtml_Block_Template
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
@@ -44,7 +44,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_UpcomingOrder
      */
     public function getTabLabel()
     {
-        return Mage::helper('ho_recurring')->__('Upcoming Order');
+        return Mage::helper('ho_recurring')->__('Scheduled Order');
     }
 
     /**
@@ -52,7 +52,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_UpcomingOrder
      */
     public function getTabTitle()
     {
-        return Mage::helper('ho_recurring')->__('Upcoming Order');
+        return Mage::helper('ho_recurring')->__('Scheduled Order');
     }
 
     /**

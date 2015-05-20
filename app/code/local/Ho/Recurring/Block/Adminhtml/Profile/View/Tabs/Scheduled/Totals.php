@@ -19,7 +19,7 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_UpcomingOrder_Totals
+class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals
     extends Mage_Adminhtml_Block_Sales_Order_Create_Totals
 {
     /**
