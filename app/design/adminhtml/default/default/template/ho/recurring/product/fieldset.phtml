@@ -1,0 +1,57 @@
+<?php
+/**
+ * Ho_Recurring
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the H&O Commercial License
+ * that is bundled with this package in the file LICENSE_HO.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.h-o.nl/license
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to info@h-o.com so we can send you a copy immediately.
+ *
+ * @category  Ho
+ * @package   Ho_Recurring
+ * @author    Paul Hachmang – H&O <info@h-o.nl>
+ * @copyright 2015 Copyright © H&O (http://www.h-o.nl/)
+ * @license   H&O Commercial License (http://www.h-o.nl/license)
+ */
+?>
+<?php
+/** @var $this Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring_Fieldset */
+/** @var Varien_Data_Form_Element_Fieldset $_element */
+$_element = $this->getElement();
+?>
+<div class="profile-fieldset-container">
+    <div>
+        <?php if ($_element->getLegend()): ?>
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $_element->getLegend() ?></h4>
+            <div class="form-buttons"><?php echo $_element->getHeaderBar() ?></div>
+        </div>
+        <?php endif; ?>
+        <?php if (!$_element->getNoContainer()): ?>
+            <div class="fieldset <?php echo $_element->getClass() ?>" id="<?php echo $_element->getHtmlId() ?>">
+        <?php endif; ?>
+            <div class="hor-scroll">
+                <?php if ($_element->getComment()): ?>
+                    <p class="comment"><?php echo $this->escapeHtml($_element->getComment()) ?></p>
+                <?php endif; ?>
+                <?php if ($_element->hasHtmlContent()): ?>
+                    <?php echo $_element->getHtmlContent(); ?>
+                <?php else: ?>
+                <table cellspacing="0" class="<?php echo $_element->hasTableClass() ? $_element->getTableClass() : 'form-list'?>">
+                    <tbody>
+                        <?php echo $_element->getChildrenHtml(); ?>
+                    </tbody>
+                </table>
+                <?php endif; ?>
+            </div>
+            <?php echo $_element->getSubFieldsetHtml() ?>
+        <?php if (!$_element->getNoContainer()): ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

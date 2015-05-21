@@ -19,10 +19,28 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Model_Resource_Product_Profile_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
+class Ho_Recurring_Model_Resource_Product_Profile_Collection
+    extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
     protected function _construct()
     {
         $this->_init('ho_recurring/product_profile');
     }
+
+
+    /**
+     * @param int|Mage_Catalog_Model_Product $productId
+     *
+     * @return $this
+     */
+    public function addProductFilter($productId)
+    {
+        if ($productId instanceof Mage_Catalog_Model_Product) {
+            $productId = $productId->getId();
+        }
+
+        $this->addFieldToFilter('product_id', $productId);
+        return $this;
+    }
 }
+
