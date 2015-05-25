@@ -32,8 +32,11 @@ class Ho_Recurring_Model_System_Config_Source_Profile_Groups
     public function toOptionArray()
     {
         if ($this->_options === null) {
-            $collection = Mage::getModel('customer/group')->getCollection();
-            $this->_options = [];
+            $collection = Mage::getResourceModel('customer/group_collection');
+            $this->_options = ['' => [
+                'value' => null,
+                'label' => Mage::helper('ho_recurring')->__('All Customer Groups')
+            ]];
 
             foreach ($collection as $item) {
                 /** @var $item Mage_Customer_Model_Group */

@@ -34,9 +34,14 @@ class Ho_Recurring_Model_Product_Observer
 
         $recurringType = $product->getData('ho_recurring_type');
         switch ($recurringType) {
-            case Ho_Recurring_Model_System_Config_Source_Profile_Type::TYPE_ENABLED_ONLY_PROFILE:
-            case Ho_Recurring_Model_System_Config_Source_Profile_Type::TYPE_ENABLED_ALLOW_STANDALONE:
+            case Ho_Recurring_Model_Product_Profile::TYPE_ENABLED_ONLY_PROFILE:
                 $this->_updateProductProfiles($product);
+                $product->setRequiredOptions(true);
+                $product->setHasOptions(true);
+                break;
+            case Ho_Recurring_Model_Product_Profile::TYPE_ENABLED_ALLOW_STANDALONE:
+                $this->_updateProductProfiles($product);
+                $product->setHasOptions(true);
                 break;
             default:
                 $this->_deleteProductProfiles($product);
@@ -47,13 +52,16 @@ class Ho_Recurring_Model_Product_Observer
     protected function _updateProductProfiles(Mage_Catalog_Model_Product $product)
     {
         try {
-            $productProfilesData = $this->_getRequest()->getPost('product_profile');
+            $productProfilesData = Mage::app()->getRequest()->getPost('product_profile');
 
             /** @var array $productProfileIds */
             $productProfileIds = Mage::getModel('ho_recurring/product_profile')
                 ->getCollection()
                 ->addFieldToFilter('product_id', $product->getId())
                 ->getAllIds();
+            if (! $productProfilesData) {
+                return;
+            }
 
             $i = 1;
             // Save profiles
@@ -79,14 +87,14 @@ class Ho_Recurring_Model_Product_Observer
             foreach($productProfileIds as $profileId) {
                 Mage::getModel('ho_recurring/product_profile')->setId($profileId)->delete();
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             Mage::getSingleton('adminhtml/session')->addError(
                 Mage::helper('ho_recurring')->__(
                     'Something went wrong when trying to save the recurring profile data: %s',
                     $e->getMessage()
                 )
             );
+            throw $e;
         }
     }
 
@@ -102,170 +110,231 @@ class Ho_Recurring_Model_Product_Observer
         return $this;
     }
 
-
-
-      /**
-       * @return Mage_Core_Controller_Request_Http
-       */
-      protected function _getRequest()
-      {
-          return Mage::app()->getRequest();
-      }
-
     /**
      * Process `giftcard_amounts` attribute afterLoad logic on loading by collection
      *
      * @param Varien_Event_Observer $observer
-     * @return Enterprise_GiftCard_Model_Observer
+     * @return $this
      */
     public function loadAttributesAfterCollectionLoad(Varien_Event_Observer $observer)
     {
-        $collection = $observer->getEvent()->getCollection();
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var $collection Mage_Catalog_Model_Resource_Product_Collection */
+        $productCollection = $observer->getEvent()->getCollection();
 
-        foreach ($collection as $item) {
-            if (Enterprise_GiftCard_Model_Catalog_Product_Type_Giftcard::TYPE_GIFTCARD == $item->getTypeId()) {
-                $attribute = $item->getResource()->getAttribute('giftcard_amounts');
-                if ($attribute->getId()) {
-                    $attribute->getBackend()->afterLoad($item);
-                }
-            }
+        foreach ($productCollection as $product) {
+            $this->_loadProductRecurringData($product);
         }
         return $this;
     }
 
 
-//    /**
-//    * Load recurring product profiles as custom option at product.
-//    *
-//    * @todo Loading this custom option causes the loading of this option in the Custom Options tab in the backend,
-//    * @todo this must be avoided
-//    *
-//    * @event catalog_product_load_after
-//    * @param Varien_Event_Observer $observer
-//    */
-//   public function addRecurringProductProfilesOption(Varien_Event_Observer $observer)
-//   {
-//       /** @var Mage_Catalog_Model_Product $product */
-//       /** @noinspection PhpUndefinedMethodInspection */
-//       $product = $observer->getProduct();
-//
-//       /** @var Mage_Catalog_Model_Product_Option $option */
-//       $option = Mage::getModel('catalog/product_option')
-//           ->setId(Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID)
-//           ->setProductId($product->getId())
-//           ->setType(Mage_Catalog_Model_Product_Option::OPTION_TYPE_RADIO)
-//           ->setTitle(Mage::helper('ho_recurring')->__('Recurring Profile'))
-//           ->setProduct($product);
-//
-//       $recurringProductProfiles = Mage::getModel('ho_recurring/product_profile')
-//           ->getCollection()
-//           ->addFieldToFilter('product_id', $product->getId());
-//
-//       $i = 0;
-//       foreach ($recurringProductProfiles as $productProfile) {
-//           /** @var Ho_Recurring_Model_Product_Profile $productProfile */
-//           $value = Mage::getModel('catalog/product_option_value')->setData(
-//                   array(
-//                       'option_type_id'        => $productProfile->getId(),
-//                       'sort_order'            => $i,
-//                       'default_title'         => $productProfile->getLabel(),
-//                       'title'                 => $productProfile->getLabel(),
-//                       'default_price'         => $productProfile->getPrice(),
-//                       'default_price_type'    => 'fixed',
-//                       'price'                 => $productProfile->getPrice(),
-//                       'price_type'            => 'fixed',
-//                   )
-//               )->setOption($option);
-//
-//           $option->addValue($value);
-//           $i++;
-//       }
-//
-//       // Add the recurring profile option to the product
-//       $product->addOption($option);
-//
-//       // Set the has_options attribute to true, or else the custom options won't be loaded on the frontend
-//       /** @noinspection PhpUndefinedMethodInspection */
-//       $product->setHasOptions(true);
-//       /** @noinspection PhpUndefinedMethodInspection */
-//       $product->setRequiredOptions(true);
-//   }
-//
-//   /**
-//    * Add the selected recurring product profile to the quote item, when one is selected
-//    *
-//    *
-//    * @event catalog_product_load_after @todo use a better event, this gets called way to often.
-//    * @param Varien_Event_Observer $observer
-//    */
-//   public function addRecurringProductProfileToQuote(Varien_Event_Observer $observer)
-//   {
-//       /** @var Mage_Checkout_CartController $action */
-//       $action = Mage::app()->getFrontController()->getAction();
-//
-//       if (! $action || ! in_array($action->getFullActionName(), ['checkout_cart_updateItemOptions', 'checkout_cart_add'])) {
-//           return;
-//       }
-//
-//       $productId = $action->getRequest()->getParam('product');
-//       $options = $action->getRequest()->getParam('options');
-//       if (! $options) {
-//           return;
-//       }
-//
-//       if (! array_key_exists(Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID, $options)) {
-//           return;
-//       }
-//
-//       $recurringOption = $options[Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID];
-//
-//       /** @var Mage_Catalog_Model_Product $product */
-//       /** @noinspection PhpUndefinedMethodInspection */
-//       $product = $observer->getProduct();
-//
-//       if ($product->getId() != $productId) {
-//           // Only add custom options if this is the product that is actually added to the cart
-//           // This is done because there can be other products added to the cart automatically after
-//           // a product is added, at which we don't want to save the additional recurring options
-//           return;
-//       }
-//
-//       $additionalOptions = array();
-//       if ($additionalOption = $product->getCustomOption('additional_options')) {
-//           $additionalOptions = (array) unserialize($additionalOption->getValue());
-//       }
-//
-//       // Add the product profile ID to the additional options array
-//       $additionalOptions[] = array(
-//           'label' => Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID,
-//           'value' => $recurringOption,
-//       );
-//
-//       $product->addCustomOption('additional_options', serialize($additionalOptions));
-//  }
-//
-//   /**
-//    * Save additional (recurring) product options (added in addRecurringProductProfileToQuote)
-//    * from quote items to order items
-//    *
-//    * @event sales_convert_quote_item_to_order_item
-//    * @param Varien_Event_Observer $observer
-//    */
-//   public function addRecurringProductProfileToOrder(Varien_Event_Observer $observer)
-//   {
-//       /** @var Mage_Sales_Model_Quote_Item $quoteItem */
-//       /** @noinspection PhpUndefinedMethodInspection */
-//       $quoteItem = $observer->getItem();
-//       /** @var Mage_Sales_Model_Order_Item $orderItem */
-//       /** @noinspection PhpUndefinedMethodInspection */
-//       $orderItem = $observer->getOrderItem();
-//
-//       if ($additionalOptions = $quoteItem->getOptionByCode('additional_options')) {
-//           $options = $orderItem->getProductOptions();
-//
-//           $options['additional_options'] = unserialize($additionalOptions->getValue());
-//
-//           $orderItem->setProductOptions($options);
-//       }
-//   }
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     *
+     * @return $this
+     */
+    protected function _loadProductRecurringData(Mage_Catalog_Model_Product $product)
+    {
+        if ($product->hasData('ho_recurring_data')) {
+            return $this;
+        }
+        /** @var Mage_Catalog_Model_Product $product */
+        if ($product->getData('ho_recurring_type') > 0) {
+            $profileCollection = Mage::getResourceModel('ho_recurring/product_profile_collection')
+                ->addProductFilter($product);
+
+            if (! $product->getStore()->isAdmin()) {
+                $profileCollection->addStoreFilter($product->getStore());
+            }
+            $product->setData('is_recurring', 1);
+            $product->setData('ho_recurring_data', $profileCollection);
+        } else {
+            $product->setData('ho_recurring_data', null);
+        }
+        return $this;
+    }
+
+    /**
+     * Initialize product options renderer with giftcard specific params
+     *
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function initOptionRenderer(Varien_Event_Observer $observer)
+    {
+        Ho_Recurring_Exception::throwException('Not yet implemented');
+
+
+//        $block = $observer->getBlock();
+//        $block->addOptionsRenderCfg('giftcard', 'enterprise_giftcard/catalog_product_configuration');
+        return $this;
+    }
+
+
+    /**
+     * @event catalog_controller_product_view
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function addProductTypeRecurringHandle(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Catalog_Model_Product $product */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $product = Mage::registry('current_product');
+        if (! $product) {
+            return $this;
+        }
+
+        $this->_loadProductRecurringData($product);
+        if (! $product->getData('ho_recurring_data')) {
+            return $this;
+        }
+        $recurringCollection = $product->getData('ho_recurring_data');
+        if ($recurringCollection->count() < 0) {
+            return $this;
+        }
+
+        /** @var Mage_Core_Model_Layout $layout */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $layout = $observer->getLayout();
+        $layout->getUpdate()->addHandle('PRODUCT_TYPE_ho_recurring');
+        return $this;
+    }
+
+    /**
+     * Add the selected recurring product profile to the quote item, if one is selected
+     *
+     * @event sales_quote_add_item
+     * @param Varien_Event_Observer $observer
+     * @return $this|void
+     */
+    public function addRecurringProductProfileToQuote(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $quoteItem = $observer->getQuoteItem();
+
+        /** @var Mage_Catalog_Model_Product $product */
+        $product = $quoteItem->getProduct();
+
+        $profileId = $quoteItem->getBuyRequest()->getData('ho_recurring_profile');
+        if (! $profileId) {
+            return $this;
+        }
+
+        $this->_loadProductRecurringData($product);
+        if (! $product->getData('ho_recurring_data')) {
+            return $this;
+        }
+
+        /** @var Ho_Recurring_Model_Resource_Product_Profile_Collection $recurringCollection */
+        $recurringCollection = $product->getData('ho_recurring_data');
+        if ($recurringCollection->count() < 0) {
+            return $this;
+        }
+
+        /** @var Ho_Recurring_Model_Product_Profile $profile */
+        $profile = $recurringCollection->getItemById($profileId);
+
+        $option = $quoteItem->getOptionByCode('additional_options');
+
+        if ($profile) {
+            $quoteItem->setCustomPrice($profile->getPrice());
+            $quoteItem->setOriginalCustomPrice($profile->getPrice());
+            $profileOption = [
+                'label'        => 'Subscription',
+                'code'         => 'ho_recurring_profile',
+                'option_value' => $profileId,
+                'value'        => $profile->getFrontendLabel(),
+                'print_value'  => $profile->getFrontendLabel(),
+            ];
+        } else {
+            $quoteItem->setCustomPrice(null);
+            $quoteItem->setOriginalCustomPrice(null);
+            $profileOption = [
+                'label'        => 'Subscription',
+                'code'         => 'ho_recurring_profile',
+                'option_value' => 'none',
+                'value'        => 'No subscription',
+                'print_value'  => 'No subscription',
+            ];
+        }
+
+        if ($option == null) {
+            $quoteItemOption = Mage::getModel('sales/quote_item_option')->setData([
+                'code'       => 'additional_options',
+                'product_id' => $quoteItem->getProductId(),
+                'value'      => serialize([$profileOption])
+            ]);
+
+            $quoteItem->addOption($quoteItemOption);
+        } else {
+            $additional = unserialize($option->getValue());
+            $additional['ho_recurring_profile'] = $profileOption;
+            $option->setValue(serialize($additional));
+        }
+    }
+
+
+    /**
+     * @event payment_method_is_active
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function isPaymentMethodActive(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Quote $quote */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $quote = $observer->getQuote();
+        if (! $quote) {
+            return $this;
+        }
+
+        if (! $this->_isQuoteHoRecurring($quote)) {
+            return $this;
+        }
+
+        /** @var Mage_Payment_Model_Method_Abstract $methodInstance */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $methodInstance = $observer->getMethodInstance();
+        if (! $methodInstance->canCreateBillingAgreement()) {
+            $observer->getResult()->isAvailable = false;
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @param Mage_Sales_Model_Quote $quote
+     *
+     * @return mixed|Varien_Object
+     */
+    protected function _isQuoteHoRecurring(Mage_Sales_Model_Quote $quote)
+    {
+        if (! $quote->hasData('_is_ho_recurring')) {
+            $isHoRecurring = false;
+            foreach ($quote->getAllItems() as $quoteItem) {
+                /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+                $additionalOptions = $quoteItem->getOptionByCode('additional_options');
+                if (! $additionalOptions) {
+                    continue;
+                }
+
+                $options = unserialize($additionalOptions->getValue());
+
+                foreach ($options as $option) {
+                    if ($option['code'] == 'ho_recurring_profile' && $option['option_value'] != 'none') {
+                        $quote->setData('_is_ho_recurring', true);
+                        return $quote->getData('_is_ho_recurring');
+                    }
+                }
+            }
+
+            return $quote->setData('_is_ho_recurring', false);
+        }
+
+        return $quote->getData('_is_ho_recurring');
+    }
 }

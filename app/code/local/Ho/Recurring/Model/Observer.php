@@ -97,6 +97,9 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     }
 
 
+    /**
+     * @param Varien_Event_Observer $observer
+     */
     public function convertOrderToProfile(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Order $order */
@@ -111,6 +114,10 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     }
 
 
+    /**
+     * @param Varien_Event_Observer $observer
+     * @todo move to adminhtml observer.
+     */
     public function addAdminhtmlSalesOrderCreateHandles(Varien_Event_Observer $observer)
     {
         $profileId = Mage::app()->getRequest()->getParam('profile');
@@ -122,5 +129,30 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
 
         Mage::register('current_profile', $profile);
         Mage::app()->getLayout()->getUpdate()->addHandle('ho_recurring_active_quote_edit');
+    }
+
+
+    /**
+     * Save additional (recurring) product options (added in addRecurringProductProfileToQuote)
+     * from quote items to order items
+     *
+     * @event sales_convert_quote_item_to_order_item
+     * @param Varien_Event_Observer $observer
+     */
+    public function addRecurringProductProfileToOrder(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $quoteItem = $observer->getItem();
+        /** @var Mage_Sales_Model_Order_Item $orderItem */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $orderItem = $observer->getOrderItem();
+
+        if ($additionalOptions = $quoteItem->getOptionByCode('additional_options')) {
+            $options = $orderItem->getProductOptions();
+
+            $options['additional_options'] = unserialize($additionalOptions->getValue());
+            $orderItem->setProductOptions($options);
+        }
     }
 }

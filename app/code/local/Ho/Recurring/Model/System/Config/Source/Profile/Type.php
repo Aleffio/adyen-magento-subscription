@@ -18,14 +18,11 @@
  * @copyright 2015 Copyright © H&O (http://www.h-o.nl/)
  * @license   H&O Commercial License (http://www.h-o.nl/license)
  */
- 
+
+//@todo move to Product_Profile?
 class Ho_Recurring_Model_System_Config_Source_Profile_Type
     extends Mage_Eav_Model_Entity_Attribute_Source_Abstract
 {
-    const TYPE_DISABLED                 = 0;
-    const TYPE_ENABLED_ALLOW_STANDALONE = 1;
-    const TYPE_ENABLED_ONLY_PROFILE     = 2;
-
 
     public function getAllOptions()
     {
@@ -33,13 +30,13 @@ class Ho_Recurring_Model_System_Config_Source_Profile_Type
             $this->_options = [
                 [
                     'label' => Mage::helper('ho_recurring')->__('Profile Disabled'),
-                    'value' => self::TYPE_DISABLED
+                    'value' => Ho_Recurring_Model_Product_Profile::TYPE_DISABLED
                 ],[
                     'label' => Mage::helper('eav')->__('Profile Enabled + Standalone purchase possible'),
-                    'value' => self::TYPE_ENABLED_ALLOW_STANDALONE
+                    'value' => Ho_Recurring_Model_Product_Profile::TYPE_ENABLED_ALLOW_STANDALONE
                 ],[
                     'label' => Mage::helper('eav')->__('Profile Enabled + Profile option selection required'),
-                    'value' => self::TYPE_ENABLED_ONLY_PROFILE
+                    'value' => Ho_Recurring_Model_Product_Profile::TYPE_ENABLED_ONLY_PROFILE
                 ]
             ];
         }

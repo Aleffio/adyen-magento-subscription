@@ -1,0 +1,97 @@
+<?php
+/**
+ * Ho_Recurring
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the H&O Commercial License
+ * that is bundled with this package in the file LICENSE_HO.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.h-o.nl/license
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to info@h-o.com so we can send you a copy immediately.
+ *
+ * @category  Ho
+ * @package   Ho_Recurring
+ * @author    Paul Hachmang – H&O <info@h-o.nl>
+ * @copyright 2015 Copyright © H&O (http://www.h-o.nl/)
+ * @license   H&O Commercial License (http://www.h-o.nl/license)
+ */
+
+/** @var $this Ho_Recurring_Block_Catalog_Product_View_Profile */
+
+$_coreHelper = $this->helper('core');
+?>
+<div class="fieldset giftcard-amount-form">
+    <dl>
+        <dt>
+            <label for="ho_recurring_profile" class="required"><em>*</em>
+                <?php echo Mage::helper('ho_recurring')->__('Subscription'); ?>
+            </label>
+        </dt>
+        <dd>
+            <div class="input-box">
+                <ul id="ho-recurring-profile-list" class="options-list">
+                    <?php if ($this->canOrderStandalone()): ?>
+                        <li>
+                            <label>
+                                <input type="radio" id="ho_recurring_profile_none" name="ho_recurring_profile"
+                                       data-profile-id="none" onchange="profileOptions.reloadPrice()"
+                                       class="ho-recurring-profile-option validate-one-required-by-name" value="none"/>
+                                <?php echo $this->__('No subscription') ?>
+                            </label>
+                            <script type="text/javascript">
+                                $('ho_recurring_profile_none').advaiceContainer = 'ho_recurring_profile_advice';
+                            </script>
+                        </li>
+                    <?php endif; ?>
+                    <?php foreach ($this->getProfileCollection() as $profile): ?>
+                    <?php /** @var Ho_Recurring_Model_Product_Profile $profile */ ?>
+                    <li>
+                        <label>
+                            <input type="radio" id="ho_recurring_profile_<?php echo  $profile->getId(); ?>"
+                                   data-profile-id="<?php echo  $profile->getId(); ?>" onchange="profileOptions.reloadPrice()"
+                                   name="ho_recurring_profile" class="ho-recurring-profile-option validate-one-required-by-name" value="<?php echo $profile->getId(); ?>"/>
+                            <?php echo $profile->getFrontendLabel(); ?> <?php echo $_coreHelper->formatCurrency($profile->getPrice()); ?>
+                        </label>
+                        <script type="text/javascript">
+                            $('ho_recurring_profile_<?php echo  $profile->getId(); ?>').advaiceContainer = 'ho_recurring_profile_advice';
+                        </script>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+                <div id="ho_recurring_profile_advice"></div>
+            </div>
+        </dd>
+    </dl>
+</div>
+<script>
+    Product.ProfileOptions = Class.create();
+    Product.ProfileOptions.prototype = {
+        initialize: function (config) {
+            this.config = config;
+            this.reloadPrice();
+            document.observe("dom:loaded", this.reloadPrice.bind(this));
+        },
+        reloadPrice: function () {
+            var config = this.config;
+
+            $$('#ho-recurring-profile-list .ho-recurring-profile-option').each(function (element) {
+                var profileId = element.readAttribute('data-profile-id');
+
+                if (config[profileId]) {
+                    var configOptions = config[profileId];
+
+                    if (element.checked) {
+                        optionsPrice.addCustomPrices(profileId, configOptions);
+                    } else {
+                        optionsPrice.addCustomPrices(profileId, {price: 0});
+                    }
+                    optionsPrice.reload();
+                }
+            });
+        }
+    };
+    var profileOptions = new Product.ProfileOptions(<?php echo $this->getJsonConfig() ?>);
+</script>

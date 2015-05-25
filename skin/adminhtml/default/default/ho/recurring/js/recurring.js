@@ -61,7 +61,6 @@ jQuery(function($){
 
         newProfile.find('select, input').each(function() {
             var elem = $(this);
-            var replaceAttrs = ['name', 'id'];
 
             elem.attr('name',
                 elem.attr('name').replace(

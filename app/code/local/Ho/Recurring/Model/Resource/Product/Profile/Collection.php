@@ -30,7 +30,6 @@ class Ho_Recurring_Model_Resource_Product_Profile_Collection
 
     /**
      * @param int|Mage_Catalog_Model_Product $productId
-     *
      * @return $this
      */
     public function addProductFilter($productId)
@@ -40,6 +39,17 @@ class Ho_Recurring_Model_Resource_Product_Profile_Collection
         }
 
         $this->addFieldToFilter('product_id', $productId);
+        return $this;
+    }
+
+
+    /**
+     * @param Mage_Core_Model_Store $store
+     * @return $this
+     */
+    public function addStoreFilter(Mage_Core_Model_Store $store)
+    {
+        $this->addFieldToFilter('website_id', ['in' => [0, (int) $store->getWebsiteId()]]);
         return $this;
     }
 }

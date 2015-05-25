@@ -53,26 +53,44 @@ class Ho_Recurring_Model_Product_Profile extends Mage_Core_Model_Abstract
     const TERM_TYPE_QUARTER = 'quarter';
     const TERM_TYPE_YEAR    = 'year';
 
-    const CUSTOM_OPTION_ID = 'recurring_product_profile';
+    const TYPE_DISABLED                 = 0;
+    const TYPE_ENABLED_ALLOW_STANDALONE = 1;
+    const TYPE_ENABLED_ONLY_PROFILE     = 2;
 
     protected function _construct ()
     {
         $this->_init('ho_recurring/product_profile');
     }
 
+
     /**
+     * @param bool $multiple
      * @return array
      */
-    public function getTermTypes()
+    public function getTermTypes($multiple = false)
     {
         $helper = Mage::helper('ho_recurring');
 
         return array(
-            self::TERM_TYPE_DAY     => $helper->__('Day'),
-            self::TERM_TYPE_WEEK    => $helper->__('Week'),
-            self::TERM_TYPE_MONTH   => $helper->__('Month'),
-            self::TERM_TYPE_QUARTER => $helper->__('Quarter'),
-            self::TERM_TYPE_YEAR    => $helper->__('Year'),
+            self::TERM_TYPE_DAY     => $multiple ? $helper->__('Days') : $helper->__('Day'),
+            self::TERM_TYPE_WEEK    => $multiple ? $helper->__('Weeks') : $helper->__('Week'),
+            self::TERM_TYPE_MONTH   => $multiple ? $helper->__('Months') : $helper->__('Month'),
+            self::TERM_TYPE_QUARTER => $multiple ? $helper->__('Quarters') : $helper->__('Quarter'),
+            self::TERM_TYPE_YEAR    => $multiple ? $helper->__('Years') : $helper->__('Year'),
         );
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getFrontendLabel()
+    {
+        $multiple = $this->getTerm() > 1;
+        $termType = $this->getTermTypes($multiple)[$this->getTermType()];
+        if ($multiple) {
+            return sprintf("%s (Every %s %s)", $this->getLabel(), $this->getTerm(), $termType);
+        }
+        return sprintf("%s (Every %s)", $this->getLabel(), $termType);
     }
 }

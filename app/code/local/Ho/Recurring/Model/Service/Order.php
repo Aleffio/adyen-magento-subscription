@@ -58,11 +58,10 @@ class Ho_Recurring_Model_Service_Order
                 ->setShippingMethod($order->getShippingMethod())
                 ->save();
 
-            /** @var Ho_Recurring_Model_Profile_Item $item */
-            $item = Mage::getModel('ho_recurring/profile_item');
-            $item->setProfileId($profile->getId());
-
-            $item->setStatus($item::STATUS_ACTIVE)
+            /** @var Ho_Recurring_Model_Profile_Item $profileItem */
+            $profileItem = Mage::getModel('ho_recurring/profile_item')
+                ->setProfileId($profile->getId())
+                ->setStatus(Ho_Recurring_Model_Profile_Item::STATUS_ACTIVE)
                 ->setProductId($orderItem->getProductId())
                 ->setSku($orderItem->getSku())
                 ->setName($orderItem->getName())
@@ -75,20 +74,21 @@ class Ho_Recurring_Model_Service_Order
                 ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
                 ->setCreatedAt(now());
 
-            //@todo add the items to the profile and call $profile save so it runs in a transaction.
-            $item->save();
-
             $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
             $profile->setActiveQuote($quote);
             $orderAdditional = $profile->getOrderAdditional($order, true)->save();
-            $quoteAdditional = $profile->getActiveQuoteAdditional(true)->setOrder($order)->save();
-
+            $quoteAdditional = $profile->getActiveQuoteAdditional(true)
+                ->setQuote($quote)
+                ->setOrder($order);
+//            var_dump($quoteAdditional, $orderAdditional);exit;
+//
             $profile->setErrorMessage(null);
             if ($profile->getStatus() == $profile::STATUS_ORDER_ERROR) {
                 $profile->setStatus($profile::STATUS_ACTIVE);
             }
 
             Mage::getModel('core/resource_transaction')
+                ->addObject($profileItem)
                 ->addObject($profile)
                 ->addObject($orderAdditional)
                 ->addObject($quoteAdditional)
@@ -129,26 +129,13 @@ class Ho_Recurring_Model_Service_Order
      */
     protected function _getProductProfile(Mage_Sales_Model_Order_Item $orderItem)
     {
-        $productOptions = $orderItem->getProductOptions();
-
-        if (!array_key_exists('additional_options', $productOptions)) {
-            return false;
+        $profileId = $orderItem->getBuyRequest()->getData('ho_recurring_profile');
+        if (! $profileId) {
+            return $this;
         }
 
-        $additionalOptions = $productOptions['additional_options'];
-
-        $recurringProductProfileId = false;
-        foreach ($additionalOptions as $additionalOption) {
-            if ($additionalOption['label'] == Ho_Recurring_Model_Product_Profile::CUSTOM_OPTION_ID) {
-                $recurringProductProfileId = $additionalOption['value'];
-            }
-        }
-
-        if (!$recurringProductProfileId) {
-            return false;
-        }
-
-        $recurringProductProfile = Mage::getModel('ho_recurring/product_profile')->load($recurringProductProfileId);
+        $recurringProductProfile = Mage::getModel('ho_recurring/product_profile')
+            ->load($profileId);
 
         if (!$recurringProductProfile->getId()) {
             return false;
