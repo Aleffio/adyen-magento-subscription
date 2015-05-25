@@ -449,8 +449,8 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 
         $class = sprintf('status-pill status-pill-%s', $this->getStatusColor($status));
 
-        if ($class) {
-            $class .= 'status-pill-inline';
+        if ($inline) {
+            $class .= ' status-pill-inline';
         }
 
         return '<span class="' . $class . '"><span>' . $this->getStatusLabel($status) . '</span></span>';

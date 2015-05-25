@@ -74,14 +74,16 @@ class Ho_Recurring_Model_Service_Order
                 ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
                 ->setCreatedAt(now());
 
-            $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
+            /** @var Mage_Sales_Model_Quote $quote */
+            $quote = Mage::getModel('sales/quote')
+                ->setStore($order->getStore())
+                ->load($order->getQuoteId());
+
             $profile->setActiveQuote($quote);
             $orderAdditional = $profile->getOrderAdditional($order, true)->save();
             $quoteAdditional = $profile->getActiveQuoteAdditional(true)
-                ->setQuote($quote)
                 ->setOrder($order);
-//            var_dump($quoteAdditional, $orderAdditional);exit;
-//
+
             $profile->setErrorMessage(null);
             if ($profile->getStatus() == $profile::STATUS_ORDER_ERROR) {
                 $profile->setStatus($profile::STATUS_ACTIVE);

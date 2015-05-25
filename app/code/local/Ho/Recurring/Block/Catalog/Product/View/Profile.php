@@ -36,7 +36,7 @@ class Ho_Recurring_Block_Catalog_Product_View_Profile extends Mage_Core_Block_Te
      */
     public function canOrderStandalone()
     {
-        return $this->getProfileType() == Ho_Recurring_Model_Product_Profile::TYPE_ENABLED_ONLY_PROFILE;
+        return $this->getProfileType() == Ho_Recurring_Model_Product_Profile::TYPE_ENABLED_ALLOW_STANDALONE;
     }
 
     public function getJsonConfig()
