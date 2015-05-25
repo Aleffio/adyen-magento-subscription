@@ -37,7 +37,6 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
         /** @var Varien_Data_Form_Element_Fieldset $fieldset */
         $fieldset = $form->addFieldset('recurring_profiles_fieldset', array(
             'legend'    => $helper->__('Recurring Profile'),
-            'class'     => 'fieldset-wide'
         ));
 
         /** @var Mage_Adminhtml_Block_Widget_Button $addProfileButton */
@@ -169,7 +168,7 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
             'class'     => 'price-tax-calc',
             'identifier' => $profile ? $profile->getId() : 'template'
         ));
-        $priceField->setValue($profile ? $profile->getPrice() : '');
+        $priceField->setValue($profile ? $profile->getPrice() * 1 : '');
         $priceField->setProfile($profile);
 
         return $profileFieldset;
