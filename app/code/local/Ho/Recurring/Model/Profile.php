@@ -283,9 +283,6 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             case Ho_Recurring_Model_Product_Profile::TERM_TYPE_MONTH:
                 $dateInterval = new DateInterval(sprintf('P%sM',$this->getTerm()));
                 break;
-            case Ho_Recurring_Model_Product_Profile::TERM_TYPE_QUARTER:
-                $dateInterval = new DateInterval(sprintf('P%sM',$this->getTerm()*3));
-                break;
             case Ho_Recurring_Model_Product_Profile::TERM_TYPE_YEAR:
                 $dateInterval = new DateInterval(sprintf('P%sY',$this->getTerm()));
                 break;

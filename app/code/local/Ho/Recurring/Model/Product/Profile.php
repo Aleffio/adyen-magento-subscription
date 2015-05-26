@@ -50,7 +50,6 @@ class Ho_Recurring_Model_Product_Profile extends Mage_Core_Model_Abstract
     const TERM_TYPE_DAY     = 'day';
     const TERM_TYPE_WEEK    = 'week';
     const TERM_TYPE_MONTH   = 'month';
-    const TERM_TYPE_QUARTER = 'quarter';
     const TERM_TYPE_YEAR    = 'year';
 
     const TYPE_DISABLED                 = 0;
@@ -75,7 +74,6 @@ class Ho_Recurring_Model_Product_Profile extends Mage_Core_Model_Abstract
             self::TERM_TYPE_DAY     => $multiple ? $helper->__('Days') : $helper->__('Day'),
             self::TERM_TYPE_WEEK    => $multiple ? $helper->__('Weeks') : $helper->__('Week'),
             self::TERM_TYPE_MONTH   => $multiple ? $helper->__('Months') : $helper->__('Month'),
-            self::TERM_TYPE_QUARTER => $multiple ? $helper->__('Quarters') : $helper->__('Quarter'),
             self::TERM_TYPE_YEAR    => $multiple ? $helper->__('Years') : $helper->__('Year'),
         );
     }
