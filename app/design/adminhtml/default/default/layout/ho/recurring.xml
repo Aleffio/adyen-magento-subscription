@@ -35,6 +35,12 @@
         </reference>
     </adminhtml_catalog_product_edit>
 
+    <adminhtml_customer_edit>
+        <reference name="customer_edit_tabs">
+            <action method="addTab"><name>customer_edit_tab_profiles</name><block>ho_recurring/adminhtml_customer_edit_tab_profiles</block></action>
+        </reference>
+    </adminhtml_customer_edit>
+
     <ho_recurring_adminhtml_profile_index>
         <reference name="content">
             <block type="ho_recurring/adminhtml_profile" name="adminhtml_ho_profile.grid.container" />

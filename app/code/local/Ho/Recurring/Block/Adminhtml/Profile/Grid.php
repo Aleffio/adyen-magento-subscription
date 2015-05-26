@@ -126,7 +126,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
             'actions'   => [[
                 'caption' => $helper->__('View'),
                 'url'     => [
-                    'base'  => '*/*/view',
+                    'base'  => 'ho_recurring/adminhtml_profile/view',
                     'params'=> ['store' => $this->getRequest()->getParam('store')]
                 ],
                 'field'   => 'id'
@@ -140,6 +140,6 @@ class Ho_Recurring_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Wid
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/view', array('id' => $row->getId()));
+        return $this->getUrl('ho_recurring/adminhtml_profile/view', array('id' => $row->getId()));
     }
 }
