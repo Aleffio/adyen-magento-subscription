@@ -184,6 +184,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
         $profile->setErrorMessage($reason);
         $profile->setStatus($profile::STATUS_CANCELED);
+        $profile->setEndsAt(now());
         $profile->save();
 
         $this->_getSession()->addSuccess(

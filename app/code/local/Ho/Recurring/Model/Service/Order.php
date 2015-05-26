@@ -52,7 +52,6 @@ class Ho_Recurring_Model_Service_Order
                 ->setOrderId($order->getId())
                 ->setBillingAgreementId($billingAgreement->getId())
                 ->setStoreId($order->getStoreId())
-                ->setEndsAt('2015-10-01 12:00:00') // @todo Set correct ending date
                 ->setTerm($productProfile->getTerm())
                 ->setTermType($productProfile->getTermType())
                 ->setNextOrderAt('2015-06-01 12:00:00') // @todo Set correct date

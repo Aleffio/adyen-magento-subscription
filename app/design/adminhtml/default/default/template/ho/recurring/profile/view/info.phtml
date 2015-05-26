@@ -85,10 +85,12 @@
                 <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Period'); ?></label></td>
                 <td class="value"><strong><?php echo $_profile->getTermLabel(); ?></strong></td>
             </tr>
+            <?php if ($_profile->getEndsAt()): ?>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Runs until'); ?></label></td>
                 <td class="value"><strong><?php echo $_profile->getEndsAt(); ?></strong></td>
             </tr>
+            <?php endif; ?>
         </table>
     </div>
 </div>

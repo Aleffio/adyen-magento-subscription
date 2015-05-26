@@ -42,7 +42,6 @@
  * @method Ho_Recurring_Model_Profile setTerm(int $value)
  * @method string getCustomerName()
  * @method Ho_Recurring_Model_Profile setCustomerName(string $value)
- * @method string getEndsAt()
  * @method Ho_Recurring_Model_Profile setEndsAt(string $value)
  * @method int getCustomerId()
  * @method Ho_Recurring_Model_Profile setCustomerId(int $value)
@@ -545,4 +544,11 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return $this;
     }
 
+    /**
+     * @return string|bool
+     */
+    public function getEndsAt()
+    {
+        return $this->getData('ends_at') != '0000-00-00 00:00:00' ? $this->getData('ends_at') : false;
+    }
 }
