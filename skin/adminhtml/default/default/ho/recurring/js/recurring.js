@@ -65,14 +65,14 @@ jQuery(function($){
             elem.attr('name',
                 elem.attr('name').replace(
                     '[template]',
-                    '[' + newProfileId + ']'
+                    '[new' + newProfileId + ']'
                 )
             );
 
             elem.attr('id',
                 elem.attr('id').replace(
                     '[template]',
-                    '[' + newProfileId + ']'
+                    '[new' + newProfileId + ']'
                 )
             );
             elem.prop('disabled', false);
@@ -80,8 +80,8 @@ jQuery(function($){
 
         //Add dynamic tax calculation
         newProfile.find('#dynamic-tax-profile-template')
-            .attr('id','dynamic-tax-product_profile['+newProfileId+'][price]');
-        dynamicTaxes.push('product_profile['+newProfileId+'][price]');
+            .attr('id','dynamic-tax-product_profile[new'+newProfileId+'][price]');
+        dynamicTaxes.push('product_profile[new'+newProfileId+'][price]');
         newProfile.find('.price-tax-calc').on('change keyup', recalculateTax);
 
         newProfile.show();
