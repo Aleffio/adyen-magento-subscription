@@ -23,6 +23,7 @@ class Ho_Recurring_Model_Service_Order
 {
     /**
      * @param Mage_Sales_Model_Order $order
+     * @return array
      */
     public function createProfile(Mage_Sales_Model_Order $order)
     {
@@ -98,6 +99,7 @@ class Ho_Recurring_Model_Service_Order
 
             $profiles[] = $profile;
         }
+
         return $profiles;
     }
 
@@ -133,7 +135,7 @@ class Ho_Recurring_Model_Service_Order
     {
         $profileId = $orderItem->getBuyRequest()->getData('ho_recurring_profile');
         if (! $profileId) {
-            return $this;
+            return false;
         }
 
         $recurringProductProfile = Mage::getModel('ho_recurring/product_profile')
