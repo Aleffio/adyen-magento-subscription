@@ -37,7 +37,7 @@
 
     <adminhtml_customer_edit>
         <reference name="customer_edit_tabs">
-            <action method="addTab"><name>customer_edit_tab_profiles</name><block>ho_recurring/adminhtml_customer_edit_tab_profiles</block></action>
+            <action method="addTab"><name>customer_edit_tab_recurring_profile</name><block>ho_recurring/adminhtml_customer_edit_tab_profiles</block></action>
         </reference>
     </adminhtml_customer_edit>
 

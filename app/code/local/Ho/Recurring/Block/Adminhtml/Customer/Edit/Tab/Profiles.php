@@ -76,8 +76,6 @@ class Ho_Recurring_Block_Adminhtml_Customer_Edit_Tab_Profiles
      */
     public function getAfter()
     {
-        // @todo This tab should be after the agreements, but then somehow both these tabs are placed on top
-        //return 'customer_edit_tab_agreements';
         return 'orders';
     }
 }
