@@ -103,22 +103,23 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Info_Products
             'width'     => 60
         ));
 
-        $this->addColumn('min_billing_cycles', array(
-            'header'    => $helper->__('Min. B.C.'),
-            'type'      => 'number',
-            'index'     => 'min_billing_cycles',
-            'sortable'  => false,
-            'width'     => 1
-        ));
-
-        $this->addColumn('max_billing_cycles', array(
-            'header'    => $helper->__('Max. B.C.'),
-            'index'     => 'max_billing_cycles',
-            'type'      => 'number',
-            'title'     => 'sdfasdfasf',
-            'sortable'  => false,
-            'width'     => 1
-        ));
+        // Min and max billing cycle currently not in use
+//        $this->addColumn('min_billing_cycles', array(
+//            'header'    => $helper->__('Min. B.C.'),
+//            'type'      => 'number',
+//            'index'     => 'min_billing_cycles',
+//            'sortable'  => false,
+//            'width'     => 1
+//        ));
+//
+//        $this->addColumn('max_billing_cycles', array(
+//            'header'    => $helper->__('Max. B.C.'),
+//            'index'     => 'max_billing_cycles',
+//            'type'      => 'number',
+//            'title'     => 'sdfasdfasf',
+//            'sortable'  => false,
+//            'width'     => 1
+//        ));
 
         $this->addColumn('created_at', array(
             'header'    => $helper->__('Added at'),

@@ -45,7 +45,7 @@ jQuery(function($){
     }).trigger('change');
 
 
-    // Make profiles sortablev
+    // Make profiles sortable
     sortableArea.sortable({
         placeholder: 'ui-state-highlight',
         items: '.profile-fieldset-container'

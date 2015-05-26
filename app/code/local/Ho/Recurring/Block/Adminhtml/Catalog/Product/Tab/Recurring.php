@@ -142,17 +142,18 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
             'values'    => Mage::getSingleton('ho_recurring/system_config_source_term')->toOptionArray(true),
         ))->setValue($profile ? $profile->getTermType() : '');
 
-        $profileFieldset->addField($elementId . '[min_billing_cycles]', 'text', array(
-            'name'      => $elementId . '[min_billing_cycles]',
-            'required'  => true,
-            'class'     => 'validate-digits validate-digits-range digits-range-1-3153600000',
-            'label'     => $helper->__('Min. Billing Cycles'),
-        ))->setValue($profile ? $profile->getMinBillingCycles() : '1');
-
-        $profileFieldset->addField($elementId . '[max_billing_cycles]', 'text', array(
-            'name'      => $elementId . '[max_billing_cycles]',
-            'label'     => $helper->__('Max. Billing Cycles'),
-        ))->setValue($profile ? $profile->getMaxBillingCycles() : '');
+        // Min and max billing cycle currently not in use
+//        $profileFieldset->addField($elementId . '[min_billing_cycles]', 'text', array(
+//            'name'      => $elementId . '[min_billing_cycles]',
+//            'required'  => true,
+//            'class'     => 'validate-digits validate-digits-range digits-range-1-3153600000',
+//            'label'     => $helper->__('Min. Billing Cycles'),
+//        ))->setValue($profile ? $profile->getMinBillingCycles() : '1');
+//
+//        $profileFieldset->addField($elementId . '[max_billing_cycles]', 'text', array(
+//            'name'      => $elementId . '[max_billing_cycles]',
+//            'label'     => $helper->__('Max. Billing Cycles'),
+//        ))->setValue($profile ? $profile->getMaxBillingCycles() : '');
 
         $profileFieldset->addField($elementId . '[qty]', 'text', array(
             'name'      => $elementId . '[qty]',
