@@ -471,23 +471,38 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return Mage::helper('ho_recurring')->__("Every %s %s", $this->getTerm(), $termTypeLabel);
     }
 
+    /**
+     * @return Mage_Customer_Model_Address|Mage_Sales_Model_Order_Address|void
+     */
+    public function getBillingAddress()
+    {
+        return Mage::getModel('ho_recurring/profile_address')
+            ->getAddress($this, Ho_Recurring_Model_Profile_Address::ADDRESS_TYPE_BILLING);
+    }
 
     /**
-     * @todo remove hard dependency on original order
+     * @return Mage_Customer_Model_Address|Mage_Sales_Model_Order_Address|void
+     */
+    public function getShippingAddress()
+    {
+        return Mage::getModel('ho_recurring/profile_address')
+            ->getAddress($this, Ho_Recurring_Model_Profile_Address::ADDRESS_TYPE_SHIPPING);
+    }
+
+    /**
      * @return array
      */
     public function getBillingAddressData()
     {
-        return $this->getOriginalOrder()->getBillingAddress()->getData();
+        return $this->getBillingAddress()->getData();
     }
 
     /**
-     * @todo remove hard dependency on original order
      * @return array
      */
     public function getShippingAddressData()
     {
-        return $this->getOriginalOrder()->getShippingAddress()->getData();
+        return $this->getShippingAddress()->getData();
     }
 
     public function canCancel()

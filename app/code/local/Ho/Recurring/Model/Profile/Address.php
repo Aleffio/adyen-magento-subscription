@@ -77,4 +77,27 @@ class Ho_Recurring_Model_Profile_Address extends Mage_Core_Model_Abstract
 
         return $this;
     }
+
+    /**
+     * @param Ho_Recurring_Model_Profile $profile
+     * @param int $type
+     * @return Mage_Sales_Model_Order_Address|Mage_Customer_Model_Address
+     */
+    public function getAddress(Ho_Recurring_Model_Profile $profile, $type = self::ADDRESS_TYPE_BILLING)
+    {
+        /** @var Ho_Recurring_Model_Profile_Address $profileAddress */
+        $profileAddress = $this->getCollection()
+            ->addFieldToFilter('profile_id', $profile->getId())
+            ->addFieldToFilter('type', $type)
+            ->getFirstItem();
+
+        if ($profileAddress->getSource() == self::ADDRESS_SOURCE_ORDER) {
+            $address = Mage::getModel('sales/order_address')->load($profileAddress->getOrderAddressId());
+        }
+        else {
+            $address = Mage::getModel('customer/address')->load($profileAddress->getCustomerAddressId());
+        }
+
+        return $address;
+    }
 }
