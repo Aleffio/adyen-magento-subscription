@@ -37,7 +37,7 @@
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Customer') ?></label></td>
                 <td class="value">
                     <a href="<?php echo $this->getCustomerViewUrl(); ?>" target="_blank">
-                        <strong><?php echo $this->escapeHtml($_order->getCustomerName()); ?></strong>
+                        <strong><?php echo $this->escapeHtml($_profile->getCustomerName()); ?></strong>
                     </a>
                 </td>
             </tr>
@@ -47,7 +47,7 @@
             </tr>
             <?php if ($_profile->getErrorMessage()): ?>
                 <tr>
-                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Error Messsage'); ?></label></td>
+                    <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Error Message'); ?></label></td>
                     <td class="value"><?php echo $_profile->getErrorMessage();?></td>
                 </tr>
             <?php endif; ?>

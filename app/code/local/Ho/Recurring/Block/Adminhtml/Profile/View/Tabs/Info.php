@@ -65,7 +65,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Info
      */
     public function getCustomerViewUrl()
     {
-        return $this->getUrl('adminhtml/customer/edit', array('id' => $this->getOrder()->getCustomerId()));
+        return $this->getUrl('adminhtml/customer/edit', array('id' => $this->getProfile()->getCustomerId()));
     }
 
     /**
