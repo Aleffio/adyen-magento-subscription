@@ -108,7 +108,7 @@
             <?php endif; ?>
         </div>
         <fieldset>
-            <address><?php echo $_order->getBillingAddress()->format('html') ?></address>
+            <address><?php echo $_order->getBillingAddress() ? $_order->getBillingAddress()->format('html') : ''; ?></address>
         </fieldset>
     </div>
 </div>
@@ -124,7 +124,7 @@
             <?php endif; ?>
         </div>
         <fieldset>
-            <address><?php echo $_order->getShippingAddress()->format('html') ?></address>
+            <address><?php echo $_order->getShippingAddress() ? $_order->getShippingAddress()->format('html') : ''; ?></address>
         </fieldset>
     </div>
 </div>
