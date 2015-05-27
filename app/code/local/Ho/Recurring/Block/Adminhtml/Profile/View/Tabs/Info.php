@@ -20,20 +20,12 @@
  */
 
 class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Info
-    extends Mage_Adminhtml_Block_Sales_Order_View_Info
+    extends Mage_Adminhtml_Block_Sales_Order_Abstract
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     protected function _beforeToHtml()
     {
         Mage_Adminhtml_Block_Sales_Order_Abstract::_beforeToHtml();
-    }
-
-    /**
-     * @return Mage_Sales_Model_Order
-     */
-    public function getOrder()
-    {
-        return $this->getProfile()->getOriginalOrder();
     }
 
     /**

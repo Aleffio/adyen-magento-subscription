@@ -246,15 +246,6 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return $this->getData('_active_quote');
     }
 
-    /**
-     * @deprecated All references to the original order must be removed.
-     * @return Mage_Sales_Model_Order
-     */
-    public function getOriginalOrder()
-    {
-        return Mage::getModel('sales/order')->load($this->getOrderId());
-    }
-
     public function calculateNextScheduleDate($asObject = false)
     {
         /** @var Ho_Recurring_Model_Profile_Quote $quoteAddCollection */
@@ -510,6 +501,15 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return $this->getStatus() != self::STATUS_CANCELED;
     }
 
+    /**
+     * @return string
+     */
+    public function getShippingMethodTitle()
+    {
+        $shippingCode = substr($this->getShippingMethod(), strpos($this->getShippingMethod(), '_') + 1);
+
+        return $shippingTitle = Mage::getStoreConfig('carriers/' . $shippingCode . '/title');
+    }
 
     /**
      * @return bool

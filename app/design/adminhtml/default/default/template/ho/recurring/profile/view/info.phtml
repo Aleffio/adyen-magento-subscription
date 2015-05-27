@@ -20,7 +20,6 @@
  */
 ?>
 <?php /** @var Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Info $this */ ?>
-<?php $_order = $this->getOrder(); ?>
 <?php $_profile = $this->getProfile(); ?>
 <?php $_billingAgreement = $this->getBillingAgreement(); ?>
 
@@ -186,29 +185,18 @@
         <div class="entry-edit-head">
             <h4 class="icon-head head-shipping-address"><?php echo Mage::helper('ho_recurring')->__('Shipping &amp; Handling Information'); ?></h4>
         </div>
-        <fieldset>
-            <?php  if ($_order->getTracksCollection()->count()) : ?>
-                <a href="#" id="linkId" onclick="popWin('<?php echo $this->helper('shipping')->getTrackingPopupUrlBySalesModel($_order) ?>','trackorder','width=800,height=600,resizable=yes,scrollbars=yes')" title="<?php echo $this->__('Track Order') ?>"><?php echo $this->__('Track Order') ?></a>
-                <br/>
-            <?php endif; ?>
-            <?php if ($_order->getShippingDescription()): ?>
-                <strong><?php echo $this->escapeHtml($_order->getShippingDescription()) ?></strong>
-
-                <?php if ($this->helper('tax')->displayShippingPriceIncludingTax()): ?>
-                    <?php $_excl = $this->displayShippingPriceInclTax($_order); ?>
-                <?php else: ?>
-                    <?php $_excl = $this->displayPriceAttribute('shipping_amount', false, ' '); ?>
-                <?php endif; ?>
-                <?php $_incl = $this->displayShippingPriceInclTax($_order); ?>
-
-                <?php echo $_excl; ?>
-                <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
-                    (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
-                <?php endif; ?>
-            <?php else: ?>
-                <?php echo $this->helper('sales')->__('No shipping information available'); ?>
-            <?php endif; ?>
-        </fieldset>
+    </div>
+    <div class="fieldset">
+        <table cellspacing="0" class="form-list">
+            <tr>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Shipping Method Code'); ?></label></td>
+                <td class="value"><strong><?php echo $_profile->getShippingMethod(); ?></strong></td>
+            </tr>
+            <tr>
+                <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Shipping Method Title'); ?></label></td>
+                <td class="value"><strong><?php echo $_profile->getShippingMethodTitle(); ?></strong></td>
+            </tr>
+        </table>
     </div>
 </div>
 
