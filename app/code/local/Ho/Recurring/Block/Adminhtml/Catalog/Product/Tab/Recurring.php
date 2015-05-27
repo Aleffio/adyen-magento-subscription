@@ -60,7 +60,7 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
         $hoRecurringType->setName('product[ho_recurring_type]');
         $hoRecurringType->setValue($product->getData('ho_recurring_type'));
         $hoRecurringType->setNote(
-            $helper->__('%s to add a new profile.', '<i>'.$helper->__('Add New Profile').'</i>')."<br .>\n".
+            $helper->__('%s to add a new profile.', '<i>'.$helper->__('Add New Profile').'</i>')."<br />\n".
             $helper->__('Drag and drop to reorder')
         );
 
@@ -192,11 +192,13 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
     }
 
     /**
+     * Only show when ho_recurrin_type attribute exists
+     *
      * @return bool
      */
     public function canShowTab()
     {
-        return true;
+        return array_key_exists('ho_recurring_type', Mage::registry('product')->getAttributes());
     }
 
     /**
