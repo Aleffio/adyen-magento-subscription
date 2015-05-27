@@ -35,7 +35,7 @@ class Ho_Recurring_Block_Adminhtml_Sales_Order_Create
         $helper = Mage::helper('ho_recurring');
 
         $this->_removeButton('reset');
-        $this->_updateButton('save', 'label', $helper->__('Create Order Now'));
+        $this->_removeButton('save');
 
         $confirm = Mage::helper('ho_recurring')->__('Are you sure you want to place the order now?');
         $confirm .= ' ' .Mage::helper('ho_recurring')->__('Order will be automatically created at:');
