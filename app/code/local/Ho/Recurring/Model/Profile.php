@@ -30,6 +30,8 @@
  * @method Ho_Recurring_Model_Profile setNextOrderAt(string $value)
  * @method string getCreatedAt()
  * @method Ho_Recurring_Model_Profile setCreatedAt(string $value)
+ * @method string getUpdatedAt()
+ * @method Ho_Recurring_Model_Profile setUpdatedAt(string $value)
  * @method int getEntityId()
  * @method Ho_Recurring_Model_Profile setEntityId(int $value)
  * @method string getStockId()
@@ -527,12 +529,21 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getCreatedAtFormatted()
     {
-        /** @noinspection PhpParamsInspection */
         return Mage::helper('core')->formatDate($this->getCreatedAt(), 'medium', true);
     }
 
+    /**
+     * @return string
+     */
+    public function getUpdatedAtFormatted()
+    {
+        return Mage::helper('core')->formatDate($this->getUpdatedAt(), 'medium', true);
+    }
 
     /**
      * @param Mage_Sales_Model_Order $order

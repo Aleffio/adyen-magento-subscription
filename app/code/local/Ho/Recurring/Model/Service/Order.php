@@ -56,6 +56,8 @@ class Ho_Recurring_Model_Service_Order
                 ->setTermType($productProfile->getTermType())
                 ->setNextOrderAt('2015-06-01 12:00:00') // @todo Set correct date
                 ->setShippingMethod($order->getShippingMethod())
+                ->setCreatedAt(now())
+                ->setUpdatedAt(now())
                 ->save();
 
             /** @var Ho_Recurring_Model_Profile_Item $profileItem */
