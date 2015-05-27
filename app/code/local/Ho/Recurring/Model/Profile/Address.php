@@ -24,8 +24,14 @@
  *
  * @method int getProfileId()
  * @method Ho_Recurring_Model_Profile_Address setProfileId(int $value)
- * @method int getAddressId()
- * @method Ho_Recurring_Model_Profile_Address setAddressId(int $value)
+ * @method int getSource()
+ * @method Ho_Recurring_Model_Profile_Address setSource(int $value)
+ * @method int getType()
+ * @method Ho_Recurring_Model_Profile_Address setType(int $value)
+ * @method int getOrderAddressId()
+ * @method Ho_Recurring_Model_Profile_Address setOrderAddressId(int $value)
+ * @method int getCustomerAddressId()
+ * @method Ho_Recurring_Model_Profile_Address setCustomerAddressId(int $value)
  */
 class Ho_Recurring_Model_Profile_Address extends Mage_Core_Model_Abstract
 {
@@ -38,5 +44,37 @@ class Ho_Recurring_Model_Profile_Address extends Mage_Core_Model_Abstract
     protected function _construct ()
     {
         $this->_init('ho_recurring/profile_address');
+    }
+
+    /**
+     * Set correct values on profile address based on given profile and order address
+     *
+     * @param Ho_Recurring_Model_Profile $profile
+     * @param Mage_Sales_Model_Order_Address $orderAddress
+     * @return $this
+     */
+    public function initAddress(Ho_Recurring_Model_Profile $profile, Mage_Sales_Model_Order_Address $orderAddress)
+    {
+        $this->setProfileId($profile->getId());
+
+        if ($orderAddress->getAddressType() == Mage_Sales_Model_Order_Address::TYPE_BILLING) {
+            $this->setType(self::ADDRESS_TYPE_BILLING);
+        }
+        else {
+            $this->setType(self::ADDRESS_TYPE_SHIPPING);
+        }
+
+        if ($orderAddress->getCustomerAddressId()) {
+            // Create customer address
+            $this->setSource(self::ADDRESS_SOURCE_CUSTOMER)
+                ->setCustomerAddressId($orderAddress->getCustomerAddressId());
+        }
+        else {
+            // Create order address
+            $this->setSource(self::ADDRESS_SOURCE_ORDER)
+                ->setOrderAddressId($orderAddress->getId());
+        }
+
+        return $this;
     }
 }

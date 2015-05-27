@@ -43,6 +43,7 @@ class Ho_Recurring_Model_Service_Order
                 continue;
             }
 
+            // Create profile
             /** @var Ho_Recurring_Model_Profile $profile */
             $profile = Mage::getModel('ho_recurring/profile')
                 ->setStatus(Ho_Recurring_Model_Profile::STATUS_ACTIVE)
@@ -54,12 +55,13 @@ class Ho_Recurring_Model_Service_Order
                 ->setStoreId($order->getStoreId())
                 ->setTerm($productProfile->getTerm())
                 ->setTermType($productProfile->getTermType())
-                ->setNextOrderAt('2015-06-01 12:00:00') // @todo Set correct date
+                ->setNextOrderAt('0000-00-00 00:00:00') // @todo Set correct date
                 ->setShippingMethod($order->getShippingMethod())
                 ->setCreatedAt(now())
                 ->setUpdatedAt(now())
                 ->save();
 
+            // Create profile item
             /** @var Ho_Recurring_Model_Profile_Item $profileItem */
             $profileItem = Mage::getModel('ho_recurring/profile_item')
                 ->setProfileId($profile->getId())
@@ -75,6 +77,15 @@ class Ho_Recurring_Model_Service_Order
                 ->setMinBillingCycles($productProfile->getMinBillingCycles())
                 ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
                 ->setCreatedAt(now());
+
+            // Create profile addresses
+            $profileBillingAddress = Mage::getModel('ho_recurring/profile_address')
+                ->initAddress($profile, $order->getBillingAddress())
+                ->save();
+
+            $profileShippingAddress = Mage::getModel('ho_recurring/profile_address')
+                ->initAddress($profile, $order->getShippingAddress())
+                ->save();
 
             /** @var Mage_Sales_Model_Quote $quote */
             $quote = Mage::getModel('sales/quote')
