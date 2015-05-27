@@ -189,6 +189,15 @@
                     </ho_recurring>
                 </observers>
             </create_order_session_quote_initialized>
+            <sales_order_grid_collection_load_before>
+                <observers>
+                    <ho_recurring_sales_order_grid_collection>
+                        <type>singleton</type>
+                        <class>ho_recurring/observer</class>
+                        <method>beforeOrderCollectionLoad</method>
+                    </ho_recurring_sales_order_grid_collection>
+                </observers>
+            </sales_order_grid_collection_load_before>
         </events>
     </adminhtml>
 

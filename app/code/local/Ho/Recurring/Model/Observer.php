@@ -56,7 +56,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         return Mage::helper('ho_recurring')->__(
-            'Quotes created, %s success full, %s failed', $successCount, $failureCount
+            'Quotes created, %s successful, %s failed', $successCount, $failureCount
         );
     }
 
@@ -92,10 +92,9 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         return Mage::helper('ho_recurring')->__(
-            'Quotes created, %s success full, %s failed', $successCount, $failureCount
+            'Quotes created, %s successful, %s failed', $successCount, $failureCount
         );
     }
-
 
     /**
      * @param Varien_Event_Observer $observer
@@ -113,7 +112,6 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         }
     }
 
-
     /**
      * @param Varien_Event_Observer $observer
      * @todo move to adminhtml observer.
@@ -130,7 +128,6 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         Mage::register('current_profile', $profile);
         Mage::app()->getLayout()->getUpdate()->addHandle('ho_recurring_active_quote_edit');
     }
-
 
     /**
      * Save additional (recurring) product options (added in addRecurringProductProfileToQuote)
@@ -154,5 +151,23 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
             $options['additional_options'] = unserialize($additionalOptions->getValue());
             $orderItem->setProductOptions($options);
         }
+    }
+
+    /**
+     * Join recurring profile ID to sales order grid
+     *
+     * @event sales_order_grid_collection_load_before
+     * @param Varien_Event_Observer $observer
+     */
+    public function beforeOrderCollectionLoad($observer)
+    {
+        /** @var Mage_Sales_Model_Resource_Order_Collection $collection */
+        $collection = $observer->getOrderGridCollection();
+
+        $collection->getSelect()->joinLeft(
+            array('recurring_profile' => 'ho_recurring_profile'),
+            '`main_table`.`entity_id` = `recurring_profile`.`order_id`',
+            array('recurring_profile_id' => 'entity_id')
+        );
     }
 }
