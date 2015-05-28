@@ -28,6 +28,8 @@
  * @method $this setProfileId(int $value)
  * @method int getProductId()
  * @method $this setProductId(int $value)
+ * @method string getProductOptions()
+ * @method $this setProductOptions(string $value)
  * @method string getSku()
  * @method $this setSku(string $value)
  * @method string getName()

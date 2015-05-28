@@ -67,6 +67,7 @@ class Ho_Recurring_Model_Service_Order
                 ->setProfileId($profile->getId())
                 ->setStatus(Ho_Recurring_Model_Profile_Item::STATUS_ACTIVE)
                 ->setProductId($orderItem->getProductId())
+                ->setProductOptions(serialize($orderItem->getProductOptions()))
                 ->setSku($orderItem->getSku())
                 ->setName($orderItem->getName())
                 ->setLabel($productProfile->getLabel())
