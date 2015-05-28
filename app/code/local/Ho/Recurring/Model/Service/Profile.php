@@ -54,10 +54,6 @@ class Ho_Recurring_Model_Service_Profile
 
                 $quoteItem = $quote->addProduct($product, $profileItem->getQty());
 
-                $quoteItem->setCustomPrice($profileItem->getPrice());
-                $quoteItem->setOriginalCustomPrice($profileItem->getPrice());
-                $quoteItem->getProduct()->setIsSuperMode(true);
-
                 $quoteItem->setNoDiscount(false);
                 $quoteItem->getProduct()->setIsSuperMode(true);
 
@@ -75,7 +71,6 @@ class Ho_Recurring_Model_Service_Profile
                 ]);
                 $quoteItem->addOption($buyRequest);
 
-                $quoteItem->setAdditionalData($profileItem->getAdditionalOptions());
                 $quoteItem->checkData();
             }
 
