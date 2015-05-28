@@ -35,12 +35,14 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
             if ($product->getData('ho_recurring_type') != Ho_Recurring_Model_Product_Profile::TYPE_DISABLED) {
                 $option = $product->getCustomOption('additional_options');
 
-                $additionalOptions = unserialize($option->getValue());
-                foreach ($additionalOptions as $additional) {
-                    if ($additional['code'] == 'ho_recurring_profile') {
-                        $profile = Mage::getModel('ho_recurring/product_profile')->load($additional['option_value']);
+                if ($option) {
+                    $additionalOptions = unserialize($option->getValue());
+                    foreach ($additionalOptions as $additional) {
+                        if ($additional['code'] == 'ho_recurring_profile') {
+                            $profile = Mage::getModel('ho_recurring/product_profile')->load($additional['option_value']);
 
-                        return $profile->getPrice();
+                            return $profile->getPrice();
+                        }
                     }
                 }
             }
