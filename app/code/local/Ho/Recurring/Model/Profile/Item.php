@@ -28,7 +28,6 @@
  * @method $this setProfileId(int $value)
  * @method int getProductId()
  * @method $this setProductId(int $value)
- * @method string getProductOptions()
  * @method $this setProductOptions(string $value)
  * @method string getSku()
  * @method $this setSku(string $value)
@@ -80,5 +79,33 @@ class Ho_Recurring_Model_Profile_Item extends Mage_Core_Model_Abstract
     public function getStatusLabel()
     {
         return self::getStatuses()[$this->getStatus()];
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function getBuyRequest()
+    {
+        $options = $this->getProductOptions();
+
+        return array_key_exists('info_buyRequest', $options) ? $options['info_buyRequest'] : false;
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function getAdditionalOptions()
+    {
+        $options = $this->getProductOptions();
+
+        return array_key_exists('additional_options', $options) ? $options['additional_options'] : false;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProductOptions()
+    {
+        return unserialize($this->getData('product_options'));
     }
 }

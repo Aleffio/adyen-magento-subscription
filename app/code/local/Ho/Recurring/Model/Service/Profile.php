@@ -58,10 +58,24 @@ class Ho_Recurring_Model_Service_Profile
                 $quoteItem->setOriginalCustomPrice($profileItem->getPrice());
                 $quoteItem->getProduct()->setIsSuperMode(true);
 
-                $quoteItem->setCustomPrice($profileItem->getPriceInclTax());
-                $quoteItem->setOriginalCustomPrice($profileItem->getPriceInclTax());
                 $quoteItem->setNoDiscount(false);
                 $quoteItem->getProduct()->setIsSuperMode(true);
+
+                $additionalData = Mage::getModel('sales/quote_item_option')->setData([
+                    'code'       => 'additional_options',
+                    'product_id' => $quoteItem->getProductId(),
+                    'value'      => serialize($profileItem->getAdditionalOptions())
+                ]);
+                $quoteItem->addOption($additionalData);
+
+                $buyRequest = Mage::getModel('sales/quote_item_option')->setData([
+                    'code'       => 'info_buyRequest',
+                    'product_id' => $quoteItem->getProductId(),
+                    'value'      => serialize($profileItem->getBuyRequest())
+                ]);
+                $quoteItem->addOption($buyRequest);
+
+                $quoteItem->setAdditionalData($profileItem->getAdditionalOptions());
                 $quoteItem->checkData();
             }
 
