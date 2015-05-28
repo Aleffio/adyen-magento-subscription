@@ -71,6 +71,11 @@
                     </product_profile>
                 </entities>
             </ho_recurring_resource>
+            <catalog>
+                <rewrite>
+                    <product_type_simple>Ho_Recurring_Model_Catalog_Product_Type_Simple</product_type_simple>
+                </rewrite>
+            </catalog>
         </models>
         <resources>
             <ho_recurring_setup>

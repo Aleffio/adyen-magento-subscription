@@ -107,4 +107,11 @@
             </action>
         </reference>
     </adminhtml_sales_order_view>
+
+    <PRODUCT_TYPE_simple>
+        <reference name="product.composite.fieldset">
+            <remove name="product.composite.fieldset.qty"/>
+            <block type="ho_recurring/catalog_product_view_profile" before="product.composite.fieldset.options" name="product.composite.fieldset.bundle" template="ho/recurring/product/composite/fieldset/options/profile.phtml" />
+        </reference>
+    </PRODUCT_TYPE_simple>
 </layout>

@@ -21,6 +21,7 @@
 
 class Ho_Recurring_Block_Catalog_Product_View_Profile extends Mage_Core_Block_Template
 {
+    protected $_selectedOption = null;
 
     /**
      * @return Mage_Catalog_Model_Product
@@ -29,7 +30,6 @@ class Ho_Recurring_Block_Catalog_Product_View_Profile extends Mage_Core_Block_Te
     {
         return Mage::registry('current_product');
     }
-
 
     /**
      * @return bool
@@ -89,5 +89,46 @@ class Ho_Recurring_Block_Catalog_Product_View_Profile extends Mage_Core_Block_Te
     public function getProfileCollection()
     {
         return $this->getProduct()->getData('ho_recurring_data');
+    }
+
+    /**
+     * @return Ho_Recurring_Model_Resource_Product_Profile_Collection
+     */
+    public function getOptions()
+    {
+        return $profileCollection = Mage::getResourceModel('ho_recurring/product_profile_collection')
+            ->addProductFilter($this->getProduct());
+    }
+
+    /**
+     * @return int|null
+     */
+    protected function _getSelectedOption()
+    {
+        if (is_null($this->_selectedOption)) {
+            if ($this->getProduct()->hasPreconfiguredValues()) {
+                $configValue = $this->getProduct()->getPreconfiguredValues()->getData('ho_recurring_profile');
+                if ($configValue) {
+                    $this->_selectedOption = $configValue;
+                }
+            }
+        }
+
+        return $this->_selectedOption;
+    }
+
+    /**
+     * @param int $profileId
+     * @return bool
+     */
+    protected function _isSelected($profileId)
+    {
+        $selectedOption = $this->_getSelectedOption();
+
+        if ($selectedOption == $profileId) {
+            return true;
+        }
+
+        return false;
     }
 }
