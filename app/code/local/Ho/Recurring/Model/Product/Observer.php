@@ -147,7 +147,6 @@ class Ho_Recurring_Model_Product_Observer
             if (! $product->getStore()->isAdmin()) {
                 $profileCollection->addStoreFilter($product->getStore());
             }
-            $product->setData('is_recurring', 1);
             $product->setData('ho_recurring_data', $profileCollection);
         } else {
             $product->setData('ho_recurring_data', null);
@@ -240,8 +239,9 @@ class Ho_Recurring_Model_Product_Observer
         $option = $quoteItem->getOptionByCode('additional_options');
 
         if ($profile) {
-            $quoteItem->setCustomPrice($profile->getPrice());
-            $quoteItem->setOriginalCustomPrice($profile->getPrice());
+            // @todo Check best practice, now done in Ho_Recurring_Model_Catalog_Product_Price_Simple
+//            $quoteItem->setCustomPrice($profile->getPrice());
+//            $quoteItem->setOriginalCustomPrice($profile->getPrice());
             $profileOption = [
                 'label'        => 'Subscription',
                 'code'         => 'ho_recurring_profile',

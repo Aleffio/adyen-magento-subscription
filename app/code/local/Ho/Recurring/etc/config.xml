@@ -74,9 +74,19 @@
             <catalog>
                 <rewrite>
                     <product_type_simple>Ho_Recurring_Model_Catalog_Product_Type_Simple</product_type_simple>
+                    <product_type_price>Ho_Recurring_Model_Catalog_Product_Price_Simple</product_type_price>
                 </rewrite>
             </catalog>
         </models>
+        <catalog>
+            <product>
+                <type>
+                    <simple translate="label" module="catalog">
+                        <price_model>ho_recurring/catalog_product_price_simple</price_model>
+                    </simple>
+                </type>
+            </product>
+        </catalog>
         <resources>
             <ho_recurring_setup>
                 <setup>
@@ -120,13 +130,22 @@
             </sales_order_invoice_register>
             <catalog_product_collection_load_after>
                 <observers>
-                    <enterprise_giftcard>
+                    <ho_recurring_load_attributes_after_collection_load>
                         <class>ho_recurring/product_observer</class>
                         <method>loadAttributesAfterCollectionLoad</method>
-                    </enterprise_giftcard>
+                    </ho_recurring_load_attributes_after_collection_load>
                 </observers>
             </catalog_product_collection_load_after>
         </events>
+        <sales>
+            <quote>
+                <item>
+                    <product_attributes>
+                        <ho_recurring_type />
+                    </product_attributes>
+                </item>
+            </quote>
+        </sales>
     </global>
     <frontend>
         <layout>
