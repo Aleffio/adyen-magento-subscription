@@ -14,7 +14,7 @@
   display: inline-block;
 }
 
-.status-pill-darkred { background-color: #E41300; }
+.status-pill-red { background-color: #E41300; }
 .status-pill-orange { background-color: #F75300; }
 .status-pill-yellow { background-color:#FE9D00; }
 .status-pill-green { background-color:#36B963; }

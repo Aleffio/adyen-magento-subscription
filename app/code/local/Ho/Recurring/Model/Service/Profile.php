@@ -87,14 +87,14 @@ class Ho_Recurring_Model_Service_Profile
             $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
 
             // Set payment method
-            $quote->getPayment()->importData(array('method' => $profile->getBillingAgreement()->getMethodCode()));
-            $methodInstance = $quote->getPayment()->getMethodInstance();
+            $methodInstance = $profile->getBillingAgreement()->getPaymentMethodInstance();
 
             if (! method_exists($methodInstance, 'initBillingAgreementPaymentInfo')) {
                 Ho_Recurring_Exception::throwException(Mage::helper('ho_recurring')->__(
                     'Payment method %s does not support Ho_Recurring', $methodInstance->getCode()
                 ));
             }
+
 
             // Set billing agreement data
             /** @noinspection PhpUndefinedMethodInspection */
