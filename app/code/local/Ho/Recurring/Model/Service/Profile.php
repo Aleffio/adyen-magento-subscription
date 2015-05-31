@@ -40,11 +40,13 @@ class Ho_Recurring_Model_Service_Profile
             }
 
             $storeId = $profile->getStoreId();
+            Mage::getSingleton('adminhtml/session_quote')->setStoreId($storeId);
             $customer = $profile->getCustomer();
             $quote = Mage::getModel('sales/quote')->assignCustomer($customer);
             $quote->setStoreId($storeId);
             $quote->setIsSuperMode(true);
             $quote->setIsActive(false); //always create an inactive quote, else it shows up on the frontend.
+            $profile->setErrorMessage(null);
 
             // Add order items to quote
             foreach ($profile->getItemCollection() as $profileItem) {
@@ -107,7 +109,12 @@ class Ho_Recurring_Model_Service_Profile
 
             // Set billing agreement data
             /** @noinspection PhpUndefinedMethodInspection */
-            $methodInstance->initBillingAgreementPaymentInfo($profile->getBillingAgreement(), $quote->getPayment());
+            try {
+                $methodInstance->initBillingAgreementPaymentInfo($profile->getBillingAgreement(), $quote->getPayment());
+            } catch(Mage_Core_Exception $e) {
+                $profile->setErrorMessage($e->getMessage());
+                $profile->setStatus($profile::STATUS_QUOTE_ERROR);
+            }
 
             $quote->collectTotals();
             $profile->setActiveQuote($quote);
@@ -125,7 +132,6 @@ class Ho_Recurring_Model_Service_Profile
             if ($profile->getStatus() == $profile::STATUS_QUOTE_ERROR) {
                 $profile->setStatus($profile::STATUS_ACTIVE);
             }
-            $profile->setErrorMessage(null);
             $profile->save();
 
             return $quote;
