@@ -104,11 +104,6 @@
     <div class="entry-edit">
         <div class="entry-edit-head">
             <h4 class="icon-head head-billing-address"><?php echo Mage::helper('sales')->__('Billing Address') ?></h4>
-            <?php if (! $this->isEdit()): ?>
-            <div class="tools">
-                <a href="<?php echo $this->getEditUrl('billing_address'); ?>"><?php echo Mage::helper('adminhtml')->__('Edit') ?></a>
-            </div>
-            <?php endif; ?>
         </div>
         <fieldset>
             <address><?php echo $_profile->getBillingAddress()->format('html'); ?></address>
@@ -120,11 +115,6 @@
     <div class="entry-edit">
         <div class="entry-edit-head">
             <h4 class="icon-head head-shipping-address"><?php echo Mage::helper('sales')->__('Shipping Address') ?></h4>
-            <?php if (! $this->isEdit()): ?>
-            <div class="tools">
-                <a href="<?php echo $this->getEditUrl('shipping_address'); ?>"><?php echo Mage::helper('adminhtml')->__('Edit') ?></a>
-            </div>
-            <?php endif; ?>
         </div>
         <fieldset>
             <address><?php echo $_profile->getShippingAddress()->format('html'); ?></address>
@@ -138,17 +128,9 @@
     <div class="entry-edit">
         <div class="entry-edit-head">
             <h4 class="icon-head head-billing-address"><?php echo Mage::helper('ho_recurring')->__('Billing Agreement Information'); ?></h4>
-            <?php if (! $this->isEdit()): ?>
-            <div class="tools">
-                <a href="<?php echo $this->getEditUrl('billing_agreement'); ?>"><?php echo Mage::helper('adminhtml')->__('Edit') ?></a>
-            </div>
-            <?php endif; ?>
         </div>
 
         <div class="fieldset">
-            <?php if ($this->isEdit('billing_agreement')): ?>
-                <?php echo $this->getChildHtml('profile_edit_billing_agreement'); ?>
-            <?php else: ?>
             <table cellspacing="0" class="form-list">
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Reference ID'); ?></label></td>
@@ -175,7 +157,6 @@
                     <td class="value"><strong><?php echo $_billingAgreement->getAgreementLabel(); ?></strong></td>
                 </tr>
             </table>
-            <?php endif; ?>
         </div>
     </div>
 </div>

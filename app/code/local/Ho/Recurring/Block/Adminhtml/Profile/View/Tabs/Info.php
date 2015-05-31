@@ -91,32 +91,4 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Info
     {
         return false;
     }
-
-    public function getEditUrl($section)
-    {
-        return $this->getUrl('ho_recurring/adminhtml_profile/edit', [
-            'id' => $this->getProfile()->getId(),
-            'section' => $section
-        ]);
-    }
-
-    /**
-     * @param $section
-     *
-     * @return bool
-     * @throws Exception
-     */
-    public function isEdit($section = null)
-    {
-        $editSection = $this->getRequest()->getParam('section');
-        if (!$editSection) {
-            return false;
-        }
-
-        if ($section === null) {
-            return true;
-        }
-
-        return $section == $this->getRequest()->getParam('section');
-    }
 }

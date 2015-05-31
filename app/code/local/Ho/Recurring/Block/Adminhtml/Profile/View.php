@@ -29,9 +29,7 @@ class Ho_Recurring_Block_Adminhtml_Profile_View extends Mage_Adminhtml_Block_Wid
 
         parent::__construct();
 
-        if (! $this->isEdit()) {
-            $this->_removeButton('save');
-        }
+        $this->_removeButton('save');
         $this->_removeButton('reset');
 
         if ($this->getProfile()->canCancel()) {
@@ -93,29 +91,6 @@ JS;
      */
     public function getBackUrl()
     {
-        if ($this->isEdit()) {
-            return $this->getUrl('*/*/view', array('id' => $this->getProfile()->getId()));
-        }
         return $this->getUrl('*/*/');
-    }
-
-    /**
-     * @param $section
-     *
-     * @return bool
-     * @throws Exception
-     */
-    public function isEdit($section = null)
-    {
-        $editSection = $this->getRequest()->getParam('section');
-        if (!$editSection) {
-            return false;
-        }
-
-        if ($section === null) {
-            return true;
-        }
-
-        return $section == $this->getRequest()->getParam('section');
     }
 }
