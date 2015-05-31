@@ -52,7 +52,9 @@ $_coreHelper = $this->helper('core');
                         <label>
                             <input type="radio" id="ho_recurring_profile_<?php echo  $profile->getId(); ?>"
                                    data-profile-id="<?php echo  $profile->getId(); ?>" onchange="profileOptions.reloadPrice()"
-                                   name="ho_recurring_profile" class="ho-recurring-profile-option validate-one-required-by-name" value="<?php echo $profile->getId(); ?>"/>
+                                   name="ho_recurring_profile" class="ho-recurring-profile-option validate-one-required-by-name" value="<?php echo $profile->getId(); ?>"
+                                   <?php if($this->isProfileSelected($profile)): ?>checked<?php endif; ?>
+                                />
                             <?php echo $profile->getFrontendLabel(); ?> <?php echo $_coreHelper->formatCurrency($profile->getPrice()); ?>
                         </label>
                         <script type="text/javascript">

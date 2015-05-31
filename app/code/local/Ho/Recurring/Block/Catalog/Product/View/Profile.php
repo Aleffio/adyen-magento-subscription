@@ -31,6 +31,29 @@ class Ho_Recurring_Block_Catalog_Product_View_Profile extends Mage_Core_Block_Te
         return Mage::registry('current_product');
     }
 
+    public function isProfileSelected(Ho_Recurring_Model_Product_Profile $profile)
+    {
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+        $quoteItem = $quote->getItemById($this->getRequest()->getParam('id'));
+        if (! $quoteItem) {
+            return false;
+        }
+
+        $option = $quoteItem->getOptionByCode('additional_options');
+        if (! $option) {
+            return false;
+        }
+
+        $values = unserialize($option->getValue());
+        foreach ($values as $value) {
+            if ($value['code'] == 'ho_recurring_profile') {
+                return $value['option_value'] == $profile->getId();
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @return bool
      */
