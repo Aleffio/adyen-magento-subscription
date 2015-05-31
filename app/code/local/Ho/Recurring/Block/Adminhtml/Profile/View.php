@@ -59,6 +59,15 @@ JS;
                     ['id' => $this->getProfile()->getId()])}')",
             ], 20);
         }
+
+        if ($this->getProfile()->canEditProfile()) {
+            $this->_addButton('edit_profile', [
+                'label' => Mage::helper('ho_recurring')->__('Edit Profile'),
+                'class' => 'add',
+                'onclick' => "setLocation('{$this->getUrl('*/*/editProfile',
+                    ['id' => $this->getProfile()->getId()])}')",
+            ], 30);
+        }
     }
 
     public function getHeaderText()

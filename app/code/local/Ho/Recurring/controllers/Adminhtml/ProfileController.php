@@ -233,23 +233,63 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
      */
     public function createQuoteAction()
     {
-        if ($profileId = $this->getRequest()->getParam('id')) {
-            $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+        $profileId = $this->getRequest()->getParam('id');
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
 
-            if ($profile->getId()) {
-                try {
-                    $quote = Mage::getSingleton('ho_recurring/service_profile')->createQuote($profile);
+        if (! $profile->getId()) {
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Could not find profile')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
 
-                    $this->_getSession()->addSuccess(
-                        Mage::helper('ho_recurring')->__('Quote (#%s) successfully created', $quote->getId())
-                    );
-                }
-                catch (Mage_Core_Exception $e) {
-                    $this->_getSession()->addError(
-                        Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
-                    );
-                }
+        try {
+            $quote = Mage::getSingleton('ho_recurring/service_profile')->createQuote($profile);
+
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Quote (#%s) successfully created', $quote->getId())
+            );
+        }
+        catch (Mage_Core_Exception $e) {
+            $this->_getSession()->addError(
+                Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
+            );
+        }
+
+        $this->_redirectReferer();
+    }
+
+
+    /**
+     * Create profile quote
+     */
+    public function editProfileAction()
+    {
+        $profileId = $this->getRequest()->getParam('id');
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        if (! $profile->getId()) {
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Could not find profile')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        try {
+            if (! $profile->getActiveQuote()) {
+                Mage::getSingleton('ho_recurring/service_profile')->createQuote($profile);
             }
+
+            $this->_editProfile($profile, ['update' => true]);
+            return;
+        } catch (Mage_Core_Exception $e) {
+            $this->_getSession()->addError(
+                Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
+            );
         }
 
         $this->_redirectReferer();
@@ -301,13 +341,22 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
             $this->_redirectReferer();
         }
 
-        $activeQuote = $profile->getActiveQuote();
+        $this->_editProfile($profile);
+    }
+
+    protected function _editProfile(
+        Ho_Recurring_Model_Profile $profile,
+        array $params = [])
+    {
+        $quote = $profile->getActiveQuote();
 
         Mage::getSingleton('adminhtml/session_quote')
-            ->setCustomerId($activeQuote->getCustomerId())
-            ->setStoreId($activeQuote->getStoreId())
-            ->setQuoteId($activeQuote->getId());
+            ->setCustomerId($quote->getCustomerId())
+            ->setStoreId($quote->getStoreId())
+            ->setQuoteId($quote->getId());
 
-        $this->_redirect('adminhtml/sales_order_create/index', ['profile' => $profile->getId()]);
+        $params['profile'] = $profile->getId();
+
+        $this->_redirect('adminhtml/sales_order_create/index', $params);
     }
 }

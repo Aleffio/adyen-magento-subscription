@@ -531,6 +531,15 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     /**
      * @return bool
      */
+    public function canEditProfile()
+    {
+        return true;
+    }
+
+
+    /**
+     * @return bool
+     */
     public function canCreateOrder()
     {
         if (! $this->getActiveQuote()) {
