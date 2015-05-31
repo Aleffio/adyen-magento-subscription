@@ -35,12 +35,21 @@ class Ho_Recurring_Block_Adminhtml_Sales_Order_Create_Header
         }
 
 
-        $out = Mage::helper('ho_recurring')->__(
-            'Edit Scheduled Order for Profile #%s for %s in %s',
-            $profile->getIncrementId(),
-            $profile->getCustomer()->getName(),
-            $this->getStore()->getName()
-        );
+        if ($this->getRequest()->getParam('full_update')) {
+            $out = Mage::helper('ho_recurring')->__(
+                'Edit Profile #%s for %s in %s',
+                $profile->getIncrementId(),
+                $profile->getCustomer()->getName(),
+                $this->getStore()->getName()
+            );
+        } else {
+            $out = Mage::helper('ho_recurring')->__(
+                'Edit Scheduled Order for Profile #%s for %s in %s',
+                $profile->getIncrementId(),
+                $profile->getCustomer()->getName(),
+                $this->getStore()->getName()
+            );
+        }
 
         $out = $this->escapeHtml($out);
         $out = '<h3 class="icon-head head-sales-order">' . $out . '</h3>';

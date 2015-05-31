@@ -284,7 +284,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
                 Mage::getSingleton('ho_recurring/service_profile')->createQuote($profile);
             }
 
-            $this->_editProfile($profile, ['update' => true]);
+            $this->_editProfile($profile, ['full_update' => true]);
             return;
         } catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError(

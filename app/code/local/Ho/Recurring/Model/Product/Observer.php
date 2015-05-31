@@ -51,50 +51,40 @@ class Ho_Recurring_Model_Product_Observer
 
     protected function _updateProductProfiles(Mage_Catalog_Model_Product $product)
     {
-        try {
-            $productProfilesData = Mage::app()->getRequest()->getPost('product_profile');
+        $productProfilesData = Mage::app()->getRequest()->getPost('product_profile');
 
-            /** @var array $productProfileIds */
-            $productProfileIds = Mage::getModel('ho_recurring/product_profile')
-                ->getCollection()
-                ->addFieldToFilter('product_id', $product->getId())
-                ->getAllIds();
-            if (! $productProfilesData) {
-                return;
+        /** @var array $productProfileIds */
+        $productProfileIds = Mage::getModel('ho_recurring/product_profile')
+            ->getCollection()
+            ->addFieldToFilter('product_id', $product->getId())
+            ->getAllIds();
+        if (! $productProfilesData) {
+            return;
+        }
+
+        $i = 1;
+        // Save profiles
+        foreach ($productProfilesData as $id => $profileData) {
+            $profile = Mage::getModel('ho_recurring/product_profile')->load($id);
+
+            if (!$profile->getId()) {
+                $profile->setProductId($product->getId());
             }
 
-            $i = 1;
-            // Save profiles
-            foreach ($productProfilesData as $id => $profileData) {
-                $profile = Mage::getModel('ho_recurring/product_profile')->load($id);
+            $profile->addData($profileData);
+            $profile->setSortOrder($i * 10);
 
-                if (!$profile->getId()) {
-                    $profile->setProductId($product->getId());
-                }
-
-                $profile->addData($profileData);
-                $profile->setSortOrder($i * 10);
-
-                if (in_array($id, $productProfileIds)) {
-                    $productProfileIds = array_diff($productProfileIds, array($id));
-                }
-
-                $profile->save();
-                $i++;
+            if (in_array($id, $productProfileIds)) {
+                $productProfileIds = array_diff($productProfileIds, array($id));
             }
 
-            // Delete profiles
-            foreach($productProfileIds as $profileId) {
-                Mage::getModel('ho_recurring/product_profile')->setId($profileId)->delete();
-            }
-        } catch (Exception $e) {
-            Mage::getSingleton('adminhtml/session')->addError(
-                Mage::helper('ho_recurring')->__(
-                    'Something went wrong when trying to save the recurring profile data: %s',
-                    $e->getMessage()
-                )
-            );
-            throw $e;
+            $profile->save();
+            $i++;
+        }
+
+        // Delete profiles
+        foreach($productProfileIds as $profileId) {
+            Mage::getModel('ho_recurring/product_profile')->setId($profileId)->delete();
         }
     }
 
@@ -300,6 +290,7 @@ class Ho_Recurring_Model_Product_Observer
         $methodInstance = $observer->getMethodInstance();
         if (! $methodInstance->canCreateBillingAgreement()) {
             $observer->getResult()->isAvailable = false;
+            return $this;
         }
 
         return $this;
@@ -314,7 +305,6 @@ class Ho_Recurring_Model_Product_Observer
     protected function _isQuoteHoRecurring(Mage_Sales_Model_Quote $quote)
     {
         if (! $quote->hasData('_is_ho_recurring')) {
-            $isHoRecurring = false;
             foreach ($quote->getAllItems() as $quoteItem) {
                 /** @var Mage_Sales_Model_Quote_Item $quoteItem */
                 $additionalOptions = $quoteItem->getOptionByCode('additional_options');
