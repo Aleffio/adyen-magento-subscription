@@ -84,6 +84,7 @@ class Ho_Recurring_Model_Service_Profile
 
             // Set shipping address data
             /** @var Mage_Sales_Model_Quote_Address $shippingAddress */
+            /** @noinspection PhpUndefinedMethodInspection */
             $quote->getShippingAddress()
                 ->addData($profile->getShippingAddressData())
                 ->setData('email', $customer->getEmail())
@@ -109,6 +110,7 @@ class Ho_Recurring_Model_Service_Profile
 
             // Set billing agreement data
             try {
+                /** @noinspection PhpUndefinedMethodInspection */
                 $methodInstance->initBillingAgreementPaymentInfo($profile->getBillingAgreement(), $quote->getPayment());
             } catch(Mage_Core_Exception $e) {
                 $profile->setErrorMessage($e->getMessage());
@@ -118,7 +120,8 @@ class Ho_Recurring_Model_Service_Profile
             $quote->collectTotals();
             $profile->setActiveQuote($quote);
             $quoteAdditional = $profile->getActiveQuoteAdditional(true);
-            $quoteAdditional->setScheduledAt($profile->calculateNextScheduleDate());
+            $quoteAdditional->setScheduledAt($profile->getNextOrderAt());
+            $profile->setNextOrderAt(null);
 
             Mage::getModel('core/resource_transaction')
                 ->addObject($quote)

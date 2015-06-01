@@ -42,8 +42,11 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         $successCount = 0;
         $failureCount = 0;
         foreach ($profileCollection as $profile) {
+
+            $scheduleDate = $profile->getNextOrderAt() ?: $profile->calculateNextScheduleDate(true);
+            $profile->setNextOrderAt($scheduleDate);
             /** @var Ho_Recurring_Model_Profile $profile */
-            $scheduleDate = $profile->calculateNextScheduleDate(true);
+
             if ($scheduleDate < $scheduleBefore) {
                 try {
                     Mage::getSingleton('ho_recurring/service_profile')->createQuote($profile);
@@ -106,6 +109,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         $profiles = Mage::getSingleton('ho_recurring/service_order')->createProfile($order);
 
         foreach ($profiles as $profile) {
+            /** @var Ho_Recurring_Model_Profile $profile */
             $message = Mage::helper('ho_recurring')->__("Created a recurring profile (#%s) from order.", $profile->getId());
             $order->addStatusHistoryComment($message);
         }
@@ -117,6 +121,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function addAdminhtmlSalesOrderCreateHandles(Varien_Event_Observer $observer)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         if (! $observer->getAction() instanceof Mage_Adminhtml_Sales_Order_CreateController) {
             return;
         }
@@ -163,6 +168,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     public function beforeOrderCollectionLoad($observer)
     {
         /** @var Mage_Sales_Model_Resource_Order_Collection $collection */
+        /** @noinspection PhpUndefinedMethodInspection */
         $collection = $observer->getOrderGridCollection();
 
         $collection->getSelect()->joinLeft(
