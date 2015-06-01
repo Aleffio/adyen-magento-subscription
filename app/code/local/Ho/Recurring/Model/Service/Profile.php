@@ -109,6 +109,7 @@ class Ho_Recurring_Model_Service_Profile
 
 
             // Set billing agreement data
+            /** @noinspection PhpUndefinedMethodInspection */
             try {
                 /** @noinspection PhpUndefinedMethodInspection */
                 $methodInstance->initBillingAgreementPaymentInfo($profile->getBillingAgreement(), $quote->getPayment());

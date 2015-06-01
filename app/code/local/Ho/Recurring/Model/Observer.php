@@ -105,6 +105,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     public function convertOrderToProfile(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Order $order */
+        /** @noinspection PhpUndefinedMethodInspection */
         $order = $observer->getOrder();
         $profiles = Mage::getSingleton('ho_recurring/service_order')->createProfile($order);
 
@@ -147,8 +148,10 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     public function addRecurringProductProfileToOrder(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+        /** @noinspection PhpUndefinedMethodInspection */
         $quoteItem = $observer->getItem();
         /** @var Mage_Sales_Model_Order_Item $orderItem */
+        /** @noinspection PhpUndefinedMethodInspection */
         $orderItem = $observer->getOrderItem();
 
         if ($additionalOptions = $quoteItem->getOptionByCode('additional_options')) {

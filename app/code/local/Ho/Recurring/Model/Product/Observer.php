@@ -21,6 +21,7 @@
  
 class Ho_Recurring_Model_Product_Observer
 {
+
     protected $_saved = false;
 
     /**
@@ -107,6 +108,7 @@ class Ho_Recurring_Model_Product_Observer
      */
     public function loadAttributesAfterCollectionLoad(Varien_Event_Observer $observer)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         /** @var $collection Mage_Catalog_Model_Resource_Product_Collection */
         $productCollection = $observer->getEvent()->getCollection();
 
@@ -167,6 +169,7 @@ class Ho_Recurring_Model_Product_Observer
     public function addProductTypeRecurringHandle(Varien_Event_Observer $observer)
     {
         /** @var Mage_Catalog_Model_Product $product */
+        /** @noinspection PhpUndefinedMethodInspection */
         $product = Mage::registry('current_product');
         if (! $product) {
             return $this;
@@ -182,6 +185,7 @@ class Ho_Recurring_Model_Product_Observer
         }
 
         /** @var Mage_Core_Model_Layout $layout */
+        /** @noinspection PhpUndefinedMethodInspection */
         $layout = $observer->getLayout();
         $layout->getUpdate()->addHandle('PRODUCT_TYPE_ho_recurring');
         return $this;
@@ -197,6 +201,7 @@ class Ho_Recurring_Model_Product_Observer
     public function addRecurringProductProfileToQuote(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+        /** @noinspection PhpUndefinedMethodInspection */
         $quoteItem = $observer->getQuoteItem();
 
         /** @var Mage_Catalog_Model_Product $product */
@@ -265,6 +270,7 @@ class Ho_Recurring_Model_Product_Observer
     public function isPaymentMethodActive(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Quote $quote */
+        /** @noinspection PhpUndefinedMethodInspection */
         $quote = $observer->getQuote();
         if (! $quote) {
             return $this;
@@ -275,6 +281,7 @@ class Ho_Recurring_Model_Product_Observer
         }
 
         /** @var Mage_Payment_Model_Method_Abstract $methodInstance */
+        /** @noinspection PhpUndefinedMethodInspection */
         $methodInstance = $observer->getMethodInstance();
         if (! $methodInstance->canCreateBillingAgreement()) {
             $observer->getResult()->isAvailable = false;
