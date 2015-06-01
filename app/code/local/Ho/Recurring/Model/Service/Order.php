@@ -27,12 +27,18 @@ class Ho_Recurring_Model_Service_Order
      */
     public function createProfile(Mage_Sales_Model_Order $order)
     {
+        $profiles = [];
+
+        if ($order->getRecurringProfileId()) {
+            // Don't create profile, since this order is created by a profile
+            return $profiles;
+        }
+
         $billingAgreement = $this->_getBillingAgreement($order);
 
         // Create a profile for each order item
         // @todo Check if order items can be merged in one profile (same term, billing cycles, etc)
 
-        $profiles = [];
         /** @var Mage_Sales_Model_Order_Item $orderItem */
         foreach ($order->getAllVisibleItems() as $orderItem) {
             /** @var Ho_Recurring_Model_Product_Profile $productProfile */
