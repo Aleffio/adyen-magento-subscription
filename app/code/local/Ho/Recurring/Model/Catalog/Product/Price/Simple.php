@@ -23,7 +23,6 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
 {
     /**
      * Retrieve product final price
-     * @todo Check best practice, see Ho_Recurring_Model_Product_Observer::addRecurringProductProfileToQuote
      *
      * @param float|null $qty
      * @param Mage_Catalog_Model_Product $product
@@ -41,7 +40,9 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
                         if ($additional['code'] == 'ho_recurring_profile') {
                             $profile = Mage::getModel('ho_recurring/product_profile')->load($additional['option_value']);
 
-                            return $profile->getPrice();
+                            if ($additional['option_value'] != 'none') {
+                                return $profile->getPrice();
+                            }
                         }
                     }
                 }

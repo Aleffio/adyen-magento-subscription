@@ -28,6 +28,9 @@
         <div class="product-options">
             <dl>
                 <select id="profile-option" name="ho_recurring_profile">
+                    <?php if ($this->canOrderStandalone()): ?>
+                        <option value="none"><?=$this->__('None (standalone purchase)');?></option>
+                    <?php endif; ?>
                     <?php foreach ($options as $option) : ?>
                         <?php /** @var Ho_Recurring_Model_Product_Profile $option */ ?>
                         <option value="<?=$option->getId();?>" <?=$this->_isSelected($option->getId()) ? 'selected="selected"' : ''; ?>><?php echo $option->getLabel(); ?></option>

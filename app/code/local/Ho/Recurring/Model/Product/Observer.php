@@ -229,9 +229,6 @@ class Ho_Recurring_Model_Product_Observer
         $option = $quoteItem->getOptionByCode('additional_options');
 
         if ($profile) {
-            // @todo Check best practice, now done in Ho_Recurring_Model_Catalog_Product_Price_Simple
-//            $quoteItem->setCustomPrice($profile->getPrice());
-//            $quoteItem->setOriginalCustomPrice($profile->getPrice());
             $profileOption = [
                 'label'        => 'Subscription',
                 'code'         => 'ho_recurring_profile',
@@ -240,8 +237,6 @@ class Ho_Recurring_Model_Product_Observer
                 'print_value'  => $profile->getFrontendLabel(),
             ];
         } else {
-            $quoteItem->setCustomPrice(null);
-            $quoteItem->setOriginalCustomPrice(null);
             $profileOption = [
                 'label'        => 'Subscription',
                 'code'         => 'ho_recurring_profile',
