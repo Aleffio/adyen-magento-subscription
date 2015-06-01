@@ -73,4 +73,145 @@ class Ho_Recurring_Model_Service_Quote
             throw $e;
         }
     }
+
+    /**
+     * Update profile based on given quote
+     *
+     * @param Mage_Sales_Model_Quote $quote
+     * @param Ho_Recurring_Model_Profile $profile
+     * @return Ho_Recurring_Model_Profile $profile
+     */
+    public function updateProfile(
+        Mage_Sales_Model_Quote $quote,
+        Ho_Recurring_Model_Profile $profile
+    ) {
+        $term = $termType = $stockId = null;
+        foreach ($quote->getItemsCollection() as $quoteItem) {
+            /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+            $productProfile = $this->_getProductProfile($quoteItem);
+
+            if (!$productProfile) {
+                // No recurring product profile found, no recurring profile needs to be created
+                continue;
+            }
+
+            if (is_null($stockId)) {
+                $stockId = $quoteItem->getStockId();
+            }
+
+            if (is_null($term)) {
+                $term = $productProfile->getTerm();
+            }
+            if (is_null($termType)) {
+                $termType = $productProfile->getTermType();
+            }
+            if ($term != $productProfile->getTerm() || $termType != $productProfile->getTermType()) {
+                Mage::throwException('Cant update profile: terms/termtypes of products are not equal');
+            }
+        }
+
+        $billingAgreement = $this->_getBillingAgreement($quote);
+
+        // Update profile
+        $profile->setStatus(Ho_Recurring_Model_Profile::STATUS_ACTIVE)
+            ->setStockId($stockId)
+            ->setBillingAgreementId($billingAgreement->getId())
+            ->setTerm($term)
+            ->setTermType($termType)
+//            ->setShippingMethod($quote->getShippingMethod()) // @todo can't retrieve shipping method from quote
+            ->setUpdatedAt(now())
+            ->save();
+
+        // Delete current profile items
+        foreach ($profile->getItemCollection() as $profileItem) {
+            /** @var Ho_Recurring_Model_Profile_Item $profileItem */
+            $profileItem->delete();
+        }
+
+        // Create new profile items
+        foreach ($quote->getItemsCollection() as $quoteItem) {
+            /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+
+            /** @var Ho_Recurring_Model_Product_Profile $productProfile */
+            $productProfile = $this->_getProductProfile($quoteItem);
+
+            if (!$productProfile) {
+                // No recurring product profile found, no recurring profile needs to be created
+                continue;
+            }
+
+            $productOptions = [];
+            $productOptions['info_buyRequest'] = unserialize($quoteItem->getOptionByCode('info_buyRequest')->getValue());
+            $productOptions['additional_options'] = unserialize($quoteItem->getOptionByCode('additional_options')->getValue());
+
+            /** @var Ho_Recurring_Model_Profile_Item $profileItem */
+            $profileItem = Mage::getModel('ho_recurring/profile_item')
+                ->setProfileId($profile->getId())
+                ->setStatus(Ho_Recurring_Model_Profile_Item::STATUS_ACTIVE)
+                ->setProductId($quoteItem->getProductId())
+                ->setProductOptions(serialize($productOptions))
+                ->setSku($quoteItem->getSku())
+                ->setName($quoteItem->getName())
+                ->setLabel($productProfile->getLabel())
+                ->setPrice($quoteItem->getPrice())
+                ->setPriceInclTax($quoteItem->getPriceInclTax())
+                ->setQty($quoteItem->getQty())
+                ->setOnce(0)
+                // Currently not in use
+//                ->setMinBillingCycles($productProfile->getMinBillingCycles())
+//                ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
+                ->setCreatedAt(now())
+                ->save();
+        }
+
+        return $profile;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Quote $quote
+     * @return Mage_Sales_Model_Billing_Agreement
+     */
+    protected function _getBillingAgreement(Mage_Sales_Model_Quote $quote)
+    {
+        /** @var Mage_Sales_Model_Quote_Payment $quotePayment */
+        $quotePayment = Mage::getModel('sales/quote_payment')
+            ->getCollection()
+            ->addFieldToFilter('quote_id', $quote->getId())
+            ->getFirstItem();
+
+        $additionalInfo = $quotePayment->getAdditionalInformation();
+        $recurringReference = $additionalInfo['recurring_detail_reference'];
+
+        $billingAgreement = Mage::getModel('sales/billing_agreement')
+            ->getCollection()
+            ->addFieldToFilter('reference_id', $recurringReference)
+            ->getFirstItem();
+
+        if (! $billingAgreement->getId()) {
+            Ho_Recurring_Exception::throwException('Could not find billing agreement for quote ' . $quote->getId());
+        }
+
+        return $billingAgreement;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Quote_Item $quoteItem
+     * @return Ho_Recurring_Model_Product_Profile
+     */
+    protected function _getProductProfile(Mage_Sales_Model_Quote_Item $quoteItem)
+    {
+        $profileId = $quoteItem->getBuyRequest()->getData('ho_recurring_profile');
+        if (! $profileId) {
+            return false;
+        }
+
+        $recurringProductProfile = Mage::getModel('ho_recurring/product_profile')
+            ->load($profileId);
+
+        if (!$recurringProductProfile->getId()) {
+            return false;
+        }
+
+        return $recurringProductProfile;
+    }
 }

@@ -79,10 +79,11 @@ class Ho_Recurring_Model_Service_Order
                 ->setLabel($productProfile->getLabel())
                 ->setPrice($orderItem->getPrice())
                 ->setPriceInclTax($orderItem->getPriceInclTax())
-                ->setQty($productProfile->getQty())
+                ->setQty($orderItem->getQtyInvoiced())
                 ->setOnce(0)
-                ->setMinBillingCycles($productProfile->getMinBillingCycles())
-                ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
+                // Currently not in use
+//                ->setMinBillingCycles($productProfile->getMinBillingCycles())
+//                ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
                 ->setCreatedAt(now());
 
             // Create profile addresses
