@@ -327,7 +327,19 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @throws Exception
+     * @return $this
+     */
+    public function activate()
+    {
+        $this->setActive()
+            ->setNextOrderAt(now())
+            ->save();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
      */
     public function setActive()
     {
@@ -496,9 +508,20 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return $this->getShippingAddress()->getData();
     }
 
+    /**
+     * @return bool
+     */
     public function canCancel()
     {
         return $this->getStatus() != self::STATUS_CANCELED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCanceled()
+    {
+        return $this->getStatus() == self::STATUS_CANCELED;
     }
 
     /**

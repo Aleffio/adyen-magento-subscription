@@ -193,6 +193,37 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $this->_redirect('*/*/');
     }
 
+    public function activateProfileAction()
+    {
+        $profileId = $this->getRequest()->getParam('id');
+
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        if (!$profile->getId()) {
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Could not find profile')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        try {
+            $profile->activate();
+
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('The profile has been successfully activated')
+            );
+        }
+        catch (Mage_Core_Exception $e) {
+            $this->_getSession()->addError(
+                Mage::helper('ho_recurring')->__('An error occurred while trying to activate this profile')
+            );
+        }
+
+        $this->_redirectReferer();
+    }
+
     /**
      * Delete profile
      */

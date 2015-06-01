@@ -50,6 +50,13 @@ JS;
             ], 10);
         }
 
+        if ($this->getProfile()->isCanceled()) {
+            $this->_addButton('activate_profile', [
+                'label'     => Mage::helper('ho_recurring')->__('Activate Profile'),
+                'onclick' => "deleteConfirm('" . Mage::helper('adminhtml')->__('Are you sure you want to do reactivate this profile?')
+                    . "', '" . $this->getUrl('*/*/activateProfile', ['id' => $this->getProfile()->getId()]) . "')",
+            ], 10);
+        }
 
         if ($this->getProfile()->canCreateQuote()) {
             $this->_addButton('create_quote', [
