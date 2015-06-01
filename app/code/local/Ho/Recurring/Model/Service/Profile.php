@@ -46,6 +46,7 @@ class Ho_Recurring_Model_Service_Profile
             $quote->setStoreId($storeId);
             $quote->setIsSuperMode(true);
             $quote->setIsActive(false); //always create an inactive quote, else it shows up on the frontend.
+            $quote->setRecurringProfileId($profile->getId());
             $profile->setErrorMessage(null);
 
             // Add order items to quote
