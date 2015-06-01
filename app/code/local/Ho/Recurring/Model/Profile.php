@@ -26,8 +26,8 @@
  * @method Ho_Recurring_Model_Profile setErrorMessage(string $value)
  * @method string getStoreId()
  * @method Ho_Recurring_Model_Profile setStoreId(string $value)
- * @method string getNextOrderAt()
- * @method Ho_Recurring_Model_Profile setNextOrderAt(string $value)
+ * @method string getScheduledAt()
+ * @method Ho_Recurring_Model_Profile setScheduledAt(string $value)
  * @method string getCreatedAt()
  * @method Ho_Recurring_Model_Profile setCreatedAt(string $value)
  * @method string getUpdatedAt()
@@ -332,7 +332,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     public function activate()
     {
         $this->setActive()
-            ->setNextOrderAt(now())
+            ->setScheduledAt(now())
             ->save();
 
         return $this;
@@ -590,6 +590,14 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     public function getUpdatedAtFormatted()
     {
         return Mage::helper('core')->formatDate($this->getUpdatedAt(), 'medium', true);
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheduledAtFormatted()
+    {
+        return Mage::helper('core')->formatDate($this->getScheduledAt(), 'medium', true);
     }
 
     /**

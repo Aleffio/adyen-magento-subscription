@@ -55,7 +55,7 @@ class Ho_Recurring_Model_Service_Order
                 ->setStoreId($order->getStoreId())
                 ->setTerm($productProfile->getTerm())
                 ->setTermType($productProfile->getTermType())
-                ->setNextOrderAt('0000-00-00 00:00:00') // @todo Set correct date
+                ->setScheduledAt(null)
                 ->setShippingMethod($order->getShippingMethod())
                 ->setCreatedAt(now())
                 ->setUpdatedAt(now())
