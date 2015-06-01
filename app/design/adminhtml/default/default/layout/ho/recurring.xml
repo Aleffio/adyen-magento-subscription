@@ -71,16 +71,6 @@
         </reference>
     </ho_recurring_adminhtml_profile_view>
 
-    <ho_recurring_adminhtml_profile_edit>
-        <update handle="ho_recurring_adminhtml_profile_view"/>
-        <reference name="profile_info_block">
-            <block type="ho_recurring/adminhtml_profile_edit_info_billingAgreement"
-                   name="profile_edit_billing_agreement"
-                   template="ho/recurring/profile/edit/info/billing_agreement.phtml"/>
-            <!--<block type="ho_recurring/adminhtml_profile_edit_shipping_address" name="profile_edit_shipping_address"/>-->
-        </reference>
-    </ho_recurring_adminhtml_profile_edit>
-
     <adminhtml_catalog_product_edit>
         <reference name="product_tabs">
             <action method="addTabAfter">
@@ -90,6 +80,18 @@
             </action>
         </reference>
     </adminhtml_catalog_product_edit>
+
+    <ho_recurring_active_quote_edit>
+        <remove name="sidebar"/>
+        <remove name="comment"/>
+        <remove name="gift_options"/>
+        <reference name="root">
+            <action method="addBodyClass"><class>ho-recurring-active-quote-edit</class></action>
+        </reference>
+        <reference name="totals">
+            <action method="setTemplate"><template>ho/recurring/sales/create/totals.phtml</template></action>
+        </reference>
+    </ho_recurring_active_quote_edit>
 
     <adminhtml_sales_order_view>
         <reference name="order_tab_info">

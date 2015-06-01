@@ -114,10 +114,14 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
 
     /**
      * @param Varien_Event_Observer $observer
-     * @todo move to adminhtml observer.
+     * @hook controller_action_layout_load_before
      */
     public function addAdminhtmlSalesOrderCreateHandles(Varien_Event_Observer $observer)
     {
+        if (! $observer->getAction() instanceof Mage_Adminhtml_Sales_Order_CreateController) {
+            return;
+        }
+
         $profileId = Mage::app()->getRequest()->getParam('profile');
         $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
 

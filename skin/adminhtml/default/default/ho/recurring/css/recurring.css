@@ -35,3 +35,6 @@
 .profile-fieldset {
   cursor: pointer;
 }
+
+.ho-recurring-active-quote-edit .side-col { display: none; }
+.ho-recurring-active-quote-edit .main-col { padding-left:0; }

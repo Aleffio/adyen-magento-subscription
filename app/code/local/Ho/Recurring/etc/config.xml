@@ -205,14 +205,14 @@
                     </ho_recurring_save_recurring_product_data>
                 </observers>
             </catalog_product_save_before>
-            <create_order_session_quote_initialized>
+            <controller_action_layout_load_before>
                 <observers>
                     <ho_recurring>
                         <class>ho_recurring/observer</class>
                         <method>addAdminhtmlSalesOrderCreateHandles</method>
                     </ho_recurring>
                 </observers>
-            </create_order_session_quote_initialized>
+            </controller_action_layout_load_before>
             <sales_order_grid_collection_load_before>
                 <observers>
                     <ho_recurring_sales_order_grid_collection>
