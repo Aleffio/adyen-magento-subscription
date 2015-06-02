@@ -118,7 +118,7 @@ class Ho_Recurring_Model_Service_Quote
             ->setBillingAgreementId($billingAgreement->getId())
             ->setTerm($term)
             ->setTermType($termType)
-//            ->setShippingMethod($quote->getShippingMethod()) // @todo can't retrieve shipping method from quote
+            ->setShippingMethod($quote->getShippingAddress()->getShippingMethod())
             ->setUpdatedAt(now())
             ->save();
 
