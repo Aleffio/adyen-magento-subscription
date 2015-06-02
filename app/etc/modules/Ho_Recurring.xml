@@ -27,6 +27,7 @@
             <codePool>local</codePool>
             <depends>
                 <Adyen_Payment />
+                <Innoexts_Warehouse />
             </depends>
         </Ho_Recurring>
     </modules>

@@ -22,6 +22,28 @@
 class Ho_Recurring_Model_Catalog_Product_Type_Simple extends Mage_Catalog_Model_Product_Type_Simple
 {
     /**
+     * Set qty of recurring product profile on buyRequest,
+     * this will be saved at the cart product by parent::_prepareProduct
+     *
+     * @param  Varien_Object $buyRequest
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  string $processMode
+     * @return array|string
+     */
+    protected function _prepareProduct(Varien_Object $buyRequest, $product, $processMode)
+    {
+        $recurringProfileId = $buyRequest->getData('ho_recurring_profile');
+        if ($recurringProfileId) {
+            $recurringProfile = Mage::getModel('ho_recurring/product_profile')->load($recurringProfileId);
+            if ($recurringProfile->getId()) {
+                $buyRequest->setQty($recurringProfile->getQty());
+            }
+        }
+
+        return parent::_prepareProduct($buyRequest, $product, $processMode);
+    }
+
+    /**
      * Check if product is configurable
      *
      * @param Mage_Catalog_Model_Product $product

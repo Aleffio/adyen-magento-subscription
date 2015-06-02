@@ -41,7 +41,7 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
                             $profile = Mage::getModel('ho_recurring/product_profile')->load($additional['option_value']);
 
                             if ($additional['option_value'] != 'none') {
-                                return $profile->getPrice();
+                                return $profile->getPrice() / $profile->getQty();
                             }
                         }
                     }
