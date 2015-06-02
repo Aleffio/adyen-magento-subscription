@@ -23,12 +23,45 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
 {
     /**
      * Retrieve product final price
+     * Extended to return profile price divided by qty when product is recurring
      *
      * @param float|null $qty
      * @param Mage_Catalog_Model_Product $product
      * @return float
      */
     public function getFinalPrice($qty = null, $product)
+    {
+        if ($profile = $this->_getProductProfile($product)) {
+            return $profile->getPrice() / $profile->getQty();
+        }
+
+        return parent::getFinalPrice($qty, $product);
+    }
+
+    /**
+     * Get product tier price by qty
+     * Extended to hide tier pricing when product is recurring
+     *
+     * @param   float $qty
+     * @param   Mage_Catalog_Model_Product $product
+     * @return  float
+     */
+    public function getTierPrice($qty = null, $product)
+    {
+        if ($profile = $this->_getProductProfile($product)) {
+            return array();
+        }
+
+        return parent::getTierPrice($qty, $product);
+    }
+
+    /**
+     * Retrieve product profile, if product is recurring, else false
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return Ho_Recurring_Model_Product_Profile|false
+     */
+    protected function _getProductProfile($product)
     {
         if (isset($product->getAttributes()['ho_recurring_type'])) {
             if ($product->getData('ho_recurring_type') != Ho_Recurring_Model_Product_Profile::TYPE_DISABLED) {
@@ -38,10 +71,10 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
                     $additionalOptions = unserialize($option->getValue());
                     foreach ($additionalOptions as $additional) {
                         if ($additional['code'] == 'ho_recurring_profile') {
-                            $profile = Mage::getModel('ho_recurring/product_profile')->load($additional['option_value']);
-
                             if ($additional['option_value'] != 'none') {
-                                return $profile->getPrice() / $profile->getQty();
+                                $profile = Mage::getModel('ho_recurring/product_profile')->load($additional['option_value']);
+
+                                return $profile;
                             }
                         }
                     }
@@ -49,6 +82,6 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
             }
         }
 
-        return parent::getFinalPrice($qty, $product);
+        return false;
     }
 }
