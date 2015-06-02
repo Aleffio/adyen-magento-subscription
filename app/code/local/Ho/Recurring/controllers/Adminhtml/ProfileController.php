@@ -348,10 +348,20 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
 
             Mage::getModel('ho_recurring/service_quote')
                 ->updateProfile($quote, $profile);
+
+            $profile->setActive()->save();
+
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Profile and scheduled order successfully updated')
+            );
         }
         catch (Mage_Core_Exception $e) {
+            $profile->setErrorMessage($e->getMessage());
+            $profile->setStatus($profile::STATUS_PROFILE_ERROR);
+            $profile->save();
+
             $this->_getSession()->addError(
-                Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
+                Mage::helper('ho_recurring')->__('An error occurred: ' . $e->getMessage())
             );
         }
 

@@ -106,7 +106,7 @@ class Ho_Recurring_Model_Service_Quote
                 $termType = $productProfile->getTermType();
             }
             if ($term != $productProfile->getTerm() || $termType != $productProfile->getTermType()) {
-                Mage::throwException('Cant update profile: terms/termtypes of products are not equal');
+                Ho_Recurring_Exception::throwException('Recurring profiles of products in quote have different terms');
             }
         }
 

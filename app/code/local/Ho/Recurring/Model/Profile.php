@@ -60,6 +60,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     const STATUS_ACTIVE             = 'active';
     const STATUS_QUOTE_ERROR        = 'quote_error';
     const STATUS_ORDER_ERROR        = 'order_error';
+    const STATUS_PROFILE_ERROR      = 'profile_error';
     const STATUS_CANCELED           = 'canceled';
     const STATUS_EXPIRED            = 'expired';
     const STATUS_AWAITING_PAYMENT   = 'awaiting_payment';
@@ -359,6 +360,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             self::STATUS_ACTIVE             => $helper->__('Active'),
             self::STATUS_QUOTE_ERROR        => $helper->__('Quote Creation Error'),
             self::STATUS_ORDER_ERROR        => $helper->__('Order Creation Error'),
+            self::STATUS_PROFILE_ERROR      => $helper->__('Profile Error'),
             self::STATUS_CANCELED           => $helper->__('Canceled'),
             self::STATUS_EXPIRED            => $helper->__('Expired'),
             self::STATUS_AWAITING_PAYMENT   => $helper->__('Awaiting Payment'),
@@ -422,6 +424,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
             self::STATUS_ACTIVE             => 'green',
             self::STATUS_QUOTE_ERROR        => 'darkred',
             self::STATUS_ORDER_ERROR        => 'darkred',
+            self::STATUS_PROFILE_ERROR      => 'darkred',
             self::STATUS_CANCELED           => 'lightgray',
             self::STATUS_EXPIRED            => 'orange',
             self::STATUS_AWAITING_PAYMENT   => 'blue',
