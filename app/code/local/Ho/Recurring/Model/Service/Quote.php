@@ -112,6 +112,10 @@ class Ho_Recurring_Model_Service_Quote
 
         $billingAgreement = $this->_getBillingAgreement($quote);
 
+        if (!$quote->getShippingAddress()->getShippingMethod()) {
+            Ho_Recurring_Exception::throwException('No shipping method selected');
+        }
+
         // Update profile
         $profile->setStatus(Ho_Recurring_Model_Profile::STATUS_ACTIVE)
             ->setStockId($stockId)
