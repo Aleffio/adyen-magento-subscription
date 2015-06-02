@@ -71,7 +71,7 @@ JS;
             $this->_addButton('edit_profile', [
                 'label' => Mage::helper('ho_recurring')->__('Edit Profile'),
                 'class' => 'add',
-                'onclick' => "setLocation('{$this->getUrl('*/*/editProfile',
+                'onclick' => "window.open('{$this->getUrl('*/*/editProfile',
                     ['id' => $this->getProfile()->getId()])}')",
             ], 30);
         }

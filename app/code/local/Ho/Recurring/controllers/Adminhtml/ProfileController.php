@@ -327,6 +327,38 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     }
 
     /**
+     * Update profile based on edited quote
+     */
+    public function updateProfileAction()
+    {
+        $profileId = $this->getRequest()->getParam('id');
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        if (!$profile->getId()) {
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Could not find profile')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        try {
+            $quote = $profile->getActiveQuote();
+
+            Mage::getModel('ho_recurring/service_quote')
+                ->updateProfile($quote, $profile);
+        }
+        catch (Mage_Core_Exception $e) {
+            $this->_getSession()->addError(
+                Mage::helper('ho_recurring')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
+            );
+        }
+
+        $this->_redirect('*/*/view', ['id' => $profile->getId()]);
+    }
+
+    /**
      * Create profile order
      */
     public function createOrderAction()
