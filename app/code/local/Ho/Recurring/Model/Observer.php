@@ -44,7 +44,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         foreach ($profileCollection as $profile) {
 
             $scheduleDate = $profile->getScheduledAt() ?: $profile->calculateNextScheduleDate(true);
-            $profile->setScheduledAt($scheduleDate);
+            $profile->setScheduledAt($scheduleDate->format('Y-m-d H:i:s'));
             /** @var Ho_Recurring_Model_Profile $profile */
 
             if ($scheduleDate < $scheduleBefore) {
