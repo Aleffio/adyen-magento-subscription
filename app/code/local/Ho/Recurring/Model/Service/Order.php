@@ -61,7 +61,6 @@ class Ho_Recurring_Model_Service_Order
                 ->setStoreId($order->getStoreId())
                 ->setTerm($productProfile->getTerm())
                 ->setTermType($productProfile->getTermType())
-                ->setScheduledAt(null)
                 ->setShippingMethod($order->getShippingMethod())
                 ->setCreatedAt(now())
                 ->setUpdatedAt(now())
@@ -109,6 +108,9 @@ class Ho_Recurring_Model_Service_Order
             if ($profile->getStatus() == $profile::STATUS_ORDER_ERROR) {
                 $profile->setStatus($profile::STATUS_ACTIVE);
             }
+
+            $scheduleDate = $profile->calculateNextScheduleDate();
+            $profile->setScheduledAt($scheduleDate);
 
             Mage::getModel('core/resource_transaction')
                 ->addObject($profileItem)

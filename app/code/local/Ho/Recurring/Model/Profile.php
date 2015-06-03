@@ -247,6 +247,10 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         return $this->getData('_active_quote');
     }
 
+    /**
+     * @param bool $asObject
+     * @return DateTime|string
+     */
     public function calculateNextScheduleDate($asObject = false)
     {
         /** @var Ho_Recurring_Model_Profile_Quote $quoteAddCollection */
