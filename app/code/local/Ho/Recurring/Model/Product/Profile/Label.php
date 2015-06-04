@@ -35,4 +35,26 @@ class Ho_Recurring_Model_Product_Profile_Label extends Mage_Core_Model_Abstract
     {
         $this->_init('ho_recurring/product_profile_label');
     }
+
+    /**
+     * @param Ho_Recurring_Model_Product_Profile $profile
+     * @param Mage_Core_Model_Store|int $store
+     * @return $this
+     */
+    public function loadByProfile(Ho_Recurring_Model_Product_Profile $profile, $store)
+    {
+        $labels = $this->getCollection()
+            ->addFieldToFilter('profile_id', $profile->getId());
+
+        if ($store instanceof Mage_Core_Model_Store) {
+            $storeId = $store->getId();
+        }
+        else {
+            $storeId = $store;
+        }
+
+        $labels->addFieldToFilter('store_id', $storeId);
+
+        return $labels->getFirstItem();
+    }
 }

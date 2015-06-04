@@ -110,11 +110,22 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
         $button->setName('delete_profile');
         $profileFieldset->setHeaderBar($button->toHtml());
 
+        $inStore = Mage::app()->getRequest()->getParam('store');
+
         $profileFieldset->addField($elementId . '[label]', 'text', array(
             'name'      => $elementId . '[label]',
             'label'     => $helper->__('Label'),
+            'disabled'  => $inStore && ($profile ? !$profile->getStoreLabel($inStore) : false), // @todo won't disable
             'required'  => true,
-        ))->setValue($profile ? $profile->getLabel() : '');
+            'after_element_html' => $inStore ? '</td><td class="use-default">
+            <input id="' . $elementId . '[use_default]" name="' . $elementId . '[use_default]" type="checkbox" value="1" class="checkbox config-inherit" '
+                . (($profile ? $profile->getStoreLabel($inStore) : false) ? '' : 'checked="checked"') . ' onclick="toggleValueElements(this, Element.previous(this.parentNode))" />
+            <label for="' . $elementId . '[use_default]" class="inherit">' . Mage::helper('ho_recurring')->__('Use Default') . '</label>
+          </td><td class="scope-label">
+            [' . $helper->__('STORE VIEW') . ']
+          ' : '</td><td class="scope-label">
+            [' . $helper->__('STORE VIEW') . ']',
+        ))->setValue($profile ? $profile->getLabel($inStore) : '');
 
         $profileFieldset->addField($elementId . '[website_id]', 'select', array(
             'name'      => $elementId . '[website_id]',

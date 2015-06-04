@@ -48,10 +48,14 @@ class Ho_Recurring_Model_Product_Observer
         }
     }
 
-
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @throws Exception
+     */
     protected function _updateProductProfiles(Mage_Catalog_Model_Product $product)
     {
         $productProfilesData = Mage::app()->getRequest()->getPost('product_profile');
+        $storeId = Mage::app()->getRequest()->getParam('store');
 
         /** @var array $productProfileIds */
         $productProfileIds = Mage::getModel('ho_recurring/product_profile')
@@ -61,6 +65,9 @@ class Ho_Recurring_Model_Product_Observer
         if (! $productProfilesData) {
             return;
         }
+
+        $resource = Mage::getSingleton('core/resource');
+        $connection = $resource->getConnection('core_write');
 
         $i = 1;
         // Save profiles
@@ -73,6 +80,20 @@ class Ho_Recurring_Model_Product_Observer
 
             $profile->addData($profileData);
             $profile->setSortOrder($i * 10);
+
+            if (!isset($profileData['use_default'])) {
+                // Save store label
+                $labelData = array(
+                    'label'         => $profileData['label'],
+                    'profile_id'    => $profile->getId(),
+                    'store_id'      => $storeId,
+                );
+                $connection->insertOnDuplicate(
+                    $resource->getTableName('ho_recurring/product_profile_label'),
+                    $labelData,
+                    array('label')
+                );
+            }
 
             if (in_array($id, $productProfileIds)) {
                 $productProfileIds = array_diff($productProfileIds, array($id));

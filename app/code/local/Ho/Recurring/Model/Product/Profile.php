@@ -24,7 +24,6 @@
  *
  * @method int getProductId()
  * @method $this setProductId(int $value)
- * @method string getLabel()
  * @method $this setLabel(string $value)
  * @method int getWebsiteId()
  * @method $this setWebsiteId(int $value)
@@ -61,6 +60,40 @@ class Ho_Recurring_Model_Product_Profile extends Mage_Core_Model_Abstract
         $this->_init('ho_recurring/product_profile');
     }
 
+    /**
+     * @param int|Mage_Core_Model_Store|null $store
+     * @return string
+     */
+    public function getLabel($store = null)
+    {
+        if (is_null($store)) {
+            $store = Mage::app()->getStore();
+        }
+        if ($storeLabel = $this->getStoreLabel($store)) {
+            return $storeLabel;
+        }
+
+        return $this->getData('label');
+    }
+
+    /**
+     * @param int|Mage_Core_Model_Store $store
+     * @return bool|string
+     */
+    public function getStoreLabel($store)
+    {
+        if (!$store) {
+            return false;
+        }
+
+        $label = Mage::getModel('ho_recurring/product_profile_label')->loadByProfile($this, $store);
+
+        if ($label->getId()) {
+            return $label->getLabel();
+        }
+
+        return false;
+    }
 
     /**
      * @param bool $multiple
@@ -77,7 +110,6 @@ class Ho_Recurring_Model_Product_Profile extends Mage_Core_Model_Abstract
             self::TERM_TYPE_YEAR    => $multiple ? $helper->__('Years') : $helper->__('Year'),
         );
     }
-
 
     /**
      * @return string
