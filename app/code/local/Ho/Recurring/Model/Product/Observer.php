@@ -78,9 +78,6 @@ class Ho_Recurring_Model_Product_Observer
                 $profile->setProductId($product->getId());
             }
 
-            $profile->addData($profileData);
-            $profile->setSortOrder($i * 10);
-
             if (!isset($profileData['use_default'])) {
                 // Save store label
                 $labelData = array(
@@ -93,7 +90,11 @@ class Ho_Recurring_Model_Product_Observer
                     $labelData,
                     array('label')
                 );
+                unset($profileData['label']);
             }
+
+            $profile->addData($profileData);
+            $profile->setSortOrder($i * 10);
 
             if (in_array($id, $productProfileIds)) {
                 $productProfileIds = array_diff($productProfileIds, array($id));
