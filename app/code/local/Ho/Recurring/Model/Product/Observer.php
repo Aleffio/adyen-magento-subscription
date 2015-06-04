@@ -78,7 +78,7 @@ class Ho_Recurring_Model_Product_Observer
                 $profile->setProductId($product->getId());
             }
 
-            if (!isset($profileData['use_default'])) {
+            if (!isset($profileData['use_default']) && $storeId > 0) {
                 // Save store label
                 $labelData = array(
                     'label'         => $profileData['label'],
