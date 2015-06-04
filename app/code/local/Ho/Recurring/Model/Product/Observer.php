@@ -78,7 +78,7 @@ class Ho_Recurring_Model_Product_Observer
                 $profile->setProductId($product->getId());
             }
 
-            if (!isset($profileData['use_default']) && $storeId > 0) {
+            if (!isset($profileData['use_default']) && $storeId) {
                 // Save store label
                 $labelData = array(
                     'label'         => $profileData['label'],
@@ -91,6 +91,13 @@ class Ho_Recurring_Model_Product_Observer
                     array('label')
                 );
                 unset($profileData['label']);
+            }
+            if (isset($profileData['use_default']) && $storeId) {
+                // Delete store label
+                $connection->delete($resource->getTableName('ho_recurring/product_profile_label'), array(
+                    'profile_id = ?'    => $profile->getId(),
+                    'store_id = ?'      => $storeId,
+                ));
             }
 
             $profile->addData($profileData);
