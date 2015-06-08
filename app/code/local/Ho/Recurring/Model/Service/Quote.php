@@ -183,8 +183,8 @@ class Ho_Recurring_Model_Service_Quote
             ->addFieldToFilter('quote_id', $quote->getId())
             ->getFirstItem();
 
-        $additionalInfo = $quotePayment->getAdditionalInformation();
-        $recurringReference = $additionalInfo['recurring_detail_reference'];
+        $method = explode('_', $quotePayment->getMethod());
+        $recurringReference = $method[count($method) - 1];
 
         $billingAgreement = Mage::getModel('sales/billing_agreement')
             ->getCollection()
