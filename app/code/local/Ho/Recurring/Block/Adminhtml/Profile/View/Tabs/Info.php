@@ -61,6 +61,28 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_Info
     }
 
     /**
+     * @return null|string
+     */
+    public function getStoreName()
+    {
+        if ($this->getProfile()) {
+            $storeId = $this->getProfile()->getStoreId();
+            if (is_null($storeId)) {
+                $deleted = Mage::helper('adminhtml')->__(' [deleted]');
+                return nl2br($this->getProfile()->getStoreId()) . $deleted;
+            }
+            $store = Mage::app()->getStore($storeId);
+            $name = array(
+                $store->getWebsite()->getName(),
+                $store->getGroup()->getName(),
+                $store->getName()
+            );
+            return implode('<br/>', $name);
+        }
+        return null;
+    }
+
+    /**
      * @return string
      */
     public function getTabLabel()
