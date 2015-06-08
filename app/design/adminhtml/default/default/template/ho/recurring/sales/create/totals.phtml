@@ -24,6 +24,11 @@
  * @license http://www.magento.com/license/enterprise-edition
  */
 ?>
+
+<?php
+/** @var Ho_Recurring_Model_Profile $_profile */
+$_profile = Mage::registry('current_profile');
+?>
 <table cellspacing="0" cellpadding="8" width="100%">
     <tbody>
         <?php echo $this->renderTotals(); ?>
@@ -32,8 +37,35 @@
 </table>
 <div class="divider"></div>
 <div class="order-totals-bottom">
+<?php if ($_profile): ?>
+    <?php
 
+    //@todo different URL for updating profile instead of quote
+    $fullUpdate = $this->getRequest()->getParam('full_update');
+    $updateProfileUrl = $this->getUrl('ho_recurring/adminhtml_profile/updateProfile', ['id' => $_profile->getId()]);
+
+    echo $this->getButtonHtml(Mage::helper('ho_recurring')->__('Finish Editing'), ($fullUpdate
+                ? 'window.opener.document.location.href = \'' . $updateProfileUrl . '\'; window.close()'
+                : "window.opener.location.reload(false); window.close()"), 'save');
+
+    ?>
 </div>
+<?php else: ?>
+<div class="divider"></div>
+<div class="order-totals-bottom">
+    <p>
+        <label for="notify_customer" class="normal"><?php echo Mage::helper('sales')->__('Append Comments') ?></label>
+        <input type="checkbox" id="notify_customer" name="order[comment][customer_note_notify]" value="1" <?php if($this->getNoteNotify()): ?>checked="true"<?php endif; ?>/>
+    </p>
+    <?php if ($this->canSendNewOrderConfirmationEmail()): ?>
+    <p>
+        <label for="send_confirmation" class="normal"><?php echo Mage::helper('sales')->__('Email Order Confirmation') ?></label>
+        <input type="checkbox" id="send_confirmation" name="order[send_confirmation]" value="1" checked="checked"/>
+    </p>
+    <?php endif; ?>
+    <p><?php echo $this->getButtonHtml(Mage::helper('sales')->__('Submit Order'),'order.submit()','save'); ?></p>
+</div>
+<?php endif; ?>
 
 <script type="text/javascript">
 //<![CDATA[

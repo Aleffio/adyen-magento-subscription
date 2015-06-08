@@ -35,6 +35,7 @@
                 <rewrite>
                     <sales_order_create_header>Ho_Recurring_Block_Adminhtml_Sales_Order_Create_Header</sales_order_create_header>
                     <sales_order_create>Ho_Recurring_Block_Adminhtml_Sales_Order_Create</sales_order_create>
+                    <sales_order_create_form>Ho_Recurring_Block_Adminhtml_Sales_Order_Create_Form</sales_order_create_form>
                 </rewrite>
             </adminhtml>
         </blocks>

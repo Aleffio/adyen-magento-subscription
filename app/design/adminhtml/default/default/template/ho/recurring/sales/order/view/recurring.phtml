@@ -36,7 +36,7 @@ $_profile = $this->getProfile();
             <tr>
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Profile ID') ?></label></td>
                 <td class="value">
-                    <a href="<?php echo $this->getUrl('ho_recurring/adminhtml_profile/edit', ['id' => $this->getProfile()->getId()]); ?>">
+                    <a href="<?php echo $this->getUrl('ho_recurring/adminhtml_profile/view', ['id' => $this->getProfile()->getId()]); ?>">
                         <strong>#<?php echo $_profile->getIncrementId(); ?></strong>
                     </a>
                 </td>

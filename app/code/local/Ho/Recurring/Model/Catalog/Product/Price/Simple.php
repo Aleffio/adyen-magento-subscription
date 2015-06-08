@@ -73,6 +73,9 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
                         if ($additional['code'] == 'ho_recurring_profile') {
                             if ($additional['option_value'] != 'none') {
                                 $profile = Mage::getModel('ho_recurring/product_profile')->load($additional['option_value']);
+                                if (! $profile->getId()) {
+                                    return false;
+                                }
 
                                 return $profile;
                             }
