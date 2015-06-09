@@ -54,8 +54,10 @@ class Ho_Recurring_Model_Service_Profile
                 /** @var Ho_Recurring_Model_Profile_Item $profileItem */
                 $productId = $profileItem->getProductId();
                 $product = Mage::getModel('catalog/product')->load($productId);
+                $product->setData('is_created_from_profile_item', $profileItem->getId());
 
                 $quoteItem = $quote->addProduct($product, $profileItem->getQty());
+                $quoteItem->setData('recurring_profile_item_id', $profileItem->getId());
 
                 $quoteItem->setNoDiscount(false);
                 $quoteItem->getProduct()->setIsSuperMode(true);

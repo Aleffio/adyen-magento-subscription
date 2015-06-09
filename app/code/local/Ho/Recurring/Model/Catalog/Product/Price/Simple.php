@@ -31,6 +31,10 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
      */
     public function getFinalPrice($qty = null, $product)
     {
+        if ($profileItem = $this->_getProfileItem($product)) {
+            return $profileItem->getPriceInclTax();
+        }
+
         if ($profile = $this->_getProductProfile($product)) {
             return $profile->getPrice() / $profile->getQty();
         }
@@ -82,6 +86,23 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
                         }
                     }
                 }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @return Ho_Recurring_Model_Profile_Item|false
+     */
+    protected function _getProfileItem($product)
+    {
+        if ($profileItemId = $product->getData('is_created_from_profile_item')) {
+            $profileItem = Mage::getModel('ho_recurring/profile_item')->load($profileItemId);
+
+            if ($profileItem->getId()) {
+                return $profileItem;
             }
         }
 

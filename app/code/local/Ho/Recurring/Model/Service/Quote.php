@@ -39,6 +39,10 @@ class Ho_Recurring_Model_Service_Quote
                     Mage::helper('ho_recurring')->__('Not allowed to create order from quote')
                 );
             }
+            foreach ($quote->getAllItems() as $item) {
+                /** @var Mage_Sales_Model_Quote_Item $item */
+                $item->getProduct()->setData('is_created_from_profile_item', $item->getData('recurring_profile_item_id'));
+            }
 
             $quote->collectTotals();
             $service = Mage::getModel('sales/service_quote', $quote);
