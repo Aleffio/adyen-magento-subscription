@@ -46,6 +46,18 @@
         <!--</reference>-->
     </PRODUCT_TYPE_ho_recurring>
 
+    <customer_logged_in>
+        <reference name="top.links">
+            <action method="addLink" translate="label" module="ho_recurring">
+                <label>My Recurring Profiles</label>
+                <url helper="ho_bootstrap/getUrl"><path>ho_recurring/customer/profiles</path></url>
+                <title>My Recurring Profiles</title>
+                <prepare/><urlParams/>
+                <position>60</position>
+            </action>
+        </reference>
+    </customer_logged_in>
+
     <customer_account>
         <reference name="customer_account_navigation">
             <action method="addLink" translate="label" module="ho_recurring">
