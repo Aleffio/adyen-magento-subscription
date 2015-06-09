@@ -46,17 +46,10 @@ var confirm = window.confirm('{$confirm}'); if(confirm) { order.submit() }
 JS;
         $this->_updateButton('save', 'onclick', $js);
 
-        // @todo different URL for updating profile instead of quote
-        $fullUpdate = $this->getRequest()->getParam('full_update');
-        $updateProfileUrl = $this->getUrl('ho_recurring/adminhtml_profile/updateProfile', ['id' => $profile->getId()]);
-
         $this->_addButton('save_scheduled', [
             'label' => Mage::helper('ho_recurring')->__('Finish Editing'),
             'class' => 'save',
-            'onclick' => ($fullUpdate
-                ? 'window.opener.document.location.href = \'' . $updateProfileUrl . '\'; window.close()'
-                : "window.opener.location.reload(false); window.close()"),
+            'onclick' => "order.submitProfile()",
         ], 20);
-
     }
 }

@@ -343,11 +343,17 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
             return;
         }
 
+        $recurringProfileData = $this->getRequest()->getParam('ho_recurring');
+
         try {
             $quote = $profile->getActiveQuote();
 
             Mage::getModel('ho_recurring/service_quote')
                 ->updateProfile($quote, $profile);
+
+            foreach ($recurringProfileData as $key => $value) {
+                $profile->setData($key, $value);
+            }
 
             $profile->setActive()->save();
 
