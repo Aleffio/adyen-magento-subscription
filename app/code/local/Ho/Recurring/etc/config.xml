@@ -164,6 +164,15 @@
         </fieldsets>
     </global>
     <frontend>
+        <routers>
+            <ho_recurring>
+                <use>standard</use>
+                <args>
+                    <module>Ho_Recurring</module>
+                    <frontName>ho_recurring</frontName>
+                </args>
+            </ho_recurring>
+        </routers>
         <layout>
             <updates>
                 <ho_recurring module="ho_recurring">

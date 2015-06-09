@@ -1,0 +1,77 @@
+<?php
+/**
+ * Ho_Recurring
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the H&O Commercial License
+ * that is bundled with this package in the file LICENSE_HO.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.h-o.nl/license
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to info@h-o.com so we can send you a copy immediately.
+ *
+ * @category    Ho
+ * @package     Ho_Recurring
+ * @copyright   Copyright © 2015 H&O (http://www.h-o.nl/)
+ * @license     H&O Commercial License (http://www.h-o.nl/license)
+ * @author      Maikel Koek – H&O <info@h-o.nl>
+ */
+?>
+<?php /** @var Ho_Recurring_Block_Customer_Profiles_List $this */ ?>
+
+<?php echo $this->getMessagesBlock()->toHtml() ?>
+
+<?php $_profiles = $this->getProfiles(); ?>
+    <div class="page-title">
+        <h1><?php echo $this->__('My Recurring Profiles') ?></h1>
+    </div>
+<?php echo $this->getPagerHtml(); ?>
+<?php if($_profiles->getSize()): ?>
+    <table class="data-table" id="my-recurring-profiles-table">
+        <col width="1" />
+        <col width="1" />
+        <col />
+        <col width="1" />
+        <col width="1" />
+        <col width="1" />
+        <col width="1" />
+        <thead>
+        <tr>
+            <th><?php echo $this->__('Profile #') ?></th>
+            <th><?php echo $this->__('Status') ?></th>
+            <th><?php echo $this->__('Ship To'); ?></th>
+            <th><?php echo $this->__('Created At') ?></th>
+            <th><?php echo $this->__('Next Order At') ?></th>
+            <th><?php echo $this->__('Period') ?></th>
+            <th><?php echo $this->__('Billing Agreement') ?></th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php $_odd = ''; ?>
+        <?php foreach ($_profiles as $_profile): ?>
+            <?php /** @var Ho_Recurring_Model_Profile $_profile */ ?>
+            <tr>
+                <td>#<?php echo $_profile->getId() ?></td>
+                <td><em><?php echo ucfirst($_profile->getStatus()); ?></em></td>
+                <td><?php echo $_profile->getShippingAddress()->getName(); ?></td>
+                <td><?php echo $_profile->getCreatedAtFormatted(); ?></td>
+                <td><?php echo $_profile->getScheduledAtFormatted(); ?></td>
+                <td><span class="nobr"><?php echo $_profile->getTermLabel(); ?></span></td>
+                <td><a href="<?php echo $this->getAgreementUrl($_profile); ?>">
+                        <?php echo $_profile->getBillingAgreement()->getReferenceId(); ?></a>
+                </td>
+                <td><a href="<?php echo $this->getViewUrl($_profile) ?>">
+                        <?php echo $this->__('View Profile') ?></a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <script type="text/javascript">decorateTable('my-recurring-profiles-table');</script>
+    <?php echo $this->getPagerHtml(); ?>
+<?php else: ?>
+    <p><?php echo $this->__("You don't have any recurring profiles yet."); ?></p>
+<?php endif ?>

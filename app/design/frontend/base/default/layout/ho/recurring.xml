@@ -46,4 +46,27 @@
         <!--</reference>-->
     </PRODUCT_TYPE_ho_recurring>
 
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="ho_recurring">
+                <name>recurring_profiles</name>
+                <path>ho_recurring/customer/profiles</path>
+                <label>My Recurring Profiles</label>
+            </action>
+        </reference>
+    </customer_account>
+
+    <ho_recurring_customer_profiles translate="label">
+        <label>Customer My Account Recurring Profiles</label>
+        <update handle="customer_account" />
+        <reference name="my.account.wrapper">
+            <block type="ho_recurring/customer_profiles_list" name="ho_recurring_customer_profiles_list"
+                   template="ho/recurring/customer/profiles/list.phtml" />
+        </reference>
+        <reference name="root">
+            <action method="setHeaderTitle" translate="title" module="ho_recurring">
+                <title>My Recurring Profiles</title>
+            </action>
+        </reference>
+    </ho_recurring_customer_profiles>
 </layout>
