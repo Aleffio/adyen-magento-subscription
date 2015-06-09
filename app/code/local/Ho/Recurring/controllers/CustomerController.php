@@ -27,7 +27,6 @@ class Ho_Recurring_CustomerController extends Mage_Core_Controller_Front_Action
     public function preDispatch()
     {
         parent::preDispatch();
-        $action = $this->getRequest()->getActionName();
         $loginUrl = Mage::helper('customer')->getLoginUrl();
 
         if (!Mage::getSingleton('customer/session')->authenticate($this, $loginUrl)) {
@@ -43,5 +42,39 @@ class Ho_Recurring_CustomerController extends Mage_Core_Controller_Front_Action
         $this->loadLayout()
             ->_title(Mage::helper('ho_monitor')->__('My Recurring Profiles'))
             ->renderLayout();
+    }
+
+    /**
+     * Show recurring profile
+     */
+    public function viewAction()
+    {
+        $profileId = $this->getRequest()->getParam('profile_id');
+
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        if (!$profile->getId()) {
+            $this->_forward('noRoute');
+            return false;
+        }
+
+        if ($profile->getCustomerId() != Mage::getSingleton('customer/session')->getCustomerId()) {
+            $this->_forward('noRoute');
+            return false;
+        }
+
+        Mage::register('ho_recurring_profile', $profile);
+
+        $this->_title($this->__('Recurring Profile'))
+            ->_title($this->__('Recurring Profile # %s', $profile->getId()));
+        $this->loadLayout();
+        $this->_initLayoutMessages('customer/session');
+
+        $navigationBlock = $this->getLayout()->getBlock('customer_account_navigation');
+        if ($navigationBlock) {
+            $navigationBlock->setActive('ho_recurring/customer/profiles');
+        }
+
+        $this->renderLayout();
     }
 }

@@ -40,8 +40,7 @@ class Ho_Recurring_Block_Customer_Profiles_List extends Mage_Core_Block_Template
      */
     public function getViewUrl($profile)
     {
-        // @todo not implemented
-        return '#';
+        return $this->getUrl('ho_recurring/customer/view', array('profile_id' => $profile->getId()));
     }
 
     /**
