@@ -465,11 +465,12 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @param bool $multiple
      * @return array
      */
-    public function getTermTypes()
+    public function getTermTypes($multiple = false)
     {
-        return Mage::getModel('ho_recurring/product_profile')->getTermTypes();
+        return Mage::getModel('ho_recurring/product_profile')->getTermTypes($multiple);
     }
 
     /**
@@ -477,7 +478,8 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function getTermLabel()
     {
-        $termTypeLabel = $this->getTermTypes()[$this->getTermType()];
+        $multiple = $this->getTerm() > 1;
+        $termTypeLabel = $this->getTermTypes($multiple)[$this->getTermType()];
         return Mage::helper('ho_recurring')->__("Every %s %s", $this->getTerm(), $termTypeLabel);
     }
 

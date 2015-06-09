@@ -52,6 +52,10 @@
                     <td><?php echo $this->escapeHtml($_profile->getScheduledAtFormatted()); ?></td>
                 </tr>
                 <tr>
+                    <th><?php echo $this->__('Period:') ?></th>
+                    <td><?php echo $this->escapeHtml($_profile->getTermLabel()); ?></td>
+                </tr>
+                <tr>
                     <th><?php echo $this->__('Billing Agreement:') ?></th>
                     <td><a href="<?php echo $this->getUrl('sales/billing_agreement/view', array('agreement' => $_profile->getBillingAgreementId())); ?>">
                             <?php echo $_profile->getBillingAgreement()->getReferenceId(); ?></a>
