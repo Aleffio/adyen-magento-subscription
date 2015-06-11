@@ -386,12 +386,10 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
             return;
         }
 
-        $recurringProfileData = $this->getRequest()->getParam('ho_recurring');
+        $postData = $this->getRequest()->getParam('ho_recurring');
 
         try {
-            foreach ($recurringProfileData as $key => $value) {
-                $profile->setData($key, $value);
-            }
+            $profile->importPostData($postData);
 
             $profile->save();
 
