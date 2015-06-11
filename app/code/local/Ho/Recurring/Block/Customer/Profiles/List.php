@@ -29,7 +29,8 @@ class Ho_Recurring_Block_Customer_Profiles_List extends Mage_Core_Block_Template
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
 
         $profiles = Mage::getModel('ho_recurring/profile')->getCollection()
-            ->addFieldToFilter('customer_id', $customerId);
+            ->addFieldToFilter('main_table.customer_id', $customerId)
+            ->addBillingAgreementToSelect();
 
         return $profiles;
     }
