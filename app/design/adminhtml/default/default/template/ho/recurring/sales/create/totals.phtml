@@ -28,7 +28,7 @@
 <?php
 /** @var Ho_Recurring_Model_Profile $_profile */
 $_profile = Mage::registry('current_profile');
-$fullUpdate = $this->getRequest()->getParam('full_update');
+$_fullUpdate = $this->getRequest()->getParam('full_update');
 ?>
 <table cellspacing="0" cellpadding="8" width="100%">
     <tbody>
@@ -37,55 +37,57 @@ $fullUpdate = $this->getRequest()->getParam('full_update');
     </tbody>
 </table>
 <div class="divider"></div>
-<?php if ($_profile): ?>
-    <div class="fieldset">
-        <div class="hor-scroll">
-            <table cellspacing="0" class="form-list">
-                <tbody>
-                <tr>
-                    <td class="label"><label for="scheduled_at"><?=$this->__('Scheduled At');?></label></td>
-                    <td class="value">
-                        <input id="scheduled_at" name="ho_recurring[scheduled_at]" value="<?=date('Y-m-d', strtotime($_profile->getScheduledAt()));?>" class="input-text" type="text">
-                        <img title="<?=$this->__('Select date');?>" id="_scheduled_at"
-                             src="<?=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif';?>"
-                             class="v-middle">
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <script type="text/javascript">
-        Calendar.setup({
-            inputField: 'scheduled_at',
-            ifFormat: '%Y-%m-%d',
-            button: '_scheduled_at',
-            align: 'Bl',
-            singleClick: true
-        });
-    </script>
+<?php if ($_profile && $_fullUpdate): ?>
+<?php
+$_dateFormat = Varien_Date::convertZendToStrftime(
+    Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT), true, true
+);
+$_dateValue = Mage::helper('core')->formatDate(
+    $_profile->getScheduledAt(), Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, true
+);
+?>
+<div class="order-totals-bottom">
+    <label for="scheduled_at"><?php echo $this->__('Scheduled At');?></label>
+
+    <input id="scheduled_at" name="ho_recurring[scheduled_at]" style="width:140px;"
+           value="<?php echo $_dateValue;?>" class="input-text" type="text">
+    <img title="<?php echo $this->__('Select date');?>" id="_scheduled_at"
+         src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif';?>"
+         class="v-middle">
+
+</div>
+<script type="text/javascript">
+Calendar.setup({
+    inputField: 'scheduled_at',
+    ifFormat: '<?php echo $_dateFormat;?>',
+    button: '_scheduled_at',
+    showsTime: true,
+    align: 'Bl',
+    singleClick: true
+});
+</script>
 <?php endif; ?>
 
-<div class="order-totals-bottom">
 <?php if ($_profile): ?>
-    <?php
-    $updateUrl = $fullUpdate
-        ? $this->getUrl('ho_recurring/adminhtml_profile/updateProfile', ['id' => $_profile->getId()])
-        : $this->getUrl('ho_recurring/adminhtml_profile/updateQuote', ['id' => $_profile->getId()]);
-    ?>
+<?php
+$_updateUrl = $_fullUpdate
+    ? $this->getUrl('ho_recurring/adminhtml_profile/updateProfile', ['id' => $_profile->getId()])
+    : $this->getUrl('ho_recurring/adminhtml_profile/view', ['id' => $_profile->getId()]);
+?>
 
+<div class="order-totals-bottom">
     <script type="text/javascript">
         AdminOrder.prototype.submitProfile = function(){
             if (this.orderItemChanged) {
                 if (confirm('You have item changes')) {
-                    if (editForm.submit('<?=$updateUrl;?>')) {
+                    if (editForm.submit('<?php echo $_updateUrl;?>')) {
                         disableElements('save');
                     }
                 } else {
                     this.itemsUpdate();
                 }
             } else {
-                if (editForm.submit('<?=$updateUrl;?>')) {
+                if (editForm.submit('<?php echo $_updateUrl;?>')) {
                     disableElements('save');
                 }
             }
@@ -95,6 +97,7 @@ $fullUpdate = $this->getRequest()->getParam('full_update');
     <?php echo $this->getButtonHtml(Mage::helper('ho_recurring')->__('Finish Editing'), 'order.submitProfile()', 'save'); ?>
 </div>
 <?php else: ?>
+<?php echo $this->getChildHtml('totals_additional'); ?>
 <div class="order-totals-bottom">
     <p>
         <label for="notify_customer" class="normal"><?php echo Mage::helper('sales')->__('Append Comments') ?></label>

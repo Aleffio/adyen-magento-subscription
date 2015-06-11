@@ -57,38 +57,58 @@
  */
 class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
 {
-    const STATUS_ACTIVE             = 'active';
-    const STATUS_QUOTE_ERROR        = 'quote_error';
-    const STATUS_ORDER_ERROR        = 'order_error';
-    const STATUS_PROFILE_ERROR      = 'profile_error';
-    const STATUS_CANCELED           = 'canceled';
-    const STATUS_EXPIRED            = 'expired';
-    const STATUS_AWAITING_PAYMENT   = 'awaiting_payment';
-    const STATUS_PAYMENT_ERROR      = 'payment_error';
 
-    protected function _construct ()
+    const STATUS_ACTIVE = 'active';
+    const STATUS_QUOTE_ERROR = 'quote_error';
+    const STATUS_ORDER_ERROR = 'order_error';
+    const STATUS_PROFILE_ERROR = 'profile_error';
+    const STATUS_CANCELED = 'canceled';
+    const STATUS_EXPIRED = 'expired';
+    const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
+    const STATUS_PAYMENT_ERROR = 'payment_error';
+
+
+    protected function _construct()
     {
         $this->_init('ho_recurring/profile');
     }
+
 
     public function getIncrementId()
     {
         return $this->getId();
     }
 
+
     /**
      * @return Ho_Recurring_Model_Profile_Quote
      */
     protected function _getActiveQuoteAdditional()
     {
-        if (! $this->hasData('_active_quote_additional')) {
+        if (!$this->hasData('_active_quote_additional')) {
             $quoteAdd = Mage::getResourceModel('ho_recurring/profile_quote_collection')
-                        ->addFieldToFilter('profile_id', $this->getId())
-                        ->addFieldToFilter('order_id', ['null' => true])
-                        ->getFirstItem();
+                ->addFieldToFilter('profile_id', $this->getId())
+                ->addFieldToFilter('order_id', ['null' => true])
+                ->getFirstItem();
             $this->setData('_active_quote_additional', $quoteAdd);
         }
         return $this->getData('_active_quote_additional');
+    }
+
+
+    /**
+     * @param $postData
+     * @return $this
+     */
+    public function importPostData($postData)
+    {
+        if (is_array($postData)) {
+            if (array_key_exists('scheduled_at', $postData)) {
+                $postData['scheduled_at'] = Mage::getModel('core/date')->gmtDate(null, $postData['scheduled_at']);
+            }
+            $this->addData($postData);
+        }
+        return $this;
     }
 
 
@@ -222,6 +242,7 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         $this->setData('_active_quote', $quote);
         return $this;
     }
+
     /**
      * @return Mage_Sales_Model_Quote|null
      */
