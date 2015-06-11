@@ -320,7 +320,12 @@ class Ho_Recurring_Model_Product_Observer
         $methodInstance = $observer->getMethodInstance();
         if (! $methodInstance->canCreateBillingAgreement()) {
             $observer->getResult()->isAvailable = false;
-            return $this;
+        }
+
+        if (Mage::app()->getRequest()->getParam('profile')) {
+            if (! method_exists($methodInstance, 'isBillingAgreement') || ! $methodInstance->isBillingAgreement()) {
+                $observer->getResult()->isAvailable = false;
+            }
         }
 
         return $this;
