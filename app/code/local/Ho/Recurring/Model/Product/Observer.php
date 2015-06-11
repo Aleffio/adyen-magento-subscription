@@ -21,7 +21,6 @@
  
 class Ho_Recurring_Model_Product_Observer
 {
-
     protected $_saved = false;
 
     /**
@@ -57,14 +56,21 @@ class Ho_Recurring_Model_Product_Observer
         $productProfilesData = Mage::app()->getRequest()->getPost('product_profile');
         $storeId = Mage::app()->getRequest()->getParam('store');
 
+        if (! $productProfilesData) {
+            if ($product->getData('ho_recurring_type') != Ho_Recurring_Model_Product_Profile::TYPE_DISABLED) {
+                $product->setData('ho_recurring_type', Ho_Recurring_Model_Product_Profile::TYPE_DISABLED);
+                Mage::getSingleton('adminhtml/session')->addNotice(
+                    Mage::helper('ho_recurring')->__('Recurring Profile Type is set back to \'Disabled\' because no profiles were defined')
+                );
+            }
+            return;
+        }
+
         /** @var array $productProfileIds */
         $productProfileIds = Mage::getModel('ho_recurring/product_profile')
             ->getCollection()
             ->addFieldToFilter('product_id', $product->getId())
             ->getAllIds();
-        if (! $productProfilesData) {
-            return;
-        }
 
         $resource = Mage::getSingleton('core/resource');
         $connection = $resource->getConnection('core_write');
