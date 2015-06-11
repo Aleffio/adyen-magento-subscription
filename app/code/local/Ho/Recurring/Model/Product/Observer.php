@@ -357,7 +357,7 @@ class Ho_Recurring_Model_Product_Observer
                 }
             }
 
-            return $quote->setData('_is_ho_recurring', false);
+            $quote->setData('_is_ho_recurring', false);
         }
 
         return $quote->getData('_is_ho_recurring');
