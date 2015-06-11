@@ -57,6 +57,8 @@ class Ho_Recurring_Model_Service_Quote
                 $profile->setStatus($profile::STATUS_ACTIVE);
             }
 
+            $profile->setScheduledAt($profile->calculateNextScheduleDate());
+
             Mage::getModel('core/resource_transaction')
                 ->addObject($profile)
                 ->addObject($orderAdditional)

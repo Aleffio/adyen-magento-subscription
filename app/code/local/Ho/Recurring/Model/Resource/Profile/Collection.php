@@ -135,9 +135,9 @@ class Ho_Recurring_Model_Resource_Profile_Collection extends Mage_Core_Model_Res
         $this->getSelect()->joinLeft(
             ['profile_quote' => $this->getTable('ho_recurring/profile_quote')],
             'main_table.entity_id = profile_quote.profile_id AND profile_quote.order_id IS NULL',
-            ['scheduled_at']
+            [] // If we leave this empty, the entity_id of the main table is somehow not retrieved
         );
-        $this->getSelect()->where('scheduled_at IS NULL');
+        $this->getSelect()->where('profile_quote.entity_id IS NULL');
 
         return $this;
     }
@@ -152,10 +152,13 @@ class Ho_Recurring_Model_Resource_Profile_Collection extends Mage_Core_Model_Res
         $this->getSelect()->joinLeft(
             ['profile_quote' => $this->getTable('ho_recurring/profile_quote')],
             'main_table.entity_id = profile_quote.profile_id',
-            ['scheduled_at']
+            ['quote_id', 'order_id']
         );
 
-        $this->getSelect()->where("scheduled_at < ".now()."'");
+        $this->getSelect()
+            ->where("scheduled_at < ?", now())
+            ->where('profile_quote.order_id IS NULL')
+            ->where('profile_quote.quote_id IS NOT NULL');
 
         return $this;
     }

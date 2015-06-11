@@ -256,12 +256,18 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
         /** @var Ho_Recurring_Model_Profile_Quote $quoteAddCollection */
         $latestQuoteSchedule = $this->getQuoteAdditionalCollection()
             ->addFieldToFilter('order_id', ['notnull' => true])
-            ->setOrder('scheduled_at', Varien_Data_Collection::SORT_ORDER_DESC)
-            ->getFirstItem();
+            ->setOrder('scheduled_at', Varien_Data_Collection::SORT_ORDER_DESC);
+
+        $latestQuoteSchedule->getSelect()->joinLeft(
+            array('order' => 'sales_flat_order'),
+            'main_table.order_id = order.entity_id',
+            'created_at'
+        );
+        $latestQuoteSchedule = $latestQuoteSchedule->getFirstItem();
 
         $lastScheduleDate = $this->getCreatedAt();
         if ($latestQuoteSchedule->getId()) {
-            $lastScheduleDate = $latestQuoteSchedule->getScheduledAt();
+            $lastScheduleDate = $latestQuoteSchedule->getCreatedAt();
         }
 
         $timezone = new DateTimeZone(Mage::getStoreConfig(

@@ -26,8 +26,6 @@
  * @method Ho_Recurring_Model_Profile_Quote setProfileId(int $value)
  * @method int getQuoteId()
  * @method Ho_Recurring_Model_Profile_Quote setQuoteId(int $value)
- * @method string getScheduledAt()
- * @method Ho_Recurring_Model_Profile_Quote setScheduledAt(string $value)
  * @method int getEntityId()
  * @method Ho_Recurring_Model_Profile_Quote setEntityId(int $value)
  * @method int getOrderId()
@@ -38,12 +36,6 @@ class Ho_Recurring_Model_Profile_Quote extends Mage_Core_Model_Abstract
     protected function _construct()
     {
         $this->_init('ho_recurring/profile_quote');
-    }
-
-    public function getScheduledAtFormatted()
-    {
-        /** @noinspection PhpParamsInspection */
-        return Mage::helper('core')->formatDate($this->getScheduledAt(), 'medium', true);
     }
 
     /**

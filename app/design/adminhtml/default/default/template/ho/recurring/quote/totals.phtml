@@ -35,7 +35,7 @@
 <div class="order-totals-bottom">
     <p>
         <?php echo $this->__('Order will be automatically created at:') ?><br />
-        <strong><?php echo $this->getQuoteAdditional()->getScheduledAtFormatted(); ?></strong>
+        <strong><?php echo $this->getProfile()->getScheduledAtFormatted(); ?></strong>
     </p>
     <?php if ($this->getProfile()->canCreateOrder()): ?>
     <p>

@@ -42,10 +42,19 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         $successCount = 0;
         $failureCount = 0;
         foreach ($profileCollection as $profile) {
-
-            $scheduleDate = $profile->getScheduledAt() ?: $profile->calculateNextScheduleDate(true);
-            $profile->setScheduledAt($scheduleDate->format('Y-m-d H:i:s'));
             /** @var Ho_Recurring_Model_Profile $profile */
+
+            if ($profile->getScheduledAt()) {
+                $timezone = new DateTimeZone(Mage::getStoreConfig(
+                    Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
+                ));
+                $scheduleDate = new DateTime($profile->getScheduledAt(), $timezone);
+            }
+            else {
+                $scheduleDate = $profile->calculateNextScheduleDate(true);
+            }
+
+            $profile->setScheduledAt($scheduleDate->format('Y-m-d H:i:s'));
 
             if ($scheduleDate < $scheduleBefore) {
                 try {

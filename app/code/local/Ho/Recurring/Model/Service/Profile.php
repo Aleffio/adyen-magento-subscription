@@ -124,8 +124,6 @@ class Ho_Recurring_Model_Service_Profile
             $quote->collectTotals();
             $profile->setActiveQuote($quote);
             $quoteAdditional = $profile->getActiveQuoteAdditional(true);
-            $quoteAdditional->setScheduledAt($profile->getScheduledAt());
-            $profile->setScheduledAt(null);
 
             Mage::getModel('core/resource_transaction')
                 ->addObject($quote)
