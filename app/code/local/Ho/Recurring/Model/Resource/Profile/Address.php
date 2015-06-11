@@ -23,6 +23,32 @@ class Ho_Recurring_Model_Resource_Profile_Address extends Mage_Core_Model_Resour
 {
     public function _construct()
     {
-        $this->_init('ho_recurring/profile_address', 'entity_id');
+        $this->_init('ho_recurring/profile_address', 'item_id');
+    }
+
+    /**
+     * @param Ho_Recurring_Model_Profile_Address $object
+     * @param Ho_Recurring_Model_Profile $profile
+     * @param int $type
+     * @return $this
+     */
+    public function loadByProfile(
+        Ho_Recurring_Model_Profile_Address $object,
+        Ho_Recurring_Model_Profile $profile,
+        $type
+    ) {
+        $select = Mage::getResourceModel('ho_recurring/profile_address_collection')
+            ->addFieldToFilter('profile_id', $profile->getId())
+            ->addFieldToFilter('type', $type)
+            ->getSelect();
+
+        $select->reset($select::COLUMNS);
+        $select->columns('item_id');
+
+        $addressId = $this->_getConnection('read')->fetchOne($select);
+
+        $this->load($object, $addressId);
+
+        return $this;
     }
 }

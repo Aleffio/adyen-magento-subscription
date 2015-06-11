@@ -132,6 +132,17 @@ class Ho_Recurring_Model_Service_Quote
             ->setUpdatedAt(now())
             ->save();
 
+        // Create profile addresses
+        $profileBillingAddress = Mage::getModel('ho_recurring/profile_address')
+            ->getProfileAddress($profile, Ho_Recurring_Model_Profile_Address::ADDRESS_TYPE_BILLING)
+            ->initAddress($profile, $quote->getBillingAddress())
+            ->save();
+
+        $profileShippingAddress = Mage::getModel('ho_recurring/profile_address')
+            ->getProfileAddress($profile, Ho_Recurring_Model_Profile_Address::ADDRESS_TYPE_SHIPPING)
+            ->initAddress($profile, $quote->getShippingAddress())
+            ->save();
+
         // Delete current profile items
         foreach ($profile->getItemCollection() as $profileItem) {
             /** @var Ho_Recurring_Model_Profile_Item $profileItem */
