@@ -375,6 +375,49 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     }
 
     /**
+     * Quote is automatically updated, we only need to save the custom values at the profile (i.e. scheduled_at)
+     */
+    public function updateQuoteAction()
+    {
+        $profileId = $this->getRequest()->getParam('id');
+        /** @var Ho_Recurring_Model_Profile $profile */
+        $profile = Mage::getModel('ho_recurring/profile')->load($profileId);
+
+        if (!$profile->getId()) {
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Could not find profile')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        $recurringProfileData = $this->getRequest()->getParam('ho_recurring');
+
+        try {
+            foreach ($recurringProfileData as $key => $value) {
+                $profile->setData($key, $value);
+            }
+
+            $profile->save();
+
+            $this->_getSession()->addSuccess(
+                Mage::helper('ho_recurring')->__('Quote successfully updated')
+            );
+        }
+        catch (Mage_Core_Exception $e) {
+            $profile->setErrorMessage($e->getMessage());
+            $profile->setStatus($profile::STATUS_PROFILE_ERROR);
+            $profile->save();
+
+            $this->_getSession()->addError(
+                Mage::helper('ho_recurring')->__('An error occurred: ' . $e->getMessage())
+            );
+        }
+
+        $this->_redirect('*/*/view', ['id' => $profile->getId()]);
+    }
+
+    /**
      * Create profile order
      */
     public function createOrderAction()
