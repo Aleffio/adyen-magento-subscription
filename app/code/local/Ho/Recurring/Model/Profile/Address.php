@@ -77,11 +77,15 @@ class Ho_Recurring_Model_Profile_Address extends Mage_Core_Model_Abstract
             $this->setSource(self::ADDRESS_SOURCE_QUOTE)
                 ->setQuoteAddressId($address->getId());
         }
-        elseif ($address->getCustomerAddressId()) {
+        // Note: Don't use customer address, because when the address of a quote changes,
+        // and that quote is converted to an order, the customer_address_id is still filled
+        // with the original address ID, but that customer address isn't actually changed,
+        // so we always want to use order address ID at this moment
+//        elseif ($address->getCustomerAddressId()) {
             // Create customer address
-            $this->setSource(self::ADDRESS_SOURCE_CUSTOMER)
-                ->setCustomerAddressId($address->getCustomerAddressId());
-        }
+//            $this->setSource(self::ADDRESS_SOURCE_CUSTOMER)
+//                ->setCustomerAddressId($address->getCustomerAddressId());
+//        }
         else {
             // Create order address
             $this->setSource(self::ADDRESS_SOURCE_ORDER)
