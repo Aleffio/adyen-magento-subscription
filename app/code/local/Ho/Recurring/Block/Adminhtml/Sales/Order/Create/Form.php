@@ -18,9 +18,10 @@
  * @copyright 2015 Copyright © H&O (http://www.h-o.nl/)
  * @license   H&O Commercial License (http://www.h-o.nl/license)
  */
- 
+
+// @todo Don't depend on Innoexts_Warehouse module
 class Ho_Recurring_Block_Adminhtml_Sales_Order_Create_Form
-    extends Mage_Adminhtml_Block_Sales_Order_Create_Form {
+    extends Innoexts_Warehouse_Block_Adminhtml_Sales_Order_Create_Form {
     /**
      * Retrieve url for loading blocks
      * @return string
