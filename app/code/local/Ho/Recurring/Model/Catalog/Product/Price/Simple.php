@@ -36,7 +36,7 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
         }
 
         if ($profile = $this->_getProductProfile($product)) {
-            return $profile->getPrice() / $profile->getQty();
+            return $profile->getPrice();
         }
 
         return parent::getFinalPrice($qty, $product);
