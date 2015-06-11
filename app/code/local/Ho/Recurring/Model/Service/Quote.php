@@ -21,7 +21,6 @@
 
 class Ho_Recurring_Model_Service_Quote
 {
-
     /**
      * @param Mage_Sales_Model_Quote     $quote
      * @param Ho_Recurring_Model_Profile $profile
@@ -48,6 +47,25 @@ class Ho_Recurring_Model_Service_Quote
             $service = Mage::getModel('sales/service_quote', $quote);
             $service->submitAll();
             $order = $service->getOrder();
+
+            // Save order addresses at profile when they're currently quote addresses
+            $profileBillingAddress = Mage::getModel('ho_recurring/profile_address')
+                ->getProfileAddress($profile, Ho_Recurring_Model_Profile_Address::ADDRESS_TYPE_BILLING);
+
+            if ($profileBillingAddress->getSource() == Ho_Recurring_Model_Profile_Address::ADDRESS_SOURCE_QUOTE) {
+                $profileBillingAddress
+                    ->initAddress($profile, $order->getBillingAddress())
+                    ->save();
+            }
+
+            $profileShippingAddress = Mage::getModel('ho_recurring/profile_address')
+                ->getProfileAddress($profile, Ho_Recurring_Model_Profile_Address::ADDRESS_TYPE_SHIPPING);
+
+            if ($profileShippingAddress->getSource() == Ho_Recurring_Model_Profile_Address::ADDRESS_SOURCE_QUOTE) {
+                $profileShippingAddress
+                    ->initAddress($profile, $order->getShippingAddress())
+                    ->save();
+            }
 
             $orderAdditional = $profile->getOrderAdditional($service->getOrder(), true)->save();
             $quoteAdditional = $profile->getActiveQuoteAdditional()->setOrder($order)->save();
