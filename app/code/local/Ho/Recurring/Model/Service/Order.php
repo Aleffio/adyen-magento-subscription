@@ -34,8 +34,6 @@ class Ho_Recurring_Model_Service_Order
             return $profiles;
         }
 
-        $billingAgreement = $this->_getBillingAgreement($order);
-
         // Create a profile for each order item
         // @todo Check if order items can be merged in one profile (same term, billing cycles, etc)
 
@@ -49,6 +47,7 @@ class Ho_Recurring_Model_Service_Order
                 continue;
             }
 
+            $billingAgreement = $this->_getBillingAgreement($order);
             // Create profile
             /** @var Ho_Recurring_Model_Profile $profile */
             $profile = Mage::getModel('ho_recurring/profile')
