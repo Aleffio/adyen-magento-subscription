@@ -45,7 +45,7 @@ $fullUpdate = $this->getRequest()->getParam('full_update');
                 <tr>
                     <td class="label"><label for="scheduled_at"><?=$this->__('Scheduled At');?></label></td>
                     <td class="value">
-                        <input id="scheduled_at" name="ho_recurring[scheduled_at]" value="<?=$_profile->getScheduledAt();?>" class="input-text" type="text">
+                        <input id="scheduled_at" name="ho_recurring[scheduled_at]" value="<?=date('Y-m-d', strtotime($_profile->getScheduledAt()));?>" class="input-text" type="text">
                         <img title="<?=$this->__('Select date');?>" id="_scheduled_at"
                              src="<?=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif';?>"
                              class="v-middle">
