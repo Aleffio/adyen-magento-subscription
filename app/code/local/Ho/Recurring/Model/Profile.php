@@ -484,6 +484,11 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
      */
     public function getTermLabel()
     {
+        if (!$this->getTerm()) {
+            // Only occurs when profile is edited and no recurring items are in it
+            return '-';
+        }
+
         $multiple = $this->getTerm() > 1;
         $termTypeLabel = $this->getTermTypes($multiple)[$this->getTermType()];
         return Mage::helper('ho_recurring')->__("Every %s %s", $this->getTerm(), $termTypeLabel);

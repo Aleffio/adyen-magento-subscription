@@ -138,6 +138,7 @@ class Ho_Recurring_Model_Service_Quote
             $profileItem->delete();
         }
 
+        $i = 0;
         // Create new profile items
         foreach ($quote->getItemsCollection() as $quoteItem) {
             /** @var Mage_Sales_Model_Quote_Item $quoteItem */
@@ -172,6 +173,12 @@ class Ho_Recurring_Model_Service_Quote
 //                ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
                 ->setCreatedAt(now())
                 ->save();
+
+            $i++;
+        }
+
+        if ($i <= 0) {
+            Ho_Recurring_Exception::throwException('No recurring products in the profile');
         }
 
         return $profile;
