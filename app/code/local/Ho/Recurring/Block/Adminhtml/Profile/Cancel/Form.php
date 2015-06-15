@@ -42,6 +42,10 @@ class Ho_Recurring_Block_Adminhtml_Profile_Cancel_Form extends Mage_Adminhtml_Bl
             'class'     => 'fieldset-wide'
         ));
 
+        $fieldset->addField('id', 'hidden', array(
+            'name'      => 'id',
+        ))->setValue($this->getRequest()->getParam('id'));
+
         $fieldset->addField('reason', 'select', array(
             'name'      => 'reason',
             'label'     => $helper->__('Reason'),

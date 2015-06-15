@@ -167,7 +167,7 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     /**
      * @throws Exception
      */
-    public function cancelProfileAction()
+    public function cancelPostAction()
     {
         $profileId = $this->getRequest()->getParam('id');
         /** @var Ho_Recurring_Model_Profile $profile */
@@ -186,11 +186,11 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
             $this->_getSession()->addSuccess(
                 Mage::helper('ho_recurring')->__('No stop reason given')
             );
-            $this->_redirect('*/*/');
+            $this->_redirect('*/*/cancel', ['id' => $profile->getId()]);
             return;
         }
 
-        $profile->setErrorMessage($reason);
+        $profile->setCancelCode($reason);
         $profile->setStatus($profile::STATUS_CANCELED);
         $profile->setEndsAt(now());
         $profile->save();
