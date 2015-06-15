@@ -41,6 +41,8 @@
  * @method $this setQty(int $value)
  * @method float getPrice()
  * @method $this setPrice(float $value)
+ * @method bool getShowOnFrontend()
+ * @method $this setShowOnFrontend(bool $value)
  * @method int getSortOrder()
  * @method $this setSortOrder(int $value)
  */

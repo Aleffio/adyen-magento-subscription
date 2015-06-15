@@ -183,6 +183,12 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
         $priceField->setValue($profile ? $profile->getPrice() * 1 : '');
         $priceField->setProfile($profile);
 
+        $profileFieldset->addField($elementId . '[show_on_frontend]', 'select', array(
+            'name'      => $elementId . '[show_on_frontend]',
+            'label'     => $helper->__('Show on Frontend'),
+            'options'   => array(1 => $helper->__('Yes'), 0 => $helper->__('No')),
+        ))->setValue($profile ? $profile->getShowOnFrontend() : 0);
+
         return $profileFieldset;
     }
 
