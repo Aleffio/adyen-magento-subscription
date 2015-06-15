@@ -48,6 +48,7 @@ $_coreHelper = $this->helper('core');
                     <?php endif; ?>
                     <?php foreach ($this->getProfileCollection() as $profile): ?>
                     <?php /** @var Ho_Recurring_Model_Product_Profile $profile */ ?>
+                    <?php if (!$profile->getShowOnFrontend()) continue; ?>
                     <li>
                         <label>
                             <input type="radio" id="ho_recurring_profile_<?php echo  $profile->getId(); ?>"
