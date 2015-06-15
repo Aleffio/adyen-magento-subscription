@@ -81,11 +81,6 @@
                     <product_type_price>Ho_Recurring_Model_Catalog_Product_Price_Simple</product_type_price>
                 </rewrite>
             </catalog>
-            <sales>
-                <rewrite>
-                    <quote_item>Ho_Recurring_Model_Sales_Quote_Item</quote_item>
-                </rewrite>
-            </sales>
         </models>
         <catalog>
             <product>
