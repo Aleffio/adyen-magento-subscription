@@ -53,6 +53,8 @@
  * @method Ho_Recurring_Model_Profile setTermType(string $value)
  * @method string getStatus()
  * @method Ho_Recurring_Model_Profile setStatus(string $value)
+ * @method string getCancelCode()
+ * @method Ho_Recurring_Model_Profile setCancelCode(string $value)
  * @method Ho_Recurring_Model_Resource_Profile _getResource()
  */
 class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract

@@ -23,7 +23,7 @@
 <config>
     <modules>
         <Ho_Recurring>
-            <version>0.29.0</version>
+            <version>0.30.0</version>
         </Ho_Recurring>
     </modules>
     <global>
