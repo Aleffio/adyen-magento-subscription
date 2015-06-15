@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Ho_Recurring
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the H&O Commercial License
+ * that is bundled with this package in the file LICENSE_HO.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.h-o.nl/license
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to info@h-o.com so we can send you a copy immediately.
+ *
+ * @category    Ho
+ * @package     Ho_Recurring
+ * @copyright   Copyright © 2015 H&O (http://www.h-o.nl/)
+ * @license     H&O Commercial License (http://www.h-o.nl/license)
+ * @author      Maikel Koek – H&O <info@h-o.nl>
+ */
+-->
+<config>
+    <tabs>
+        <ho_config translate="label" module="ho_recurring">
+            <label>H&amp;O</label>
+            <sort_order>0</sort_order>
+        </ho_config>
+    </tabs>
+    <sections>
+        <ho_recurring translate="label" module="ho_recurring">
+            <label>Recurring Profiles</label>
+            <tab>ho_config</tab>
+            <sort_order>100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <profile translate="label">
+                    <label>Profile</label>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <cancel_reasons translate="label">
+                            <label>Cancel Reasons</label>
+                            <frontend_model>ho_recurring/adminhtml_system_config_cancelReasons</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <comment><![CDATA[]]></comment>
+                        </cancel_reasons>
+                    </fields>
+                </profile>
+            </groups>
+        </ho_recurring>
+    </sections>
+</config>
