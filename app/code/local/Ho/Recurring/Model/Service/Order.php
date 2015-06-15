@@ -22,6 +22,11 @@
 class Ho_Recurring_Model_Service_Order
 {
     /**
+     * Create recurring profile(s) for given order.
+     *
+     * Order items that have the same term and term type are saved
+     * in the same profile.
+     *
      * @param Mage_Sales_Model_Order $order
      * @return array
      */
@@ -34,11 +39,10 @@ class Ho_Recurring_Model_Service_Order
             return $profiles;
         }
 
-        // Create a profile for each order item
-        // @todo Check if order items can be merged in one profile (same term, billing cycles, etc)
-
-        /** @var Mage_Sales_Model_Order_Item $orderItem */
+        $productTerms = array();
         foreach ($order->getAllVisibleItems() as $orderItem) {
+            /** @var Mage_Sales_Model_Order_Item $orderItem */
+
             /** @var Ho_Recurring_Model_Product_Profile $productProfile */
             $productProfile = $this->_getProductProfile($orderItem);
 
@@ -47,7 +51,17 @@ class Ho_Recurring_Model_Service_Order
                 continue;
             }
 
+            $arrayKey = $productProfile->getTerm().$productProfile->getTermType();
+
+            $productTerms[$arrayKey]['term'] = $productProfile->getTerm();
+            $productTerms[$arrayKey]['type'] = $productProfile->getTermType();
+            $productTerms[$arrayKey]['order_items'][] = $orderItem;
+        }
+
+        // Create a profile for each term
+        foreach ($productTerms as $productTerm) {
             $billingAgreement = $this->_getBillingAgreement($order);
+
             // Create profile
             /** @var Ho_Recurring_Model_Profile $profile */
             $profile = Mage::getModel('ho_recurring/profile')
@@ -58,31 +72,39 @@ class Ho_Recurring_Model_Service_Order
                 ->setOrderId($order->getId())
                 ->setBillingAgreementId($billingAgreement->getId())
                 ->setStoreId($order->getStoreId())
-                ->setTerm($productProfile->getTerm())
-                ->setTermType($productProfile->getTermType())
+                ->setTerm($productTerm['term'])
+                ->setTermType($productTerm['type'])
                 ->setShippingMethod($order->getShippingMethod())
                 ->setCreatedAt(now())
                 ->setUpdatedAt(now())
                 ->save();
 
-            // Create profile item
-            /** @var Ho_Recurring_Model_Profile_Item $profileItem */
-            $profileItem = Mage::getModel('ho_recurring/profile_item')
-                ->setProfileId($profile->getId())
-                ->setStatus(Ho_Recurring_Model_Profile_Item::STATUS_ACTIVE)
-                ->setProductId($orderItem->getProductId())
-                ->setProductOptions(serialize($orderItem->getProductOptions()))
-                ->setSku($orderItem->getSku())
-                ->setName($orderItem->getName())
-                ->setLabel($productProfile->getLabel())
-                ->setPrice($orderItem->getPrice())
-                ->setPriceInclTax($orderItem->getPriceInclTax())
-                ->setQty($orderItem->getQtyInvoiced())
-                ->setOnce(0)
-                // Currently not in use
-//                ->setMinBillingCycles($productProfile->getMinBillingCycles())
-//                ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
-                ->setCreatedAt(now());
+            $transactionItems = [];
+            foreach ($productTerm['order_items'] as $orderItem) {
+                /** @var Ho_Recurring_Model_Product_Profile $productProfile */
+                $productProfile = $this->_getProductProfile($orderItem);
+
+                // Create profile item
+                /** @var Ho_Recurring_Model_Profile_Item $profileItem */
+                $profileItem = Mage::getModel('ho_recurring/profile_item')
+                    ->setProfileId($profile->getId())
+                    ->setStatus(Ho_Recurring_Model_Profile_Item::STATUS_ACTIVE)
+                    ->setProductId($orderItem->getProductId())
+                    ->setProductOptions(serialize($orderItem->getProductOptions()))
+                    ->setSku($orderItem->getSku())
+                    ->setName($orderItem->getName())
+                    ->setLabel($productProfile->getLabel())
+                    ->setPrice($orderItem->getPrice())
+                    ->setPriceInclTax($orderItem->getPriceInclTax())
+                    ->setQty($orderItem->getQtyInvoiced())
+                    ->setOnce(0)
+                    // Currently not in use
+//                    ->setMinBillingCycles($productProfile->getMinBillingCycles())
+//                    ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
+                    ->setCreatedAt(now());
+
+                $transactionItems[] = $profileItem;
+            }
 
             // Create profile addresses
             $profileBillingAddress = Mage::getModel('ho_recurring/profile_address')
@@ -111,12 +133,16 @@ class Ho_Recurring_Model_Service_Order
             $scheduleDate = $profile->calculateNextScheduleDate();
             $profile->setScheduledAt($scheduleDate);
 
-            Mage::getModel('core/resource_transaction')
-                ->addObject($profileItem)
+            $transaction = Mage::getModel('core/resource_transaction')
                 ->addObject($profile)
                 ->addObject($orderAdditional)
-                ->addObject($quoteAdditional)
-                ->save();
+                ->addObject($quoteAdditional);
+
+            foreach ($transactionItems as $item) {
+                $transaction->addObject($item);
+            }
+
+            $transaction->save();
 
             $profiles[] = $profile;
         }
