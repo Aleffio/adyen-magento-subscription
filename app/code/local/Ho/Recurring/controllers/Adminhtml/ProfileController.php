@@ -157,6 +157,14 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
     }
 
     /**
+     * Profile cancellation form
+     */
+    public function cancelAction()
+    {
+        $this->_initAction()->renderLayout();
+    }
+
+    /**
      * @throws Exception
      */
     public function cancelProfileAction()

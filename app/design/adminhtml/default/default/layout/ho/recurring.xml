@@ -71,6 +71,12 @@
         </reference>
     </ho_recurring_adminhtml_profile_view>
 
+    <ho_recurring_adminhtml_profile_cancel>
+        <reference name="content">
+            <block type="ho_recurring/adminhtml_profile_cancel" name="ho_recurring_profile_cancel" />
+        </reference>
+    </ho_recurring_adminhtml_profile_cancel>
+
     <adminhtml_catalog_product_edit>
         <reference name="product_tabs">
             <action method="addTabAfter">
