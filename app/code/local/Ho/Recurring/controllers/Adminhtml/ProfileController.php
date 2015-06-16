@@ -397,6 +397,9 @@ class Ho_Recurring_Adminhtml_ProfileController extends Mage_Adminhtml_Controller
         $postData = $this->getRequest()->getParam('ho_recurring');
 
         try {
+            $quote = $profile->getActiveQuote();
+            Mage::getModel('ho_recurring/service_quote')->updateQuotePayment($quote);
+
             $profile->importPostData($postData);
 
             $profile->save();

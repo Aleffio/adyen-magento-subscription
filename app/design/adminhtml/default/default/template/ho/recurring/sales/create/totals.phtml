@@ -37,7 +37,7 @@ $_fullUpdate = $this->getRequest()->getParam('full_update');
     </tbody>
 </table>
 <div class="divider"></div>
-<?php if ($_profile && $_fullUpdate): ?>
+<?php if ($_profile): ?>
 <?php
 $_dateFormat = Varien_Date::convertZendToStrftime(
     Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT), true, true
@@ -72,7 +72,7 @@ Calendar.setup({
 <?php
 $_updateUrl = $_fullUpdate
     ? $this->getUrl('ho_recurring/adminhtml_profile/updateProfile', ['id' => $_profile->getId()])
-    : $this->getUrl('ho_recurring/adminhtml_profile/view', ['id' => $_profile->getId()]);
+    : $this->getUrl('ho_recurring/adminhtml_profile/updateQuote', ['id' => $_profile->getId()]);
 ?>
 
 <div class="order-totals-bottom">

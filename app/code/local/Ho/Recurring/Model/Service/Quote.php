@@ -134,10 +134,7 @@ class Ho_Recurring_Model_Service_Quote
             }
         }
 
-        $recurringDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
-        $quote->getPayment()->setAdditionalInformation('recurring_detail_reference', $recurringDetailReference);
-        $quote->getPayment()->setCcType(null);
-        $quote->getPayment()->save();
+        $this->updateQuotePayment($quote);
 
         $billingAgreement = $this->_getBillingAgreement($quote);
 
@@ -216,6 +213,26 @@ class Ho_Recurring_Model_Service_Quote
         }
 
         return $profile;
+    }
+
+    /**
+     * The additional info and cc type of a quote payment are not updated when
+     * selecting another payment method while editing a profile or profile quote,
+     * but they have to be updated for the payment method to be valid
+     *
+     * @param Mage_Sales_Model_Quote $quote
+     * @return Mage_Sales_Model_Quote
+     * @throws Exception
+     */
+    public function updateQuotePayment(Mage_Sales_Model_Quote $quote)
+    {
+        $recurringDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
+
+        $quote->getPayment()->setAdditionalInformation('recurring_detail_reference', $recurringDetailReference);
+        $quote->getPayment()->setCcType(null);
+        $quote->getPayment()->save();
+
+        return $quote;
     }
 
     /**
