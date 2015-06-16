@@ -205,4 +205,29 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
             $collection->getSelect()->group('main_table.entity_id');
         }
     }
+
+    /**
+     * Add recurring profile IDs column to order grid
+     *
+     * @event ho_recurring_add_sales_order_grid_column
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function addGridColumn(Varien_Event_Observer $observer)
+    {
+        $block = $observer->getBlock();
+        if (! $block instanceof Mage_Adminhtml_Block_Sales_Order_Grid && !$block instanceof Mage_Adminhtml_Block_Customer_Edit_Tab_Orders) {
+            return $this;
+        }
+
+        $block->addColumnAfter('created_recurring_profile_id', array(
+            'header'        => Mage::helper('sales')->__('Created Recurring Profile ID'),
+            'index'         => 'created_recurring_profile_id',
+            'filter_index'  => 'recurring_profile.entity_id',
+            'type'          => 'text',
+            'width'         => '100px',
+        ), 'status');
+
+        return $this;
+    }
 }

@@ -242,6 +242,15 @@
                     </ho_recurring_sales_order_grid_collection>
                 </observers>
             </sales_order_grid_collection_load_before>
+            <core_block_abstract_prepare_layout_after>
+                <observers>
+                    <ho_recurring_add_sales_order_grid_column>
+                        <type>singleton</type>
+                        <class>ho_recurring/observer</class>
+                        <method>addGridColumn</method>
+                    </ho_recurring_add_sales_order_grid_column>
+                </observers>
+            </core_block_abstract_prepare_layout_after>
         </events>
     </adminhtml>
 
