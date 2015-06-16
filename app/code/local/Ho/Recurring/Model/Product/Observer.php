@@ -322,13 +322,11 @@ class Ho_Recurring_Model_Product_Observer
             $observer->getResult()->isAvailable = false;
         }
 
-        // @todo Bug: It seems that quote payment additional_information is not set after
-        // editing profile and there was just 1 payment method available
-//        if (Mage::app()->getRequest()->getParam('profile')) {
-//            if (! method_exists($methodInstance, 'isBillingAgreement') || ! $methodInstance->isBillingAgreement()) {
-//                $observer->getResult()->isAvailable = false;
-//            }
-//        }
+        if (Mage::app()->getRequest()->getParam('profile')) {
+            if (! method_exists($methodInstance, 'isBillingAgreement') || ! $methodInstance->isBillingAgreement()) {
+                $observer->getResult()->isAvailable = false;
+            }
+        }
 
         return $this;
     }
