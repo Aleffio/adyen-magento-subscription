@@ -128,7 +128,19 @@
     <PRODUCT_TYPE_simple>
         <reference name="product.composite.fieldset">
             <remove name="product.composite.fieldset.qty"/>
-            <block type="ho_recurring/catalog_product_view_profile" before="product.composite.fieldset.options" name="product.composite.fieldset.bundle" template="ho/recurring/product/composite/fieldset/options/profile.phtml" />
+            <block type="ho_recurring/catalog_product_view_profile"
+                   before="product.composite.fieldset.options"
+                   name="product.composite.fieldset.profile"
+                   template="ho/recurring/product/composite/fieldset/options/profile.phtml" />
         </reference>
     </PRODUCT_TYPE_simple>
+
+    <PRODUCT_TYPE_configurable>
+        <reference name="product.composite.fieldset">
+            <block type="ho_recurring/catalog_product_view_profile"
+                   before="product.composite.fieldset.options"
+                   name="product.composite.fieldset.profile"
+                   template="ho/recurring/product/composite/fieldset/options/profile.phtml" />
+        </reference>
+    </PRODUCT_TYPE_configurable>
 </layout>
