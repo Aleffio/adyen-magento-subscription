@@ -191,16 +191,18 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
                 $target->joinLeft(
                     array('recurring_profile' => 'ho_recurring_profile'),
                     '`main_table`.`entity_id` = `recurring_profile`.`order_id`',
-                    array('created_recurring_profile_id' => 'entity_id')
+                    array('created_recurring_profile_id' => 'group_concat(recurring_profile.entity_id)')
                 );
+                $target->group('main_table.entity_id');
             }
         }
         else {
             $collection->getSelect()->joinLeft(
                 array('recurring_profile' => 'ho_recurring_profile'),
                 '`main_table`.`entity_id` = `recurring_profile`.`order_id`',
-                array('created_recurring_profile_id' => 'entity_id')
+                array('created_recurring_profile_id' => 'group_concat(recurring_profile.entity_id)')
             );
+            $collection->getSelect()->group('main_table.entity_id');
         }
     }
 }
