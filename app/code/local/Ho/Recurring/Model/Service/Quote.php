@@ -134,6 +134,11 @@ class Ho_Recurring_Model_Service_Quote
             }
         }
 
+        $recurringDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
+        $quote->getPayment()->setAdditionalInformation('recurring_detail_reference', $recurringDetailReference);
+        $quote->getPayment()->setCcType(null);
+        $quote->getPayment()->save();
+
         $billingAgreement = $this->_getBillingAgreement($quote);
 
         if (!$quote->getShippingAddress()->getShippingMethod()) {
@@ -225,8 +230,7 @@ class Ho_Recurring_Model_Service_Quote
             ->addFieldToFilter('quote_id', $quote->getId())
             ->getFirstItem();
 
-        $method = explode('_', $quotePayment->getMethod());
-        $recurringReference = $method[count($method) - 1];
+        $recurringReference = str_replace('adyen_oneclick_', '', $quotePayment->getMethod());
 
         $billingAgreement = Mage::getModel('sales/billing_agreement')
             ->getCollection()
