@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * Ho_Recurring
  *
@@ -19,17 +18,25 @@
  * @license     H&O Commercial License (http://www.h-o.nl/license)
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
--->
-<config>
-    <modules>
-        <Ho_Recurring>
-            <active>true</active>
-            <codePool>local</codePool>
-            <depends>
-                <Adyen_Payment />
-                <Innoexts_Warehouse />
-                <Ho_SimpleBundle />
-            </depends>
-        </Ho_Recurring>
-    </modules>
-</config>
+
+// @todo Don't depend on Ho_SimpleBundle module (or check if it's installed)
+class Ho_Recurring_Model_Catalog_Product_Type_Bundle extends Ho_SimpleBundle_Model_Bundle_Product_Type
+{
+    /**
+     * Prepare selected options for simple profile product
+     *
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  Varien_Object $buyRequest
+     * @return array
+     */
+    public function processBuyRequest($product, $buyRequest)
+    {
+        $options = parent::processBuyRequest($product, $buyRequest);
+
+        $option = $buyRequest->getData('ho_recurring_profile');
+
+        $options['ho_recurring_profile'] = $option;
+
+        return $options;
+    }
+}

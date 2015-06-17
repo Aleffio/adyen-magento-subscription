@@ -143,4 +143,13 @@
                    template="ho/recurring/product/composite/fieldset/options/profile.phtml" />
         </reference>
     </PRODUCT_TYPE_configurable>
+
+    <PRODUCT_TYPE_bundle>
+        <reference name="product.composite.fieldset">
+            <block type="ho_recurring/catalog_product_view_profile"
+                   before="product.composite.fieldset.options"
+                   name="product.composite.fieldset.profile"
+                   template="ho/recurring/product/composite/fieldset/options/profile.phtml" />
+        </reference>
+    </PRODUCT_TYPE_bundle>
 </layout>

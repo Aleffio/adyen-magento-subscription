@@ -83,6 +83,12 @@
                     <product_type_configurable_price>Ho_Recurring_Model_Catalog_Product_Price_Configurable</product_type_configurable_price>
                 </rewrite>
             </catalog>
+            <bundle>
+                <rewrite>
+                    <product_price>Ho_Recurring_Model_Catalog_Product_Price_Bundle</product_price>
+                    <product_type>Ho_Recurring_Model_Catalog_Product_Type_Bundle</product_type>
+                </rewrite>
+            </bundle>
         </models>
         <catalog>
             <product>
