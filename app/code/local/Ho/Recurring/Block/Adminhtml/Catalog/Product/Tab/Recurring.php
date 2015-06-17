@@ -27,8 +27,7 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
      */
     protected function _prepareForm()
     {
-        /** @var Mage_Catalog_Model_Product $product */
-        $product = Mage::registry('product');
+        $product = $this->_getProduct();
 
         $helper = Mage::helper('ho_recurring');
 
@@ -193,6 +192,14 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
     }
 
     /**
+     * @return Mage_Catalog_Model_Product
+     */
+    protected function _getProduct()
+    {
+        return Mage::registry('product');
+    }
+
+    /**
      * @return string
      */
     public function getTabLabel()
@@ -209,12 +216,20 @@ class Ho_Recurring_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Ad
     }
 
     /**
-     * Only show when ho_recurrin_type attribute exists
+     * Only show when ho_recurring_type attribute exists
+     * and in case of a bundle, the price type must be fixed
      *
      * @return bool
      */
     public function canShowTab()
     {
+        $product = $this->_getProduct();
+
+        if ($product->getTypeId() == 'bundle'
+            && $product->getPriceType() != Mage_Bundle_Model_Product_Price::PRICE_TYPE_FIXED) {
+            return false;
+        }
+
         return array_key_exists('ho_recurring_type', Mage::registry('product')->getAttributes());
     }
 
