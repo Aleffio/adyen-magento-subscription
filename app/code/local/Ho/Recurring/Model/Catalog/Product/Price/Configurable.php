@@ -19,10 +19,10 @@
  * @author      Maikel Koek – H&O <info@h-o.nl>
  */
 
-class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model_Product_Type_Price
+class Ho_Recurring_Model_Catalog_Product_Price_Configurable extends Mage_Catalog_Model_Product_Type_Configurable_Price
 {
     /**
-     * Retrieve product final price
+     * Get product final price
      * Extended to return profile price when product is recurring
      *
      * @param float|null $qty
@@ -40,23 +40,6 @@ class Ho_Recurring_Model_Catalog_Product_Price_Simple extends Mage_Catalog_Model
         }
 
         return parent::getFinalPrice($qty, $product);
-    }
-
-    /**
-     * Get product tier price by qty
-     * Extended to hide tier pricing when product is recurring
-     *
-     * @param   float $qty
-     * @param   Mage_Catalog_Model_Product $product
-     * @return  float
-     */
-    public function getTierPrice($qty = null, $product)
-    {
-        if ($profile = $this->_helper()->getProductProfile($product)) {
-            return array();
-        }
-
-        return parent::getTierPrice($qty, $product);
     }
 
     /**

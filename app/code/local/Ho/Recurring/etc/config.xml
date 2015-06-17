@@ -80,6 +80,7 @@
                     <product_type_simple>Ho_Recurring_Model_Catalog_Product_Type_Simple</product_type_simple>
                     <product_type_price>Ho_Recurring_Model_Catalog_Product_Price_Simple</product_type_price>
                     <product_type_configurable>Ho_Recurring_Model_Catalog_Product_Type_Configurable</product_type_configurable>
+                    <product_type_configurable_price>Ho_Recurring_Model_Catalog_Product_Price_Configurable</product_type_configurable_price>
                 </rewrite>
             </catalog>
         </models>
