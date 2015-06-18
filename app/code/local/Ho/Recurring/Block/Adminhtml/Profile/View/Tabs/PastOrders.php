@@ -101,7 +101,6 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_PastOrders
                         'base'  => 'adminhtml/sales_order/view',
                     ),
                     'field'     => 'order_id',
-                    'target'    => '_blank',
                 ),
             ),
             'filter'    => false,
@@ -109,6 +108,15 @@ class Ho_Recurring_Block_Adminhtml_Profile_View_Tabs_PastOrders
         ));
 
         return parent::_prepareColumns();
+    }
+
+    /**
+     * @param Varien_Object $row
+     * @return string
+     */
+    public function getRowUrl($row)
+    {
+        return $this->getUrl('adminhtml/sales_order/view', ['order_id' => $row->getId()]);
     }
 
     /**
