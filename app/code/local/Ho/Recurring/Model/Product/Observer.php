@@ -106,6 +106,9 @@ class Ho_Recurring_Model_Product_Observer
                 ));
             }
 
+            if ($profileData['customer_group_id'] == '') {
+                $profileData['customer_group_id'] = null;
+            }
             $profile->addData($profileData);
             $profile->setSortOrder($i * 10);
 
