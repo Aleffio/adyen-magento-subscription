@@ -42,4 +42,33 @@ class Ho_Recurring_Model_System_Config_Source_Profile_Type
         }
         return $this->_options;
     }
+
+    /**
+     * Retrieve flat column definition
+     *
+     * @return array
+     */
+    public function getFlatColums()
+    {
+        return array(
+            $this->getAttribute()->getAttributeCode() => array(
+                'type'      => 'tinyint',
+                'unsigned'  => true,
+                'is_null'   => true,
+                'default'   => null,
+                'extra'     => null,
+        ));
+    }
+
+    /**
+     * Retrieve Select For Flat Attribute update
+     *
+     * @param int $store
+     * @return Varien_Db_Select|null
+     */
+    public function getFlatUpdateSelect($store)
+    {
+        return Mage::getResourceSingleton('eav/entity_attribute')
+            ->getFlatUpdateSelect($this->getAttribute(), $store);
+    }
 }
