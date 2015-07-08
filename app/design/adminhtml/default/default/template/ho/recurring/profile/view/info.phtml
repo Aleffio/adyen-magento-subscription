@@ -132,6 +132,7 @@
 
         <div class="fieldset">
             <table cellspacing="0" class="form-list">
+                <?php if ($_billingAgreement->getId()): ?>
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Reference ID'); ?></label></td>
                     <td class="value">
@@ -156,6 +157,11 @@
                     <td class="label"><label><?php echo Mage::helper('ho_recurring')->__('Label'); ?></label></td>
                     <td class="value"><strong><?php echo $_billingAgreement->getAgreementLabel(); ?></strong></td>
                 </tr>
+                <?php else: ?>
+                <tr>
+                    <td class="label"><em></em><?php echo Mage::helper('ho_recurring')->__('No Billing Agreement'); ?></em></td>
+                </tr>
+                <?php endif; ?>
             </table>
         </div>
     </div>

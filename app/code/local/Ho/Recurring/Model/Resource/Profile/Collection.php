@@ -49,7 +49,7 @@ class Ho_Recurring_Model_Resource_Profile_Collection extends Mage_Core_Model_Res
      */
     public function addEmailToSelect()
     {
-        $select = $this->getSelect()->joinInner(
+        $select = $this->getSelect()->joinLeft(
             ['ce' => $this->getTable('customer/entity')],
             'ce.entity_id = main_table.customer_id',
             ['customer_email' => 'email']
@@ -117,7 +117,7 @@ class Ho_Recurring_Model_Resource_Profile_Collection extends Mage_Core_Model_Res
      */
     public function addBillingAgreementToSelect()
     {
-        $this->getSelect()->joinInner(
+        $this->getSelect()->joinLeft(
             ['ba' => $this->getTable('sales/billing_agreement')],
             'ba.agreement_id = main_table.billing_agreement_id',
             ['ba_method_code' => 'method_code', 'ba_reference_id' => 'reference_id']
