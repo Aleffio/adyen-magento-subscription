@@ -24,9 +24,21 @@ class Ho_Recurring_Block_Adminhtml_Customer_Edit_Tab_Profiles
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     /**
-     * The recurring profiles grid is extended (Ho_Recurring_Block_Adminhtml_Profile_Grid),
-     * so we don't need to prepare the collection or columns (again) here.
+     * @return Mage_Adminhtml_Block_Widget_Grid
      */
+    protected function _prepareCollection()
+    {
+        /** @var Ho_Recurring_Model_Resource_Profile_Collection $collection */
+        $collection = Mage::getResourceModel('ho_recurring/profile_collection');
+        $collection->addEmailToSelect();
+        $collection->addNameToSelect();
+        $collection->addBillingAgreementToSelect();
+        $collection->addFieldToFilter('main_table.customer_id', Mage::registry('current_customer')->getId());
+
+        $this->setCollection($collection);
+
+        return Mage_Adminhtml_Block_Widget_Grid::_prepareCollection();
+    }
 
     /**
      * Return Tab label
