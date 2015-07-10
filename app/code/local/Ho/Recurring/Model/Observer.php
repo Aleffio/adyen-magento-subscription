@@ -143,7 +143,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
                 foreach ($profiles as $profile) {
                     /** @var Ho_Recurring_Model_Profile $profile */
                     $message = Mage::helper('ho_recurring')->__('Created a recurring profile (#%s) from order.', $profile->getId());
-                    $order->addStatusHistory($message);
+                    $order->addStatusHistoryComment($message);
                     $p++;
                 }
                 $o++;
