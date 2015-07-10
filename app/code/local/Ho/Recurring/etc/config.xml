@@ -132,14 +132,6 @@
                     </ho_recurring_add_recurring_profiles_options_to_order>
                 </observers>
             </sales_convert_quote_item_to_order_item>
-            <sales_order_invoice_register>
-                <observers>
-                    <ho_recurring_convert_order_to_profile>
-                        <class>ho_recurring/observer</class>
-                        <method>convertOrderToProfile</method>
-                    </ho_recurring_convert_order_to_profile>
-                </observers>
-            </sales_order_invoice_register>
             <catalog_product_collection_load_after>
                 <observers>
                     <ho_recurring_load_attributes_after_collection_load>
@@ -264,6 +256,10 @@
 
     <crontab>
         <jobs>
+            <ho_recurring_create_profiles>
+                <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+                <run><model>ho_recurring/observer::createProfiles</model></run>
+            </ho_recurring_create_profiles>
             <ho_recurring_create_quotes>
                 <schedule><cron_expr>0 6 * * *</cron_expr></schedule>
                 <run><model>ho_recurring/observer::createQuotes</model></run>

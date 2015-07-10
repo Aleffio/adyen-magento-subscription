@@ -109,20 +109,54 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @param Varien_Event_Observer $observer
+     * @return string
      */
-    public function convertOrderToProfile(Varien_Event_Observer $observer)
+    public function createProfiles()
     {
-        /** @var Mage_Sales_Model_Order $order */
-        /** @noinspection PhpUndefinedMethodInspection */
-        $order = $observer->getOrder();
-        $profiles = Mage::getSingleton('ho_recurring/service_order')->createProfile($order);
+        $collection = Mage::getModel('sales/order')->getCollection();
 
-        foreach ($profiles as $profile) {
-            /** @var Ho_Recurring_Model_Profile $profile */
-            $message = Mage::helper('ho_recurring')->__("Created a recurring profile (#%s) from order.", $profile->getId());
-            $order->addStatusHistoryComment($message);
+        $resource = $collection->getResource();
+
+        $collection->getSelect()->joinLeft(
+            array('recurring_profile' => $resource->getTable('ho_recurring/profile')),
+            'main_table.entity_id = recurring_profile.order_id',
+            array('created_recurring_profile_id' => 'entity_id')
+        );
+        $collection->getSelect()->joinLeft(
+            array('oi' => $resource->getTable('sales/order_item')),
+            'main_table.entity_id = oi.order_id',
+            array('oi.item_id', 'oi.parent_item_id', 'oi.product_options')
+        );
+
+        $collection->addFieldToFilter('state', Mage_Sales_Model_Order::STATE_PROCESSING);
+        $collection->addFieldToFilter('recurring_profile.entity_id', array('null' => true));
+        $collection->addFieldToFilter('parent_item_id', array('null' => true));
+        $collection->addFieldToFilter('product_options', array('nlike' => '%";s:20:"ho_recurring_profile";s:4:"none"%'));
+
+        $collection->getSelect()->group('main_table.entity_id');
+
+        $o = $p = $e = 0;
+        foreach ($collection as $order) {
+            try {
+                $profiles = Mage::getModel('ho_recurring/service_order')->createProfile($order);
+
+                foreach ($profiles as $profile) {
+                    /** @var Ho_Recurring_Model_Profile $profile */
+                    $message = Mage::helper('ho_recurring')->__('Created a recurring profile (#%s) from order.', $profile->getId());
+                    $order->addStatusHistory($message);
+                    $p++;
+                }
+                $o++;
+            }
+            catch (Exception $exception) {
+                $e++;
+                Ho_Recurring_Exception::logException($exception);
+            }
         }
+
+        return Mage::helper('ho_recurring')->__(
+            '%s orders processed, %s profiles created (%s errors)', $o, $p, $e
+        );
     }
 
     /**
