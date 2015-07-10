@@ -57,8 +57,8 @@
                 <td>#<?php echo $_profile->getId() ?></td>
                 <td><em><?php echo ucfirst($_profile->getStatus()); ?></em></td>
                 <td><?php echo $_profile->getShippingAddress()->getName(); ?></td>
-                <td><?php echo $_profile->getCreatedAtFormatted(); ?></td>
-                <td><?php echo $_profile->getScheduledAtFormatted(); ?></td>
+                <td><?php echo $_profile->getCreatedAtFormatted(false); ?></td>
+                <td><?php echo $_profile->getScheduledAtFormatted(false); ?></td>
                 <td><span class="nobr"><?php echo $_profile->getTermLabel(); ?></span></td>
                 <td><a href="<?php echo $this->getAgreementUrl($_profile); ?>">
                         <?php echo $_profile->getBillingAgreement()->getReferenceId(); ?></a>
