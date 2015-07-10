@@ -623,25 +623,25 @@ class Ho_Recurring_Model_Profile extends Mage_Core_Model_Abstract
     /**
      * @return string
      */
-    public function getCreatedAtFormatted()
+    public function getCreatedAtFormatted($showTime = true)
     {
-        return Mage::helper('core')->formatDate($this->getCreatedAt(), 'medium', true);
+        return Mage::helper('core')->formatDate($this->getCreatedAt(), 'medium', $showTime);
     }
 
     /**
      * @return string
      */
-    public function getUpdatedAtFormatted()
+    public function getUpdatedAtFormatted($showTime = true)
     {
-        return Mage::helper('core')->formatDate($this->getUpdatedAt(), 'medium', true);
+        return Mage::helper('core')->formatDate($this->getUpdatedAt(), 'medium', $showTime);
     }
 
     /**
      * @return string
      */
-    public function getScheduledAtFormatted()
+    public function getScheduledAtFormatted($showTime = true)
     {
-        return Mage::helper('core')->formatDate($this->getScheduledAt(), 'medium', true);
+        return Mage::helper('core')->formatDate($this->getScheduledAt(), 'medium', $showTime);
     }
 
     /**
