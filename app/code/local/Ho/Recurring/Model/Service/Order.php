@@ -70,14 +70,24 @@ class Ho_Recurring_Model_Service_Order
                 ->setCustomerId($order->getCustomerId())
                 ->setCustomerName($order->getCustomerName())
                 ->setOrderId($order->getId())
-                ->setBillingAgreementId($billingAgreement->getId())
+                ->setBillingAgreementId($billingAgreement ? $billingAgreement->getId(): null)
                 ->setStoreId($order->getStoreId())
                 ->setTerm($productTerm['term'])
                 ->setTermType($productTerm['type'])
                 ->setShippingMethod($order->getShippingMethod())
                 ->setCreatedAt(now())
-                ->setUpdatedAt(now())
-                ->save();
+                ->setUpdatedAt(now());
+
+            if (!$billingAgreement) {
+                // No billing agreement could be found, profile is created,
+                // but set profile directly to error
+                $profile->setErrorMessage(
+                    Mage::helper('ho_recurring')->__('No billing agreement found')
+                );
+                $profile->setStatus($profile::STATUS_PROFILE_ERROR);
+            }
+
+            $profile->save();
 
             $transactionItems = [];
             foreach ($productTerm['order_items'] as $orderItem) {
@@ -125,11 +135,6 @@ class Ho_Recurring_Model_Service_Order
             $quoteAdditional = $profile->getActiveQuoteAdditional(true)
                 ->setOrder($order);
 
-            $profile->setErrorMessage(null);
-            if ($profile->getStatus() == $profile::STATUS_ORDER_ERROR) {
-                $profile->setStatus($profile::STATUS_ACTIVE);
-            }
-
             $scheduleDate = $profile->calculateNextScheduleDate();
             $profile->setScheduledAt($scheduleDate);
 
@@ -168,7 +173,10 @@ class Ho_Recurring_Model_Service_Order
 
         $billingAgreementId = $connection->fetchOne($select);
         if (! $billingAgreementId) {
-            Ho_Recurring_Exception::throwException('Could not find billing agreement for order '.$order->getIncrementId());
+            Ho_Recurring_Exception::logException(
+                new Ho_Recurring_Exception('Could not find billing agreement for order '.$order->getIncrementId())
+            );
+            return false;
         }
 
         return Mage::getModel('sales/billing_agreement')->load($billingAgreementId);
