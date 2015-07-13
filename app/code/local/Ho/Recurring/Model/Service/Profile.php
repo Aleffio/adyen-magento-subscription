@@ -101,6 +101,12 @@ class Ho_Recurring_Model_Service_Profile
             $shippingMethod = $profile->getShippingMethod();
             $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
 
+            if (! $profile->getBillingAgreement()->getId()) {
+                Ho_Recurring_Exception::throwException(Mage::helper('ho_recurring')->__(
+                    'No billing agreement found'
+                ));
+            }
+
             // Set payment method
             $methodInstance = $profile->getBillingAgreement()->getPaymentMethodInstance();
 
