@@ -57,6 +57,13 @@ class Ho_Recurring_Model_Service_Profile
                 $product->setData('is_created_from_profile_item', $profileItem->getId());
 
                 $quoteItem = $quote->addProduct($product, $profileItem->getQty());
+
+                if (! $quoteItem instanceof Mage_Sales_Model_Quote_Item) {
+                    Ho_Recurring_Exception::throwException(Mage::helper('ho_recurring')->__(
+                        'An error occurred while adding a product to the quote: %s', $quoteItem
+                    ));
+                }
+
                 $quoteItem->setData('recurring_profile_item_id', $profileItem->getId());
 
                 $quoteItem->setNoDiscount(false);
