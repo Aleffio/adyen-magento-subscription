@@ -40,6 +40,10 @@ class Ho_Recurring_Model_Service_Profile
             }
 
             $storeId = $profile->getStoreId();
+
+            $appEmulation = Mage::getSingleton('core/app_emulation');
+            $initialEnvironmentInfo = $appEmulation->startEnvironmentEmulation($storeId);
+
             Mage::getSingleton('adminhtml/session_quote')->setStoreId($storeId);
             $customer = $profile->getCustomer();
             $quote = Mage::getModel('sales/quote')->assignCustomer($customer);
@@ -150,6 +154,8 @@ class Ho_Recurring_Model_Service_Profile
                 $profile->setStatus($profile::STATUS_ACTIVE);
             }
             $profile->save();
+
+            $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
 
             return $quote;
         } catch (Exception $e) {
