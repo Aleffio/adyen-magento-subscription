@@ -140,6 +140,14 @@
                     </ho_recurring_load_attributes_after_collection_load>
                 </observers>
             </catalog_product_collection_load_after>
+            <sales_order_place_before>
+                <observers>
+                    <ho_recurring_calculate_item_qty>
+                        <class>ho_recurring/observer</class>
+                        <method>calculateItemQty</method>
+                    </ho_recurring_calculate_item_qty>
+                </observers>
+            </sales_order_place_before>
         </events>
         <sales>
             <quote>

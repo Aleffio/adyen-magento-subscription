@@ -265,4 +265,54 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
 
         return $this;
     }
+
+    /**
+     * Set the right amount of qty on the order items when placing an order.
+     * The ordered qty is multiplied by the 'qty in profile' amount of the
+     * selected recurring product profile.
+     *
+     * @event sales_order_place_before
+     * @param Varien_Event_Observer $observer
+     */
+    public function calculateItemQty(Varien_Event_Observer $observer)
+    {
+        /** @var Mage_Sales_Model_Order $order */
+        $order = $observer->getOrder();
+
+        foreach ($order->getItemsCollection() as $orderItem) {
+            /** @var Mage_Sales_Model_Order_Item $orderItem */
+            $additionalOptions = $orderItem->getProductOptionByCode('additional_options');
+
+            if (! is_array($additionalOptions)) continue;
+
+            $recurringOptions = false;
+            foreach ($additionalOptions as $additionalOption) {
+                if ($additionalOption['code'] == 'ho_recurring_profile') {
+                    $recurringOptions = $additionalOption;
+                    break;
+                }
+            }
+
+            if (! $recurringOptions) continue;
+
+            $productProfile = Mage::getModel('ho_recurring/product_profile')->load($recurringOptions['option_value']);
+
+            $profileQty = $productProfile->getQty();
+            if ($profileQty > 1) {
+                $qty = $orderItem->getQtyOrdered() * $profileQty;
+
+                $orderItem->setQtyOrdered($qty);
+                $orderItem->save();
+
+                foreach ($orderItem->getChildrenItems() as $childItem) {
+                    /** @var Mage_Sales_Model_Order_Item $childItem */
+                    $childItemQty = $childItem->getQtyOrdered() * $profileQty;
+
+                    $childItem->setQtyOrdered($childItemQty);
+                    $childItem->save();
+                }
+            }
+        }
+    }
+
 }
