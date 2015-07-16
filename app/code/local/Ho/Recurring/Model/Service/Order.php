@@ -94,6 +94,9 @@ class Ho_Recurring_Model_Service_Order
                 /** @var Ho_Recurring_Model_Product_Profile $productProfile */
                 $productProfile = $this->_getProductProfile($orderItem);
 
+                // Ordered qty is divided by product profile qty to get 'real' ordered qty
+                $qty = $orderItem->getQtyInvoiced() / $productProfile->getQty();
+
                 // Create profile item
                 /** @var Ho_Recurring_Model_Profile_Item $profileItem */
                 $profileItem = Mage::getModel('ho_recurring/profile_item')
@@ -106,7 +109,7 @@ class Ho_Recurring_Model_Service_Order
                     ->setLabel($productProfile->getLabel())
                     ->setPrice($orderItem->getPrice())
                     ->setPriceInclTax($orderItem->getPriceInclTax())
-                    ->setQty($orderItem->getQtyInvoiced())
+                    ->setQty($qty)
                     ->setOnce(0)
                     // Currently not in use
 //                    ->setMinBillingCycles($productProfile->getMinBillingCycles())
