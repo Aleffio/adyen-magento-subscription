@@ -148,6 +148,14 @@
                     </ho_recurring_calculate_item_qty>
                 </observers>
             </sales_order_place_before>
+            <create_order_session_quote_initialized>
+                <observers>
+                    <ho_recurring_calculate_item_qty_reorder>
+                        <class>ho_recurring/observer</class>
+                        <method>calculateItemQtyReorder</method>
+                    </ho_recurring_calculate_item_qty_reorder>
+                </observers>
+            </create_order_session_quote_initialized>
         </events>
         <sales>
             <quote>

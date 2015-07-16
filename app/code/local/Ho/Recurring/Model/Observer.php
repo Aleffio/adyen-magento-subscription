@@ -293,7 +293,7 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
                 }
             }
 
-            if (! $recurringOptions) continue;
+            if (! $recurringOptions || $orderItem->getParentItemId()) continue;
 
             $productProfile = Mage::getModel('ho_recurring/product_profile')->load($recurringOptions['option_value']);
 
@@ -315,4 +315,62 @@ class Ho_Recurring_Model_Observer extends Mage_Core_Model_Abstract
         }
     }
 
+    /**
+     * Set the right amount of qty on the order items when reordering.
+     * The qty of the ordered items is divided by the 'qty in profile'
+     * amount of the selected recurring product profile.
+     *
+     * @event create_order_session_quote_initialized
+     * @param Varien_Event_Observer $observer
+     */
+    public function calculateItemQtyReorder(Varien_Event_Observer $observer)
+    {
+        $recurringQuote = false;
+
+        /** @var Mage_Core_Model_Session $session */
+        $session = $observer->getSessionQuote();
+
+        if ($session->getData('recurring_quote_initialized')) {
+            return;
+        }
+
+        /** @var Mage_Sales_Model_Quote $quote */
+        $quote = $session->getQuote();
+
+        foreach ($quote->getItemsCollection() as $quoteItem) {
+            /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+            $additionalOptions = $quoteItem->getOptionByCode('additional_options');
+
+            if (! $additionalOptions || $quoteItem->getParentItemId()) continue;
+
+            $additionalOptions = unserialize($additionalOptions->getValue());
+
+            $recurringOptions = false;
+            foreach ($additionalOptions as $additionalOption) {
+                if ($additionalOption['code'] == 'ho_recurring_profile') {
+                    $recurringOptions = $additionalOption;
+                    break;
+                }
+            }
+
+            if (! $recurringOptions) continue;
+
+            $productProfile = Mage::getModel('ho_recurring/product_profile')->load($recurringOptions['option_value']);
+
+            $profileQty = $productProfile->getQty();
+            if ($profileQty > 1) {
+                $qty = $quoteItem->getQty() / $profileQty;
+
+                $quoteItem->setQty($qty);
+                $quoteItem->save();
+
+                $recurringQuote = true;
+            }
+        }
+
+        if ($recurringQuote) {
+            $quote->collectTotals();
+            $session->setData('recurring_quote_initialized', true);
+        }
+    }
 }
