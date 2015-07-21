@@ -216,12 +216,13 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         $collection = $observer->getOrderGridCollection();
 
         $union = $collection->getSelect()->getPart(Zend_Db_Select::UNION);
+        $resource = $collection->getResource();
 
         if (count($union) > 1) {
             foreach ($union as $unionSelect) {
                 list($target, $type) = $unionSelect;
                 $target->joinLeft(
-                    array('subscription' => 'adyen_subscription'),
+                    array('subscription' => $resource->getTable('adyen_subscription/subscription')),
                     '`main_table`.`entity_id` = `subscription`.`order_id`',
                     array('created_subscription_id' => 'group_concat(subscription.entity_id)')
                 );
@@ -230,7 +231,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         }
         else {
             $collection->getSelect()->joinLeft(
-                array('subscription' => 'adyen_subscription'),
+                array('subscription' => $resource->getTable('adyen_subscription/subscription')),
                 '`main_table`.`entity_id` = `subscription`.`order_id`',
                 array('created_subscription_id' => 'group_concat(subscription.entity_id)')
             );
