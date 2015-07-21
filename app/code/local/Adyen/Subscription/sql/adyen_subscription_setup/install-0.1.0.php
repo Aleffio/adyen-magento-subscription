@@ -23,7 +23,7 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- DROP TABLE IF EXISTS `{$this->getTable('adyen_subscription/subscription')}`;
+    -- DROP TABLE IF EXISTS `{$installer->getTable('adyen_subscription/subscription')}`;
 
     CREATE TABLE `{$this->getTable('adyen_subscription/subscription')}` (
       `entity_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -32,18 +32,18 @@ $installer->run("
       PRIMARY KEY (`entity_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-    -- DROP TABLE IF EXISTS `{$this->getTable('adyen_subscription/subscription_address')}`;
+    -- DROP TABLE IF EXISTS `{$installer->getTable('adyen_subscription/subscription_address')}`;
 
     CREATE TABLE `{$this->getTable('adyen_subscription/subscription_address')}` (
       `subscription_id` int(11) unsigned NOT NULL,
       `address_id` int(10) unsigned NOT NULL,
       UNIQUE KEY `subscription_id` (`subscription_id`,`address_id`),
       KEY `address_id` (`address_id`),
-      CONSTRAINT `adyen_subscription_address_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `adyen_subscription` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-      CONSTRAINT `adyen_subscription_address_address_id` FOREIGN KEY (`address_id`) REFERENCES `customer_address_entity` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
+      CONSTRAINT `adyen_subscription_address_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `{$installer->getTable('adyen_subscription')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT `adyen_subscription_address_address_id` FOREIGN KEY (`address_id`) REFERENCES `{$installer->getTable('customer_address_entity')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-    -- DROP TABLE IF EXISTS `{$this->getTable('adyen_subscription/subscription_item')}`;
+    -- DROP TABLE IF EXISTS `{$installer->getTable('adyen_subscription/subscription_item')}`;
 
     CREATE TABLE `{$this->getTable('adyen_subscription/subscription_item')}` (
       `entity_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -57,29 +57,29 @@ $installer->run("
       `status` int(1) DEFAULT NULL,
       PRIMARY KEY (`entity_id`),
       KEY `subscription_id` (`subscription_id`),
-      CONSTRAINT `adyen_subscription_item_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `adyen_subscription` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
+      CONSTRAINT `adyen_subscription_item_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `{$installer->getTable('adyen_subscription')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-    -- DROP TABLE IF EXISTS `{$this->getTable('adyen_subscription/subscription_quote')}`;
+    -- DROP TABLE IF EXISTS `{$installer->getTable('adyen_subscription/subscription_quote')}`;
 
-    CREATE TABLE `{$this->getTable('adyen_subscription/subscription_quote')}` (
+    CREATE TABLE `{$installer->getTable('adyen_subscription/subscription_quote')}` (
       `subscription_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
       `quote_id` int(10) unsigned DEFAULT NULL,
       PRIMARY KEY (`subscription_id`),
       KEY `quote_id` (`quote_id`),
-      CONSTRAINT `adyen_subscription_quote_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `adyen_subscription` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-      CONSTRAINT `adyen_subscription_quote_quote_id` FOREIGN KEY (`quote_id`) REFERENCES `sales_flat_quote` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
+      CONSTRAINT `adyen_subscription_quote_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `{$installer->getTable('adyen_subscription')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT `adyen_subscription_quote_quote_id` FOREIGN KEY (`quote_id`) REFERENCES `{$installer->getTable('sales_flat_quote')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-    -- DROP TABLE IF EXISTS `{$this->getTable('adyen_subscription/subscription_order')}`;
+    -- DROP TABLE IF EXISTS `{$installer->getTable('adyen_subscription/subscription_order')}`;
 
     CREATE TABLE `{$this->getTable('adyen_subscription/subscription_order')}` (
       `subscription_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
       `order_id` int(10) unsigned DEFAULT NULL,
       PRIMARY KEY (`subscription_id`),
       KEY `order_id` (`order_id`),
-      CONSTRAINT `adyen_subscription_order_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `adyen_subscription` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-      CONSTRAINT `adyen_subscription_order_order_id   ` FOREIGN KEY (`order_id`) REFERENCES `sales_flat_order` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
+      CONSTRAINT `adyen_subscription_order_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `{$installer->getTable('adyen_subscription')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT `adyen_subscription_order_order_id   ` FOREIGN KEY (`order_id`) REFERENCES `{$installer->getTable('sales_flat_order')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ");
