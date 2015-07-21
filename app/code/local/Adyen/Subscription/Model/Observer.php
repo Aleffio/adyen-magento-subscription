@@ -115,9 +115,9 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         $resource = $collection->getResource();
 
         $collection->getSelect()->joinLeft(
-            array('recurring_profile' => $resource->getTable('adyen_subscription/profile')),
-            'main_table.entity_id = recurring_profile.order_id',
-            array('created_recurring_profile_id' => 'entity_id')
+            array('subscription' => $resource->getTable('adyen_subscription/profile')),
+            'main_table.entity_id = subscription.order_id',
+            array('created_subscription_id' => 'entity_id')
         );
         $collection->getSelect()->joinLeft(
             array('oi' => $resource->getTable('sales/order_item')),
@@ -126,7 +126,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         );
 
         $collection->addFieldToFilter('state', Mage_Sales_Model_Order::STATE_PROCESSING);
-        $collection->addFieldToFilter('recurring_profile.entity_id', array('null' => true));
+        $collection->addFieldToFilter('subscription.entity_id', array('null' => true));
         $collection->addFieldToFilter('parent_item_id', array('null' => true));
         $collection->addFieldToFilter('product_options', array('nlike' => '%;s:20:"adyen_subscription_profile";s:4:"none"%'));
 
@@ -139,7 +139,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
                 foreach ($profiles as $profile) {
                     /** @var Adyen_Subscription_Model_Profile $profile */
-                    $message = Mage::helper('adyen_subscription')->__('Created a recurring profile (#%s) from order.', $profile->getId());
+                    $message = Mage::helper('adyen_subscription')->__('Created a subscription (#%s) from order.', $profile->getId());
                     $order->addStatusHistoryComment($message);
                     $order->save();
                     $p++;
@@ -180,13 +180,13 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Save additional (recurring) product options (added in addRecurringProductProfileToQuote)
+     * Save additional (subscription) product options (added in addSubscriptionProductProfileToQuote)
      * from quote items to order items
      *
      * @event sales_convert_quote_item_to_order_item
      * @param Varien_Event_Observer $observer
      */
-    public function addRecurringProductProfileToOrder(Varien_Event_Observer $observer)
+    public function addSubscriptionProductProfileToOrder(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Quote_Item $quoteItem */
         /** @noinspection PhpUndefinedMethodInspection */
@@ -204,7 +204,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Join recurring profile ID to sales order grid
+     * Join subscription profile ID to sales order grid
      *
      * @event sales_order_grid_collection_load_before
      * @param Varien_Event_Observer $observer
@@ -221,25 +221,25 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             foreach ($union as $unionSelect) {
                 list($target, $type) = $unionSelect;
                 $target->joinLeft(
-                    array('recurring_profile' => 'adyen_subscription_profile'),
-                    '`main_table`.`entity_id` = `recurring_profile`.`order_id`',
-                    array('created_recurring_profile_id' => 'group_concat(recurring_profile.entity_id)')
+                    array('subscription' => 'adyen_subscription_profile'),
+                    '`main_table`.`entity_id` = `subscription`.`order_id`',
+                    array('created_subscription_id' => 'group_concat(subscription.entity_id)')
                 );
                 $target->group('main_table.entity_id');
             }
         }
         else {
             $collection->getSelect()->joinLeft(
-                array('recurring_profile' => 'adyen_subscription_profile'),
-                '`main_table`.`entity_id` = `recurring_profile`.`order_id`',
-                array('created_recurring_profile_id' => 'group_concat(recurring_profile.entity_id)')
+                array('subscription' => 'adyen_subscription_profile'),
+                '`main_table`.`entity_id` = `subscription`.`order_id`',
+                array('created_subscription_id' => 'group_concat(subscription.entity_id)')
             );
             $collection->getSelect()->group('main_table.entity_id');
         }
     }
 
     /**
-     * Add recurring profile IDs column to order grid
+     * Add subscription profile IDs column to order grid
      *
      * @event adyen_subscription_add_sales_order_grid_column
      * @param Varien_Event_Observer $observer
@@ -252,10 +252,10 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        $block->addColumnAfter('created_recurring_profile_id', array(
-            'header'        => Mage::helper('sales')->__('Created Recurring Profile ID'),
-            'index'         => 'created_recurring_profile_id',
-            'filter_index'  => 'recurring_profile.entity_id',
+        $block->addColumnAfter('created_subscription_id', array(
+            'header'        => Mage::helper('sales')->__('Created Subscription ID'),
+            'index'         => 'created_subscription_id',
+            'filter_index'  => 'subscription.entity_id',
             'type'          => 'text',
             'width'         => '100px',
         ), 'status');
@@ -266,7 +266,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     /**
      * Set the right amount of qty on the order items when placing an order.
      * The ordered qty is multiplied by the 'qty in profile' amount of the
-     * selected recurring product profile.
+     * selected subscription.
      *
      * @event sales_order_place_before
      * @param Varien_Event_Observer $observer
@@ -282,17 +282,17 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             if (! is_array($additionalOptions)) continue;
 
-            $recurringOptions = false;
+            $subscriptionOptions = false;
             foreach ($additionalOptions as $additionalOption) {
                 if ($additionalOption['code'] == 'adyen_subscription_profile') {
-                    $recurringOptions = $additionalOption;
+                    $subscriptionOptions = $additionalOption;
                     break;
                 }
             }
 
-            if (! $recurringOptions || $orderItem->getParentItemId()) continue;
+            if (! $subscriptionOptions || $orderItem->getParentItemId()) continue;
 
-            $productProfile = Mage::getModel('adyen_subscription/product_profile')->load($recurringOptions['option_value']);
+            $productProfile = Mage::getModel('adyen_subscription/product_profile')->load($subscriptionOptions['option_value']);
 
             $profileQty = $productProfile->getQty();
             if ($profileQty > 1) {
@@ -315,19 +315,19 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     /**
      * Set the right amount of qty on the order items when reordering.
      * The qty of the ordered items is divided by the 'qty in profile'
-     * amount of the selected recurring product profile.
+     * amount of the selected product subscription.
      *
      * @event create_order_session_quote_initialized
      * @param Varien_Event_Observer $observer
      */
     public function calculateItemQtyReorder(Varien_Event_Observer $observer)
     {
-        $recurringQuote = false;
+        $subscriptionQuote = false;
 
         /** @var Mage_Core_Model_Session $session */
         $session = $observer->getSessionQuote();
 
-        if ($session->getData('recurring_quote_initialized')) {
+        if ($session->getData('subscription_quote_initialized')) {
             return;
         }
 
@@ -342,17 +342,17 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $additionalOptions = unserialize($additionalOptions->getValue());
 
-            $recurringOptions = false;
+            $subscriptionOptions = false;
             foreach ($additionalOptions as $additionalOption) {
                 if ($additionalOption['code'] == 'adyen_subscription_profile') {
-                    $recurringOptions = $additionalOption;
+                    $subscriptionOptions = $additionalOption;
                     break;
                 }
             }
 
-            if (! $recurringOptions) continue;
+            if (! $subscriptionOptions) continue;
 
-            $productProfile = Mage::getModel('adyen_subscription/product_profile')->load($recurringOptions['option_value']);
+            $productProfile = Mage::getModel('adyen_subscription/product_profile')->load($subscriptionOptions['option_value']);
 
             $profileQty = $productProfile->getQty();
             if ($profileQty > 1) {
@@ -361,13 +361,13 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                 $quoteItem->setQty($qty);
                 $quoteItem->save();
 
-                $recurringQuote = true;
+                $subscriptionQuote = true;
             }
         }
 
-        if ($recurringQuote) {
+        if ($subscriptionQuote) {
             $quote->collectTotals();
-            $session->setData('recurring_quote_initialized', true);
+            $session->setData('subscription_quote_initialized', true);
         }
     }
 }

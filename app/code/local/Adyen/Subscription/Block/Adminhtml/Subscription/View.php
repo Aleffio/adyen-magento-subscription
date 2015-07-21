@@ -70,13 +70,13 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View extends Mage_Adminhtml_Blo
         $profile = $this->getProfile();
 
         if ($profile->getId()) {
-            return Mage::helper('adyen_subscription')->__('Recurring Profile %s for %s',
+            return Mage::helper('adyen_subscription')->__('Subscription %s for %s',
                 sprintf('<i>#%s</i>', $profile->getIncrementId()),
                 sprintf('<i>%s</i>', $profile->getCustomerName())
             );
         }
         else {
-            return Mage::helper('adyen_subscription')->__('New Profile');
+            return Mage::helper('adyen_subscription')->__('New Subscription');
         }
     }
 

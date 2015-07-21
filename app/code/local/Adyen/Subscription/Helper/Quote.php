@@ -19,7 +19,7 @@
 class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
 {
     /**
-     * Retrieve product profile, if product is recurring, else false
+     * Retrieve product profile, if product is a subscription, else false
      *
      * @param Mage_Catalog_Model_Product $product
      * @return Adyen_Subscription_Model_Product_Profile|false

@@ -22,7 +22,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile extends Mage_Adminhtml_Block_Wi
     {
         $this->_blockGroup = 'adyen_subscription';
         $this->_controller = 'adminhtml_subscription';
-        $this->_headerText = Mage::helper('adyen_subscription')->__('Recurring Profiles');
+        $this->_headerText = Mage::helper('adyen_subscription')->__('Adyen Subscriptions');
 
         parent::__construct();
 

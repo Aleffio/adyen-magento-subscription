@@ -44,7 +44,7 @@ class Adyen_Subscription_Block_Adminhtml_Customer_Edit_Tab_Profiles
      */
     public function getTabLabel()
     {
-        return $this->__('Recurring Profiles');
+        return $this->__('Subscriptions');
     }
 
     /**
@@ -54,7 +54,7 @@ class Adyen_Subscription_Block_Adminhtml_Customer_Edit_Tab_Profiles
      */
     public function getTabTitle()
     {
-        return $this->__('Recurring Profiles');
+        return $this->__('Subscriptions');
     }
 
     /**

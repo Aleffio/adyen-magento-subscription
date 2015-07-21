@@ -23,13 +23,13 @@ class Adyen_Subscription_Model_Product_Observer
     /**
      * @param Varien_Event_Observer $observer
      */
-    public function saveRecurringProductData(Varien_Event_Observer $observer)
+    public function saveSubscriptionProductData(Varien_Event_Observer $observer)
     {
         /** @var Mage_Catalog_Model_Product $product */
         $product = $observer->getEvent()->getProduct();
 
-        $recurringType = $product->getData('adyen_subscription_type');
-        switch ($recurringType) {
+        $subscriptionType = $product->getData('adyen_subscription_type');
+        switch ($subscriptionType) {
             case Adyen_Subscription_Model_Product_Profile::TYPE_ENABLED_ONLY_PROFILE:
                 $this->_updateProductProfiles($product);
                 $product->setRequiredOptions(true);
@@ -57,7 +57,7 @@ class Adyen_Subscription_Model_Product_Observer
             if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Profile::TYPE_DISABLED) {
                 $product->setData('adyen_subscription_type', Adyen_Subscription_Model_Product_Profile::TYPE_DISABLED);
                 Mage::getSingleton('adminhtml/session')->addNotice(
-                    Mage::helper('adyen_subscription')->__('Recurring Profile Type is set back to \'Disabled\' because no profiles were defined')
+                    Mage::helper('adyen_subscription')->__('Subscription Type is set back to \'Disabled\' because no profiles were defined')
                 );
             }
             return;
@@ -148,7 +148,7 @@ class Adyen_Subscription_Model_Product_Observer
         $productCollection = $observer->getEvent()->getCollection();
 
         foreach ($productCollection as $product) {
-            $this->_loadProductRecurringData($product);
+            $this->_loadProductSubscriptionData($product);
         }
         return $this;
     }
@@ -159,7 +159,7 @@ class Adyen_Subscription_Model_Product_Observer
      *
      * @return $this
      */
-    protected function _loadProductRecurringData(Mage_Catalog_Model_Product $product)
+    protected function _loadProductSubscriptionData(Mage_Catalog_Model_Product $product)
     {
         if ($product->hasData('adyen_subscription_data')) {
             return $this;
@@ -201,7 +201,7 @@ class Adyen_Subscription_Model_Product_Observer
      * @param Varien_Event_Observer $observer
      * @return $this
      */
-    public function addProductTypeRecurringHandle(Varien_Event_Observer $observer)
+    public function addProductTypeSubscriptionHandle(Varien_Event_Observer $observer)
     {
         /** @var Mage_Catalog_Model_Product $product */
         /** @noinspection PhpUndefinedMethodInspection */
@@ -210,12 +210,12 @@ class Adyen_Subscription_Model_Product_Observer
             return $this;
         }
 
-        $this->_loadProductRecurringData($product);
+        $this->_loadProductSubscriptionData($product);
         if (! $product->getData('adyen_subscription_data')) {
             return $this;
         }
-        $recurringCollection = $product->getData('adyen_subscription_data');
-        if ($recurringCollection->count() < 0) {
+        $subscriptionCollection = $product->getData('adyen_subscription_data');
+        if ($subscriptionCollection->count() < 0) {
             return $this;
         }
 
@@ -227,13 +227,13 @@ class Adyen_Subscription_Model_Product_Observer
     }
 
     /**
-     * Add the selected recurring product profile to the quote item, if one is selected
+     * Add the selected subscription product profile to the quote item, if one is selected
      *
      * @event sales_quote_add_item
      * @param Varien_Event_Observer $observer
      * @return $this|void
      */
-    public function addRecurringProductProfileToQuote(Varien_Event_Observer $observer)
+    public function addSubscriptionProductProfileToQuote(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Quote_Item $quoteItem */
         /** @noinspection PhpUndefinedMethodInspection */
@@ -247,19 +247,19 @@ class Adyen_Subscription_Model_Product_Observer
             return $this;
         }
 
-        $this->_loadProductRecurringData($product);
+        $this->_loadProductSubscriptionData($product);
         if (! $product->getData('adyen_subscription_data')) {
             return $this;
         }
 
-        /** @var Adyen_Subscription_Model_Resource_Product_Profile_Collection $recurringCollection */
-        $recurringCollection = $product->getData('adyen_subscription_data');
-        if ($recurringCollection->count() < 0) {
+        /** @var Adyen_Subscription_Model_Resource_Product_Profile_Collection $subscriptionCollection */
+        $subscriptionCollection = $product->getData('adyen_subscription_data');
+        if ($subscriptionCollection->count() < 0) {
             return $this;
         }
 
         /** @var Adyen_Subscription_Model_Product_Profile $profile */
-        $profile = $recurringCollection->getItemById($profileId);
+        $profile = $subscriptionCollection->getItemById($profileId);
 
         $option = $quoteItem->getOptionByCode('additional_options');
 
@@ -311,7 +311,7 @@ class Adyen_Subscription_Model_Product_Observer
             return $this;
         }
 
-        if (! $this->_isQuoteHoRecurring($quote)) {
+        if (! $this->_isQuoteAdyenSubscription($quote)) {
             return $this;
         }
 
@@ -337,7 +337,7 @@ class Adyen_Subscription_Model_Product_Observer
      *
      * @return mixed|Varien_Object
      */
-    protected function _isQuoteHoRecurring(Mage_Sales_Model_Quote $quote)
+    protected function _isQuoteAdyenSubscription(Mage_Sales_Model_Quote $quote)
     {
         if (! $quote->hasData('_is_adyen_subscription')) {
             foreach ($quote->getAllItems() as $quoteItem) {

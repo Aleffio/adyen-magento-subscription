@@ -37,7 +37,7 @@ class Adyen_Subscription_Model_Service_Quote
             }
             foreach ($quote->getAllItems() as $item) {
                 /** @var Mage_Sales_Model_Quote_Item $item */
-                $item->getProduct()->setData('is_created_from_profile_item', $item->getData('recurring_profile_item_id'));
+                $item->getProduct()->setData('is_created_from_profile_item', $item->getData('subscription_item_id'));
             }
 
             $quote->collectTotals();
@@ -112,7 +112,7 @@ class Adyen_Subscription_Model_Service_Quote
             $productProfile = $this->_getProductProfile($quoteItem);
 
             if (!$productProfile) {
-                // No recurring product profile found, no recurring profile needs to be created
+                // No product subscription found, no subscription needs to be created
                 continue;
             }
 
@@ -127,7 +127,7 @@ class Adyen_Subscription_Model_Service_Quote
                 $termType = $productProfile->getTermType();
             }
             if ($term != $productProfile->getTerm() || $termType != $productProfile->getTermType()) {
-                Adyen_Subscription_Exception::throwException('Recurring profiles of products in quote have different terms');
+                Adyen_Subscription_Exception::throwException('Subscription options of products in quote have different terms');
             }
         }
 
@@ -175,7 +175,7 @@ class Adyen_Subscription_Model_Service_Quote
             $productProfile = $this->_getProductProfile($quoteItem);
 
             if (!$productProfile) {
-                // No recurring product profile found, no recurring profile needs to be created
+                // No subscription profile found, no subscription needs to be created
                 continue;
             }
 
@@ -206,7 +206,7 @@ class Adyen_Subscription_Model_Service_Quote
         }
 
         if ($i <= 0) {
-            Adyen_Subscription_Exception::throwException('No recurring products in the profile');
+            Adyen_Subscription_Exception::throwException('No subscription products in the subscription');
         }
 
         return $profile;
@@ -223,9 +223,9 @@ class Adyen_Subscription_Model_Service_Quote
      */
     public function updateQuotePayment(Mage_Sales_Model_Quote $quote)
     {
-        $recurringDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
+        $subscriptionDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
 
-        $quote->getPayment()->setAdditionalInformation('recurring_detail_reference', $recurringDetailReference);
+        $quote->getPayment()->setAdditionalInformation('subscription_detail_reference', $subscriptionDetailReference);
         $quote->getPayment()->setCcType(null);
         $quote->getPayment()->save();
 
@@ -244,11 +244,11 @@ class Adyen_Subscription_Model_Service_Quote
             ->addFieldToFilter('quote_id', $quote->getId())
             ->getFirstItem();
 
-        $recurringReference = str_replace('adyen_oneclick_', '', $quotePayment->getMethod());
+        $subscriptionReference = str_replace('adyen_oneclick_', '', $quotePayment->getMethod());
 
         $billingAgreement = Mage::getModel('sales/billing_agreement')
             ->getCollection()
-            ->addFieldToFilter('reference_id', $recurringReference)
+            ->addFieldToFilter('reference_id', $subscriptionReference)
             ->getFirstItem();
 
         if (! $billingAgreement->getId()) {
@@ -269,13 +269,13 @@ class Adyen_Subscription_Model_Service_Quote
             return false;
         }
 
-        $recurringProductProfile = Mage::getModel('adyen_subscription/product_profile')
+        $subscriptionProductProfile = Mage::getModel('adyen_subscription/product_profile')
             ->load($profileId);
 
-        if (!$recurringProductProfile->getId()) {
+        if (!$subscriptionProductProfile->getId()) {
             return false;
         }
 
-        return $recurringProductProfile;
+        return $subscriptionProductProfile;
     }
 }

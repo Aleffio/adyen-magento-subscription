@@ -32,17 +32,17 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
     }
 
     /**
-     * Show recurring profiles
+     * Show subscriptions
      */
     public function profilesAction()
     {
         $this->loadLayout()
-            ->_title(Mage::helper('ho_monitor')->__('My Recurring Profiles'))
+            ->_title(Mage::helper('ho_monitor')->__('My Subscriptions'))
             ->renderLayout();
     }
 
     /**
-     * Show recurring profile
+     * Show subscriptions
      */
     public function viewAction()
     {
@@ -62,8 +62,8 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
 
         Mage::register('adyen_subscription_profile', $profile);
 
-        $this->_title($this->__('Recurring Profile'))
-            ->_title($this->__('Recurring Profile # %s', $profile->getId()));
+        $this->_title($this->__('Subscription'))
+            ->_title($this->__('Subscription # %s', $profile->getId()));
         $this->loadLayout();
         $this->_initLayoutMessages('customer/session');
 

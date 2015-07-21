@@ -22,11 +22,11 @@
 
 <?php $_profiles = $this->getProfiles(); ?>
     <div class="page-title">
-        <h1><?php echo $this->__('My Recurring Profiles') ?></h1>
+        <h1><?php echo $this->__('My Subscriptions') ?></h1>
     </div>
 <?php echo $this->getPagerHtml(); ?>
 <?php if($_profiles->getSize()): ?>
-    <table class="data-table" id="my-recurring-profiles-table">
+    <table class="data-table" id="my-subscription-profiles-table">
         <col width="1" />
         <col width="1" />
         <col />
@@ -67,8 +67,8 @@
         <?php endforeach; ?>
         </tbody>
     </table>
-    <script type="text/javascript">decorateTable('my-recurring-profiles-table');</script>
+    <script type="text/javascript">decorateTable('my-subscription-profiles-table');</script>
     <?php echo $this->getPagerHtml(); ?>
 <?php else: ?>
-    <p><?php echo $this->__("You don't have any recurring profiles yet."); ?></p>
+    <p><?php echo $this->__("You don't have any subscriptions yet."); ?></p>
 <?php endif ?>

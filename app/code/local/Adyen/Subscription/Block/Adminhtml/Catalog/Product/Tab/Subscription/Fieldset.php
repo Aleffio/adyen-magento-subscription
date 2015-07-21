@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Recurring_Fieldset
+class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription_Fieldset
     extends Mage_Adminhtml_Block_Widget_Form_Renderer_Fieldset
 {
     protected function _construct()

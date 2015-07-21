@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Adminhtml_Block_Widget_Form
+class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extends Mage_Adminhtml_Block_Widget_Form
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     /**
@@ -52,10 +52,10 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Recurring extends M
         $subscriptionAttribute = $product->getAttributes()['adyen_subscription_type'];
         $subscriptionAttribute->setIsVisible(1);
         $this->_setFieldset([$subscriptionAttribute], $fieldset);
-        $hoRecurringType = $form->getElement('adyen_subscription_type');
-        $hoRecurringType->setName('product[adyen_subscription_type]');
-        $hoRecurringType->setValue($product->getData('adyen_subscription_type'));
-        $hoRecurringType->setNote(
+        $adyenSubscriptionType = $form->getElement('adyen_subscription_type');
+        $adyenSubscriptionType->setName('product[adyen_subscription_type]');
+        $adyenSubscriptionType->setValue($product->getData('adyen_subscription_type'));
+        $adyenSubscriptionType->setNote(
             $helper->__('%s to add a new profile.', '<i>'.$helper->__('Add New Profile').'</i>')."<br />\n".
             $helper->__('Drag and drop to reorder')
         );
@@ -201,7 +201,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Recurring extends M
      */
     public function getTabLabel()
     {
-        return $this->__('Recurring Profile');
+        return $this->__('Subscription');
     }
 
     /**
@@ -209,7 +209,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Recurring extends M
      */
     public function getTabTitle()
     {
-        return $this->__('Recurring Profile');
+        return $this->__('Subscription');
     }
 
     /**

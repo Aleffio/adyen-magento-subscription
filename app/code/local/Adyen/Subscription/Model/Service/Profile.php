@@ -47,7 +47,7 @@ class Adyen_Subscription_Model_Service_Profile
             $quote->setStoreId($storeId);
             $quote->setIsSuperMode(true);
             $quote->setIsActive(false); //always create an inactive quote, else it shows up on the frontend.
-            $quote->setRecurringProfileId($profile->getId());
+            $quote->setSubscriptionProfileId($profile->getId());
             $profile->setErrorMessage(null);
 
             // Add order items to quote
@@ -65,7 +65,7 @@ class Adyen_Subscription_Model_Service_Profile
                     ));
                 }
 
-                $quoteItem->setData('recurring_profile_item_id', $profileItem->getId());
+                $quoteItem->setData('subscription_item_id', $profileItem->getId());
 
                 $quoteItem->setNoDiscount(false);
                 $quoteItem->getProduct()->setIsSuperMode(true);

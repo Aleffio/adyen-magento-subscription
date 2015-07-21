@@ -109,7 +109,7 @@
                 <observers>
                     <adyen_subscription>
                         <class>adyen_subscription/product_observer</class>
-                        <method>addRecurringProductProfileToQuote</method>
+                        <method>addSubscriptionProductProfileToQuote</method>
                     </adyen_subscription>
                 </observers>
             </sales_quote_add_item>
@@ -123,10 +123,10 @@
             </payment_method_is_active>
             <sales_convert_quote_item_to_order_item>
                 <observers>
-                    <adyen_subscription_add_recurring_profiles_options_to_order>
+                    <adyen_subscription_add_subscription_options_to_order>
                         <class>adyen_subscription/observer</class>
-                        <method>addRecurringProductProfileToOrder</method>
-                    </adyen_subscription_add_recurring_profiles_options_to_order>
+                        <method>addSubscriptionProductProfileToOrder</method>
+                    </adyen_subscription_add_subscription_options_to_order>
                 </observers>
             </sales_convert_quote_item_to_order_item>
             <catalog_product_collection_load_after>
@@ -165,9 +165,9 @@
         </sales>
         <fieldsets>
             <sales_convert_quote>
-                <recurring_profile_id>
+                <subscription_id>
                     <to_order>*</to_order>
-                </recurring_profile_id>
+                </subscription_id>
             </sales_convert_quote>
         </fieldsets>
     </global>
@@ -201,7 +201,7 @@
                 <observers>
                     <adyen_subscription>
                         <class>adyen_subscription/product_observer</class>
-                        <method>addProductTypeRecurringHandle</method>
+                        <method>addProductTypeSubscriptionHandle</method>
                     </adyen_subscription>
                 </observers>
             </controller_action_layout_load_before>
@@ -231,11 +231,11 @@
         <events>
             <catalog_product_save_before>
                 <observers>
-                    <adyen_subscription_save_recurring_product_data>
+                    <adyen_subscription_save_subscription_product_data>
                         <type>singleton</type>
                         <class>adyen_subscription/product_observer</class>
-                        <method>saveRecurringProductData</method>
-                    </adyen_subscription_save_recurring_product_data>
+                        <method>saveSubscriptionProductData</method>
+                    </adyen_subscription_save_subscription_product_data>
                 </observers>
             </catalog_product_save_before>
             <controller_action_layout_load_before>

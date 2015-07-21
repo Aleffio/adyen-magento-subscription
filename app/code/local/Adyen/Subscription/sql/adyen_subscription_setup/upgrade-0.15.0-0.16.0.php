@@ -92,7 +92,7 @@ $table = $connection
         'order_address_id', $installer->getTable('sales/order_address'), 'entity_id',
          Varien_Db_Ddl_Table::ACTION_SET_NULL, Varien_Db_Ddl_Table::ACTION_CASCADE
     )
-    ->setComment('Ho Recurring Address');
+    ->setComment('Adyen Subscription Address');
 $connection->createTable($table);
 
 $installer->endSetup();

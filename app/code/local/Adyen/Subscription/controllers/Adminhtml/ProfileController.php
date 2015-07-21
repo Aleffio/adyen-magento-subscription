@@ -28,13 +28,13 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
         $helper = Mage::helper('adyen_subscription');
 
         $this->_title($helper->__('Sales'))
-             ->_title($helper->__('Recurring Profiles'));
+             ->_title($helper->__('Subscription'));
 
         $this->loadLayout()
             ->_setActiveMenu('sales/adyen_subscription_profiles');
 
         $this->_addBreadcrumb($helper->__('Sales'), $helper->__('Sales'))
-            ->_addBreadcrumb($helper->__('Recurring Profiles'), $helper->__('Recurring Profiles'));
+            ->_addBreadcrumb($helper->__('Subscription'), $helper->__('Subscription'));
 
         return $this;
     }
@@ -77,7 +77,7 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
         }
 
         $this->_title($helper->__('Sales'))
-             ->_title($helper->__('Recurring Profile #%s for %s',
+             ->_title($helper->__('Subscription #%s for %s',
                  $profile->getIncrementId(), $profile->getCustomerName()));
 
         $this->loadLayout();
@@ -101,7 +101,7 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
         }
 
         $this->_title($helper->__('Sales'))
-             ->_title($helper->__('Edit Recurring Profile #%s for %s',
+             ->_title($helper->__('Edit Subscription #%s for %s',
                  $profile->getIncrementId(), $profile->getCustomerName()));
 
         $data = $this->_getSession()->getProfileData(true);

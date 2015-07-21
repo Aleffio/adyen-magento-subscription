@@ -24,11 +24,11 @@
                 <recurring_profile>
                     <disabled>1</disabled>
                 </recurring_profile>
-                <adyen_subscription_profiles translate="title" module="adyen_subscription">
-                    <title>Recurring Profiles</title>
+                <adyen_subscriptions translate="title" module="adyen_subscription">
+                    <title>Adyen Subscriptions</title>
                     <action>adyen_subscription/adminhtml_profile</action>
                     <sort_order>100</sort_order>
-                </adyen_subscription_profiles>
+                </adyen_subscriptions>
             </children>
         </sales>
     </menu>
@@ -41,9 +41,9 @@
                 <children>
                     <sales>
                         <children>
-                            <adyen_subscription_profiles translate="title">
-                                <title>H&amp;O Recurring Profiles</title>
-                            </adyen_subscription_profiles>
+                            <adyen_subscriptions translate="title">
+                                <title>Adyen Subscriptions</title>
+                            </adyen_subscriptions>
                         </children>
                     </sales>
                     <system>
@@ -51,7 +51,7 @@
                             <config>
                                 <children>
                                     <adyen_subscription translate="title">
-                                        <title>H&amp;O Recurring</title>
+                                        <title>Adyen Subscriptions</title>
                                     </adyen_subscription>
                                 </children>
                             </config>

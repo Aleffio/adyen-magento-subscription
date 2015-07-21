@@ -68,7 +68,7 @@ $table = $connection
         'store_id', $installer->getTable('core/store'), 'store_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
     )
-    ->setComment('Ho Recurring Product Profile Label');
+    ->setComment('Adyen Subscription Product Profile Label');
 
 $connection->createTable($table);
 

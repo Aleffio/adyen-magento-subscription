@@ -31,7 +31,7 @@ class Adyen_Subscription_Model_Service_Order
     {
         $profiles = [];
 
-        if ($order->getRecurringProfileId()) {
+        if ($order->getSubscriptionProfileId()) {
             // Don't create profile, since this order is created by a profile
             return $profiles;
         }
@@ -44,7 +44,7 @@ class Adyen_Subscription_Model_Service_Order
             $productProfile = $this->_getProductProfile($orderItem);
 
             if (!$productProfile) {
-                // No recurring product profile found, no recurring profile needs to be created
+                // No product subscription found, no subscription needs to be created
                 continue;
             }
 
@@ -193,13 +193,13 @@ class Adyen_Subscription_Model_Service_Order
             return false;
         }
 
-        $recurringProductProfile = Mage::getModel('adyen_subscription/product_profile')
+        $subscriptionProductProfile = Mage::getModel('adyen_subscription/product_profile')
             ->load($profileId);
 
-        if (!$recurringProductProfile->getId()) {
+        if (!$subscriptionProductProfile->getId()) {
             return false;
         }
 
-        return $recurringProductProfile;
+        return $subscriptionProductProfile;
     }
 }

@@ -20,7 +20,7 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Bundle extends Mage_Bundle_
 {
     /**
      * Retrieve product final price
-     * Extended to return profile price when product is recurring
+     * Extended to return subscription price when product is a subscription product
      *
      * @param float|null $qty
      * @param Mage_Catalog_Model_Product $product

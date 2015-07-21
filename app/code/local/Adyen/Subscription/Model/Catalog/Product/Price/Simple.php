@@ -20,7 +20,7 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Simple extends Mage_Catalog
 {
     /**
      * Retrieve product final price
-     * Extended to return profile price when product is recurring
+     * Extended to return subscription price when product is a subscription product
      *
      * @param float|null $qty
      * @param Mage_Catalog_Model_Product $product
@@ -41,7 +41,7 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Simple extends Mage_Catalog
 
     /**
      * Get product tier price by qty
-     * Extended to hide tier pricing when product is recurring
+     * Extended to hide tier pricing when product is a subscription product
      *
      * @param   float $qty
      * @param   Mage_Catalog_Model_Product $product

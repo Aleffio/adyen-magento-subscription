@@ -506,7 +506,7 @@ class Adyen_Subscription_Model_Profile extends Mage_Core_Model_Abstract
     public function getTermLabel()
     {
         if (!$this->getTerm()) {
-            // Only occurs when profile is edited and no recurring items are in it
+            // Only occurs when profile is edited and no subscription items are in it
             return '-';
         }
 

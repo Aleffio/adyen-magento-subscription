@@ -20,7 +20,7 @@ jQuery(function($){
     var tab = $('#product_info_tabs_adyen_subscription_profile_tab_content');
     var profileTemplate = tab.find('.product-fieldset-template')
         .parents('.profile-fieldset-container');
-    var sortableArea = $('#recurring_profiles_fieldset');
+    var sortableArea = $('#subscriptions_fieldset');
     var addButton = tab.find('.product-profile-add');
 
     var newProfileId = 0;
@@ -49,7 +49,7 @@ jQuery(function($){
         items: '.profile-fieldset-container'
     });
 
-    $(document).on('click', '#recurring_profiles_fieldset .product-profile-delete', function(){
+    $(document).on('click', '#subscriptions_fieldset .product-profile-delete', function(){
         $(this).parents('.profile-fieldset-container').remove();
     });
 

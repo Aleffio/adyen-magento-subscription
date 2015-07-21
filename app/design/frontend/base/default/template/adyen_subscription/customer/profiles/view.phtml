@@ -18,13 +18,13 @@
 ?>
 <?php /* @var Adyen_Subscription_Block_Customer_Profiles_View $this */ ?>
 <?php $_profile = $this->getProfile(); ?>
-<div class="page-title title-buttons recurring-profile-view-header-wrapper">
-    <h1 class="heading"><?php echo $this->__('Recurring Profile # %s', $this->escapeHtml($_profile->getId())); ?></h1>
+<div class="page-title title-buttons subscription-view-header-wrapper">
+    <h1 class="heading"><?php echo $this->__('Subscription # %s', $this->escapeHtml($_profile->getId())); ?></h1>
 </div>
 <?php echo $this->getMessagesBlock()->toHtml() ?>
-<div class="recurring-profile">
-    <div class="info-box recurring-profile-details">
-        <h2 class="box-title"><?php echo $this->__('Recurring Profile Information') ?></h2>
+<div class="subscription">
+    <div class="info-box subscription-details">
+        <h2 class="box-title"><?php echo $this->__('Subscription Information') ?></h2>
         <div class="box-content">
             <table class="info-table">
                 <tbody>
@@ -105,6 +105,6 @@
         <script type="text/javascript">decorateTable('past-orders-table');</script>
     <?php endif; ?>
     <div class="buttons-set">
-        <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Recurring Profiles') ?></a></p>
+        <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Subscriptions') ?></a></p>
     </div>
 </div>

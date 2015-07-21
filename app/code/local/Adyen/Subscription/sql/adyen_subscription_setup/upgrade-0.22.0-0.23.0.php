@@ -24,12 +24,28 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$quoteTable = $installer->getTable('sales/quote_item');
-$connection->addColumn($quoteTable, 'recurring_profile_item_id', [
+$quoteTable = $installer->getTable('sales/quote');
+$connection->addColumn($quoteTable, 'subscription_id', [
     'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'unsigned'  => true,
     'nullable'  => true,
-    'comment'   => 'Adyen_Subscription Profile Item ID',
+    'comment'   => 'Adyen_Subscription Profile ID',
+]);
+
+$orderTable = $installer->getTable('sales/order');
+$connection->addColumn($orderTable, 'subscription_id', [
+    'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
+    'unsigned'  => true,
+    'nullable'  => true,
+    'comment'   => 'Adyen_Subscription Profile ID',
+]);
+
+$orderGridTable = $installer->getTable('sales/order_grid');
+$connection->addColumn($orderGridTable, 'subscription_id', [
+    'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
+    'unsigned'  => true,
+    'nullable'  => true,
+    'comment'   => 'Adyen_Subscription Profile ID',
 ]);
 
 $installer->endSetup();

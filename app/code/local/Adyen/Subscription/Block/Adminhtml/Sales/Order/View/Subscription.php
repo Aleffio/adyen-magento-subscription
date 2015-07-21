@@ -17,10 +17,9 @@
  */
 
 /**
- * Class Adyen_Subscription_Block_Adminhtml_Sales_Order_View_Recurring
  * @method $this setProfile(Adyen_Subscription_Model_Profile $profile)
  * @method Adyen_Subscription_Model_Profile getProfile()
- * @see admin/subscription/sales/order/view/recurring.phtml
+ * @see admin/subscription/sales/order/view/subscription.phtml
  */
 class Adyen_Subscription_Block_Adminhtml_Sales_Order_View_Subscription
     extends Mage_Adminhtml_Block_Sales_Order_Abstract

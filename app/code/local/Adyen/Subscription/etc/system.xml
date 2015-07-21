@@ -18,16 +18,10 @@
  */
 -->
 <config>
-    <tabs>
-        <ho_config translate="label" module="adyen_subscription">
-            <label>H&amp;O</label>
-            <sort_order>0</sort_order>
-        </ho_config>
-    </tabs>
     <sections>
         <adyen_subscription translate="label" module="adyen_subscription">
-            <label>Recurring Profiles</label>
-            <tab>ho_config</tab>
+            <label>Adyen Subscriptions</label>
+            <tab>sales</tab>
             <sort_order>100</sort_order>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>

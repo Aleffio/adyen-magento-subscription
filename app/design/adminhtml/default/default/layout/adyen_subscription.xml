@@ -28,13 +28,13 @@
         <reference name="head">
             <action method="addItem"><type>skin_js</type><name>adyen_subscription/js/jquery-1.11.3.min.js</name><params/></action>
             <action method="addItem"><type>skin_js</type><name>adyen_subscription/js/jquery-ui.min.js</name><params/></action>
-            <action method="addItem"><type>skin_js</type><name>adyen_subscription/js/recurring.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>adyen_subscription/js/subscription.js</name><params/></action>
         </reference>
     </adminhtml_catalog_product_edit>
 
     <adminhtml_customer_edit>
         <reference name="customer_edit_tabs">
-            <action method="addTab"><name>customer_edit_tab_recurring_profile</name><block>adyen_subscription/adminhtml_customer_edit_tab_profiles</block></action>
+            <action method="addTab"><name>customer_edit_tab_subscription</name><block>adyen_subscription/adminhtml_customer_edit_tab_profiles</block></action>
         </reference>
     </adminhtml_customer_edit>
 
@@ -78,7 +78,7 @@
         <reference name="product_tabs">
             <action method="addTabAfter">
                 <name>adyen_subscription_profile_tab</name>
-                <block>adyen_subscription/adminhtml_catalog_product_tab_recurring</block>
+                <block>adyen_subscription/adminhtml_catalog_product_tab_subscription</block>
                 <after>categories</after>
             </action>
         </reference>
@@ -108,9 +108,9 @@
     <adminhtml_sales_order_view>
         <reference name="order_tab_info">
             <action method="unsetChild"><child>order_info</child></action>
-            <block type="adyen_subscription/adminhtml_sales_order_view_recurring"
+            <block type="adyen_subscription/adminhtml_sales_order_view_subscription"
                    name="adyen_subscription_info"
-                   template="adyen_subscription/sales/order/view/recurring.phtml">
+                   template="adyen_subscription/sales/order/view/subscription.phtml">
                 <action method="insert"><name>order_info</name></action>
             </block>
             <action method="insert">

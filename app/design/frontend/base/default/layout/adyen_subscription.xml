@@ -20,7 +20,7 @@
 
 <layout version="0.1.0">
     <PRODUCT_TYPE_adyen_subscription translate="label" module="adyen_subscription">
-        <label>Catalog Product View (H&amp;O Recurring)</label>
+        <label>Catalog Product View (Adyen Subscription)</label>
         <!--<reference name="product.info.options.wrapper">-->
             <!--<block type="enterprise_giftcard/catalog_product_view_type_giftcard"-->
                    <!--name="product.info.giftcard"-->
@@ -46,9 +46,9 @@
     <customer_logged_in>
         <reference name="top.links">
             <action method="addLink" translate="label" module="adyen_subscription">
-                <label>My Recurring Profiles</label>
+                <label>My Subscriptions</label>
                 <url helper="ho_bootstrap/getUrl"><path>adyen_subscription/customer/profiles</path></url>
-                <title>My Recurring Profiles</title>
+                <title>My Subscriptions</title>
                 <prepare/><urlParams/>
                 <position>60</position>
             </action>
@@ -58,15 +58,15 @@
     <customer_account>
         <reference name="customer_account_navigation">
             <action method="addLink" translate="label" module="adyen_subscription">
-                <name>recurring_profiles</name>
+                <name>subscriptions</name>
                 <path>adyen_subscription/customer/profiles</path>
-                <label>My Recurring Profiles</label>
+                <label>My Subscriptions</label>
             </action>
         </reference>
     </customer_account>
 
     <adyen_subscription_customer_profiles translate="label">
-        <label>Customer My Account Recurring Profiles</label>
+        <label>Customer My Account Subscriptions</label>
         <update handle="customer_account" />
         <reference name="my.account.wrapper">
             <block type="adyen_subscription/customer_profiles_list" name="adyen_subscription_customer_profiles_list"
@@ -74,13 +74,13 @@
         </reference>
         <reference name="root">
             <action method="setHeaderTitle" translate="title" module="adyen_subscription">
-                <title>My Recurring Profiles</title>
+                <title>My Subscriptions</title>
             </action>
         </reference>
     </adyen_subscription_customer_profiles>
 
     <adyen_subscription_customer_view translate="label">
-        <label>Customer My Account View Recurring Profile</label>
+        <label>Customer My Account View Subscription</label>
         <update handle="customer_account" />
         <reference name="my.account.wrapper">
             <block type="adyen_subscription/customer_profiles_view" name="adyen_subscription_customer_profiles_view"

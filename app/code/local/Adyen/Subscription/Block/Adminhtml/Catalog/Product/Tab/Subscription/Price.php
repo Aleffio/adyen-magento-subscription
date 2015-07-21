@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Recurring_Price
+class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription_Price
     extends Varien_Data_Form_Element_Text
 {
     public function getAfterElementHtml()
