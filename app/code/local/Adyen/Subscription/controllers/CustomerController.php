@@ -37,7 +37,7 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
     public function subscriptionsAction()
     {
         $this->loadLayout()
-            ->_title(Mage::helper('ho_monitor')->__('My Subscriptions'))
+            ->_title(Mage::helper('adyen_subscription')->__('My Subscriptions'))
             ->renderLayout();
     }
 
