@@ -363,7 +363,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         }
         catch (Mage_Core_Exception $e) {
             $subscription->setErrorMessage($e->getMessage());
-            $subscription->setStatus($subscription::STATUS_PROFILE_ERROR);
+            $subscription->setStatus($subscription::STATUS_SUBSCRIPTION_ERROR);
             $subscription->save();
 
             $this->_getSession()->addError(
@@ -407,7 +407,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         }
         catch (Mage_Core_Exception $e) {
             $subscription->setErrorMessage($e->getMessage());
-            $subscription->setStatus($subscription::STATUS_PROFILE_ERROR);
+            $subscription->setStatus($subscription::STATUS_SUBSCRIPTION_ERROR);
             $subscription->save();
 
             $this->_getSession()->addError(

@@ -81,7 +81,7 @@ class Adyen_Subscription_Model_Service_Order
                 $subscription->setErrorMessage(
                     Mage::helper('adyen_subscription')->__('No billing agreement found')
                 );
-                $subscription->setStatus($subscription::STATUS_PROFILE_ERROR);
+                $subscription->setStatus($subscription::STATUS_SUBSCRIPTION_ERROR);
             }
 
             $subscription->save();

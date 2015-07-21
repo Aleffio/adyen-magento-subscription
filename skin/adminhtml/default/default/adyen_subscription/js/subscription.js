@@ -20,7 +20,7 @@ jQuery(function($){
     var tab = $('#product_info_tabs_adyen_subscription_tab_content');
     var subscriptionTemplate = tab.find('.product-fieldset-template')
         .parents('.subscription-fieldset-container');
-    var sortableArea = $('#subscriptions_fieldset');
+    var sortableArea = $('#subscription_fieldset');
     var addButton = tab.find('.product-subscription-add');
 
     var newSubscriptionId = 0;

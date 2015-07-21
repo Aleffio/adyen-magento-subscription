@@ -26,7 +26,7 @@
     </div>
 <?php echo $this->getPagerHtml(); ?>
 <?php if($_subscriptions->getSize()): ?>
-    <table class="data-table" id="my-subscription-subscriptions-table">
+    <table class="data-table" id="my-subscriptions-table">
         <col width="1" />
         <col width="1" />
         <col />
@@ -67,7 +67,7 @@
         <?php endforeach; ?>
         </tbody>
     </table>
-    <script type="text/javascript">decorateTable('my-subscription-subscriptions-table');</script>
+    <script type="text/javascript">decorateTable('my-subscriptions-table');</script>
     <?php echo $this->getPagerHtml(); ?>
 <?php else: ?>
     <p><?php echo $this->__("You don't have any subscriptions yet."); ?></p>

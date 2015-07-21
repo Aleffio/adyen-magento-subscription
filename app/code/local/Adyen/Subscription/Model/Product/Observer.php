@@ -30,7 +30,7 @@ class Adyen_Subscription_Model_Product_Observer
 
         $subscriptionType = $product->getData('adyen_subscription_type');
         switch ($subscriptionType) {
-            case Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ONLY_PROFILE:
+            case Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ONLY_SUBSCRIPTION:
                 $this->_updateProductSubscriptions($product);
                 $product->setRequiredOptions(true);
                 $product->setHasOptions(true);

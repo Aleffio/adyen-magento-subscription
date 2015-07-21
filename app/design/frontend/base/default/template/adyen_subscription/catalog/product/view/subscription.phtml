@@ -29,13 +29,13 @@ $_coreHelper = $this->helper('core');
         </dt>
         <dd>
             <div class="input-box">
-                <ul id="adyen-subscription-subscription-list" class="options-list">
+                <ul id="adyen-subscription-list" class="options-list">
                     <?php if ($this->canOrderStandalone()): ?>
                         <li>
                             <label>
                                 <input type="radio" id="adyen_subscription_none" name="adyen_subscription"
                                        data-subscription-id="none" onchange="subscriptionOptions.reloadPrice()"
-                                       class="adyen-subscription-subscription-option validate-one-required-by-name" value="none"/>
+                                       class="adyen-subscription-option validate-one-required-by-name" value="none"/>
                                 <?php echo $this->__('No subscription') ?>
                             </label>
                             <script type="text/javascript">
@@ -50,7 +50,7 @@ $_coreHelper = $this->helper('core');
                         <label>
                             <input type="radio" id="adyen_subscription_<?php echo  $subscription->getId(); ?>"
                                    data-subscription-id="<?php echo  $subscription->getId(); ?>" onchange="subscriptionOptions.reloadPrice()"
-                                   name="adyen_subscription" class="adyen-subscription-subscription-option validate-one-required-by-name" value="<?php echo $subscription->getId(); ?>"
+                                   name="adyen_subscription" class="adyen-subscription-option validate-one-required-by-name" value="<?php echo $subscription->getId(); ?>"
                                    <?php if($this->isSubscriptionSelected($subscription)): ?>checked<?php endif; ?>
                                 />
                             <?php echo $subscription->getFrontendLabel(); ?> <?php echo $_coreHelper->formatCurrency($subscription->getPrice()); ?>
@@ -77,7 +77,7 @@ $_coreHelper = $this->helper('core');
         reloadPrice: function () {
             var config = this.config;
 
-            $$('#adyen-subscription-subscription-list .adyen-subscription-subscription-option').each(function (element) {
+            $$('#adyen-subscription-list .adyen-subscription-option').each(function (element) {
                 var subscriptionId = element.readAttribute('data-subscription-id');
 
                 if (config[subscriptionId]) {

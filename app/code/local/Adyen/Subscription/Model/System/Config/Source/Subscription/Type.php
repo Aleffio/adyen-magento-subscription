@@ -29,11 +29,11 @@ class Adyen_Subscription_Model_System_Config_Source_Subscription_Type
                     'label' => Mage::helper('adyen_subscription')->__('Subscription Disabled'),
                     'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED
                 ],[
-                    'label' => Mage::helper('eav')->__('Subscription Enabled + Standalone purchase possible'),
+                    'label' => Mage::helper('adyen_subscription')->__('Subscription Enabled + Standalone purchase possible'),
                     'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ALLOW_STANDALONE
                 ],[
-                    'label' => Mage::helper('eav')->__('Subscription Enabled + Subscription option selection required'),
-                    'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ONLY_PROFILE
+                    'label' => Mage::helper('adyen_subscription')->__('Subscription Enabled + Subscription option selection required'),
+                    'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ONLY_SUBSCRIPTION
                 ]
             ];
         }

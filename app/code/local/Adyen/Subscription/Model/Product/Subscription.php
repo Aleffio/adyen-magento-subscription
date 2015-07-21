@@ -50,9 +50,9 @@ class Adyen_Subscription_Model_Product_Subscription extends Mage_Core_Model_Abst
     const TERM_TYPE_MONTH   = 'month';
     const TERM_TYPE_YEAR    = 'year';
 
-    const TYPE_DISABLED                 = 0;
-    const TYPE_ENABLED_ALLOW_STANDALONE = 1;
-    const TYPE_ENABLED_ONLY_PROFILE     = 2;
+    const TYPE_DISABLED                  = 0;
+    const TYPE_ENABLED_ALLOW_STANDALONE  = 1;
+    const TYPE_ENABLED_ONLY_SUBSCRIPTION = 2;
 
     protected function _construct ()
     {

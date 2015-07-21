@@ -18,14 +18,14 @@
 
 class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
 {
-    const XML_PATH_PROFILE_CANCEL_REASONS   = 'adyen_subscription/subscription/cancel_reasons';
+    const XML_PATH_SUBSCRIPTION_CANCEL_REASONS   = 'adyen_subscription/subscription/cancel_reasons';
 
     /**
      * @return array
      */
     public function getCancelReasons()
     {
-        $config = Mage::getStoreConfig(self::XML_PATH_PROFILE_CANCEL_REASONS);
+        $config = Mage::getStoreConfig(self::XML_PATH_SUBSCRIPTION_CANCEL_REASONS);
 
         return $config ? unserialize($config) : array();
     }
