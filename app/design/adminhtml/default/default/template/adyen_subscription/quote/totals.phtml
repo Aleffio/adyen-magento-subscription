@@ -1,0 +1,48 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+
+/** @var Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals $this */
+?>
+<table cellspacing="0" cellpadding="8" width="100%">
+    <tbody>
+        <?php echo $this->renderTotals(); ?>
+        <?php echo $this->renderTotals('footer'); ?>
+    </tbody>
+</table>
+<div class="divider"></div>
+<div class="order-totals-bottom">
+    <p>
+        <?php echo $this->__('Order will be automatically created at:') ?><br />
+        <strong><?php echo $this->getProfile()->getScheduledAtFormatted(); ?></strong>
+    </p>
+    <?php if ($this->getProfile()->canCreateOrder()): ?>
+    <p>
+        <?php echo $this->getButtonHtml(
+            Mage::helper('adyen_subscription')->__('Edit Quote'),
+            "setLocation('{$this->getUrl('*/*/editQuote', ['id' => $this->getProfile()->getId()])}','edit_quote')",
+            'edit'
+        ); ?>
+        &nbsp;
+        <?php echo $this->getButtonHtml(
+            Mage::helper('adyen_subscription')->__('Create Order Now'),
+            "setLocation('{$this->getUrl('*/*/createOrder', ['id' => $this->getProfile()->getId()])}')",
+            'add'
+        ); ?>
+    </p>
+    <?php endif; ?>
+</div>

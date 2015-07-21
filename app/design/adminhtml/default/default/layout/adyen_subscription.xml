@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+-->
+<layout>
+    <default>
+        <reference name="head">
+            <action method="addCss"><stylesheet>adyen_subscription/css/subscription.css</stylesheet></action>
+        </reference>
+    </default>
+
+    <adminhtml_catalog_product_edit>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>adyen_subscription/js/jquery-1.11.3.min.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>adyen_subscription/js/jquery-ui.min.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>adyen_subscription/js/recurring.js</name><params/></action>
+        </reference>
+    </adminhtml_catalog_product_edit>
+
+    <adminhtml_customer_edit>
+        <reference name="customer_edit_tabs">
+            <action method="addTab"><name>customer_edit_tab_recurring_profile</name><block>adyen_subscription/adminhtml_customer_edit_tab_profiles</block></action>
+        </reference>
+    </adminhtml_customer_edit>
+
+    <adyen_subscription_adminhtml_profile_index>
+        <reference name="content">
+            <block type="adyen_subscription/adminhtml_profile" name="adminhtml_ho_profile.grid.container" />
+        </reference>
+    </adyen_subscription_adminhtml_profile_index>
+
+    <adyen_subscription_adminhtml_profile_view>
+        <reference name="content">
+            <block type="adyen_subscription/adminhtml_profile_view" />
+        </reference>
+        <reference name="left">
+            <block type="adyen_subscription/adminhtml_profile_view_tabs" name="profile_view_tabs">
+                <block name="profile_info_block"
+                       type="adyen_subscription/adminhtml_profile_view_tabs_info"
+                       template="adyen_subscription/profile/view/info.phtml">
+                    <block type="adyen_subscription/adminhtml_profile_view_tabs_info_products" name="profile_products"/>
+                </block>
+                <block name="profile_scheduled_order_block"
+                       type="adyen_subscription/adminhtml_profile_view_tabs_scheduled"
+                       template="adyen_subscription/profile/view/scheduled/items.phtml">
+                    <block type="adyen_subscription/adminhtml_profile_view_tabs_scheduled_totals"
+                           name="order_totals" template="adyen_subscription/quote/totals.phtml"  />
+                </block>
+                <action method="addTab"><name>profile_info</name><block>profile_info_block</block></action>
+                <action method="addTab"><name>profile_scheduled_order</name><block>profile_scheduled_order_block</block></action>
+                <action method="addTab"><name>profile_past_orders</name><block>adyen_subscription/adminhtml_profile_view_tabs_pastOrders</block></action>
+            </block>
+        </reference>
+    </adyen_subscription_adminhtml_profile_view>
+
+    <adyen_subscription_adminhtml_profile_cancel>
+        <reference name="content">
+            <block type="adyen_subscription/adminhtml_profile_cancel" name="adyen_subscription_profile_cancel" />
+        </reference>
+    </adyen_subscription_adminhtml_profile_cancel>
+
+    <adminhtml_catalog_product_edit>
+        <reference name="product_tabs">
+            <action method="addTabAfter">
+                <name>adyen_subscription_profile_tab</name>
+                <block>adyen_subscription/adminhtml_catalog_product_tab_recurring</block>
+                <after>categories</after>
+            </action>
+        </reference>
+    </adminhtml_catalog_product_edit>
+
+    <adyen_subscription_active_quote_edit>
+        <remove name="sidebar"/>
+        <remove name="comment"/>
+        <remove name="gift_options"/>
+        <reference name="root">
+            <action method="addBodyClass"><class>adyen-subscription-active-quote-edit</class></action>
+        </reference>
+    </adyen_subscription_active_quote_edit>
+
+    <adminhtml_sales_order_create_index>
+        <reference name="totals">
+            <action method="setTemplate"><template>adyen_subscription/sales/create/totals.phtml</template></action>
+        </reference>
+    </adminhtml_sales_order_create_index>
+
+    <adminhtml_sales_order_create_load_block_totals>
+        <reference name="totals">
+            <action method="setTemplate"><template>adyen_subscription/sales/create/totals.phtml</template></action>
+        </reference>
+    </adminhtml_sales_order_create_load_block_totals>
+
+    <adminhtml_sales_order_view>
+        <reference name="order_tab_info">
+            <action method="unsetChild"><child>order_info</child></action>
+            <block type="adyen_subscription/adminhtml_sales_order_view_recurring"
+                   name="adyen_subscription_info"
+                   template="adyen_subscription/sales/order/view/recurring.phtml">
+                <action method="insert"><name>order_info</name></action>
+            </block>
+            <action method="insert">
+                <name>adyen_subscription_info</name>
+                <sibling>order_messages</sibling>
+                <after>1</after>
+                <alias>order_info</alias>
+            </action>
+        </reference>
+    </adminhtml_sales_order_view>
+
+    <PRODUCT_TYPE_simple>
+        <reference name="product.composite.fieldset">
+            <remove name="product.composite.fieldset.qty"/>
+            <block type="adyen_subscription/catalog_product_view_profile"
+                   before="product.composite.fieldset.options"
+                   name="product.composite.fieldset.profile"
+                   template="adyen_subscription/product/composite/fieldset/options/profile.phtml" />
+        </reference>
+    </PRODUCT_TYPE_simple>
+
+    <PRODUCT_TYPE_configurable>
+        <reference name="product.composite.fieldset">
+            <block type="adyen_subscription/catalog_product_view_profile"
+                   before="product.composite.fieldset.options"
+                   name="product.composite.fieldset.profile"
+                   template="adyen_subscription/product/composite/fieldset/options/profile.phtml" />
+        </reference>
+    </PRODUCT_TYPE_configurable>
+
+    <PRODUCT_TYPE_bundle>
+        <reference name="product.composite.fieldset">
+            <block type="adyen_subscription/catalog_product_view_profile"
+                   before="product.composite.fieldset.options"
+                   name="product.composite.fieldset.profile"
+                   template="adyen_subscription/product/composite/fieldset/options/profile.phtml" />
+        </reference>
+    </PRODUCT_TYPE_bundle>
+</layout>

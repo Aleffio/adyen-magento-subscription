@@ -1,0 +1,57 @@
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+
+.status-pill {
+  display:block;
+  height:16px;
+  font:bold 10px/16px Arial, Helvetica, sans-serif;
+  text-transform:uppercase;
+  text-align:center;
+  padding:0 0 0 7px;
+  margin:1px 0;
+  white-space:nowrap;
+  color:#fff;
+  border-radius: 10px;
+}
+.status-pill-inline {
+  display: inline-block;
+}
+
+.status-pill-darkred { background-color: #E41300; }
+.status-pill-orange { background-color: #F75300; }
+.status-pill-yellow { background-color:#FE9D00; }
+.status-pill-green { background-color:#36B963; }
+.status-pill-lightblue { background-color:#00D8E3; }
+.status-pill-blue { background-color:#00A2FA; }
+.status-pill-lightgray { background-color:#A9ABA8; }
+.status-pill-gray { background-color:#858784; }
+
+.dummy-fieldset { display: none; }
+
+.ui-state-highlight {
+  height: 316px;
+  margin-bottom: 15px;
+  border: 1px solid #ffac47;
+  background: #fff;
+}
+
+.profile-fieldset {
+  cursor: pointer;
+}
+
+.adyen-subscription-active-quote-edit .side-col { display: none; }
+.adyen-subscription-active-quote-edit .main-col { padding-left:0; }

@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+-->
+
+<layout version="0.1.0">
+    <PRODUCT_TYPE_adyen_subscription translate="label" module="adyen_subscription">
+        <label>Catalog Product View (H&amp;O Recurring)</label>
+        <!--<reference name="product.info.options.wrapper">-->
+            <!--<block type="enterprise_giftcard/catalog_product_view_type_giftcard"-->
+                   <!--name="product.info.giftcard"-->
+                   <!--as="product_type_data"-->
+                   <!--template="giftcard/catalog/product/view/type/giftcard.phtml">-->
+                <!--&lt;!&ndash;<action method="addPriceBlockType"><type>giftcard</type><block>enterprise_giftcard/catalog_product_price</block><template>giftcard/catalog/product/price.phtml</template></action>&ndash;&gt;-->
+                <!--<block type="enterprise_giftcard/catalog_product_view_type_giftcard_form" name="product.info.giftcard.form" as="product.info.giftcard.form" template="giftcard/catalog/product/view/type/giftcard/form.phtml"/>-->
+                <!--<block type="cataloginventory/stockqty_default" name="product.info.giftcard.extra" as="product_type_data_extra" template="cataloginventory/stockqty/default.phtml"/>-->
+            <!--</block>-->
+        <!--</reference>-->
+
+        <reference name="product.info.options.wrapper">
+            <block type="adyen_subscription/catalog_product_view_profile"
+                   name="product.info.options.adyen_subscription"
+                   as="adyen_subscription_options"
+                   template="adyen/subscription/catalog/product/view/profile.phtml"/>
+        </reference>
+        <!--<reference name="product.clone_prices">-->
+            <!--<action method="addPriceBlockType"><type>giftcard</type><block>enterprise_giftcard/catalog_product_price</block><template>giftcard/catalog/product/price.phtml</template></action>-->
+        <!--</reference>-->
+    </PRODUCT_TYPE_adyen_subscription>
+
+    <customer_logged_in>
+        <reference name="top.links">
+            <action method="addLink" translate="label" module="adyen_subscription">
+                <label>My Recurring Profiles</label>
+                <url helper="ho_bootstrap/getUrl"><path>adyen_subscription/customer/profiles</path></url>
+                <title>My Recurring Profiles</title>
+                <prepare/><urlParams/>
+                <position>60</position>
+            </action>
+        </reference>
+    </customer_logged_in>
+
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="adyen_subscription">
+                <name>recurring_profiles</name>
+                <path>adyen_subscription/customer/profiles</path>
+                <label>My Recurring Profiles</label>
+            </action>
+        </reference>
+    </customer_account>
+
+    <adyen_subscription_customer_profiles translate="label">
+        <label>Customer My Account Recurring Profiles</label>
+        <update handle="customer_account" />
+        <reference name="my.account.wrapper">
+            <block type="adyen_subscription/customer_profiles_list" name="adyen_subscription_customer_profiles_list"
+                   template="adyen_subscription/customer/profiles/list.phtml" />
+        </reference>
+        <reference name="root">
+            <action method="setHeaderTitle" translate="title" module="adyen_subscription">
+                <title>My Recurring Profiles</title>
+            </action>
+        </reference>
+    </adyen_subscription_customer_profiles>
+
+    <adyen_subscription_customer_view translate="label">
+        <label>Customer My Account View Recurring Profile</label>
+        <update handle="customer_account" />
+        <reference name="my.account.wrapper">
+            <block type="adyen_subscription/customer_profiles_view" name="adyen_subscription_customer_profiles_view"
+                   template="adyen_subscription/customer/profiles/view.phtml"/>
+        </reference>
+    </adyen_subscription_customer_view>
+</layout>

@@ -1,9 +1,23 @@
-# Ho_Recurring
-app/code/local/Ho/Recurring/                                    app/code/local/Ho/Recurring/
-app/etc/modules/Ho_Recurring.xml                                app/etc/modules/Ho_Recurring.xml
-app/design/adminhtml/default/default/layout/ho/*                app/design/adminhtml/default/default/layout/ho/
-app/design/adminhtml/default/default/template/ho/*              app/design/adminhtml/default/default/template/ho/
-app/design/frontend/base/default/layout/ho/*                    app/design/frontend/base/default/layout/ho/
-app/design/frontend/base/default/template/ho/*                  app/design/frontend/base/default/template/ho/
-skin/adminhtml/default/default/ho/recurring                     skin/adminhtml/default/default/ho/recurring
-shell/*                                                         shell/
+#               _
+#              | |
+#     __ _   _ | | _  _   ___  _ __
+#    / _` | / || || || | / _ \| '  \
+#   | (_| ||  || || || ||  __/| || |
+#    \__,_| \__,_|\__, | \___||_||_|
+#                 |___/
+#
+# Adyen Subscription module (https://www.adyen.com/)
+#
+# Copyright (c) 2015 H&O (http://www.h-o.nl/)
+# See LICENSE.txt for license details.
+#
+# Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+
+app/code/local/Adyen/Subscription/                               app/code/local/Adyen/Subscription/
+app/etc/modules/Adyen_Subscription.xml                           app/etc/modules/Adyen_Subscription.xml
+app/design/adminhtml/default/default/layout/adyen_subscription   app/design/adminhtml/default/default/layout/adyen_subscription/
+app/design/adminhtml/default/default/template/adyen_subscription app/design/adminhtml/default/default/template/adyen_subscription/
+app/design/frontend/base/default/layout/adyen_subscription       app/design/frontend/base/default/layout/adyen_subscription/
+app/design/frontend/base/default/template/adyen_subscription     app/design/frontend/base/default/template/adyen_subscription/
+skin/adminhtml/default/default/adyen_subscription                skin/adminhtml/default/default/adyen_subscription
+shell/*                                                          shell/

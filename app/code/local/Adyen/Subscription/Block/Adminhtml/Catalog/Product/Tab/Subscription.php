@@ -1,0 +1,240 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+
+class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Recurring extends Mage_Adminhtml_Block_Widget_Form
+    implements Mage_Adminhtml_Block_Widget_Tab_Interface
+{
+    /**
+     * @return Mage_Adminhtml_Block_Widget_Form
+     */
+    protected function _prepareForm()
+    {
+        $product = $this->_getProduct();
+
+        $helper = Mage::helper('adyen_subscription');
+
+        $form = new Varien_Data_Form();
+
+        /** @var Varien_Data_Form_Element_Fieldset $fieldset */
+        $fieldset = $form->addFieldset('subscription_fieldset', array(
+            'legend'    => $helper->__('Adyen Subscription'),
+        ));
+
+        /** @var Mage_Adminhtml_Block_Widget_Button $addProfileButton */
+        $addProfileButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
+            'label'        => Mage::helper('adyen_subscription')->__('Add New Profile'),
+            'class'        => 'add product-profile-add',
+            'element_name' => 'product_profile_add',
+        ]);
+
+        $fieldset->setHeaderBar($addProfileButton->toHtml());
+
+        $productProfiles = Mage::getModel('adyen_subscription/product_profile')
+            ->getCollection()
+            ->addFieldToFilter('product_id', $product->getId())
+            ->setOrder('sort_order', Zend_Db_Select::SQL_ASC);
+
+        $subscriptionAttribute = $product->getAttributes()['adyen_subscription_type'];
+        $subscriptionAttribute->setIsVisible(1);
+        $this->_setFieldset([$subscriptionAttribute], $fieldset);
+        $hoRecurringType = $form->getElement('adyen_subscription_type');
+        $hoRecurringType->setName('product[adyen_subscription_type]');
+        $hoRecurringType->setValue($product->getData('adyen_subscription_type'));
+        $hoRecurringType->setNote(
+            $helper->__('%s to add a new profile.', '<i>'.$helper->__('Add New Profile').'</i>')."<br />\n".
+            $helper->__('Drag and drop to reorder')
+        );
+
+        $this->_renderProfileFieldset($fieldset);
+        foreach ($productProfiles as $profile) {
+            $this->_renderProfileFieldset($fieldset, $profile);
+        }
+
+        $this->setForm($form);
+
+        return parent::_prepareForm();
+    }
+
+
+    /**
+     * @param Varien_Data_Form_Element_Fieldset  $parentFieldset
+     * @param Adyen_Subscription_Model_Product_Profile $profile
+     *
+     * @return Varien_Data_Form_Element_Fieldset
+     */
+    protected function _renderProfileFieldset(
+        Varien_Data_Form_Element_Fieldset $parentFieldset,
+        Adyen_Subscription_Model_Product_Profile $profile = null)
+    {
+        $helper = Mage::helper('adyen_subscription');
+
+        $elementId = $profile ? 'product_profile[' . $profile->getId() . ']' : 'product_profile[template]';
+
+        $profileFieldset = $parentFieldset->addFieldset($elementId, array(
+            'legend'    => $helper->__($profile ? 'Profile: <em>' . $profile->getLabel() . '</em>' : 'New Profile'),
+            'class'     => 'profile-fieldset' . (!$profile ? ' product-fieldset-template' : ''),
+            'name'      => $elementId . '[fieldset]'
+        ))->setRenderer(
+            $this->getLayout()->createBlock('adyen_subscription/adminhtml_catalog_product_tab_subscription_fieldset')
+        );
+        $profileFieldset->addType(
+            'price',
+            Mage::getConfig()->getBlockClassName('adyen_subscription/adminhtml_catalog_product_tab_subscription_price')
+        );
+
+        $button = $this->getLayout()->createBlock('adminhtml/widget_button')
+            ->setData(array(
+                'label'   => 'Delete Profile',
+                'onclick' => 'return false;',
+                'class'   => 'delete product-profile-delete',
+            ));
+        $button->setName('delete_profile');
+        $profileFieldset->setHeaderBar($button->toHtml());
+
+        $inStore = Mage::app()->getRequest()->getParam('store');
+
+        $profileFieldset->addField($elementId . '[label]', 'text', array(
+            'name'      => $elementId . '[label]',
+            'label'     => $helper->__('Label'),
+            'disabled'  => $inStore && ($profile ? !$profile->getStoreLabel($inStore) : false), // @todo won't disable
+            'required'  => true,
+            'after_element_html' => $inStore ? '</td><td class="use-default">
+            <input id="' . $elementId . '[use_default]" name="' . $elementId . '[use_default]" type="checkbox" value="1" class="checkbox config-inherit" '
+                . (($profile ? $profile->getStoreLabel($inStore) : false) ? '' : 'checked="checked"') . ' onclick="toggleValueElements(this, Element.previous(this.parentNode))" />
+            <label for="' . $elementId . '[use_default]" class="inherit">' . Mage::helper('adyen_subscription')->__('Use Default') . '</label>
+          </td><td class="scope-label">
+            [' . $helper->__('STORE VIEW') . ']
+          ' : '</td><td class="scope-label">
+            [' . $helper->__('STORE VIEW') . ']',
+        ))->setValue($profile ? $profile->getLabel($inStore) : '');
+
+        $profileFieldset->addField($elementId . '[website_id]', 'select', array(
+            'name'      => $elementId . '[website_id]',
+            'label'     => $helper->__('Website'),
+            'values'    => Mage::getSingleton('adyen_subscription/system_config_source_profile_websites')->toOptionArray(),
+        ))->setValue($profile ? $profile->getWebsiteId() : '');
+
+        $profileFieldset->addField($elementId . '[customer_group_id]', 'select', array(
+            'name'      => $elementId . '[customer_group_id]',
+            'label'     => $helper->__('Customer Group'),
+            'values'    => Mage::getSingleton('adyen_subscription/system_config_source_profile_groups')->toOptionArray(),
+        ))->setValue($profile ? $profile->getCustomerGroupId() : '');
+
+        $profileFieldset->addField($elementId . '[term]', 'text', array(
+            'name'      => $elementId . '[term]',
+            'required'  => true,
+            'class' => 'validate-digits validate-digits-range digits-range-1-3153600000',
+            'label'     => $helper->__('Billing Frequency'),
+        ))->setValue($profile ? $profile->getTerm() : '');
+
+        $profileFieldset->addField($elementId . '[term_type]', 'select', array(
+            'name'      => $elementId . '[term_type]',
+            'label'     => $helper->__('Billing Period Unit'),
+            'required'  => true,
+            'values'    => Mage::getSingleton('adyen_subscription/system_config_source_term')->toOptionArray(true),
+        ))->setValue($profile ? $profile->getTermType() : '');
+
+        // Min and max billing cycle currently not in use
+//        $profileFieldset->addField($elementId . '[min_billing_cycles]', 'text', array(
+//            'name'      => $elementId . '[min_billing_cycles]',
+//            'required'  => true,
+//            'class'     => 'validate-digits validate-digits-range digits-range-1-3153600000',
+//            'label'     => $helper->__('Min. Billing Cycles'),
+//        ))->setValue($profile ? $profile->getMinBillingCycles() : '1');
+//
+//        $profileFieldset->addField($elementId . '[max_billing_cycles]', 'text', array(
+//            'name'      => $elementId . '[max_billing_cycles]',
+//            'label'     => $helper->__('Max. Billing Cycles'),
+//        ))->setValue($profile ? $profile->getMaxBillingCycles() : '');
+
+        $profileFieldset->addField($elementId . '[qty]', 'text', array(
+            'name'      => $elementId . '[qty]',
+            'required'  => true,
+            'class'     => 'validate-number',
+            'label'     => $helper->__('Qty in Profile'),
+        ))->setValue($profile ? $profile->getQty() * 1 : '1');
+
+        /** @var Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription_Price $priceField */
+        $priceField = $profileFieldset->addField($elementId . '[price]', 'price', array(
+            'name'      => $elementId . '[price]',
+            'label'     => $helper->__('Price'),
+            'class'     => 'price-tax-calc',
+            'identifier' => $profile ? $profile->getId() : 'template'
+        ));
+        $priceField->setValue($profile ? $profile->getPrice() * 1 : '');
+        $priceField->setProfile($profile);
+
+        $profileFieldset->addField($elementId . '[show_on_frontend]', 'select', array(
+            'name'      => $elementId . '[show_on_frontend]',
+            'label'     => $helper->__('Show on Frontend'),
+            'options'   => array(1 => $helper->__('Yes'), 0 => $helper->__('No')),
+        ))->setValue($profile ? $profile->getShowOnFrontend() : 0);
+
+        return $profileFieldset;
+    }
+
+    /**
+     * @return Mage_Catalog_Model_Product
+     */
+    protected function _getProduct()
+    {
+        return Mage::registry('product');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTabLabel()
+    {
+        return $this->__('Recurring Profile');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTabTitle()
+    {
+        return $this->__('Recurring Profile');
+    }
+
+    /**
+     * Only show when adyen_subscription_type attribute exists
+     * and in case of a bundle, the price type must be fixed
+     *
+     * @return bool
+     */
+    public function canShowTab()
+    {
+        $product = $this->_getProduct();
+
+        if ($product->getTypeId() == 'bundle'
+            && $product->getPriceType() != Mage_Bundle_Model_Product_Price::PRICE_TYPE_FIXED) {
+            return false;
+        }
+
+        return array_key_exists('adyen_subscription_type', Mage::registry('product')->getAttributes());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHidden()
+    {
+        return false;
+    }
+}

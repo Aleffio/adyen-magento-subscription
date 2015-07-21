@@ -1,0 +1,42 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+
+/** @var $this Adyen_Subscription_Block_Adminhtml_Profile_Edit_Info_BillingAgreement */
+$_billingAgreementCollection = $this->getBACollection();
+$_activeBA = $this->getActiveBA();
+?>
+<select name="profile[billing_agreement_id]">
+    <?php if (! $this->isActiveBAValid()): ?>
+        <?php echo $this->__("#%s %s (%s)",
+            $_activeBA->getReferenceId(),
+            $_activeBA->getAgreementLabel(),
+            $_activeBA->getStatusLabel()
+        ); ?>
+    <?php endif; ?>
+    <?php foreach($_billingAgreementCollection as $_billingAgreement): ?>
+        <?php /** @var $_billingAgreement Adyen_Payment_Model_Billing_Agreement */ ?>
+        <?php $_isSelected = $this->getActiveBA()->getId() == $_billingAgreement->getId(); ?>
+        <option value="<?php echo $_billingAgreement->getId(); ?>" <?php if($_isSelected): ?>selected<?php endif; ?>>
+            <?php echo $this->__("#%s %s (%s)",
+                $_billingAgreement->getReferenceId(),
+                $_billingAgreement->getAgreementLabel(),
+                $_billingAgreement->getStatusLabel()
+            ); ?>
+        </option>
+    <?php endforeach; ?>
+</select>

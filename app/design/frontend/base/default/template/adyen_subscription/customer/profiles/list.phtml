@@ -1,0 +1,74 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+?>
+<?php /** @var Adyen_Subscription_Block_Customer_Profiles_List $this */ ?>
+
+<?php echo $this->getMessagesBlock()->toHtml() ?>
+
+<?php $_profiles = $this->getProfiles(); ?>
+    <div class="page-title">
+        <h1><?php echo $this->__('My Recurring Profiles') ?></h1>
+    </div>
+<?php echo $this->getPagerHtml(); ?>
+<?php if($_profiles->getSize()): ?>
+    <table class="data-table" id="my-recurring-profiles-table">
+        <col width="1" />
+        <col width="1" />
+        <col />
+        <col width="1" />
+        <col width="1" />
+        <col width="1" />
+        <col width="1" />
+        <thead>
+        <tr>
+            <th><?php echo $this->__('Profile #') ?></th>
+            <th><?php echo $this->__('Status') ?></th>
+            <th><?php echo $this->__('Ship To'); ?></th>
+            <th><?php echo $this->__('Created At') ?></th>
+            <th><?php echo $this->__('Next Order At') ?></th>
+            <th><?php echo $this->__('Period') ?></th>
+            <th><?php echo $this->__('Billing Agreement') ?></th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php $_odd = ''; ?>
+        <?php foreach ($_profiles as $_profile): ?>
+            <?php /** @var Adyen_Subscription_Model_Profile $_profile */ ?>
+            <tr>
+                <td>#<?php echo $_profile->getId() ?></td>
+                <td><em><?php echo ucfirst($_profile->getStatus()); ?></em></td>
+                <td><?php echo $_profile->getShippingAddress()->getName(); ?></td>
+                <td><?php echo $_profile->getCreatedAtFormatted(false); ?></td>
+                <td><?php echo $_profile->getScheduledAtFormatted(false); ?></td>
+                <td><span class="nobr"><?php echo $_profile->getTermLabel(); ?></span></td>
+                <td><a href="<?php echo $this->getAgreementUrl($_profile); ?>">
+                        <?php echo $_profile->getBillingAgreement()->getReferenceId(); ?></a>
+                </td>
+                <td><a href="<?php echo $this->getViewUrl($_profile) ?>">
+                        <?php echo $this->__('View Profile') ?></a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <script type="text/javascript">decorateTable('my-recurring-profiles-table');</script>
+    <?php echo $this->getPagerHtml(); ?>
+<?php else: ?>
+    <p><?php echo $this->__("You don't have any recurring profiles yet."); ?></p>
+<?php endif ?>

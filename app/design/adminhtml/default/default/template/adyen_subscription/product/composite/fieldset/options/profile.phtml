@@ -1,0 +1,39 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+?>
+
+<?php /* @var $this Adyen_Subscription_Block_Catalog_Product_View_Profile */ ?>
+<?php $options = Mage::helper('core')->decorateArray($this->getOptions()); ?>
+<?php if (count($options)): ?>
+    <div id="catalog_product_composite_configure_fields_profile" class="<?php echo $this->getIsLastFieldset() ? 'last-fieldset' : '' ?>">
+        <h4><?php echo Mage::helper('catalog')->__('Profile') ?></h4>
+        <div class="product-options">
+            <dl>
+                <select id="profile-option" name="adyen_subscription_profile">
+                    <?php if ($this->canOrderStandalone()): ?>
+                        <option value="none"><?=$this->__('None (standalone purchase)');?></option>
+                    <?php endif; ?>
+                    <?php foreach ($options as $option) : ?>
+                        <?php /** @var Adyen_Subscription_Model_Product_Profile $option */ ?>
+                        <option value="<?=$option->getId();?>" <?=$this->_isSelected($option->getId()) ? 'selected="selected"' : ''; ?>><?php echo $option->getLabel(); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </dl>
+        </div>
+    </div>
+<?php endif; ?>

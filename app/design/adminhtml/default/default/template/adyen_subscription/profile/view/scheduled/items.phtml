@@ -1,0 +1,73 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+?>
+<?php /** @var Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled $this */ ?>
+<?php $helper = Mage::helper('core'); ?>
+
+<div class="grid np">
+    <div class="hor-scroll">
+        <table cellspacing="0" class="data order-tables">
+            <col />
+            <col width="1" />
+            <col width="1" />
+            <col width="1" />
+            <col width="1" />
+            <col width="1" />
+            <col width="1" />
+            <col width="1" />
+            <thead>
+                <tr class="headings">
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Product') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Price') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Qty') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Subtotal') ?></th>
+                    <th class="no-link"><span class="nobr"><?php echo $this->helper('sales')->__('Tax Amount') ?></span></th>
+                    <th class="no-link"><span class="nobr"><?php echo $this->helper('sales')->__('Tax Percent') ?></span></th>
+                    <th class="no-link"><span class="nobr"><?php echo $this->helper('sales')->__('Discount Amount') ?></span></th>
+                    <th class="no-link last"><span class="nobr"><?php echo $this->helper('sales')->__('Row Total') ?></span></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php $_items = $this->getAllVisibleItems(); ?>
+            <?php $i = 1; foreach ($_items as $_item): ?>
+                <?php /** @var Mage_Sales_Model_Quote_Item $_item */ ?>
+                <tr class="<?php echo $i%2 ? 'even' : 'odd'; ?>">
+                    <td><?php echo $_item->getName(); ?></td>
+                    <td><?php echo $helper->formatPrice($_item->getPriceInclTax()); ?></td>
+                    <td><?php echo $_item->getQty() * 1; ?></td>
+                    <td><?php echo $helper->formatPrice($_item->getRowTotal()); ?></td>
+                    <td><?php echo $helper->formatPrice($_item->getTaxAmount()); ?></td>
+                    <td><?php echo number_format($_item->getTaxPercent(), 0); ?>%</td>
+                    <td><?php echo $helper->formatPrice($_item->getDiscountAmount()); ?></td>
+                    <td class="last"><?php echo $helper->formatPrice($_item->getRowTotalInclTax()); ?></td>
+                </tr>
+            <?php $i++; endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br />
+
+<div class="box-right entry-edit">
+    <div class="entry-edit-head"><h4><?php echo Mage::helper('sales')->__('Totals') ?></h4></div>
+    <div id="order-totals" class="order-totals">
+        <?php echo $this->getChildHtml('order_totals') ?>
+    </div>
+</div>
+

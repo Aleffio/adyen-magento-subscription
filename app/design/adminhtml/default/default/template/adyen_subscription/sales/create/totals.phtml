@@ -1,0 +1,124 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+?>
+
+<?php
+/** @var Adyen_Subscription_Model_Profile $_profile */
+$_profile = Mage::registry('current_profile');
+$_fullUpdate = $this->getRequest()->getParam('full_update');
+?>
+<table cellspacing="0" cellpadding="8" width="100%">
+    <tbody>
+        <?php echo $this->renderTotals(); ?>
+        <?php echo $this->renderTotals('footer'); ?>
+    </tbody>
+</table>
+<div class="divider"></div>
+<?php if ($_profile): ?>
+<?php
+$_dateFormat = Varien_Date::convertZendToStrftime(
+    Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT), true, true
+);
+$_dateValue = Mage::helper('core')->formatDate(
+    $_profile->getScheduledAt(), Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, true
+);
+?>
+<div class="order-totals-bottom">
+    <label for="scheduled_at"><?php echo $this->__('Scheduled At');?></label>
+
+    <input id="scheduled_at" name="adyen_subscription[scheduled_at]" style="width:140px;"
+           value="<?php echo $_dateValue;?>" class="input-text" type="text">
+    <img title="<?php echo $this->__('Select date');?>" id="_scheduled_at"
+         src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif';?>"
+         class="v-middle">
+
+</div>
+<script type="text/javascript">
+Calendar.setup({
+    inputField: 'scheduled_at',
+    ifFormat: '<?php echo $_dateFormat;?>',
+    button: '_scheduled_at',
+    showsTime: true,
+    align: 'Bl',
+    singleClick: true
+});
+</script>
+<?php endif; ?>
+
+<?php if ($_profile): ?>
+<?php
+$_updateUrl = $_fullUpdate
+    ? $this->getUrl('adyen_subscription/adminhtml_profile/updateProfile', ['id' => $_profile->getId()])
+    : $this->getUrl('adyen_subscription/adminhtml_profile/updateQuote', ['id' => $_profile->getId()]);
+?>
+
+<div class="order-totals-bottom">
+    <script type="text/javascript">
+        AdminOrder.prototype.submitProfile = function(){
+            if (this.orderItemChanged) {
+                if (confirm('You have item changes')) {
+                    if (editForm.submit('<?php echo $_updateUrl;?>')) {
+                        disableElements('save');
+                    }
+                } else {
+                    this.itemsUpdate();
+                }
+            } else {
+                if (editForm.submit('<?php echo $_updateUrl;?>')) {
+                    disableElements('save');
+                }
+            }
+        };
+    </script>
+
+    <?php echo $this->getButtonHtml(Mage::helper('adyen_subscription')->__('Finish Editing'), 'order.submitProfile()', 'save'); ?>
+</div>
+<?php else: ?>
+<?php echo $this->getChildHtml('totals_additional'); ?>
+<div class="order-totals-bottom">
+    <p>
+        <label for="notify_customer" class="normal"><?php echo Mage::helper('sales')->__('Append Comments') ?></label>
+        <input type="checkbox" id="notify_customer" name="order[comment][customer_note_notify]" value="1" <?php if($this->getNoteNotify()): ?>checked="true"<?php endif; ?>/>
+    </p>
+    <?php if ($this->canSendNewOrderConfirmationEmail()): ?>
+    <p>
+        <label for="send_confirmation" class="normal"><?php echo Mage::helper('sales')->__('Email Order Confirmation') ?></label>
+        <input type="checkbox" id="send_confirmation" name="order[send_confirmation]" value="1" checked="checked"/>
+    </p>
+    <?php endif; ?>
+    <p><?php echo $this->getButtonHtml(Mage::helper('sales')->__('Submit Order'),'order.submit()','save'); ?></p>
+</div>
+<?php endif; ?>
+
+<script type="text/javascript">
+//<![CDATA[
+var sendEmailCheckbox = $('send_confirmation');
+if (sendEmailCheckbox) {
+    Event.observe(sendEmailCheckbox, 'change', notifyCustomerUpdate);
+    notifyCustomerUpdate();
+}
+
+function notifyCustomerUpdate() {
+    var sendEmailCheckbox = $('send_confirmation');
+    var notifyCustomerCheckbox = $('notify_customer');
+    if (!sendEmailCheckbox || !notifyCustomerCheckbox)
+        return;
+    notifyCustomerCheckbox.disabled = !sendEmailCheckbox.checked;
+}
+//]]>
+</script>

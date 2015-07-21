@@ -1,0 +1,54 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+?>
+<?php
+/** @var $this Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Recurring_Fieldset */
+/** @var Varien_Data_Form_Element_Fieldset $_element */
+$_element = $this->getElement();
+?>
+<div class="profile-fieldset-container">
+    <div>
+        <?php if ($_element->getLegend()): ?>
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $_element->getLegend() ?></h4>
+            <div class="form-buttons"><?php echo $_element->getHeaderBar() ?></div>
+        </div>
+        <?php endif; ?>
+        <?php if (!$_element->getNoContainer()): ?>
+            <div class="fieldset <?php echo $_element->getClass() ?>" id="<?php echo $_element->getHtmlId() ?>">
+        <?php endif; ?>
+            <div class="hor-scroll">
+                <?php if ($_element->getComment()): ?>
+                    <p class="comment"><?php echo $this->escapeHtml($_element->getComment()) ?></p>
+                <?php endif; ?>
+                <?php if ($_element->hasHtmlContent()): ?>
+                    <?php echo $_element->getHtmlContent(); ?>
+                <?php else: ?>
+                <table cellspacing="0" class="<?php echo $_element->hasTableClass() ? $_element->getTableClass() : 'form-list'?>">
+                    <tbody>
+                        <?php echo $_element->getChildrenHtml(); ?>
+                    </tbody>
+                </table>
+                <?php endif; ?>
+            </div>
+            <?php echo $_element->getSubFieldsetHtml() ?>
+        <?php if (!$_element->getNoContainer()): ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
