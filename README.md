@@ -1,1 +1,2 @@
-# Ho_Recurring
+# Adyen_Subscription
+Adyen Subscription plugin for Magento
