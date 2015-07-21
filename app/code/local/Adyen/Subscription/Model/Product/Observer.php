@@ -242,7 +242,7 @@ class Adyen_Subscription_Model_Product_Observer
         /** @var Mage_Catalog_Model_Product $product */
         $product = $quoteItem->getProduct();
 
-        $subscriptionId = $quoteItem->getBuyRequest()->getData('adyen_subscription_subscription');
+        $subscriptionId = $quoteItem->getBuyRequest()->getData('adyen_subscription');
         if (! $subscriptionId) {
             return $this;
         }
@@ -266,7 +266,7 @@ class Adyen_Subscription_Model_Product_Observer
         if ($subscription) {
             $subscriptionOption = [
                 'label'        => 'Subscription',
-                'code'         => 'adyen_subscription_subscription',
+                'code'         => 'adyen_subscription',
                 'option_value' => $subscriptionId,
                 'value'        => $subscription->getFrontendLabel(),
                 'print_value'  => $subscription->getFrontendLabel(),
@@ -274,7 +274,7 @@ class Adyen_Subscription_Model_Product_Observer
         } else {
             $subscriptionOption = [
                 'label'        => 'Subscription',
-                'code'         => 'adyen_subscription_subscription',
+                'code'         => 'adyen_subscription',
                 'option_value' => 'none',
                 'value'        => 'No subscription',
                 'print_value'  => 'No subscription',
@@ -291,7 +291,7 @@ class Adyen_Subscription_Model_Product_Observer
             $quoteItem->addOption($quoteItemOption);
         } else {
             $additional = unserialize($option->getValue());
-            $additional['adyen_subscription_subscription'] = $subscriptionOption;
+            $additional['adyen_subscription'] = $subscriptionOption;
             $option->setValue(serialize($additional));
         }
     }
@@ -350,7 +350,7 @@ class Adyen_Subscription_Model_Product_Observer
                 $options = unserialize($additionalOptions->getValue());
 
                 foreach ($options as $option) {
-                    if ($option['code'] == 'adyen_subscription_subscription' && $option['option_value'] != 'none') {
+                    if ($option['code'] == 'adyen_subscription' && $option['option_value'] != 'none') {
                         $quote->setData('_is_adyen_subscription', true);
                         return $quote->getData('_is_adyen_subscription');
                     }

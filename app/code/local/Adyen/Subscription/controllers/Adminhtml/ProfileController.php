@@ -31,7 +31,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
              ->_title($helper->__('Subscription'));
 
         $this->loadLayout()
-            ->_setActiveMenu('sales/adyen_subscription_subscriptions');
+            ->_setActiveMenu('sales/adyen_subscriptions');
 
         $this->_addBreadcrumb($helper->__('Sales'), $helper->__('Sales'))
             ->_addBreadcrumb($helper->__('Subscription'), $helper->__('Subscription'));
@@ -81,7 +81,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
                  $subscription->getIncrementId(), $subscription->getCustomerName()));
 
         $this->loadLayout();
-        $this->_setActiveMenu('sales/adyen_subscription_subscriptions');
+        $this->_setActiveMenu('sales/adyen_subscriptions');
         $this->renderLayout();
     }
 
@@ -110,7 +110,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         }
 
         $this->loadLayout();
-        $this->_setActiveMenu('sales/adyen_subscription_subscriptions');
+        $this->_setActiveMenu('sales/adyen_subscriptions');
         $this->renderLayout();
     }
 

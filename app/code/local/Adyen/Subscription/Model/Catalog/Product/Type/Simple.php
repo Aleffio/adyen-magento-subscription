@@ -44,10 +44,10 @@ class Adyen_Subscription_Model_Catalog_Product_Type_Simple extends Mage_Catalog_
      */
     public function processBuyRequest($product, $buyRequest)
     {
-        $option = $buyRequest->getData('adyen_subscription_subscription');
+        $option = $buyRequest->getData('adyen_subscription');
 
         $options = array(
-            'adyen_subscription_subscription'     => $option,
+            'adyen_subscription'     => $option,
         );
 
         return $options;

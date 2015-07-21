@@ -50,19 +50,19 @@
                 <class>Adyen_Subscription_Model_Resource</class>
                 <entities>
                     <subscription>
-                        <table>adyen_subscription_subscription</table>
+                        <table>adyen_subscription</table>
                     </subscription>
                     <subscription_address>
-                        <table>adyen_subscription_subscription_address</table>
+                        <table>adyen_subscription_address</table>
                     </subscription_address>
                     <subscription_item>
-                        <table>adyen_subscription_subscription_item</table>
+                        <table>adyen_subscription_item</table>
                     </subscription_item>
                     <subscription_quote>
-                        <table>adyen_subscription_subscription_quote</table>
+                        <table>adyen_subscription_quote</table>
                     </subscription_quote>
                     <subscription_order>
-                        <table>adyen_subscription_subscription_order</table>
+                        <table>adyen_subscription_order</table>
                     </subscription_order>
                     <product_subscription>
                         <table>adyen_subscription_product_subscription</table>

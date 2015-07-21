@@ -264,7 +264,7 @@ class Adyen_Subscription_Model_Service_Quote
      */
     protected function _getProductSubscription(Mage_Sales_Model_Quote_Item $quoteItem)
     {
-        $subscriptionId = $quoteItem->getBuyRequest()->getData('adyen_subscription_subscription');
+        $subscriptionId = $quoteItem->getBuyRequest()->getData('adyen_subscription');
         if (! $subscriptionId) {
             return false;
         }

@@ -52,7 +52,7 @@ $connection->addColumn($subscriptionQuoteTable, 'scheduled_at', [
     'comment' => 'Scheduled At'
 ]);
 
-$connection->dropIndex($subscriptionQuoteTable, 'adyen_subscription_subscription_quote_quote_id');
+$connection->dropIndex($subscriptionQuoteTable, 'adyen_subscription_quote_quote_id');
 $connection->addIndex(
     $subscriptionQuoteTable,
     $installer->getIdxName(

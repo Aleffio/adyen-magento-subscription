@@ -22,7 +22,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View_Form extends Mage_Adm
     {
         parent::__construct();
 
-        $this->setId('adyen_subscription_subscription_form');
+        $this->setId('adyen_subscription_form');
         $this->setTitle(Mage::helper('adyen_subscription')->__('Subscription Information'));
     }
 

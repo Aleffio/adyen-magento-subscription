@@ -23,7 +23,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
         parent::__construct();
 
         $this->setDefaultSort('created_at');
-        $this->setId('adyen_subscription_subscription_grid');
+        $this->setId('adyen_subscription_grid');
         $this->setDefaultDir('desc');
         $this->setSaveParametersInSession(true);
     }

@@ -19,7 +19,7 @@
 class Adyen_Subscription_Model_Service_Order
 {
     /**
-     * Create recurring subscription(s) for given order.
+     * Create subscription(s) for given order.
      *
      * Order items that have the same term and term type are saved
      * in the same subscription.
@@ -31,7 +31,7 @@ class Adyen_Subscription_Model_Service_Order
     {
         $subscriptions = [];
 
-        if ($order->getSubscriptionSubscriptionId()) {
+        if ($order->getSubscriptionId()) {
             // Don't create subscription, since this order is created by a subscription
             return $subscriptions;
         }
@@ -188,7 +188,7 @@ class Adyen_Subscription_Model_Service_Order
      */
     protected function _getProductSubscription(Mage_Sales_Model_Order_Item $orderItem)
     {
-        $subscriptionId = $orderItem->getBuyRequest()->getData('adyen_subscription_subscription');
+        $subscriptionId = $orderItem->getBuyRequest()->getData('adyen_subscription');
         if (! $subscriptionId) {
             return false;
         }

@@ -17,7 +17,7 @@
 
 jQuery(function($){
     var subscriptionType = $('#adyen_subscription_type');
-    var tab = $('#product_info_tabs_adyen_subscription_subscription_tab_content');
+    var tab = $('#product_info_tabs_adyen_subscription_tab_content');
     var subscriptionTemplate = tab.find('.product-fieldset-template')
         .parents('.subscription-fieldset-container');
     var sortableArea = $('#subscriptions_fieldset');

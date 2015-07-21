@@ -30,9 +30,9 @@ class Adyen_Subscription_Model_Catalog_Product_Type_Bundle extends Ho_SimpleBund
     {
         $options = parent::processBuyRequest($product, $buyRequest);
 
-        $option = $buyRequest->getData('adyen_subscription_subscription');
+        $option = $buyRequest->getData('adyen_subscription');
 
-        $options['adyen_subscription_subscription'] = $option;
+        $options['adyen_subscription'] = $option;
 
         return $options;
     }

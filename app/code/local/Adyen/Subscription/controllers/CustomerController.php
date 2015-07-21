@@ -60,7 +60,7 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
             return false;
         }
 
-        Mage::register('adyen_subscription_subscription', $subscription);
+        Mage::register('adyen_subscription', $subscription);
 
         $this->_title($this->__('Subscription'))
             ->_title($this->__('Subscription # %s', $subscription->getId()));

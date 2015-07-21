@@ -23,7 +23,7 @@ class Adyen_Subscription_Block_Customer_Subscriptions_View extends Mage_Core_Blo
      */
     public function getSubscription()
     {
-        $subscription = Mage::registry('adyen_subscription_subscription');
+        $subscription = Mage::registry('adyen_subscription');
 
         return $subscription;
     }

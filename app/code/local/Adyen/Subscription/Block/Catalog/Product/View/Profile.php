@@ -43,7 +43,7 @@ class Adyen_Subscription_Block_Catalog_Product_View_Subscription extends Mage_Co
 
         $values = unserialize($option->getValue());
         foreach ($values as $value) {
-            if ($value['code'] == 'adyen_subscription_subscription') {
+            if ($value['code'] == 'adyen_subscription') {
                 return $value['option_value'] == $subscription->getId();
             }
         }
@@ -127,7 +127,7 @@ class Adyen_Subscription_Block_Catalog_Product_View_Subscription extends Mage_Co
     {
         if (is_null($this->_selectedOption)) {
             if ($this->getProduct()->hasPreconfiguredValues()) {
-                $configValue = $this->getProduct()->getPreconfiguredValues()->getData('adyen_subscription_subscription');
+                $configValue = $this->getProduct()->getPreconfiguredValues()->getData('adyen_subscription');
                 if ($configValue) {
                     $this->_selectedOption = $configValue;
                 }

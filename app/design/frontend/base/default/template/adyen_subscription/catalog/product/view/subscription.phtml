@@ -23,7 +23,7 @@ $_coreHelper = $this->helper('core');
 <div class="fieldset giftcard-amount-form">
     <dl>
         <dt>
-            <label for="adyen_subscription_subscription" class="required"><em>*</em>
+            <label for="adyen_subscription" class="required"><em>*</em>
                 <?php echo Mage::helper('adyen_subscription')->__('Subscription'); ?>
             </label>
         </dt>
@@ -33,13 +33,13 @@ $_coreHelper = $this->helper('core');
                     <?php if ($this->canOrderStandalone()): ?>
                         <li>
                             <label>
-                                <input type="radio" id="adyen_subscription_subscription_none" name="adyen_subscription_subscription"
+                                <input type="radio" id="adyen_subscription_none" name="adyen_subscription"
                                        data-subscription-id="none" onchange="subscriptionOptions.reloadPrice()"
                                        class="adyen-subscription-subscription-option validate-one-required-by-name" value="none"/>
                                 <?php echo $this->__('No subscription') ?>
                             </label>
                             <script type="text/javascript">
-                                $('adyen_subscription_subscription_none').advaiceContainer = 'adyen_subscription_subscription_advice';
+                                $('adyen_subscription_none').advaiceContainer = 'adyen_subscription_advice';
                             </script>
                         </li>
                     <?php endif; ?>
@@ -48,20 +48,20 @@ $_coreHelper = $this->helper('core');
                     <?php if (!$subscription->getShowOnFrontend()) continue; ?>
                     <li>
                         <label>
-                            <input type="radio" id="adyen_subscription_subscription_<?php echo  $subscription->getId(); ?>"
+                            <input type="radio" id="adyen_subscription_<?php echo  $subscription->getId(); ?>"
                                    data-subscription-id="<?php echo  $subscription->getId(); ?>" onchange="subscriptionOptions.reloadPrice()"
-                                   name="adyen_subscription_subscription" class="adyen-subscription-subscription-option validate-one-required-by-name" value="<?php echo $subscription->getId(); ?>"
+                                   name="adyen_subscription" class="adyen-subscription-subscription-option validate-one-required-by-name" value="<?php echo $subscription->getId(); ?>"
                                    <?php if($this->isSubscriptionSelected($subscription)): ?>checked<?php endif; ?>
                                 />
                             <?php echo $subscription->getFrontendLabel(); ?> <?php echo $_coreHelper->formatCurrency($subscription->getPrice()); ?>
                         </label>
                         <script type="text/javascript">
-                            $('adyen_subscription_subscription_<?php echo  $subscription->getId(); ?>').advaiceContainer = 'adyen_subscription_subscription_advice';
+                            $('adyen_subscription_<?php echo  $subscription->getId(); ?>').advaiceContainer = 'adyen_subscription_advice';
                         </script>
                     </li>
                     <?php endforeach; ?>
                 </ul>
-                <div id="adyen_subscription_subscription_advice"></div>
+                <div id="adyen_subscription_advice"></div>
             </div>
         </dd>
     </dl>

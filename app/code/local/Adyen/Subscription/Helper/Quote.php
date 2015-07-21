@@ -33,7 +33,7 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
                 if ($option) {
                     $additionalOptions = unserialize($option->getValue());
                     foreach ($additionalOptions as $additional) {
-                        if ($additional['code'] == 'adyen_subscription_subscription') {
+                        if ($additional['code'] == 'adyen_subscription') {
                             if ($additional['option_value'] != 'none') {
                                 $subscription = Mage::getModel('adyen_subscription/product_subscription')->load($additional['option_value']);
                                 if (! $subscription->getId()) {

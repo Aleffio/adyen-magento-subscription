@@ -24,7 +24,7 @@
         <h4><?php echo Mage::helper('catalog')->__('Subscription') ?></h4>
         <div class="product-options">
             <dl>
-                <select id="subscription-option" name="adyen_subscription_subscription">
+                <select id="subscription-option" name="adyen_subscription">
                     <?php if ($this->canOrderStandalone()): ?>
                         <option value="none"><?=$this->__('None (standalone purchase)');?></option>
                     <?php endif; ?>

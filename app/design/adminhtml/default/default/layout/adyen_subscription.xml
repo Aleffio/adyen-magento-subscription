@@ -70,14 +70,14 @@
 
     <adyen_subscription_adminhtml_subscription_cancel>
         <reference name="content">
-            <block type="adyen_subscription/adminhtml_subscription_cancel" name="adyen_subscription_subscription_cancel" />
+            <block type="adyen_subscription/adminhtml_subscription_cancel" name="adyen_subscription_cancel" />
         </reference>
     </adyen_subscription_adminhtml_subscription_cancel>
 
     <adminhtml_catalog_product_edit>
         <reference name="product_tabs">
             <action method="addTabAfter">
-                <name>adyen_subscription_subscription_tab</name>
+                <name>adyen_subscription_tab</name>
                 <block>adyen_subscription/adminhtml_catalog_product_tab_subscription</block>
                 <after>categories</after>
             </action>

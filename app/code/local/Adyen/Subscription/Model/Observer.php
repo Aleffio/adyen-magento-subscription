@@ -128,7 +128,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         $collection->addFieldToFilter('state', Mage_Sales_Model_Order::STATE_PROCESSING);
         $collection->addFieldToFilter('subscription.entity_id', array('null' => true));
         $collection->addFieldToFilter('parent_item_id', array('null' => true));
-        $collection->addFieldToFilter('product_options', array('nlike' => '%;s:20:"adyen_subscription_subscription";s:4:"none"%'));
+        $collection->addFieldToFilter('product_options', array('nlike' => '%;s:20:"adyen_subscription";s:4:"none"%'));
 
         $collection->getSelect()->group('main_table.entity_id');
 
@@ -221,7 +221,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             foreach ($union as $unionSelect) {
                 list($target, $type) = $unionSelect;
                 $target->joinLeft(
-                    array('subscription' => 'adyen_subscription_subscription'),
+                    array('subscription' => 'adyen_subscription'),
                     '`main_table`.`entity_id` = `subscription`.`order_id`',
                     array('created_subscription_id' => 'group_concat(subscription.entity_id)')
                 );
@@ -230,7 +230,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         }
         else {
             $collection->getSelect()->joinLeft(
-                array('subscription' => 'adyen_subscription_subscription'),
+                array('subscription' => 'adyen_subscription'),
                 '`main_table`.`entity_id` = `subscription`.`order_id`',
                 array('created_subscription_id' => 'group_concat(subscription.entity_id)')
             );
@@ -284,7 +284,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $subscriptionOptions = false;
             foreach ($additionalOptions as $additionalOption) {
-                if ($additionalOption['code'] == 'adyen_subscription_subscription') {
+                if ($additionalOption['code'] == 'adyen_subscription') {
                     $subscriptionOptions = $additionalOption;
                     break;
                 }
@@ -344,7 +344,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $subscriptionOptions = false;
             foreach ($additionalOptions as $additionalOption) {
-                if ($additionalOption['code'] == 'adyen_subscription_subscription') {
+                if ($additionalOption['code'] == 'adyen_subscription') {
                     $subscriptionOptions = $additionalOption;
                     break;
                 }
