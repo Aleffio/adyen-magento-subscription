@@ -24,8 +24,8 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileQuoteTable = $installer->getTable('adyen_subscription/profile_quote');
-$connection->addColumn($profileQuoteTable, 'order_id', [
+$subscriptionQuoteTable = $installer->getTable('adyen_subscription/subscription_quote');
+$connection->addColumn($subscriptionQuoteTable, 'order_id', [
     'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'length' => 10,
     'nullable' => true,
@@ -35,32 +35,32 @@ $connection->addColumn($profileQuoteTable, 'order_id', [
 
 $orderTable = $installer->getTable('sales/order');
 $connection->addForeignKey(
-    $installer->getFkName($profileQuoteTable, 'order_id', $orderTable, 'entity_id'),
-    $profileQuoteTable, 'order_id', $orderTable, 'entity_id'
+    $installer->getFkName($subscriptionQuoteTable, 'order_id', $orderTable, 'entity_id'),
+    $subscriptionQuoteTable, 'order_id', $orderTable, 'entity_id'
 );
 
-$connection->dropIndex($profileQuoteTable, 'quote_id');
+$connection->dropIndex($subscriptionQuoteTable, 'quote_id');
 $quoteTable = $installer->getTable('sales/quote');
 $connection->addForeignKey(
-    $installer->getFkName($profileQuoteTable, 'quote_id', $quoteTable, 'entity_id'),
-    $profileQuoteTable, 'quote_id', $quoteTable, 'entity_id'
+    $installer->getFkName($subscriptionQuoteTable, 'quote_id', $quoteTable, 'entity_id'),
+    $subscriptionQuoteTable, 'quote_id', $quoteTable, 'entity_id'
 );
 
-$connection->addColumn($profileQuoteTable, 'scheduled_at', [
+$connection->addColumn($subscriptionQuoteTable, 'scheduled_at', [
     'type' => Varien_Db_Ddl_Table::TYPE_DATETIME,
     'nullable' => true,
     'comment' => 'Scheduled At'
 ]);
 
-$connection->dropIndex($profileQuoteTable, 'adyen_subscription_profile_quote_quote_id');
+$connection->dropIndex($subscriptionQuoteTable, 'adyen_subscription_subscription_quote_quote_id');
 $connection->addIndex(
-    $profileQuoteTable,
+    $subscriptionQuoteTable,
     $installer->getIdxName(
-        $profileQuoteTable,
-        ['profile_id', 'quote_id'],
+        $subscriptionQuoteTable,
+        ['subscription_id', 'quote_id'],
         Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
     ),
-    ['profile_id', 'quote_id'],
+    ['subscription_id', 'quote_id'],
     Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
 );
 

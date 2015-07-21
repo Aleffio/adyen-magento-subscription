@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Catalog_Product_View_Profile extends Mage_Core_Block_Template
+class Adyen_Subscription_Block_Catalog_Product_View_Subscription extends Mage_Core_Block_Template
 {
     protected $_selectedOption = null;
 
@@ -28,7 +28,7 @@ class Adyen_Subscription_Block_Catalog_Product_View_Profile extends Mage_Core_Bl
         return Mage::registry('current_product');
     }
 
-    public function isProfileSelected(Adyen_Subscription_Model_Product_Profile $profile)
+    public function isSubscriptionSelected(Adyen_Subscription_Model_Product_Subscription $subscription)
     {
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         $quoteItem = $quote->getItemById($this->getRequest()->getParam('id'));
@@ -43,8 +43,8 @@ class Adyen_Subscription_Block_Catalog_Product_View_Profile extends Mage_Core_Bl
 
         $values = unserialize($option->getValue());
         foreach ($values as $value) {
-            if ($value['code'] == 'adyen_subscription_profile') {
-                return $value['option_value'] == $profile->getId();
+            if ($value['code'] == 'adyen_subscription_subscription') {
+                return $value['option_value'] == $subscription->getId();
             }
         }
 
@@ -56,16 +56,16 @@ class Adyen_Subscription_Block_Catalog_Product_View_Profile extends Mage_Core_Bl
      */
     public function canOrderStandalone()
     {
-        return $this->getProfileType() == Adyen_Subscription_Model_Product_Profile::TYPE_ENABLED_ALLOW_STANDALONE;
+        return $this->getSubscriptionType() == Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ALLOW_STANDALONE;
     }
 
     public function getJsonConfig()
     {
         $json = [];
         $json['none'] = $this->_getPriceStandaloneConfiguration();
-        foreach ($this->getProfileCollection() as $profile) {
-            /** @var Adyen_Subscription_Model_Product_Profile $profile */
-            $json[$profile->getId()] = $this->_getPriceProfileConfiguration($profile);
+        foreach ($this->getSubscriptionCollection() as $subscription) {
+            /** @var Adyen_Subscription_Model_Product_Subscription $subscription */
+            $json[$subscription->getId()] = $this->_getPriceSubscriptionConfiguration($subscription);
         }
         return json_encode($json);
     }
@@ -80,15 +80,15 @@ class Adyen_Subscription_Block_Catalog_Product_View_Profile extends Mage_Core_Bl
     /**
      * Get price configuration
      *
-     * @param Adyen_Subscription_Model_Product_Profile $profile
+     * @param Adyen_Subscription_Model_Product_Subscription $subscription
      * @return array
      */
-    protected function _getPriceProfileConfiguration($profile)
+    protected function _getPriceSubscriptionConfiguration($subscription)
     {
         $data = array();
-        $data['price']      = Mage::helper('core')->currency($profile->getPrice() - $this->getProduct()->getFinalPrice(), false, false);
-        $data['oldPrice']   = Mage::helper('core')->currency($profile->getPrice() - $this->getProduct()->getFinalPrice(), false, false);
-        $data['priceValue'] = $profile->getPrice(false);
+        $data['price']      = Mage::helper('core')->currency($subscription->getPrice() - $this->getProduct()->getFinalPrice(), false, false);
+        $data['oldPrice']   = Mage::helper('core')->currency($subscription->getPrice() - $this->getProduct()->getFinalPrice(), false, false);
+        $data['priceValue'] = $subscription->getPrice(false);
 //        $data['type']       = $option->getPriceType();
         $data['excludeTax'] = $price = Mage::helper('tax')->getPrice($this->getProduct(), $data['price'], false);
         $data['includeTax'] = $price = Mage::helper('tax')->getPrice($this->getProduct(), $data['price'], true);
@@ -98,25 +98,25 @@ class Adyen_Subscription_Block_Catalog_Product_View_Profile extends Mage_Core_Bl
     /**
      * @return mixed
      */
-    public function getProfileType()
+    public function getSubscriptionType()
     {
         return $this->getProduct()->getData('adyen_subscription_type');
     }
 
     /**
-     * @return Adyen_Subscription_Model_Resource_Product_Profile_Collection
+     * @return Adyen_Subscription_Model_Resource_Product_Subscription_Collection
      */
-    public function getProfileCollection()
+    public function getSubscriptionCollection()
     {
         return $this->getProduct()->getData('adyen_subscription_data');
     }
 
     /**
-     * @return Adyen_Subscription_Model_Resource_Product_Profile_Collection
+     * @return Adyen_Subscription_Model_Resource_Product_Subscription_Collection
      */
     public function getOptions()
     {
-        return $profileCollection = Mage::getResourceModel('adyen_subscription/product_profile_collection')
+        return $subscriptionCollection = Mage::getResourceModel('adyen_subscription/product_subscription_collection')
             ->addProductFilter($this->getProduct());
     }
 
@@ -127,7 +127,7 @@ class Adyen_Subscription_Block_Catalog_Product_View_Profile extends Mage_Core_Bl
     {
         if (is_null($this->_selectedOption)) {
             if ($this->getProduct()->hasPreconfiguredValues()) {
-                $configValue = $this->getProduct()->getPreconfiguredValues()->getData('adyen_subscription_profile');
+                $configValue = $this->getProduct()->getPreconfiguredValues()->getData('adyen_subscription_subscription');
                 if ($configValue) {
                     $this->_selectedOption = $configValue;
                 }
@@ -138,14 +138,14 @@ class Adyen_Subscription_Block_Catalog_Product_View_Profile extends Mage_Core_Bl
     }
 
     /**
-     * @param int $profileId
+     * @param int $subscriptionId
      * @return bool
      */
-    protected function _isSelected($profileId)
+    protected function _isSelected($subscriptionId)
     {
         $selectedOption = $this->_getSelectedOption();
 
-        if ($selectedOption == $profileId) {
+        if ($selectedOption == $subscriptionId) {
             return true;
         }
 

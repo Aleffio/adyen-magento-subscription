@@ -23,13 +23,13 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- Add columns from product profile to profile and profile items tables
+    -- Add columns from product subscription to subscription and subscription items tables
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription')}`
         MODIFY `term` int(11),
         ADD COLUMN `term_type` varchar(255) DEFAULT NULL AFTER `term`;
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile_item')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription_item')}`
         ADD COLUMN `label` varchar(255) DEFAULT NULL AFTER `name`,
         ADD COLUMN `min_billing_cycles` int(11) DEFAULT NULL AFTER `once`,
         ADD COLUMN `max_billing_cycles` int(11) DEFAULT NULL AFTER `min_billing_cycles`;

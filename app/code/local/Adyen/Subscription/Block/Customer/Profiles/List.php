@@ -16,38 +16,38 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Customer_Profiles_List extends Mage_Core_Block_Template
+class Adyen_Subscription_Block_Customer_Subscriptions_List extends Mage_Core_Block_Template
 {
     /**
-     * @return Adyen_Subscription_Model_Resource_Profile_Collection
+     * @return Adyen_Subscription_Model_Resource_Subscription_Collection
      */
-    public function getProfiles()
+    public function getSubscriptions()
     {
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
 
-        $profiles = Mage::getModel('adyen_subscription/profile')->getCollection()
+        $subscriptions = Mage::getModel('adyen_subscription/subscription')->getCollection()
             ->addFieldToFilter('main_table.customer_id', $customerId)
             ->addBillingAgreementToSelect();
 
-        return $profiles;
+        return $subscriptions;
     }
 
     /**
-     * @param Adyen_Subscription_Model_Profile $profile
+     * @param Adyen_Subscription_Model_Subscription $subscription
      * @return string
      */
-    public function getViewUrl($profile)
+    public function getViewUrl($subscription)
     {
-        return $this->getUrl('adyen_subscription/customer/view', array('profile_id' => $profile->getId()));
+        return $this->getUrl('adyen_subscription/customer/view', array('subscription_id' => $subscription->getId()));
     }
 
     /**
-     * @param Adyen_Subscription_Model_Profile $profile
+     * @param Adyen_Subscription_Model_Subscription $subscription
      * @return string
      */
-    public function getAgreementUrl($profile)
+    public function getAgreementUrl($subscription)
     {
-        $agreementId = $profile->getBillingAgreementId();
+        $agreementId = $subscription->getBillingAgreementId();
 
         return $this->getUrl('sales/billing_agreement/view', array('agreement' => $agreementId));
     }

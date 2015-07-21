@@ -67,7 +67,7 @@ class Adyen_Subscription_Shell extends Mage_Shell_Abstract
     /**
    	 * @return void
    	 */
-   	public function convertOrderToProfileAction() {
+   	public function convertOrderToSubscriptionAction() {
 		if (! $order = $this->getArg('order')) {
 			exit("Please specifity an --order 12345\n");
 		}
@@ -78,7 +78,7 @@ class Adyen_Subscription_Shell extends Mage_Shell_Abstract
 		}
 
 
-		Mage::getSingleton('adyen_subscription/service_order')->createProfile($order);
+		Mage::getSingleton('adyen_subscription/service_order')->createSubscription($order);
    	}
 
 

@@ -23,9 +23,9 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- Add columns to profile item table
+    -- Add columns to subscription item table
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile_item')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription_item')}`
         DROP COLUMN `status`,
         ADD COLUMN `status` varchar(255) DEFAULT NULL AFTER `entity_id`,
         ADD COLUMN `price_incl_tax` decimal(12,4) DEFAULT NULL AFTER `price`;

@@ -16,14 +16,14 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Block_Widget_Grid
+class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     public function __construct()
     {
         parent::__construct();
 
         $this->setDefaultSort('created_at');
-        $this->setId('adyen_subscription_profile_grid');
+        $this->setId('adyen_subscription_subscription_grid');
         $this->setDefaultDir('desc');
         $this->setSaveParametersInSession(true);
     }
@@ -36,8 +36,8 @@ class Adyen_Subscription_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Blo
 
     protected function _prepareCollection()
     {
-        /** @var Adyen_Subscription_Model_Resource_Profile_Collection $collection */
-        $collection = Mage::getResourceModel('adyen_subscription/profile_collection');
+        /** @var Adyen_Subscription_Model_Resource_Subscription_Collection $collection */
+        $collection = Mage::getResourceModel('adyen_subscription/subscription_collection');
         $collection->addEmailToSelect();
         $collection->addNameToSelect();
         $collection->addBillingAgreementToSelect();
@@ -110,8 +110,8 @@ class Adyen_Subscription_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Blo
             'header'    => $helper->__('Status'),
             'index'     => 'status',
             'type'      => 'options',
-            'options'   => Adyen_Subscription_Model_Profile::getStatuses(),
-            'renderer'  => 'Adyen_Subscription_Block_Adminhtml_Profile_Renderer_Status',
+            'options'   => Adyen_Subscription_Model_Subscription::getStatuses(),
+            'renderer'  => 'Adyen_Subscription_Block_Adminhtml_Subscription_Renderer_Status',
             'filter_index' => 'main_table.status'
         ]);
 
@@ -123,7 +123,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Blo
             'actions'   => [[
                 'caption' => $helper->__('View'),
                 'url'     => [
-                    'base'  => 'adyen_subscription/adminhtml_profile/view',
+                    'base'  => 'adyen_subscription/adminhtml_subscription/view',
                     'params'=> ['store' => $this->getRequest()->getParam('store')]
                 ],
                 'field'   => 'id'
@@ -137,6 +137,6 @@ class Adyen_Subscription_Block_Adminhtml_Profile_Grid extends Mage_Adminhtml_Blo
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('adyen_subscription/adminhtml_profile/view', array('id' => $row->getId()));
+        return $this->getUrl('adyen_subscription/adminhtml_subscription/view', array('id' => $row->getId()));
     }
 }

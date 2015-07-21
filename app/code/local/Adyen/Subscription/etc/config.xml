@@ -49,27 +49,27 @@
             <adyen_subscription_resource>
                 <class>Adyen_Subscription_Model_Resource</class>
                 <entities>
-                    <profile>
-                        <table>adyen_subscription_profile</table>
-                    </profile>
-                    <profile_address>
-                        <table>adyen_subscription_profile_address</table>
-                    </profile_address>
-                    <profile_item>
-                        <table>adyen_subscription_profile_item</table>
-                    </profile_item>
-                    <profile_quote>
-                        <table>adyen_subscription_profile_quote</table>
-                    </profile_quote>
-                    <profile_order>
-                        <table>adyen_subscription_profile_order</table>
-                    </profile_order>
-                    <product_profile>
-                        <table>adyen_subscription_product_profile</table>
-                    </product_profile>
-                    <product_profile_label>
-                        <table>adyen_subscription_product_profile_label</table>
-                    </product_profile_label>
+                    <subscription>
+                        <table>adyen_subscription_subscription</table>
+                    </subscription>
+                    <subscription_address>
+                        <table>adyen_subscription_subscription_address</table>
+                    </subscription_address>
+                    <subscription_item>
+                        <table>adyen_subscription_subscription_item</table>
+                    </subscription_item>
+                    <subscription_quote>
+                        <table>adyen_subscription_subscription_quote</table>
+                    </subscription_quote>
+                    <subscription_order>
+                        <table>adyen_subscription_subscription_order</table>
+                    </subscription_order>
+                    <product_subscription>
+                        <table>adyen_subscription_product_subscription</table>
+                    </product_subscription>
+                    <product_subscription_label>
+                        <table>adyen_subscription_product_subscription_label</table>
+                    </product_subscription_label>
                 </entities>
             </adyen_subscription_resource>
             <catalog>
@@ -109,7 +109,7 @@
                 <observers>
                     <adyen_subscription>
                         <class>adyen_subscription/product_observer</class>
-                        <method>addSubscriptionProductProfileToQuote</method>
+                        <method>addSubscriptionProductSubscriptionToQuote</method>
                     </adyen_subscription>
                 </observers>
             </sales_quote_add_item>
@@ -125,7 +125,7 @@
                 <observers>
                     <adyen_subscription_add_subscription_options_to_order>
                         <class>adyen_subscription/observer</class>
-                        <method>addSubscriptionProductProfileToOrder</method>
+                        <method>addSubscriptionProductSubscriptionToOrder</method>
                     </adyen_subscription_add_subscription_options_to_order>
                 </observers>
             </sales_convert_quote_item_to_order_item>
@@ -269,10 +269,10 @@
 
     <crontab>
         <jobs>
-            <adyen_subscription_create_profiles>
+            <adyen_subscription_create_subscriptions>
                 <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
-                <run><model>adyen_subscription/observer::createProfiles</model></run>
-            </adyen_subscription_create_profiles>
+                <run><model>adyen_subscription/observer::createSubscriptions</model></run>
+            </adyen_subscription_create_subscriptions>
             <adyen_subscription_create_quotes>
                 <schedule><cron_expr>0 6 * * *</cron_expr></schedule>
                 <run><model>adyen_subscription/observer::createQuotes</model></run>

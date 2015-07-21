@@ -24,9 +24,9 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$productProfileTable = $installer->getTable('adyen_subscription/product_profile');
+$productSubscriptionTable = $installer->getTable('adyen_subscription/product_subscription');
 
-$connection->modifyColumn($productProfileTable, 'price', [
+$connection->modifyColumn($productSubscriptionTable, 'price', [
     'type'      => Varien_Db_Ddl_Table::TYPE_DECIMAL,
     'default'   => false,
     'precision' => 12,

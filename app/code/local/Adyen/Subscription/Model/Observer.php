@@ -23,10 +23,10 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function createQuotes()
     {
-        $profileCollection = Mage::getResourceModel('adyen_subscription/profile_collection');
-        $profileCollection->addScheduleQuoteFilter();
+        $subscriptionCollection = Mage::getResourceModel('adyen_subscription/subscription_collection');
+        $subscriptionCollection->addScheduleQuoteFilter();
 
-        if ($profileCollection->count() <= 0) {
+        if ($subscriptionCollection->count() <= 0) {
             return '';
         }
 
@@ -38,24 +38,24 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
         $successCount = 0;
         $failureCount = 0;
-        foreach ($profileCollection as $profile) {
-            /** @var Adyen_Subscription_Model_Profile $profile */
+        foreach ($subscriptionCollection as $subscription) {
+            /** @var Adyen_Subscription_Model_Subscription $subscription */
 
-            if ($profile->getScheduledAt()) {
+            if ($subscription->getScheduledAt()) {
                 $timezone = new DateTimeZone(Mage::getStoreConfig(
                     Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
                 ));
-                $scheduleDate = new DateTime($profile->getScheduledAt(), $timezone);
+                $scheduleDate = new DateTime($subscription->getScheduledAt(), $timezone);
             }
             else {
-                $scheduleDate = $profile->calculateNextScheduleDate(true);
+                $scheduleDate = $subscription->calculateNextScheduleDate(true);
             }
 
-            $profile->setScheduledAt($scheduleDate->format('Y-m-d H:i:s'));
+            $subscription->setScheduledAt($scheduleDate->format('Y-m-d H:i:s'));
 
             if ($scheduleDate < $scheduleBefore) {
                 try {
-                    Mage::getSingleton('adyen_subscription/service_profile')->createQuote($profile);
+                    Mage::getSingleton('adyen_subscription/service_subscription')->createQuote($subscription);
                     $successCount++;
                 } catch (Exception $e) {
                     Adyen_Subscription_Exception::logException($e);
@@ -74,25 +74,25 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function createOrders()
     {
-        $profileCollection = Mage::getResourceModel('adyen_subscription/profile_collection');
-        $profileCollection->addPlaceOrderFilter();
+        $subscriptionCollection = Mage::getResourceModel('adyen_subscription/subscription_collection');
+        $subscriptionCollection->addPlaceOrderFilter();
 
-        if ($profileCollection->count() <= 0) {
+        if ($subscriptionCollection->count() <= 0) {
             return '';
         }
 
         $successCount = 0;
         $failureCount = 0;
-        foreach ($profileCollection as $profile) {
-            /** @var Adyen_Subscription_Model_Profile $profile */
+        foreach ($subscriptionCollection as $subscription) {
+            /** @var Adyen_Subscription_Model_Subscription $subscription */
 
             try {
-                $quote = $profile->getActiveQuote();
+                $quote = $subscription->getActiveQuote();
                 if (! $quote) {
                     Adyen_Subscription_Exception::throwException('Can\'t create order: No quote created yet.');
                 }
 
-                Mage::getSingleton('adyen_subscription/service_quote')->createOrder($profile->getActiveQuote(), $profile);
+                Mage::getSingleton('adyen_subscription/service_quote')->createOrder($subscription->getActiveQuote(), $subscription);
                 $successCount++;
             } catch (Exception $e) {
                 Adyen_Subscription_Exception::logException($e);
@@ -108,14 +108,14 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     /**
      * @return string
      */
-    public function createProfiles()
+    public function createSubscriptions()
     {
         $collection = Mage::getModel('sales/order')->getCollection();
 
         $resource = $collection->getResource();
 
         $collection->getSelect()->joinLeft(
-            array('subscription' => $resource->getTable('adyen_subscription/profile')),
+            array('subscription' => $resource->getTable('adyen_subscription/subscription')),
             'main_table.entity_id = subscription.order_id',
             array('created_subscription_id' => 'entity_id')
         );
@@ -128,18 +128,18 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         $collection->addFieldToFilter('state', Mage_Sales_Model_Order::STATE_PROCESSING);
         $collection->addFieldToFilter('subscription.entity_id', array('null' => true));
         $collection->addFieldToFilter('parent_item_id', array('null' => true));
-        $collection->addFieldToFilter('product_options', array('nlike' => '%;s:20:"adyen_subscription_profile";s:4:"none"%'));
+        $collection->addFieldToFilter('product_options', array('nlike' => '%;s:20:"adyen_subscription_subscription";s:4:"none"%'));
 
         $collection->getSelect()->group('main_table.entity_id');
 
         $o = $p = $e = 0;
         foreach ($collection as $order) {
             try {
-                $profiles = Mage::getModel('adyen_subscription/service_order')->createProfile($order);
+                $subscriptions = Mage::getModel('adyen_subscription/service_order')->createSubscription($order);
 
-                foreach ($profiles as $profile) {
-                    /** @var Adyen_Subscription_Model_Profile $profile */
-                    $message = Mage::helper('adyen_subscription')->__('Created a subscription (#%s) from order.', $profile->getId());
+                foreach ($subscriptions as $subscription) {
+                    /** @var Adyen_Subscription_Model_Subscription $subscription */
+                    $message = Mage::helper('adyen_subscription')->__('Created a subscription (#%s) from order.', $subscription->getId());
                     $order->addStatusHistoryComment($message);
                     $order->save();
                     $p++;
@@ -153,7 +153,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         return Mage::helper('adyen_subscription')->__(
-            '%s orders processed, %s profiles created (%s errors)', $o, $p, $e
+            '%s orders processed, %s subscriptions created (%s errors)', $o, $p, $e
         );
     }
 
@@ -168,25 +168,25 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             return;
         }
 
-        $profileId = Mage::app()->getRequest()->getParam('profile');
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId = Mage::app()->getRequest()->getParam('subscription');
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (! $profile->getId()) {
+        if (! $subscription->getId()) {
             return;
         }
 
-        Mage::register('current_profile', $profile);
+        Mage::register('current_subscription', $subscription);
         Mage::app()->getLayout()->getUpdate()->addHandle('adyen_subscription_active_quote_edit');
     }
 
     /**
-     * Save additional (subscription) product options (added in addSubscriptionProductProfileToQuote)
+     * Save additional (subscription) product options (added in addSubscriptionProductSubscriptionToQuote)
      * from quote items to order items
      *
      * @event sales_convert_quote_item_to_order_item
      * @param Varien_Event_Observer $observer
      */
-    public function addSubscriptionProductProfileToOrder(Varien_Event_Observer $observer)
+    public function addSubscriptionProductSubscriptionToOrder(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Quote_Item $quoteItem */
         /** @noinspection PhpUndefinedMethodInspection */
@@ -204,7 +204,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Join subscription profile ID to sales order grid
+     * Join subscription ID to sales order grid
      *
      * @event sales_order_grid_collection_load_before
      * @param Varien_Event_Observer $observer
@@ -221,7 +221,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             foreach ($union as $unionSelect) {
                 list($target, $type) = $unionSelect;
                 $target->joinLeft(
-                    array('subscription' => 'adyen_subscription_profile'),
+                    array('subscription' => 'adyen_subscription_subscription'),
                     '`main_table`.`entity_id` = `subscription`.`order_id`',
                     array('created_subscription_id' => 'group_concat(subscription.entity_id)')
                 );
@@ -230,7 +230,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         }
         else {
             $collection->getSelect()->joinLeft(
-                array('subscription' => 'adyen_subscription_profile'),
+                array('subscription' => 'adyen_subscription_subscription'),
                 '`main_table`.`entity_id` = `subscription`.`order_id`',
                 array('created_subscription_id' => 'group_concat(subscription.entity_id)')
             );
@@ -239,7 +239,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Add subscription profile IDs column to order grid
+     * Add subscription IDs column to order grid
      *
      * @event adyen_subscription_add_sales_order_grid_column
      * @param Varien_Event_Observer $observer
@@ -265,7 +265,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
     /**
      * Set the right amount of qty on the order items when placing an order.
-     * The ordered qty is multiplied by the 'qty in profile' amount of the
+     * The ordered qty is multiplied by the 'qty in subscription' amount of the
      * selected subscription.
      *
      * @event sales_order_place_before
@@ -284,7 +284,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $subscriptionOptions = false;
             foreach ($additionalOptions as $additionalOption) {
-                if ($additionalOption['code'] == 'adyen_subscription_profile') {
+                if ($additionalOption['code'] == 'adyen_subscription_subscription') {
                     $subscriptionOptions = $additionalOption;
                     break;
                 }
@@ -292,18 +292,18 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             if (! $subscriptionOptions || $orderItem->getParentItemId()) continue;
 
-            $productProfile = Mage::getModel('adyen_subscription/product_profile')->load($subscriptionOptions['option_value']);
+            $productSubscription = Mage::getModel('adyen_subscription/product_subscription')->load($subscriptionOptions['option_value']);
 
-            $profileQty = $productProfile->getQty();
-            if ($profileQty > 1) {
-                $qty = $orderItem->getQtyOrdered() * $profileQty;
+            $subscriptionQty = $productSubscription->getQty();
+            if ($subscriptionQty > 1) {
+                $qty = $orderItem->getQtyOrdered() * $subscriptionQty;
 
                 $orderItem->setQtyOrdered($qty);
                 $orderItem->save();
 
                 foreach ($orderItem->getChildrenItems() as $childItem) {
                     /** @var Mage_Sales_Model_Order_Item $childItem */
-                    $childItemQty = $childItem->getQtyOrdered() * $profileQty;
+                    $childItemQty = $childItem->getQtyOrdered() * $subscriptionQty;
 
                     $childItem->setQtyOrdered($childItemQty);
                     $childItem->save();
@@ -314,7 +314,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
     /**
      * Set the right amount of qty on the order items when reordering.
-     * The qty of the ordered items is divided by the 'qty in profile'
+     * The qty of the ordered items is divided by the 'qty in subscription'
      * amount of the selected product subscription.
      *
      * @event create_order_session_quote_initialized
@@ -344,7 +344,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $subscriptionOptions = false;
             foreach ($additionalOptions as $additionalOption) {
-                if ($additionalOption['code'] == 'adyen_subscription_profile') {
+                if ($additionalOption['code'] == 'adyen_subscription_subscription') {
                     $subscriptionOptions = $additionalOption;
                     break;
                 }
@@ -352,11 +352,11 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             if (! $subscriptionOptions) continue;
 
-            $productProfile = Mage::getModel('adyen_subscription/product_profile')->load($subscriptionOptions['option_value']);
+            $productSubscription = Mage::getModel('adyen_subscription/product_subscription')->load($subscriptionOptions['option_value']);
 
-            $profileQty = $productProfile->getQty();
-            if ($profileQty > 1) {
-                $qty = $quoteItem->getQty() / $profileQty;
+            $subscriptionQty = $productSubscription->getQty();
+            if ($subscriptionQty > 1) {
+                $qty = $quoteItem->getQty() / $subscriptionQty;
 
                 $quoteItem->setQty($qty);
                 $quoteItem->save();

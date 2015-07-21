@@ -25,7 +25,7 @@ $installer->run("
 
     -- Fix created_at and updated_at columns
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription')}`
         MODIFY `created_at` timestamp NULL,
         MODIFY `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP;
 

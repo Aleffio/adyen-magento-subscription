@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_Cancel_Form extends Mage_Adminhtml_Block_Widget_Form
+class Adyen_Subscription_Block_Adminhtml_Subscription_Cancel_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     protected function _prepareForm()
     {

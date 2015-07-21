@@ -24,9 +24,9 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileTable = $installer->getTable('adyen_subscription/profile');
+$subscriptionTable = $installer->getTable('adyen_subscription/subscription');
 
-$connection->addColumn($profileTable, 'cancel_code', [
+$connection->addColumn($subscriptionTable, 'cancel_code', [
     'type'      => Varien_Db_Ddl_Table::TYPE_TEXT,
     'nullable'  => true,
     'comment'   => 'Cancel Reason Code',

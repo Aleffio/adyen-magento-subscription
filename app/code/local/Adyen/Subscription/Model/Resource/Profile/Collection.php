@@ -16,11 +16,11 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Model_Resource_Profile_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
+class Adyen_Subscription_Model_Resource_Subscription_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
     protected function _construct()
     {
-        $this->_init('adyen_subscription/profile');
+        $this->_init('adyen_subscription/subscription');
     }
 
     /**
@@ -128,13 +128,13 @@ class Adyen_Subscription_Model_Resource_Profile_Collection extends Mage_Core_Mod
      */
     public function addScheduleQuoteFilter()
     {
-        $this->addFieldToFilter('status', array('in' => Adyen_Subscription_Model_Profile::getScheduleQuoteStatuses()));
+        $this->addFieldToFilter('status', array('in' => Adyen_Subscription_Model_Subscription::getScheduleQuoteStatuses()));
         $this->getSelect()->joinLeft(
-            ['profile_quote' => $this->getTable('adyen_subscription/profile_quote')],
-            'main_table.entity_id = profile_quote.profile_id AND profile_quote.order_id IS NULL',
+            ['subscription_quote' => $this->getTable('adyen_subscription/subscription_quote')],
+            'main_table.entity_id = subscription_quote.subscription_id AND subscription_quote.order_id IS NULL',
             [] // If we leave this empty, the entity_id of the main table is somehow not retrieved
         );
-        $this->getSelect()->where('profile_quote.entity_id IS NULL');
+        $this->getSelect()->where('subscription_quote.entity_id IS NULL');
 
         return $this;
     }
@@ -145,17 +145,17 @@ class Adyen_Subscription_Model_Resource_Profile_Collection extends Mage_Core_Mod
      */
     public function addPlaceOrderFilter()
     {
-        $this->addFieldToFilter('status', array('in' => Adyen_Subscription_Model_Profile::getPlaceOrderStatuses()));
+        $this->addFieldToFilter('status', array('in' => Adyen_Subscription_Model_Subscription::getPlaceOrderStatuses()));
         $this->getSelect()->joinLeft(
-            ['profile_quote' => $this->getTable('adyen_subscription/profile_quote')],
-            'main_table.entity_id = profile_quote.profile_id',
+            ['subscription_quote' => $this->getTable('adyen_subscription/subscription_quote')],
+            'main_table.entity_id = subscription_quote.subscription_id',
             ['quote_id', 'order_id']
         );
 
         $this->getSelect()
             ->where("scheduled_at < ?", now())
-            ->where('profile_quote.order_id IS NULL')
-            ->where('profile_quote.quote_id IS NOT NULL');
+            ->where('subscription_quote.order_id IS NULL')
+            ->where('subscription_quote.quote_id IS NOT NULL');
 
         return $this;
     }

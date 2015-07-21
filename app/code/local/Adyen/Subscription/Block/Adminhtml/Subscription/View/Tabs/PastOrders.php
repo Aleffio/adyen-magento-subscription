@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_PastOrders
+class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_PastOrders
     extends Mage_Adminhtml_Block_Widget_Grid
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
@@ -31,9 +31,9 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_PastOrders
 
     protected function _prepareCollection()
     {
-        $profile = $this->getProfile();
+        $subscription = $this->getSubscription();
 
-        $orderIds = $profile->getOrderIds();
+        $orderIds = $subscription->getOrderIds();
         if ($orderIds) {
             $collection = Mage::getModel('sales/order')
                 ->getCollection()
@@ -117,9 +117,9 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_PastOrders
     }
 
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    public function getProfile()
+    public function getSubscription()
     {
         return Mage::registry('adyen_subscription');
     }
@@ -147,7 +147,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_PastOrders
      */
     public function canShowTab()
     {
-        return $this->getProfile()->getOrderIds();
+        return $this->getSubscription()->getOrderIds();
     }
 
     /**

@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info_Products
+class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_Info_Products
     extends Mage_Adminhtml_Block_Widget_Grid
 {
     public function __construct()
@@ -32,7 +32,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info_Products
 
     protected function _prepareCollection()
     {
-        $collection = $this->_getProfile()->getItemCollection();
+        $collection = $this->_getSubscription()->getItemCollection();
         $collection->addRowTotalInclTax();
         $this->setCollection($collection);
 
@@ -46,7 +46,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info_Products
 
         $currencyCode = (string) Mage::getStoreConfig(
             Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE,
-            $this->_getProfile()->getStoreId()
+            $this->_getSubscription()->getStoreId()
         );
 
         $this->addColumn('sku', array(
@@ -130,7 +130,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info_Products
             'header'    => $helper->__('Status'),
             'index'     => 'status',
             'type'      => 'options',
-            'options'   => Mage::getModel('adyen_subscription/profile_item')->getStatuses(),
+            'options'   => Mage::getModel('adyen_subscription/subscription_item')->getStatuses(),
             'sortable'  => false,
             'width'     => 80
         ));
@@ -139,9 +139,9 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info_Products
     }
 
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    protected function _getProfile()
+    protected function _getSubscription()
     {
         return Mage::registry('adyen_subscription');
     }

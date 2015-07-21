@@ -17,15 +17,15 @@
  */
 
 /**
- * Class Adyen_Subscription_Model_Resource_Profile_Quote
+ * Class Adyen_Subscription_Model_Resource_Subscription_Quote
  *
  * @method int getOrderId()
  * @method setOrderId(int $value)
  */
-class Adyen_Subscription_Model_Resource_Profile_Order extends Mage_Core_Model_Resource_Db_Abstract
+class Adyen_Subscription_Model_Resource_Subscription_Order extends Mage_Core_Model_Resource_Db_Abstract
 {
     public function _construct()
     {
-        $this->_init('adyen_subscription/profile_order', 'entity_id');
+        $this->_init('adyen_subscription/subscription_order', 'entity_id');
     }
 }

@@ -20,7 +20,7 @@
 class Adyen_Subscription_Model_Catalog_Product_Type_Bundle extends Ho_SimpleBundle_Model_Bundle_Product_Type
 {
     /**
-     * Prepare selected options for simple profile product
+     * Prepare selected options for simple subscription product
      *
      * @param  Mage_Catalog_Model_Product $product
      * @param  Varien_Object $buyRequest
@@ -30,9 +30,9 @@ class Adyen_Subscription_Model_Catalog_Product_Type_Bundle extends Ho_SimpleBund
     {
         $options = parent::processBuyRequest($product, $buyRequest);
 
-        $option = $buyRequest->getData('adyen_subscription_profile');
+        $option = $buyRequest->getData('adyen_subscription_subscription');
 
-        $options['adyen_subscription_profile'] = $option;
+        $options['adyen_subscription_subscription'] = $option;
 
         return $options;
     }

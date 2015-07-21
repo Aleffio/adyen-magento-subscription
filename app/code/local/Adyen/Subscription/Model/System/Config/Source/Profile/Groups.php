@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
  
-class Adyen_Subscription_Model_System_Config_Source_Profile_Groups
+class Adyen_Subscription_Model_System_Config_Source_Subscription_Groups
 {
 
     protected $_options;

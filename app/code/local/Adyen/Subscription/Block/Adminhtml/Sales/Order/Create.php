@@ -22,10 +22,10 @@ class Adyen_Subscription_Block_Adminhtml_Sales_Order_Create
     public function __construct()
     {
         parent::__construct();
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::registry('current_profile');
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::registry('current_subscription');
 
-        if (! $profile) {
+        if (! $subscription) {
             return $this;
         }
 
@@ -36,7 +36,7 @@ class Adyen_Subscription_Block_Adminhtml_Sales_Order_Create
 
         $confirm = Mage::helper('adyen_subscription')->__('Are you sure you want to place the order now?');
         $confirm .= ' ' .Mage::helper('adyen_subscription')->__('Order will be automatically created at:');
-        $confirm .= ' ' .$profile->getActiveQuoteAdditional()->getScheduledAtFormatted();
+        $confirm .= ' ' .$subscription->getActiveQuoteAdditional()->getScheduledAtFormatted();
 
         $js = <<<JS
 var confirm = window.confirm('{$confirm}'); if(confirm) { order.submit() }
@@ -46,7 +46,7 @@ JS;
         $this->_addButton('save_scheduled', [
             'label' => Mage::helper('adyen_subscription')->__('Finish Editing'),
             'class' => 'save',
-            'onclick' => "order.submitProfile()",
+            'onclick' => "order.submitSubscription()",
         ], 20);
     }
 }

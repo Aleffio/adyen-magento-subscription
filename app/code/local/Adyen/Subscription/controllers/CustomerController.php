@@ -34,7 +34,7 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
     /**
      * Show subscriptions
      */
-    public function profilesAction()
+    public function subscriptionsAction()
     {
         $this->loadLayout()
             ->_title(Mage::helper('ho_monitor')->__('My Subscriptions'))
@@ -46,30 +46,30 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
      */
     public function viewAction()
     {
-        $profileId = $this->getRequest()->getParam('profile_id');
+        $subscriptionId = $this->getRequest()->getParam('subscription_id');
 
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (!$profile->getId()) {
+        if (!$subscription->getId()) {
             $this->_forward('noRoute');
             return false;
         }
 
-        if ($profile->getCustomerId() != Mage::getSingleton('customer/session')->getCustomerId()) {
+        if ($subscription->getCustomerId() != Mage::getSingleton('customer/session')->getCustomerId()) {
             $this->_forward('noRoute');
             return false;
         }
 
-        Mage::register('adyen_subscription_profile', $profile);
+        Mage::register('adyen_subscription_subscription', $subscription);
 
         $this->_title($this->__('Subscription'))
-            ->_title($this->__('Subscription # %s', $profile->getId()));
+            ->_title($this->__('Subscription # %s', $subscription->getId()));
         $this->loadLayout();
         $this->_initLayoutMessages('customer/session');
 
         $navigationBlock = $this->getLayout()->getBlock('customer_account_navigation');
         if ($navigationBlock) {
-            $navigationBlock->setActive('adyen_subscription/customer/profiles');
+            $navigationBlock->setActive('adyen_subscription/customer/subscriptions');
         }
 
         $this->renderLayout();

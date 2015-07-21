@@ -16,8 +16,8 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Customer_Edit_Tab_Profiles
-    extends Adyen_Subscription_Block_Adminhtml_Profile_Grid
+class Adyen_Subscription_Block_Adminhtml_Customer_Edit_Tab_Subscription
+    extends Adyen_Subscription_Block_Adminhtml_Subscription_Grid
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
     /**
@@ -25,8 +25,8 @@ class Adyen_Subscription_Block_Adminhtml_Customer_Edit_Tab_Profiles
      */
     protected function _prepareCollection()
     {
-        /** @var Adyen_Subscription_Model_Resource_Profile_Collection $collection */
-        $collection = Mage::getResourceModel('adyen_subscription/profile_collection');
+        /** @var Adyen_Subscription_Model_Resource_Subscription_Collection $collection */
+        $collection = Mage::getResourceModel('adyen_subscription/subscription_collection');
         $collection->addEmailToSelect();
         $collection->addNameToSelect();
         $collection->addBillingAgreementToSelect();

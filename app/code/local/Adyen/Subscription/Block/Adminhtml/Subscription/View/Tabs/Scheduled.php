@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled
+class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_Scheduled
     extends Mage_Adminhtml_Block_Template
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
@@ -25,13 +25,13 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled
      */
     public function getAllVisibleItems()
     {
-        return $this->getProfile()->getActiveQuote()->getAllVisibleItems();
+        return $this->getSubscription()->getActiveQuote()->getAllVisibleItems();
     }
 
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    public function getProfile()
+    public function getSubscription()
     {
         return Mage::registry('adyen_subscription');
     }
@@ -59,7 +59,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled
      */
     public function canShowTab()
     {
-        return $this->getProfile()->getActiveQuote();
+        return $this->getSubscription()->getActiveQuote();
     }
 
     /**

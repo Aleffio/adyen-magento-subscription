@@ -26,7 +26,7 @@ class Adyen_Subscription_Model_System_Config_Source_Term
     public function toOptionArray()
     {
         if (!$this->_options) {
-            $options = Mage::getModel('adyen_subscription/product_profile')->getTermTypes();
+            $options = Mage::getModel('adyen_subscription/product_subscription')->getTermTypes();
 
             array_unshift($options, array(
                 'value' => '',

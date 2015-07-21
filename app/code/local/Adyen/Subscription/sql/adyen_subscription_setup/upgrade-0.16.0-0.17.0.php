@@ -41,7 +41,7 @@ $installer->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'adyen_subscription
     'note'                       => '',
     'default'                    => null,                                                     // admin input default value
     'input'                      => 'select',                                                 // admin input type (select, text, textarea etc)
-    'source'                     => 'adyen_subscription/system_config_source_profile_type',
+    'source'                     => 'adyen_subscription/system_config_source_subscription_type',
     'required'                   => false,                                                    // required in admin
     'user_defined'               => false,                                                    // editable in admin attributes section, false for not
     'unique'                     => false,                                                    // unique value required

@@ -17,54 +17,54 @@
  */
 
 /**
- * Class Adyen_Subscription_Model_Profile_Order
+ * Class Adyen_Subscription_Model_Subscription_Order
  *
- * @method int getProfileId()
- * @method Adyen_Subscription_Model_Profile_Order setProfileId(int $value)
+ * @method int getSubscriptionId()
+ * @method Adyen_Subscription_Model_Subscription_Order setSubscriptionId(int $value)
  * @method int getEntityId()
- * @method Adyen_Subscription_Model_Profile_Order setEntityId(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Order setEntityId(int $value)
  * @method int getOrderId()
- * @method Adyen_Subscription_Model_Profile_Order setOrderId(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Order setOrderId(int $value)
  */
-class Adyen_Subscription_Model_Profile_Order extends Mage_Core_Model_Abstract
+class Adyen_Subscription_Model_Subscription_Order extends Mage_Core_Model_Abstract
 {
     protected function _construct()
     {
-        $this->_init('adyen_subscription/profile_order');
+        $this->_init('adyen_subscription/subscription_order');
     }
 
     /**
-     * @param Adyen_Subscription_Model_Profile $profile
-     * @return Adyen_Subscription_Model_Profile_Order
+     * @param Adyen_Subscription_Model_Subscription $subscription
+     * @return Adyen_Subscription_Model_Subscription_Order
      */
-    public function setProfile(Adyen_Subscription_Model_Profile $profile)
+    public function setSubscription(Adyen_Subscription_Model_Subscription $subscription)
     {
-        $this->setData('_profile', $profile);
-        $this->setProfileId($profile->getId());
+        $this->setData('_subscription', $subscription);
+        $this->setSubscriptionId($subscription->getId());
         return $this;
     }
 
 
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    public function getProfile()
+    public function getSubscription()
     {
-        if (! $this->hasData('_profile')) {
+        if (! $this->hasData('_subscription')) {
             // Note: The order won't load if we don't set the store ID
-            $order = Mage::getModel('adyen_subscription/profile')
-                ->load($this->getProfileId());
+            $order = Mage::getModel('adyen_subscription/subscription')
+                ->load($this->getSubscriptionId());
 
-            $this->setData('_profile', $order);
+            $this->setData('_subscription', $order);
         }
 
-        return $this->getData('_profile');
+        return $this->getData('_subscription');
     }
 
 
     /**
      * @param Mage_Sales_Model_Order $order
-     * @return Adyen_Subscription_Model_Profile_Order
+     * @return Adyen_Subscription_Model_Subscription_Order
      */
     public function setOrder(Mage_Sales_Model_Order $order)
     {
@@ -82,7 +82,7 @@ class Adyen_Subscription_Model_Profile_Order extends Mage_Core_Model_Abstract
         if (! $this->hasData('_order')) {
             // Note: The order won't load if we don't set the store ID
             $order = Mage::getModel('sales/order')
-                ->setStoreId($this->getProfile()->getStoreId())
+                ->setStoreId($this->getSubscription()->getStoreId())
                 ->load($this->getOrderId());
 
             $this->setData('_order', $order);

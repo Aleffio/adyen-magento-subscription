@@ -18,8 +18,8 @@
 ?>
 
 <?php
-/** @var Adyen_Subscription_Model_Profile $_profile */
-$_profile = Mage::registry('current_profile');
+/** @var Adyen_Subscription_Model_Subscription $_subscription */
+$_subscription = Mage::registry('current_subscription');
 $_fullUpdate = $this->getRequest()->getParam('full_update');
 ?>
 <table cellspacing="0" cellpadding="8" width="100%">
@@ -29,13 +29,13 @@ $_fullUpdate = $this->getRequest()->getParam('full_update');
     </tbody>
 </table>
 <div class="divider"></div>
-<?php if ($_profile): ?>
+<?php if ($_subscription): ?>
 <?php
 $_dateFormat = Varien_Date::convertZendToStrftime(
     Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT), true, true
 );
 $_dateValue = Mage::helper('core')->formatDate(
-    $_profile->getScheduledAt(), Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, true
+    $_subscription->getScheduledAt(), Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, true
 );
 ?>
 <div class="order-totals-bottom">
@@ -60,16 +60,16 @@ Calendar.setup({
 </script>
 <?php endif; ?>
 
-<?php if ($_profile): ?>
+<?php if ($_subscription): ?>
 <?php
 $_updateUrl = $_fullUpdate
-    ? $this->getUrl('adyen_subscription/adminhtml_profile/updateProfile', ['id' => $_profile->getId()])
-    : $this->getUrl('adyen_subscription/adminhtml_profile/updateQuote', ['id' => $_profile->getId()]);
+    ? $this->getUrl('adyen_subscription/adminhtml_subscription/updateSubscription', ['id' => $_subscription->getId()])
+    : $this->getUrl('adyen_subscription/adminhtml_subscription/updateQuote', ['id' => $_subscription->getId()]);
 ?>
 
 <div class="order-totals-bottom">
     <script type="text/javascript">
-        AdminOrder.prototype.submitProfile = function(){
+        AdminOrder.prototype.submitSubscription = function(){
             if (this.orderItemChanged) {
                 if (confirm('You have item changes')) {
                     if (editForm.submit('<?php echo $_updateUrl;?>')) {
@@ -86,7 +86,7 @@ $_updateUrl = $_fullUpdate
         };
     </script>
 
-    <?php echo $this->getButtonHtml(Mage::helper('adyen_subscription')->__('Finish Editing'), 'order.submitProfile()', 'save'); ?>
+    <?php echo $this->getButtonHtml(Mage::helper('adyen_subscription')->__('Finish Editing'), 'order.submitSubscription()', 'save'); ?>
 </div>
 <?php else: ?>
 <?php echo $this->getChildHtml('totals_additional'); ?>

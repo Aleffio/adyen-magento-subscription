@@ -17,19 +17,19 @@
  */
 ?>
 
-<?php /* @var $this Adyen_Subscription_Block_Catalog_Product_View_Profile */ ?>
+<?php /* @var $this Adyen_Subscription_Block_Catalog_Product_View_Subscription */ ?>
 <?php $options = Mage::helper('core')->decorateArray($this->getOptions()); ?>
 <?php if (count($options)): ?>
-    <div id="catalog_product_composite_configure_fields_profile" class="<?php echo $this->getIsLastFieldset() ? 'last-fieldset' : '' ?>">
-        <h4><?php echo Mage::helper('catalog')->__('Profile') ?></h4>
+    <div id="catalog_product_composite_configure_fields_subscription" class="<?php echo $this->getIsLastFieldset() ? 'last-fieldset' : '' ?>">
+        <h4><?php echo Mage::helper('catalog')->__('Subscription') ?></h4>
         <div class="product-options">
             <dl>
-                <select id="profile-option" name="adyen_subscription_profile">
+                <select id="subscription-option" name="adyen_subscription_subscription">
                     <?php if ($this->canOrderStandalone()): ?>
                         <option value="none"><?=$this->__('None (standalone purchase)');?></option>
                     <?php endif; ?>
                     <?php foreach ($options as $option) : ?>
-                        <?php /** @var Adyen_Subscription_Model_Product_Profile $option */ ?>
+                        <?php /** @var Adyen_Subscription_Model_Product_Subscription $option */ ?>
                         <option value="<?=$option->getId();?>" <?=$this->_isSelected($option->getId()) ? 'selected="selected"' : ''; ?>><?php echo $option->getLabel(); ?></option>
                     <?php endforeach; ?>
                 </select>

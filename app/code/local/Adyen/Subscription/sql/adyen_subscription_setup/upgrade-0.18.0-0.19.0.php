@@ -24,9 +24,9 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$productProfileTable = $installer->getTable('adyen_subscription/profile');
+$productSubscriptionTable = $installer->getTable('adyen_subscription/subscription');
 
-$connection->addColumn($productProfileTable, 'updated_at', [
+$connection->addColumn($productSubscriptionTable, 'updated_at', [
     'type'      => Varien_Db_Ddl_Table::TYPE_TIMESTAMP,
     'after'     => 'created_at',
     'comment'   => 'Updated At',

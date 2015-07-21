@@ -17,15 +17,15 @@
  */
 
 /**
- * Class Adyen_Subscription_Model_Resource_Profile_Quote
+ * Class Adyen_Subscription_Model_Resource_Subscription_Quote
  *
  * @method int getQuoteId()
  * @method setQuoteId(int $value)
  */
-class Adyen_Subscription_Model_Resource_Profile_Quote extends Mage_Core_Model_Resource_Db_Abstract
+class Adyen_Subscription_Model_Resource_Subscription_Quote extends Mage_Core_Model_Resource_Db_Abstract
 {
     public function _construct()
     {
-        $this->_init('adyen_subscription/profile_quote', 'entity_id');
+        $this->_init('adyen_subscription/subscription_quote', 'entity_id');
     }
 }

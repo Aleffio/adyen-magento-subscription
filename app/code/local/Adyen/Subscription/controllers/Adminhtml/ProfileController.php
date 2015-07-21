@@ -16,10 +16,10 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Controller_Action
+class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml_Controller_Action
 {
     /**
-     * Initialize profile pages layout
+     * Initialize subscription pages layout
      *
      * @return $this
      */
@@ -31,7 +31,7 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
              ->_title($helper->__('Subscription'));
 
         $this->loadLayout()
-            ->_setActiveMenu('sales/adyen_subscription_profiles');
+            ->_setActiveMenu('sales/adyen_subscription_subscriptions');
 
         $this->_addBreadcrumb($helper->__('Sales'), $helper->__('Sales'))
             ->_addBreadcrumb($helper->__('Subscription'), $helper->__('Subscription'));
@@ -40,7 +40,7 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
     }
 
     /**
-     * Profile grid
+     * Subscription grid
      */
     public function indexAction()
     {
@@ -50,16 +50,16 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
 
 
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    protected function _initProfile()
+    protected function _initSubscription()
     {
-        $profileId  = $this->getRequest()->getParam('id');
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId  = $this->getRequest()->getParam('id');
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        Mage::register('adyen_subscription', $profile);
+        Mage::register('adyen_subscription', $subscription);
 
-        return $profile;
+        return $subscription;
     }
 
     /**
@@ -67,21 +67,21 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
      */
     public function viewAction()
     {
-        $profile = $this->_initProfile();
+        $subscription = $this->_initSubscription();
         $helper = Mage::helper('adyen_subscription');
 
-        if (! $profile->getId()) {
-            $this->_getSession()->addError($helper->__('This profile no longer exists.'));
+        if (! $subscription->getId()) {
+            $this->_getSession()->addError($helper->__('This subscription no longer exists.'));
             $this->_redirect('*/*/');
             return;
         }
 
         $this->_title($helper->__('Sales'))
              ->_title($helper->__('Subscription #%s for %s',
-                 $profile->getIncrementId(), $profile->getCustomerName()));
+                 $subscription->getIncrementId(), $subscription->getCustomerName()));
 
         $this->loadLayout();
-        $this->_setActiveMenu('sales/adyen_subscription_profiles');
+        $this->_setActiveMenu('sales/adyen_subscription_subscriptions');
         $this->renderLayout();
     }
 
@@ -91,42 +91,42 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
      */
     public function editAction()
     {
-        $profile = $this->_initProfile();
+        $subscription = $this->_initSubscription();
         $helper = Mage::helper('adyen_subscription');
 
-        if (! $profile->getId()) {
-            $this->_getSession()->addError($helper->__('This profile no longer exists.'));
+        if (! $subscription->getId()) {
+            $this->_getSession()->addError($helper->__('This subscription no longer exists.'));
             $this->_redirect('*/*/');
             return;
         }
 
         $this->_title($helper->__('Sales'))
              ->_title($helper->__('Edit Subscription #%s for %s',
-                 $profile->getIncrementId(), $profile->getCustomerName()));
+                 $subscription->getIncrementId(), $subscription->getCustomerName()));
 
-        $data = $this->_getSession()->getProfileData(true);
+        $data = $this->_getSession()->getSubscriptionData(true);
         if (!empty($data)) {
-            $profile->addData($data);
+            $subscription->addData($data);
         }
 
         $this->loadLayout();
-        $this->_setActiveMenu('sales/adyen_subscription_profiles');
+        $this->_setActiveMenu('sales/adyen_subscription_subscriptions');
         $this->renderLayout();
     }
 
 
     public function saveAction()
     {
-        $profile = $this->_initProfile();
+        $subscription = $this->_initSubscription();
         $helper = Mage::helper('adyen_subscription');
 
-        if (! $profile->getId()) {
-            $this->_getSession()->addError($helper->__('This profile no longer exists.'));
+        if (! $subscription->getId()) {
+            $this->_getSession()->addError($helper->__('This subscription no longer exists.'));
             $this->_redirect('*/*/');
             return;
         }
 
-        $postData = $this->getRequest()->getPost('profile');
+        $postData = $this->getRequest()->getPost('subscription');
 
         try {
             //@todo move this logic to the model its self.
@@ -134,27 +134,27 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
                 $billingAgreementId = $postData['billing_agreement_id'];
                 $billingAgreement = Mage::getModel('sales/billing_agreement')
                     ->load($billingAgreementId);
-                $profile->setBillingAgreement($billingAgreement, true);
+                $subscription->setBillingAgreement($billingAgreement, true);
             }
 
-            $profile->save();
+            $subscription->save();
 
-            $this->_getSession()->setProfileData(null);
+            $this->_getSession()->setSubscriptionData(null);
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Profile successfully saved')
+                Mage::helper('adyen_subscription')->__('Subscription successfully saved')
             );
-            $this->_redirect('*/*/view', ['id' => $profile->getId()]);
+            $this->_redirect('*/*/view', ['id' => $subscription->getId()]);
         } catch (Exception $e) {
             Adyen_Subscription_Exception::logException($e);
 
-            $this->_getSession()->setProfileData($postData);
-            $this->_getSession()->addError($helper->__('There was an error saving the profile: %s', $e->getMessage()));
+            $this->_getSession()->setSubscriptionData($postData);
+            $this->_getSession()->addError($helper->__('There was an error saving the subscription: %s', $e->getMessage()));
             $this->_redirectReferer();
         }
     }
 
     /**
-     * Profile cancellation form
+     * Subscription cancellation form
      */
     public function cancelAction()
     {
@@ -166,13 +166,13 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
      */
     public function cancelPostAction()
     {
-        $profileId = $this->getRequest()->getParam('id');
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId = $this->getRequest()->getParam('id');
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (! $profile->getId()) {
+        if (! $subscription->getId()) {
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Could not find profile')
+                Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
@@ -183,46 +183,46 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
             $this->_getSession()->addSuccess(
                 Mage::helper('adyen_subscription')->__('No stop reason given')
             );
-            $this->_redirect('*/*/cancel', ['id' => $profile->getId()]);
+            $this->_redirect('*/*/cancel', ['id' => $subscription->getId()]);
             return;
         }
 
-        $profile->setCancelCode($reason);
-        $profile->setStatus($profile::STATUS_CANCELED);
-        $profile->setEndsAt(now());
-        $profile->save();
+        $subscription->setCancelCode($reason);
+        $subscription->setStatus($subscription::STATUS_CANCELED);
+        $subscription->setEndsAt(now());
+        $subscription->save();
 
         $this->_getSession()->addSuccess(
-            Mage::helper('adyen_subscription')->__('Profile %s successfully cancelled', $profile->getIncrementId())
+            Mage::helper('adyen_subscription')->__('Subscription %s successfully cancelled', $subscription->getIncrementId())
         );
         $this->_redirect('*/*/');
     }
 
-    public function activateProfileAction()
+    public function activateSubscriptionAction()
     {
-        $profileId = $this->getRequest()->getParam('id');
+        $subscriptionId = $this->getRequest()->getParam('id');
 
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (!$profile->getId()) {
+        if (!$subscription->getId()) {
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Could not find profile')
+                Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
         }
 
         try {
-            $profile->activate();
+            $subscription->activate();
 
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('The profile has been successfully activated')
+                Mage::helper('adyen_subscription')->__('The subscription has been successfully activated')
             );
         }
         catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError(
-                Mage::helper('adyen_subscription')->__('An error occurred while trying to activate this profile')
+                Mage::helper('adyen_subscription')->__('An error occurred while trying to activate this subscription')
             );
         }
 
@@ -230,33 +230,33 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
     }
 
     /**
-     * Delete profile
+     * Delete subscription
      */
     public function deleteAction()
     {
-        $profileId = $this->getRequest()->getParam('id');
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId = $this->getRequest()->getParam('id');
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (! $profile->getId()) {
+        if (! $subscription->getId()) {
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Could not find profile')
+                Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
         }
 
-        if ($profile->getId()) {
+        if ($subscription->getId()) {
             try {
-                $profile->delete();
+                $subscription->delete();
 
                 $this->_getSession()->addSuccess(
-                    Mage::helper('adyen_subscription')->__('The profile has been successfully deleted')
+                    Mage::helper('adyen_subscription')->__('The subscription has been successfully deleted')
                 );
             }
             catch (Mage_Core_Exception $e) {
                 $this->_getSession()->addError(
-                    Mage::helper('adyen_subscription')->__('An error occurred while trying to delete this profile')
+                    Mage::helper('adyen_subscription')->__('An error occurred while trying to delete this subscription')
                 );
             }
         }
@@ -265,24 +265,24 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
     }
 
     /**
-     * Create profile quote
+     * Create subscription quote
      */
     public function createQuoteAction()
     {
-        $profileId = $this->getRequest()->getParam('id');
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId = $this->getRequest()->getParam('id');
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (! $profile->getId()) {
+        if (! $subscription->getId()) {
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Could not find profile')
+                Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
         }
 
         try {
-            $quote = Mage::getSingleton('adyen_subscription/service_profile')->createQuote($profile);
+            $quote = Mage::getSingleton('adyen_subscription/service_subscription')->createQuote($subscription);
 
             $this->_getSession()->addSuccess(
                 Mage::helper('adyen_subscription')->__('Quote (#%s) successfully created', $quote->getId())
@@ -290,7 +290,7 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
         }
         catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError(
-                Mage::helper('adyen_subscription')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
+                Mage::helper('adyen_subscription')->__('An error occurred while trying to create a quote for this subscription: ' . $e->getMessage())
             );
         }
 
@@ -299,32 +299,32 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
 
 
     /**
-     * Create profile quote
+     * Create subscription quote
      */
-    public function editProfileAction()
+    public function editSubscriptionAction()
     {
-        $profileId = $this->getRequest()->getParam('id');
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId = $this->getRequest()->getParam('id');
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (! $profile->getId()) {
+        if (! $subscription->getId()) {
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Could not find profile')
+                Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
         }
 
         try {
-            if (! $profile->getActiveQuote()) {
-                Mage::getSingleton('adyen_subscription/service_profile')->createQuote($profile);
+            if (! $subscription->getActiveQuote()) {
+                Mage::getSingleton('adyen_subscription/service_subscription')->createQuote($subscription);
             }
 
-            $this->_editProfile($profile, ['full_update' => true]);
+            $this->_editSubscription($subscription, ['full_update' => true]);
             return;
         } catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError(
-                Mage::helper('adyen_subscription')->__('An error occurred while trying to create a quote for this profile: ' . $e->getMessage())
+                Mage::helper('adyen_subscription')->__('An error occurred while trying to create a quote for this subscription: ' . $e->getMessage())
             );
         }
 
@@ -332,17 +332,17 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
     }
 
     /**
-     * Update profile based on edited quote
+     * Update subscription based on edited quote
      */
-    public function updateProfileAction()
+    public function updateSubscriptionAction()
     {
-        $profileId = $this->getRequest()->getParam('id');
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId = $this->getRequest()->getParam('id');
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (!$profile->getId()) {
+        if (!$subscription->getId()) {
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Could not find profile')
+                Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
@@ -351,41 +351,41 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
         $postData = $this->getRequest()->getParam('adyen_subscription');
 
         try {
-            $quote = $profile->getActiveQuote();
+            $quote = $subscription->getActiveQuote();
 
-            Mage::getModel('adyen_subscription/service_quote')->updateProfile($quote, $profile);
-            $profile->importPostData($postData);
-            $profile->setActive()->save();
+            Mage::getModel('adyen_subscription/service_quote')->updateSubscription($quote, $subscription);
+            $subscription->importPostData($postData);
+            $subscription->setActive()->save();
 
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Profile and scheduled order successfully updated')
+                Mage::helper('adyen_subscription')->__('Subscription and scheduled order successfully updated')
             );
         }
         catch (Mage_Core_Exception $e) {
-            $profile->setErrorMessage($e->getMessage());
-            $profile->setStatus($profile::STATUS_PROFILE_ERROR);
-            $profile->save();
+            $subscription->setErrorMessage($e->getMessage());
+            $subscription->setStatus($subscription::STATUS_PROFILE_ERROR);
+            $subscription->save();
 
             $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('An error occurred: ' . $e->getMessage())
             );
         }
 
-        $this->_redirect('*/*/view', ['id' => $profile->getId()]);
+        $this->_redirect('*/*/view', ['id' => $subscription->getId()]);
     }
 
     /**
-     * Quote is automatically updated, we only need to save the custom values at the profile (i.e. scheduled_at)
+     * Quote is automatically updated, we only need to save the custom values at the subscription (i.e. scheduled_at)
      */
     public function updateQuoteAction()
     {
-        $profileId = $this->getRequest()->getParam('id');
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId = $this->getRequest()->getParam('id');
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (!$profile->getId()) {
+        if (!$subscription->getId()) {
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Could not find profile')
+                Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
@@ -394,53 +394,53 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
         $postData = $this->getRequest()->getParam('adyen_subscription');
 
         try {
-            $quote = $profile->getActiveQuote();
+            $quote = $subscription->getActiveQuote();
             Mage::getModel('adyen_subscription/service_quote')->updateQuotePayment($quote);
 
-            $profile->importPostData($postData);
+            $subscription->importPostData($postData);
 
-            $profile->save();
+            $subscription->save();
 
             $this->_getSession()->addSuccess(
                 Mage::helper('adyen_subscription')->__('Quote successfully updated')
             );
         }
         catch (Mage_Core_Exception $e) {
-            $profile->setErrorMessage($e->getMessage());
-            $profile->setStatus($profile::STATUS_PROFILE_ERROR);
-            $profile->save();
+            $subscription->setErrorMessage($e->getMessage());
+            $subscription->setStatus($subscription::STATUS_PROFILE_ERROR);
+            $subscription->save();
 
             $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('An error occurred: ' . $e->getMessage())
             );
         }
 
-        $this->_redirect('*/*/view', ['id' => $profile->getId()]);
+        $this->_redirect('*/*/view', ['id' => $subscription->getId()]);
     }
 
     /**
-     * Create profile order
+     * Create subscription order
      */
     public function createOrderAction()
     {
-        if ($profileId = $this->getRequest()->getParam('id')) {
-            $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        if ($subscriptionId = $this->getRequest()->getParam('id')) {
+            $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-            if ($profile->getId()) {
+            if ($subscription->getId()) {
                 try {
-                    $quote = $profile->getActiveQuote();
+                    $quote = $subscription->getActiveQuote();
                     if (! $quote) {
                         Adyen_Subscription_Exception::throwException('Can\'t create order: No quote created yet.');
                     }
 
-                    $order = Mage::getSingleton('adyen_subscription/service_quote')->createOrder($quote, $profile);
+                    $order = Mage::getSingleton('adyen_subscription/service_quote')->createOrder($quote, $subscription);
 
                     $this->_getSession()->addSuccess(
                         Mage::helper('adyen_subscription')->__('Order successfully created (#%s)', $order->getIncrementId())
                     );
                 } catch (Exception $e) {
                     $this->_getSession()->addError(
-                        Mage::helper('adyen_subscription')->__('An error occurred while trying to create a order for this profile: ' . $e->getMessage())
+                        Mage::helper('adyen_subscription')->__('An error occurred while trying to create a order for this subscription: ' . $e->getMessage())
                     );
                 }
             }
@@ -456,29 +456,29 @@ class Adyen_Subscription_Adminhtml_ProfileController extends Mage_Adminhtml_Cont
     
     public function editQuoteAction()
     {
-        $profileId = $this->getRequest()->getParam('id');
-        $profile = Mage::getModel('adyen_subscription/profile')->load($profileId);
+        $subscriptionId = $this->getRequest()->getParam('id');
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-        if (! $profile->getId()) {
+        if (! $subscription->getId()) {
             Adyen_Subscription_Exception::throwException('Can\'t create order: No quote created yet.');
             $this->_redirectReferer();
         }
 
-        $this->_editProfile($profile);
+        $this->_editSubscription($subscription);
     }
 
-    protected function _editProfile(
-        Adyen_Subscription_Model_Profile $profile,
+    protected function _editSubscription(
+        Adyen_Subscription_Model_Subscription $subscription,
         array $params = [])
     {
-        $quote = $profile->getActiveQuote();
+        $quote = $subscription->getActiveQuote();
 
         Mage::getSingleton('adminhtml/session_quote')
             ->setCustomerId($quote->getCustomerId())
             ->setStoreId($quote->getStoreId())
             ->setQuoteId($quote->getId());
 
-        $params['profile'] = $profile->getId();
+        $params['subscription'] = $subscription->getId();
 
         $this->_redirect('adminhtml/sales_order_create/index', $params);
     }

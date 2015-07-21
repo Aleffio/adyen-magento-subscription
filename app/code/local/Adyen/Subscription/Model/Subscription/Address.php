@@ -17,22 +17,22 @@
  */
 
 /**
- * Class Adyen_Subscription_Model_Profile_Address
+ * Class Adyen_Subscription_Model_Subscription_Address
  *
- * @method int getProfileId()
- * @method Adyen_Subscription_Model_Profile_Address setProfileId(int $value)
+ * @method int getSubscriptionId()
+ * @method Adyen_Subscription_Model_Subscription_Address setSubscriptionId(int $value)
  * @method int getSource()
- * @method Adyen_Subscription_Model_Profile_Address setSource(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Address setSource(int $value)
  * @method int getType()
- * @method Adyen_Subscription_Model_Profile_Address setType(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Address setType(int $value)
  * @method int getOrderAddressId()
- * @method Adyen_Subscription_Model_Profile_Address setOrderAddressId(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Address setOrderAddressId(int $value)
  * @method int getCustomerAddressId()
- * @method Adyen_Subscription_Model_Profile_Address setCustomerAddressId(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Address setCustomerAddressId(int $value)
  * @method int getQuoteAddressId()
- * @method Adyen_Subscription_Model_Profile_Address setQuoteAddressId(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Address setQuoteAddressId(int $value)
  */
-class Adyen_Subscription_Model_Profile_Address extends Mage_Core_Model_Abstract
+class Adyen_Subscription_Model_Subscription_Address extends Mage_Core_Model_Abstract
 {
     const ADDRESS_SOURCE_CUSTOMER = 1;
     const ADDRESS_SOURCE_ORDER    = 2;
@@ -43,19 +43,19 @@ class Adyen_Subscription_Model_Profile_Address extends Mage_Core_Model_Abstract
 
     protected function _construct()
     {
-        $this->_init('adyen_subscription/profile_address');
+        $this->_init('adyen_subscription/subscription_address');
     }
 
     /**
-     * Set correct values on profile address based on given profile and order address
+     * Set correct values on subscription address based on given subscription and order address
      *
-     * @param Adyen_Subscription_Model_Profile $profile
+     * @param Adyen_Subscription_Model_Subscription $subscription
      * @param Mage_Sales_Model_Order_Address|Mage_Sales_Model_Quote_Address $address
      * @return $this
      */
-    public function initAddress(Adyen_Subscription_Model_Profile $profile, $address)
+    public function initAddress(Adyen_Subscription_Model_Subscription $subscription, $address)
     {
-        $this->setProfileId($profile->getId());
+        $this->setSubscriptionId($subscription->getId());
 
         // Reset (possible) original values
         $this->setOrderAddressId(null)
@@ -93,33 +93,33 @@ class Adyen_Subscription_Model_Profile_Address extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @param Adyen_Subscription_Model_Profile $profile
+     * @param Adyen_Subscription_Model_Subscription $subscription
      * @param int $type
-     * @return Adyen_Subscription_Model_Profile_Address
+     * @return Adyen_Subscription_Model_Subscription_Address
      */
-    public function getProfileAddress(Adyen_Subscription_Model_Profile $profile, $type = self::ADDRESS_TYPE_BILLING)
+    public function getSubscriptionAddress(Adyen_Subscription_Model_Subscription $subscription, $type = self::ADDRESS_TYPE_BILLING)
     {
-        $this->_getResource()->loadByProfile($this, $profile, $type);
+        $this->_getResource()->loadBySubscription($this, $subscription, $type);
         return $this;
     }
 
     /**
-     * @param Adyen_Subscription_Model_Profile $profile
+     * @param Adyen_Subscription_Model_Subscription $subscription
      * @param int $type
      * @return Mage_Sales_Model_Order_Address|Mage_Customer_Model_Address
      */
-    public function getAddress(Adyen_Subscription_Model_Profile $profile, $type = self::ADDRESS_TYPE_BILLING)
+    public function getAddress(Adyen_Subscription_Model_Subscription $subscription, $type = self::ADDRESS_TYPE_BILLING)
     {
-        $profileAddress = $this->getProfileAddress($profile, $type);
+        $subscriptionAddress = $this->getSubscriptionAddress($subscription, $type);
 
-        if ($profileAddress->getSource() == self::ADDRESS_SOURCE_ORDER) {
-            $address = Mage::getModel('sales/order_address')->load($profileAddress->getOrderAddressId());
+        if ($subscriptionAddress->getSource() == self::ADDRESS_SOURCE_ORDER) {
+            $address = Mage::getModel('sales/order_address')->load($subscriptionAddress->getOrderAddressId());
         }
-        elseif ($profileAddress->getSource() == self::ADDRESS_SOURCE_QUOTE) {
-            $address = Mage::getModel('sales/quote_address')->load($profileAddress->getQuoteAddressId());
+        elseif ($subscriptionAddress->getSource() == self::ADDRESS_SOURCE_QUOTE) {
+            $address = Mage::getModel('sales/quote_address')->load($subscriptionAddress->getQuoteAddressId());
         }
         else {
-            $address = Mage::getModel('customer/address')->load($profileAddress->getCustomerAddressId());
+            $address = Mage::getModel('customer/address')->load($subscriptionAddress->getCustomerAddressId());
         }
 
         return $address;

@@ -17,8 +17,8 @@
  */
 
 /**
- * @method $this setProfile(Adyen_Subscription_Model_Profile $profile)
- * @method Adyen_Subscription_Model_Profile getProfile()
+ * @method $this setSubscription(Adyen_Subscription_Model_Subscription $subscription)
+ * @method Adyen_Subscription_Model_Subscription getSubscription()
  * @see admin/subscription/sales/order/view/subscription.phtml
  */
 class Adyen_Subscription_Block_Adminhtml_Sales_Order_View_Subscription
@@ -35,31 +35,31 @@ class Adyen_Subscription_Block_Adminhtml_Sales_Order_View_Subscription
     protected function _toHtml()
     {
         $order = $this->getOrder();
-        $profile = Mage::getModel('adyen_subscription/profile')->loadByOrder($order);
+        $subscription = Mage::getModel('adyen_subscription/subscription')->loadByOrder($order);
 
-        if (! $profile->getId()) {
+        if (! $subscription->getId()) {
             return $this->getChildHtml();
         }
 
-        $this->setProfile($profile);
+        $this->setSubscription($subscription);
         return parent::_toHtml();
     }
 
     /**
-     * @return Adyen_Subscription_Model_Profile_Order
+     * @return Adyen_Subscription_Model_Subscription_Order
      */
-    public function getProfileOrderAdditionalInfo()
+    public function getSubscriptionOrderAdditionalInfo()
     {
-        return $this->getProfile()->getOrderAdditional($this->getOrder());
+        return $this->getSubscription()->getOrderAdditional($this->getOrder());
     }
 
 
     /**
-     * @return Adyen_Subscription_Model_Profile_Quote|null
+     * @return Adyen_Subscription_Model_Subscription_Quote|null
      */
-    public function getProfileQuoteAdditionalInfo()
+    public function getSubscriptionQuoteAdditionalInfo()
     {
-        $quoteAdditional = Mage::getModel('adyen_subscription/profile_quote')
+        $quoteAdditional = Mage::getModel('adyen_subscription/subscription_quote')
             ->load($this->getOrder()->getQuoteId(), 'quote_id');
 
         return $quoteAdditional->getId() ? $quoteAdditional : null;

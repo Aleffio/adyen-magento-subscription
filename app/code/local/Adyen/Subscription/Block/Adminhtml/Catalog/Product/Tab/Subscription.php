@@ -35,16 +35,16 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
             'legend'    => $helper->__('Adyen Subscription'),
         ));
 
-        /** @var Mage_Adminhtml_Block_Widget_Button $addProfileButton */
-        $addProfileButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
-            'label'        => Mage::helper('adyen_subscription')->__('Add New Profile'),
-            'class'        => 'add product-profile-add',
-            'element_name' => 'product_profile_add',
+        /** @var Mage_Adminhtml_Block_Widget_Button $addSubscriptionButton */
+        $addSubscriptionButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
+            'label'        => Mage::helper('adyen_subscription')->__('Add New Subscription'),
+            'class'        => 'add product-subscription-add',
+            'element_name' => 'product_subscription_add',
         ]);
 
-        $fieldset->setHeaderBar($addProfileButton->toHtml());
+        $fieldset->setHeaderBar($addSubscriptionButton->toHtml());
 
-        $productProfiles = Mage::getModel('adyen_subscription/product_profile')
+        $productSubscriptions = Mage::getModel('adyen_subscription/product_subscription')
             ->getCollection()
             ->addFieldToFilter('product_id', $product->getId())
             ->setOrder('sort_order', Zend_Db_Select::SQL_ASC);
@@ -56,13 +56,13 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
         $adyenSubscriptionType->setName('product[adyen_subscription_type]');
         $adyenSubscriptionType->setValue($product->getData('adyen_subscription_type'));
         $adyenSubscriptionType->setNote(
-            $helper->__('%s to add a new profile.', '<i>'.$helper->__('Add New Profile').'</i>')."<br />\n".
+            $helper->__('%s to add a new subscription.', '<i>'.$helper->__('Add New Subscription').'</i>')."<br />\n".
             $helper->__('Drag and drop to reorder')
         );
 
-        $this->_renderProfileFieldset($fieldset);
-        foreach ($productProfiles as $profile) {
-            $this->_renderProfileFieldset($fieldset, $profile);
+        $this->_renderSubscriptionFieldset($fieldset);
+        foreach ($productSubscriptions as $subscription) {
+            $this->_renderSubscriptionFieldset($fieldset, $subscription);
         }
 
         $this->setForm($form);
@@ -73,119 +73,119 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
 
     /**
      * @param Varien_Data_Form_Element_Fieldset  $parentFieldset
-     * @param Adyen_Subscription_Model_Product_Profile $profile
+     * @param Adyen_Subscription_Model_Product_Subscription $subscription
      *
      * @return Varien_Data_Form_Element_Fieldset
      */
-    protected function _renderProfileFieldset(
+    protected function _renderSubscriptionFieldset(
         Varien_Data_Form_Element_Fieldset $parentFieldset,
-        Adyen_Subscription_Model_Product_Profile $profile = null)
+        Adyen_Subscription_Model_Product_Subscription $subscription = null)
     {
         $helper = Mage::helper('adyen_subscription');
 
-        $elementId = $profile ? 'product_profile[' . $profile->getId() . ']' : 'product_profile[template]';
+        $elementId = $subscription ? 'product_subscription[' . $subscription->getId() . ']' : 'product_subscription[template]';
 
-        $profileFieldset = $parentFieldset->addFieldset($elementId, array(
-            'legend'    => $helper->__($profile ? 'Profile: <em>' . $profile->getLabel() . '</em>' : 'New Profile'),
-            'class'     => 'profile-fieldset' . (!$profile ? ' product-fieldset-template' : ''),
+        $subscriptionFieldset = $parentFieldset->addFieldset($elementId, array(
+            'legend'    => $helper->__($subscription ? 'Subscription: <em>' . $subscription->getLabel() . '</em>' : 'New Subscription'),
+            'class'     => 'subscription-fieldset' . (!$subscription ? ' product-fieldset-template' : ''),
             'name'      => $elementId . '[fieldset]'
         ))->setRenderer(
             $this->getLayout()->createBlock('adyen_subscription/adminhtml_catalog_product_tab_subscription_fieldset')
         );
-        $profileFieldset->addType(
+        $subscriptionFieldset->addType(
             'price',
             Mage::getConfig()->getBlockClassName('adyen_subscription/adminhtml_catalog_product_tab_subscription_price')
         );
 
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
-                'label'   => 'Delete Profile',
+                'label'   => 'Delete Subscription',
                 'onclick' => 'return false;',
-                'class'   => 'delete product-profile-delete',
+                'class'   => 'delete product-subscription-delete',
             ));
-        $button->setName('delete_profile');
-        $profileFieldset->setHeaderBar($button->toHtml());
+        $button->setName('delete_subscription');
+        $subscriptionFieldset->setHeaderBar($button->toHtml());
 
         $inStore = Mage::app()->getRequest()->getParam('store');
 
-        $profileFieldset->addField($elementId . '[label]', 'text', array(
+        $subscriptionFieldset->addField($elementId . '[label]', 'text', array(
             'name'      => $elementId . '[label]',
             'label'     => $helper->__('Label'),
-            'disabled'  => $inStore && ($profile ? !$profile->getStoreLabel($inStore) : false), // @todo won't disable
+            'disabled'  => $inStore && ($subscription ? !$subscription->getStoreLabel($inStore) : false), // @todo won't disable
             'required'  => true,
             'after_element_html' => $inStore ? '</td><td class="use-default">
             <input id="' . $elementId . '[use_default]" name="' . $elementId . '[use_default]" type="checkbox" value="1" class="checkbox config-inherit" '
-                . (($profile ? $profile->getStoreLabel($inStore) : false) ? '' : 'checked="checked"') . ' onclick="toggleValueElements(this, Element.previous(this.parentNode))" />
+                . (($subscription ? $subscription->getStoreLabel($inStore) : false) ? '' : 'checked="checked"') . ' onclick="toggleValueElements(this, Element.previous(this.parentNode))" />
             <label for="' . $elementId . '[use_default]" class="inherit">' . Mage::helper('adyen_subscription')->__('Use Default') . '</label>
           </td><td class="scope-label">
             [' . $helper->__('STORE VIEW') . ']
           ' : '</td><td class="scope-label">
             [' . $helper->__('STORE VIEW') . ']',
-        ))->setValue($profile ? $profile->getLabel($inStore) : '');
+        ))->setValue($subscription ? $subscription->getLabel($inStore) : '');
 
-        $profileFieldset->addField($elementId . '[website_id]', 'select', array(
+        $subscriptionFieldset->addField($elementId . '[website_id]', 'select', array(
             'name'      => $elementId . '[website_id]',
             'label'     => $helper->__('Website'),
-            'values'    => Mage::getSingleton('adyen_subscription/system_config_source_profile_websites')->toOptionArray(),
-        ))->setValue($profile ? $profile->getWebsiteId() : '');
+            'values'    => Mage::getSingleton('adyen_subscription/system_config_source_subscription_websites')->toOptionArray(),
+        ))->setValue($subscription ? $subscription->getWebsiteId() : '');
 
-        $profileFieldset->addField($elementId . '[customer_group_id]', 'select', array(
+        $subscriptionFieldset->addField($elementId . '[customer_group_id]', 'select', array(
             'name'      => $elementId . '[customer_group_id]',
             'label'     => $helper->__('Customer Group'),
-            'values'    => Mage::getSingleton('adyen_subscription/system_config_source_profile_groups')->toOptionArray(),
-        ))->setValue($profile ? $profile->getCustomerGroupId() : '');
+            'values'    => Mage::getSingleton('adyen_subscription/system_config_source_subscription_groups')->toOptionArray(),
+        ))->setValue($subscription ? $subscription->getCustomerGroupId() : '');
 
-        $profileFieldset->addField($elementId . '[term]', 'text', array(
+        $subscriptionFieldset->addField($elementId . '[term]', 'text', array(
             'name'      => $elementId . '[term]',
             'required'  => true,
             'class' => 'validate-digits validate-digits-range digits-range-1-3153600000',
             'label'     => $helper->__('Billing Frequency'),
-        ))->setValue($profile ? $profile->getTerm() : '');
+        ))->setValue($subscription ? $subscription->getTerm() : '');
 
-        $profileFieldset->addField($elementId . '[term_type]', 'select', array(
+        $subscriptionFieldset->addField($elementId . '[term_type]', 'select', array(
             'name'      => $elementId . '[term_type]',
             'label'     => $helper->__('Billing Period Unit'),
             'required'  => true,
             'values'    => Mage::getSingleton('adyen_subscription/system_config_source_term')->toOptionArray(true),
-        ))->setValue($profile ? $profile->getTermType() : '');
+        ))->setValue($subscription ? $subscription->getTermType() : '');
 
         // Min and max billing cycle currently not in use
-//        $profileFieldset->addField($elementId . '[min_billing_cycles]', 'text', array(
+//        $subscriptionFieldset->addField($elementId . '[min_billing_cycles]', 'text', array(
 //            'name'      => $elementId . '[min_billing_cycles]',
 //            'required'  => true,
 //            'class'     => 'validate-digits validate-digits-range digits-range-1-3153600000',
 //            'label'     => $helper->__('Min. Billing Cycles'),
-//        ))->setValue($profile ? $profile->getMinBillingCycles() : '1');
+//        ))->setValue($subscription ? $subscription->getMinBillingCycles() : '1');
 //
-//        $profileFieldset->addField($elementId . '[max_billing_cycles]', 'text', array(
+//        $subscriptionFieldset->addField($elementId . '[max_billing_cycles]', 'text', array(
 //            'name'      => $elementId . '[max_billing_cycles]',
 //            'label'     => $helper->__('Max. Billing Cycles'),
-//        ))->setValue($profile ? $profile->getMaxBillingCycles() : '');
+//        ))->setValue($subscription ? $subscription->getMaxBillingCycles() : '');
 
-        $profileFieldset->addField($elementId . '[qty]', 'text', array(
+        $subscriptionFieldset->addField($elementId . '[qty]', 'text', array(
             'name'      => $elementId . '[qty]',
             'required'  => true,
             'class'     => 'validate-number',
-            'label'     => $helper->__('Qty in Profile'),
-        ))->setValue($profile ? $profile->getQty() * 1 : '1');
+            'label'     => $helper->__('Qty in Subscription'),
+        ))->setValue($subscription ? $subscription->getQty() * 1 : '1');
 
         /** @var Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription_Price $priceField */
-        $priceField = $profileFieldset->addField($elementId . '[price]', 'price', array(
+        $priceField = $subscriptionFieldset->addField($elementId . '[price]', 'price', array(
             'name'      => $elementId . '[price]',
             'label'     => $helper->__('Price'),
             'class'     => 'price-tax-calc',
-            'identifier' => $profile ? $profile->getId() : 'template'
+            'identifier' => $subscription ? $subscription->getId() : 'template'
         ));
-        $priceField->setValue($profile ? $profile->getPrice() * 1 : '');
-        $priceField->setProfile($profile);
+        $priceField->setValue($subscription ? $subscription->getPrice() * 1 : '');
+        $priceField->setSubscription($subscription);
 
-        $profileFieldset->addField($elementId . '[show_on_frontend]', 'select', array(
+        $subscriptionFieldset->addField($elementId . '[show_on_frontend]', 'select', array(
             'name'      => $elementId . '[show_on_frontend]',
             'label'     => $helper->__('Show on Frontend'),
             'options'   => array(1 => $helper->__('Yes'), 0 => $helper->__('No')),
-        ))->setValue($profile ? $profile->getShowOnFrontend() : 0);
+        ))->setValue($subscription ? $subscription->getShowOnFrontend() : 0);
 
-        return $profileFieldset;
+        return $subscriptionFieldset;
     }
 
     /**

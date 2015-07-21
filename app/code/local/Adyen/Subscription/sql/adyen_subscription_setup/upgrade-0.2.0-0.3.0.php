@@ -23,25 +23,25 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- Add entity ID column to profile quote and profile order tables
+    -- Add entity ID column to subscription quote and subscription order tables
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile_quote')}`
-		DROP FOREIGN KEY `adyen_subscription_profile_quote_profile_id`,
-        MODIFY `profile_id` int(11) unsigned NOT NULL;
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile_quote')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription_quote')}`
+		DROP FOREIGN KEY `adyen_subscription_subscription_quote_subscription_id`,
+        MODIFY `subscription_id` int(11) unsigned NOT NULL;
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription_quote')}`
         DROP PRIMARY KEY,
         ADD COLUMN `entity_id` int(11) unsigned DEFAULT NULL AUTO_INCREMENT FIRST,
         ADD PRIMARY KEY (`entity_id`),
-        ADD CONSTRAINT `adyen_subscription_profile_quote_profile_id` FOREIGN KEY (`profile_id`) REFERENCES `adyen_subscription_profile` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+        ADD CONSTRAINT `adyen_subscription_subscription_quote_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `adyen_subscription_subscription` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile_order')}`
-		DROP FOREIGN KEY `adyen_subscription_profile_order_profile_id`,
-        MODIFY `profile_id` int(11) unsigned NOT NULL;
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile_order')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription_order')}`
+		DROP FOREIGN KEY `adyen_subscription_subscription_order_subscription_id`,
+        MODIFY `subscription_id` int(11) unsigned NOT NULL;
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription_order')}`
         DROP PRIMARY KEY,
         ADD COLUMN `entity_id` int(11) unsigned DEFAULT NULL AUTO_INCREMENT FIRST,
         ADD PRIMARY KEY (`entity_id`),
-        ADD CONSTRAINT `adyen_subscription_profile_order_profile_id` FOREIGN KEY (`profile_id`) REFERENCES `adyen_subscription_profile` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+        ADD CONSTRAINT `adyen_subscription_subscription_order_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `adyen_subscription_subscription` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ");
 

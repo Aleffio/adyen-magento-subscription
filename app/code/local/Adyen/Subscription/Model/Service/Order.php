@@ -19,50 +19,50 @@
 class Adyen_Subscription_Model_Service_Order
 {
     /**
-     * Create recurring profile(s) for given order.
+     * Create recurring subscription(s) for given order.
      *
      * Order items that have the same term and term type are saved
-     * in the same profile.
+     * in the same subscription.
      *
      * @param Mage_Sales_Model_Order $order
      * @return array
      */
-    public function createProfile(Mage_Sales_Model_Order $order)
+    public function createSubscription(Mage_Sales_Model_Order $order)
     {
-        $profiles = [];
+        $subscriptions = [];
 
-        if ($order->getSubscriptionProfileId()) {
-            // Don't create profile, since this order is created by a profile
-            return $profiles;
+        if ($order->getSubscriptionSubscriptionId()) {
+            // Don't create subscription, since this order is created by a subscription
+            return $subscriptions;
         }
 
         $productTerms = array();
         foreach ($order->getAllVisibleItems() as $orderItem) {
             /** @var Mage_Sales_Model_Order_Item $orderItem */
 
-            /** @var Adyen_Subscription_Model_Product_Profile $productProfile */
-            $productProfile = $this->_getProductProfile($orderItem);
+            /** @var Adyen_Subscription_Model_Product_Subscription $productSubscription */
+            $productSubscription = $this->_getProductSubscription($orderItem);
 
-            if (!$productProfile) {
+            if (!$productSubscription) {
                 // No product subscription found, no subscription needs to be created
                 continue;
             }
 
-            $arrayKey = $productProfile->getTerm().$productProfile->getTermType();
+            $arrayKey = $productSubscription->getTerm().$productSubscription->getTermType();
 
-            $productTerms[$arrayKey]['term'] = $productProfile->getTerm();
-            $productTerms[$arrayKey]['type'] = $productProfile->getTermType();
+            $productTerms[$arrayKey]['term'] = $productSubscription->getTerm();
+            $productTerms[$arrayKey]['type'] = $productSubscription->getTermType();
             $productTerms[$arrayKey]['order_items'][] = $orderItem;
         }
 
-        // Create a profile for each term
+        // Create a subscription for each term
         foreach ($productTerms as $productTerm) {
             $billingAgreement = $this->_getBillingAgreement($order);
 
-            // Create profile
-            /** @var Adyen_Subscription_Model_Profile $profile */
-            $profile = Mage::getModel('adyen_subscription/profile')
-                ->setStatus(Adyen_Subscription_Model_Profile::STATUS_ACTIVE)
+            // Create subscription
+            /** @var Adyen_Subscription_Model_Subscription $subscription */
+            $subscription = Mage::getModel('adyen_subscription/subscription')
+                ->setStatus(Adyen_Subscription_Model_Subscription::STATUS_ACTIVE)
                 ->setStockId($order->getStockId())
                 ->setCustomerId($order->getCustomerId())
                 ->setCustomerName($order->getCustomerName())
@@ -76,53 +76,53 @@ class Adyen_Subscription_Model_Service_Order
                 ->setUpdatedAt(now());
 
             if (!$billingAgreement) {
-                // No billing agreement could be found, profile is created,
-                // but set profile directly to error
-                $profile->setErrorMessage(
+                // No billing agreement could be found, subscription is created,
+                // but set subscription directly to error
+                $subscription->setErrorMessage(
                     Mage::helper('adyen_subscription')->__('No billing agreement found')
                 );
-                $profile->setStatus($profile::STATUS_PROFILE_ERROR);
+                $subscription->setStatus($subscription::STATUS_PROFILE_ERROR);
             }
 
-            $profile->save();
+            $subscription->save();
 
             $transactionItems = [];
             foreach ($productTerm['order_items'] as $orderItem) {
-                /** @var Adyen_Subscription_Model_Product_Profile $productProfile */
-                $productProfile = $this->_getProductProfile($orderItem);
+                /** @var Adyen_Subscription_Model_Product_Subscription $productSubscription */
+                $productSubscription = $this->_getProductSubscription($orderItem);
 
-                // Ordered qty is divided by product profile qty to get 'real' ordered qty
-                $qty = $orderItem->getQtyInvoiced() / $productProfile->getQty();
+                // Ordered qty is divided by product subscription qty to get 'real' ordered qty
+                $qty = $orderItem->getQtyInvoiced() / $productSubscription->getQty();
 
-                // Create profile item
-                /** @var Adyen_Subscription_Model_Profile_Item $profileItem */
-                $profileItem = Mage::getModel('adyen_subscription/profile_item')
-                    ->setProfileId($profile->getId())
-                    ->setStatus(Adyen_Subscription_Model_Profile_Item::STATUS_ACTIVE)
+                // Create subscription item
+                /** @var Adyen_Subscription_Model_Subscription_Item $subscriptionItem */
+                $subscriptionItem = Mage::getModel('adyen_subscription/subscription_item')
+                    ->setSubscriptionId($subscription->getId())
+                    ->setStatus(Adyen_Subscription_Model_Subscription_Item::STATUS_ACTIVE)
                     ->setProductId($orderItem->getProductId())
                     ->setProductOptions(serialize($orderItem->getProductOptions()))
                     ->setSku($orderItem->getSku())
                     ->setName($orderItem->getName())
-                    ->setLabel($productProfile->getLabel())
+                    ->setLabel($productSubscription->getLabel())
                     ->setPrice($orderItem->getPrice())
                     ->setPriceInclTax($orderItem->getPriceInclTax())
                     ->setQty($qty)
                     ->setOnce(0)
                     // Currently not in use
-//                    ->setMinBillingCycles($productProfile->getMinBillingCycles())
-//                    ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
+//                    ->setMinBillingCycles($productSubscription->getMinBillingCycles())
+//                    ->setMaxBillingCycles($productSubscription->getMaxBillingCycles())
                     ->setCreatedAt(now());
 
-                $transactionItems[] = $profileItem;
+                $transactionItems[] = $subscriptionItem;
             }
 
-            // Create profile addresses
-            $profileBillingAddress = Mage::getModel('adyen_subscription/profile_address')
-                ->initAddress($profile, $order->getBillingAddress())
+            // Create subscription addresses
+            $subscriptionBillingAddress = Mage::getModel('adyen_subscription/subscription_address')
+                ->initAddress($subscription, $order->getBillingAddress())
                 ->save();
 
-            $profileShippingAddress = Mage::getModel('adyen_subscription/profile_address')
-                ->initAddress($profile, $order->getShippingAddress())
+            $subscriptionShippingAddress = Mage::getModel('adyen_subscription/subscription_address')
+                ->initAddress($subscription, $order->getShippingAddress())
                 ->save();
 
             /** @var Mage_Sales_Model_Quote $quote */
@@ -130,16 +130,16 @@ class Adyen_Subscription_Model_Service_Order
                 ->setStore($order->getStore())
                 ->load($order->getQuoteId());
 
-            $profile->setActiveQuote($quote);
-            $orderAdditional = $profile->getOrderAdditional($order, true)->save();
-            $quoteAdditional = $profile->getActiveQuoteAdditional(true)
+            $subscription->setActiveQuote($quote);
+            $orderAdditional = $subscription->getOrderAdditional($order, true)->save();
+            $quoteAdditional = $subscription->getActiveQuoteAdditional(true)
                 ->setOrder($order);
 
-            $scheduleDate = $profile->calculateNextScheduleDate();
-            $profile->setScheduledAt($scheduleDate);
+            $scheduleDate = $subscription->calculateNextScheduleDate();
+            $subscription->setScheduledAt($scheduleDate);
 
             $transaction = Mage::getModel('core/resource_transaction')
-                ->addObject($profile)
+                ->addObject($subscription)
                 ->addObject($orderAdditional)
                 ->addObject($quoteAdditional);
 
@@ -149,10 +149,10 @@ class Adyen_Subscription_Model_Service_Order
 
             $transaction->save();
 
-            $profiles[] = $profile;
+            $subscriptions[] = $subscription;
         }
 
-        return $profiles;
+        return $subscriptions;
     }
 
     /**
@@ -184,22 +184,22 @@ class Adyen_Subscription_Model_Service_Order
 
     /**
      * @param Mage_Sales_Model_Order_Item $orderItem
-     * @return Adyen_Subscription_Model_Product_Profile
+     * @return Adyen_Subscription_Model_Product_Subscription
      */
-    protected function _getProductProfile(Mage_Sales_Model_Order_Item $orderItem)
+    protected function _getProductSubscription(Mage_Sales_Model_Order_Item $orderItem)
     {
-        $profileId = $orderItem->getBuyRequest()->getData('adyen_subscription_profile');
-        if (! $profileId) {
+        $subscriptionId = $orderItem->getBuyRequest()->getData('adyen_subscription_subscription');
+        if (! $subscriptionId) {
             return false;
         }
 
-        $subscriptionProductProfile = Mage::getModel('adyen_subscription/product_profile')
-            ->load($profileId);
+        $subscriptionProductSubscription = Mage::getModel('adyen_subscription/product_subscription')
+            ->load($subscriptionId);
 
-        if (!$subscriptionProductProfile->getId()) {
+        if (!$subscriptionProductSubscription->getId()) {
             return false;
         }
 
-        return $subscriptionProductProfile;
+        return $subscriptionProductSubscription;
     }
 }

@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-/** @var Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals $this */
+/** @var Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_Scheduled_Totals $this */
 ?>
 <table cellspacing="0" cellpadding="8" width="100%">
     <tbody>
@@ -28,19 +28,19 @@
 <div class="order-totals-bottom">
     <p>
         <?php echo $this->__('Order will be automatically created at:') ?><br />
-        <strong><?php echo $this->getProfile()->getScheduledAtFormatted(); ?></strong>
+        <strong><?php echo $this->getSubscription()->getScheduledAtFormatted(); ?></strong>
     </p>
-    <?php if ($this->getProfile()->canCreateOrder()): ?>
+    <?php if ($this->getSubscription()->canCreateOrder()): ?>
     <p>
         <?php echo $this->getButtonHtml(
             Mage::helper('adyen_subscription')->__('Edit Quote'),
-            "setLocation('{$this->getUrl('*/*/editQuote', ['id' => $this->getProfile()->getId()])}','edit_quote')",
+            "setLocation('{$this->getUrl('*/*/editQuote', ['id' => $this->getSubscription()->getId()])}','edit_quote')",
             'edit'
         ); ?>
         &nbsp;
         <?php echo $this->getButtonHtml(
             Mage::helper('adyen_subscription')->__('Create Order Now'),
-            "setLocation('{$this->getUrl('*/*/createOrder', ['id' => $this->getProfile()->getId()])}')",
+            "setLocation('{$this->getUrl('*/*/createOrder', ['id' => $this->getSubscription()->getId()])}')",
             'add'
         ); ?>
     </p>

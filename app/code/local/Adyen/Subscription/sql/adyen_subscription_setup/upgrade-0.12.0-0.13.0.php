@@ -24,8 +24,8 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileTable = $installer->getTable('adyen_subscription/profile');
-$connection->addColumn($profileTable, 'stock_id', [
+$subscriptionTable = $installer->getTable('adyen_subscription/subscription');
+$connection->addColumn($subscriptionTable, 'stock_id', [
     'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'length' => 5,
     'nullable' => false,
@@ -35,8 +35,8 @@ $connection->addColumn($profileTable, 'stock_id', [
 
 $stockTable = $installer->getTable('cataloginventory/stock');
 $connection->addForeignKey(
-    $installer->getFkName($profileTable, 'stock_id', $stockTable, 'stock_id'),
-    $profileTable, 'stock_id', $stockTable, 'stock_id'
+    $installer->getFkName($subscriptionTable, 'stock_id', $stockTable, 'stock_id'),
+    $subscriptionTable, 'stock_id', $stockTable, 'stock_id'
 );
 
 $installer->endSetup();

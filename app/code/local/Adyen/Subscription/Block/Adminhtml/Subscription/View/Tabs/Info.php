@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info
+class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_Info
     extends Mage_Adminhtml_Block_Sales_Order_Abstract
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
@@ -26,9 +26,9 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info
     }
 
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    public function getProfile()
+    public function getSubscription()
     {
         return Mage::registry('adyen_subscription');
     }
@@ -38,7 +38,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info
      */
     public function getBillingAgreement()
     {
-        return $this->getProfile()->getBillingAgreement();
+        return $this->getSubscription()->getBillingAgreement();
     }
 
     /**
@@ -54,7 +54,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info
      */
     public function getCustomerViewUrl()
     {
-        return $this->getUrl('adminhtml/customer/edit', array('id' => $this->getProfile()->getCustomerId()));
+        return $this->getUrl('adminhtml/customer/edit', array('id' => $this->getSubscription()->getCustomerId()));
     }
 
     /**
@@ -62,11 +62,11 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info
      */
     public function getStoreName()
     {
-        if ($this->getProfile()) {
-            $storeId = $this->getProfile()->getStoreId();
+        if ($this->getSubscription()) {
+            $storeId = $this->getSubscription()->getStoreId();
             if (is_null($storeId)) {
                 $deleted = Mage::helper('adminhtml')->__(' [deleted]');
-                return nl2br($this->getProfile()->getStoreId()) . $deleted;
+                return nl2br($this->getSubscription()->getStoreId()) . $deleted;
             }
             $store = Mage::app()->getStore($storeId);
             $name = array(

@@ -16,27 +16,27 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Model_Resource_Profile extends Mage_Core_Model_Resource_Db_Abstract
+class Adyen_Subscription_Model_Resource_Subscription extends Mage_Core_Model_Resource_Db_Abstract
 {
     public function _construct()
     {
-        $this->_init('adyen_subscription/profile', 'entity_id');
+        $this->_init('adyen_subscription/subscription', 'entity_id');
     }
 
     public function loadByOrder(
-        Adyen_Subscription_Model_Profile $object,
+        Adyen_Subscription_Model_Subscription $object,
         Mage_Sales_Model_Order $order
     ) {
-        $orderSelect = Mage::getResourceModel('adyen_subscription/profile_order_collection')
+        $orderSelect = Mage::getResourceModel('adyen_subscription/subscription_order_collection')
             ->addFieldToFilter('order_id', $order->getId())
             ->getSelect();
 
         $orderSelect->reset($orderSelect::COLUMNS);
-        $orderSelect->columns('profile_id');
+        $orderSelect->columns('subscription_id');
 
-        $profileId = $this->_getConnection('read')->fetchOne($orderSelect);
+        $subscriptionId = $this->_getConnection('read')->fetchOne($orderSelect);
 
-        $this->load($object, $profileId);
+        $this->load($object, $subscriptionId);
 
         return $this;
     }

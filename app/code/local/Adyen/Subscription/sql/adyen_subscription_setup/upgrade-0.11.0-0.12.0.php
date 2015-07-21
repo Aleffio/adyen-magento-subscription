@@ -24,7 +24,7 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileTable = $installer->getTable('adyen_subscription/profile');
-$connection->dropColumn($profileTable, 'payment_method');
+$subscriptionTable = $installer->getTable('adyen_subscription/subscription');
+$connection->dropColumn($subscriptionTable, 'payment_method');
 
 $installer->endSetup();

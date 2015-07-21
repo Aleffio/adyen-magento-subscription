@@ -16,12 +16,12 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Model_Resource_Product_Profile_Collection
+class Adyen_Subscription_Model_Resource_Product_Subscription_Collection
     extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
     protected function _construct()
     {
-        $this->_init('adyen_subscription/product_profile');
+        $this->_init('adyen_subscription/product_subscription');
     }
 
 

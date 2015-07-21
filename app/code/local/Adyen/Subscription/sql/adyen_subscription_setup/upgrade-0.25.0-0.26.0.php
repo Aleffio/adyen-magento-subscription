@@ -29,7 +29,7 @@ $connection->addColumn($quoteTable, 'subscription_item_id', [
     'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'unsigned'  => true,
     'nullable'  => true,
-    'comment'   => 'Adyen_Subscription Profile Item ID',
+    'comment'   => 'Adyen Subscription Item ID',
 ]);
 
 $installer->endSetup();

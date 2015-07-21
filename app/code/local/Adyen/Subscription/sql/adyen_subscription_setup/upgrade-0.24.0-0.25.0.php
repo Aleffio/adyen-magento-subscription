@@ -24,16 +24,16 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileLabelTable = $installer->getTable('adyen_subscription/product_profile_label');
+$subscriptionLabelTable = $installer->getTable('adyen_subscription/product_subscription_label');
 
 $connection->addIndex(
-    $profileLabelTable,
+    $subscriptionLabelTable,
     $installer->getIdxName(
-        $profileLabelTable,
-        array('profile_id', 'store_id'),
+        $subscriptionLabelTable,
+        array('subscription_id', 'store_id'),
         Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
     ),
-    array('profile_id', 'store_id'),
+    array('subscription_id', 'store_id'),
     Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
 );
 

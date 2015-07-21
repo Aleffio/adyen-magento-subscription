@@ -30,17 +30,17 @@ class Adyen_Subscription_Model_Product_Observer
 
         $subscriptionType = $product->getData('adyen_subscription_type');
         switch ($subscriptionType) {
-            case Adyen_Subscription_Model_Product_Profile::TYPE_ENABLED_ONLY_PROFILE:
-                $this->_updateProductProfiles($product);
+            case Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ONLY_PROFILE:
+                $this->_updateProductSubscriptions($product);
                 $product->setRequiredOptions(true);
                 $product->setHasOptions(true);
                 break;
-            case Adyen_Subscription_Model_Product_Profile::TYPE_ENABLED_ALLOW_STANDALONE:
-                $this->_updateProductProfiles($product);
+            case Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ALLOW_STANDALONE:
+                $this->_updateProductSubscriptions($product);
                 $product->setHasOptions(true);
                 break;
             default:
-                $this->_deleteProductProfiles($product);
+                $this->_deleteProductSubscriptions($product);
         }
     }
 
@@ -48,23 +48,23 @@ class Adyen_Subscription_Model_Product_Observer
      * @param Mage_Catalog_Model_Product $product
      * @throws Exception
      */
-    protected function _updateProductProfiles(Mage_Catalog_Model_Product $product)
+    protected function _updateProductSubscriptions(Mage_Catalog_Model_Product $product)
     {
-        $productProfilesData = Mage::app()->getRequest()->getPost('product_profile');
+        $productSubscriptionsData = Mage::app()->getRequest()->getPost('product_subscription');
         $storeId = Mage::app()->getRequest()->getParam('store');
 
-        if (! $productProfilesData) {
-            if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Profile::TYPE_DISABLED) {
-                $product->setData('adyen_subscription_type', Adyen_Subscription_Model_Product_Profile::TYPE_DISABLED);
+        if (! $productSubscriptionsData) {
+            if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED) {
+                $product->setData('adyen_subscription_type', Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED);
                 Mage::getSingleton('adminhtml/session')->addNotice(
-                    Mage::helper('adyen_subscription')->__('Subscription Type is set back to \'Disabled\' because no profiles were defined')
+                    Mage::helper('adyen_subscription')->__('Subscription Type is set back to \'Disabled\' because no subscriptions were defined')
                 );
             }
             return;
         }
 
-        /** @var array $productProfileIds */
-        $productProfileIds = Mage::getModel('adyen_subscription/product_profile')
+        /** @var array $productSubscriptionIds */
+        $productSubscriptionIds = Mage::getModel('adyen_subscription/product_subscription')
             ->getCollection()
             ->addFieldToFilter('product_id', $product->getId())
             ->getAllIds();
@@ -73,63 +73,63 @@ class Adyen_Subscription_Model_Product_Observer
         $connection = $resource->getConnection('core_write');
 
         $i = 1;
-        // Save profiles
-        foreach ($productProfilesData as $id => $profileData) {
-            $profile = Mage::getModel('adyen_subscription/product_profile')->load($id);
+        // Save subscriptions
+        foreach ($productSubscriptionsData as $id => $subscriptionData) {
+            $subscription = Mage::getModel('adyen_subscription/product_subscription')->load($id);
 
-            if (!$profile->getId()) {
-                $profile->setProductId($product->getId());
+            if (!$subscription->getId()) {
+                $subscription->setProductId($product->getId());
             }
 
-            if (!isset($profileData['use_default']) && $storeId) {
+            if (!isset($subscriptionData['use_default']) && $storeId) {
                 // Save store label
                 $labelData = array(
-                    'label'         => $profileData['label'],
-                    'profile_id'    => $profile->getId(),
+                    'label'         => $subscriptionData['label'],
+                    'subscription_id'    => $subscription->getId(),
                     'store_id'      => $storeId,
                 );
                 $connection->insertOnDuplicate(
-                    $resource->getTableName('adyen_subscription/product_profile_label'),
+                    $resource->getTableName('adyen_subscription/product_subscription_label'),
                     $labelData,
                     array('label')
                 );
-                unset($profileData['label']);
+                unset($subscriptionData['label']);
             }
-            if (isset($profileData['use_default']) && $storeId) {
+            if (isset($subscriptionData['use_default']) && $storeId) {
                 // Delete store label
-                $connection->delete($resource->getTableName('adyen_subscription/product_profile_label'), array(
-                    'profile_id = ?'    => $profile->getId(),
+                $connection->delete($resource->getTableName('adyen_subscription/product_subscription_label'), array(
+                    'subscription_id = ?'    => $subscription->getId(),
                     'store_id = ?'      => $storeId,
                 ));
             }
 
-            if ($profileData['customer_group_id'] == '') {
-                $profileData['customer_group_id'] = null;
+            if ($subscriptionData['customer_group_id'] == '') {
+                $subscriptionData['customer_group_id'] = null;
             }
-            $profile->addData($profileData);
-            $profile->setSortOrder($i * 10);
+            $subscription->addData($subscriptionData);
+            $subscription->setSortOrder($i * 10);
 
-            if (in_array($id, $productProfileIds)) {
-                $productProfileIds = array_diff($productProfileIds, array($id));
+            if (in_array($id, $productSubscriptionIds)) {
+                $productSubscriptionIds = array_diff($productSubscriptionIds, array($id));
             }
 
-            $profile->save();
+            $subscription->save();
             $i++;
         }
 
-        // Delete profiles
-        foreach($productProfileIds as $profileId) {
-            Mage::getModel('adyen_subscription/product_profile')->setId($profileId)->delete();
+        // Delete subscriptions
+        foreach($productSubscriptionIds as $subscriptionId) {
+            Mage::getModel('adyen_subscription/product_subscription')->setId($subscriptionId)->delete();
         }
     }
 
-    protected function _deleteProductProfiles(Mage_Catalog_Model_Product $product)
+    protected function _deleteProductSubscriptions(Mage_Catalog_Model_Product $product)
     {
-        $ppCollection = Mage::getResourceModel('adyen_subscription/product_profile_collection')
+        $ppCollection = Mage::getResourceModel('adyen_subscription/product_subscription_collection')
             ->addProductFilter($product);
 
-        foreach ($ppCollection as $productProfile) {
-            $productProfile->delete();
+        foreach ($ppCollection as $productSubscription) {
+            $productSubscription->delete();
         }
 
         return $this;
@@ -166,13 +166,13 @@ class Adyen_Subscription_Model_Product_Observer
         }
         /** @var Mage_Catalog_Model_Product $product */
         if ($product->getData('adyen_subscription_type') > 0) {
-            $profileCollection = Mage::getResourceModel('adyen_subscription/product_profile_collection')
+            $subscriptionCollection = Mage::getResourceModel('adyen_subscription/product_subscription_collection')
                 ->addProductFilter($product);
 
             if (! $product->getStore()->isAdmin()) {
-                $profileCollection->addStoreFilter($product->getStore());
+                $subscriptionCollection->addStoreFilter($product->getStore());
             }
-            $product->setData('adyen_subscription_data', $profileCollection);
+            $product->setData('adyen_subscription_data', $subscriptionCollection);
         } else {
             $product->setData('adyen_subscription_data', null);
         }
@@ -227,13 +227,13 @@ class Adyen_Subscription_Model_Product_Observer
     }
 
     /**
-     * Add the selected subscription product profile to the quote item, if one is selected
+     * Add the selected subscription product subscription to the quote item, if one is selected
      *
      * @event sales_quote_add_item
      * @param Varien_Event_Observer $observer
      * @return $this|void
      */
-    public function addSubscriptionProductProfileToQuote(Varien_Event_Observer $observer)
+    public function addSubscriptionProductSubscriptionToQuote(Varien_Event_Observer $observer)
     {
         /** @var Mage_Sales_Model_Quote_Item $quoteItem */
         /** @noinspection PhpUndefinedMethodInspection */
@@ -242,8 +242,8 @@ class Adyen_Subscription_Model_Product_Observer
         /** @var Mage_Catalog_Model_Product $product */
         $product = $quoteItem->getProduct();
 
-        $profileId = $quoteItem->getBuyRequest()->getData('adyen_subscription_profile');
-        if (! $profileId) {
+        $subscriptionId = $quoteItem->getBuyRequest()->getData('adyen_subscription_subscription');
+        if (! $subscriptionId) {
             return $this;
         }
 
@@ -252,29 +252,29 @@ class Adyen_Subscription_Model_Product_Observer
             return $this;
         }
 
-        /** @var Adyen_Subscription_Model_Resource_Product_Profile_Collection $subscriptionCollection */
+        /** @var Adyen_Subscription_Model_Resource_Product_Subscription_Collection $subscriptionCollection */
         $subscriptionCollection = $product->getData('adyen_subscription_data');
         if ($subscriptionCollection->count() < 0) {
             return $this;
         }
 
-        /** @var Adyen_Subscription_Model_Product_Profile $profile */
-        $profile = $subscriptionCollection->getItemById($profileId);
+        /** @var Adyen_Subscription_Model_Product_Subscription $subscription */
+        $subscription = $subscriptionCollection->getItemById($subscriptionId);
 
         $option = $quoteItem->getOptionByCode('additional_options');
 
-        if ($profile) {
-            $profileOption = [
+        if ($subscription) {
+            $subscriptionOption = [
                 'label'        => 'Subscription',
-                'code'         => 'adyen_subscription_profile',
-                'option_value' => $profileId,
-                'value'        => $profile->getFrontendLabel(),
-                'print_value'  => $profile->getFrontendLabel(),
+                'code'         => 'adyen_subscription_subscription',
+                'option_value' => $subscriptionId,
+                'value'        => $subscription->getFrontendLabel(),
+                'print_value'  => $subscription->getFrontendLabel(),
             ];
         } else {
-            $profileOption = [
+            $subscriptionOption = [
                 'label'        => 'Subscription',
-                'code'         => 'adyen_subscription_profile',
+                'code'         => 'adyen_subscription_subscription',
                 'option_value' => 'none',
                 'value'        => 'No subscription',
                 'print_value'  => 'No subscription',
@@ -285,13 +285,13 @@ class Adyen_Subscription_Model_Product_Observer
             $quoteItemOption = Mage::getModel('sales/quote_item_option')->setData([
                 'code'       => 'additional_options',
                 'product_id' => $quoteItem->getProductId(),
-                'value'      => serialize([$profileOption])
+                'value'      => serialize([$subscriptionOption])
             ]);
 
             $quoteItem->addOption($quoteItemOption);
         } else {
             $additional = unserialize($option->getValue());
-            $additional['adyen_subscription_profile'] = $profileOption;
+            $additional['adyen_subscription_subscription'] = $subscriptionOption;
             $option->setValue(serialize($additional));
         }
     }
@@ -322,7 +322,7 @@ class Adyen_Subscription_Model_Product_Observer
             $observer->getResult()->isAvailable = false;
         }
 
-        if (Mage::app()->getRequest()->getParam('profile')) {
+        if (Mage::app()->getRequest()->getParam('subscription')) {
             if (! method_exists($methodInstance, 'isBillingAgreement') || ! $methodInstance->isBillingAgreement()) {
                 $observer->getResult()->isAvailable = false;
             }
@@ -350,7 +350,7 @@ class Adyen_Subscription_Model_Product_Observer
                 $options = unserialize($additionalOptions->getValue());
 
                 foreach ($options as $option) {
-                    if ($option['code'] == 'adyen_subscription_profile' && $option['option_value'] != 'none') {
+                    if ($option['code'] == 'adyen_subscription_subscription' && $option['option_value'] != 'none') {
                         $quote->setData('_is_adyen_subscription', true);
                         return $quote->getData('_is_adyen_subscription');
                     }

@@ -19,7 +19,7 @@
 class Adyen_Subscription_Model_Catalog_Product_Type_Configurable extends Mage_Catalog_Model_Product_Type_Configurable
 {
     /**
-     * Prepare selected options for simple profile product
+     * Prepare selected options for simple subscription product
      *
      * @param  Mage_Catalog_Model_Product $product
      * @param  Varien_Object $buyRequest
@@ -29,9 +29,9 @@ class Adyen_Subscription_Model_Catalog_Product_Type_Configurable extends Mage_Ca
     {
         $options = parent::processBuyRequest($product, $buyRequest);
 
-        $option = $buyRequest->getData('adyen_subscription_profile');
+        $option = $buyRequest->getData('adyen_subscription_subscription');
 
-        $options['adyen_subscription_profile'] = $option;
+        $options['adyen_subscription_subscription'] = $option;
 
         return $options;
     }

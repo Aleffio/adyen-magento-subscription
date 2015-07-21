@@ -17,7 +17,7 @@
  */
 
 /**
- * Class Adyen_Subscription_Model_Product_Profile
+ * Class Adyen_Subscription_Model_Product_Subscription
  *
  * @method int getProductId()
  * @method $this setProductId(int $value)
@@ -43,7 +43,7 @@
  * @method int getSortOrder()
  * @method $this setSortOrder(int $value)
  */
-class Adyen_Subscription_Model_Product_Profile extends Mage_Core_Model_Abstract
+class Adyen_Subscription_Model_Product_Subscription extends Mage_Core_Model_Abstract
 {
     const TERM_TYPE_DAY     = 'day';
     const TERM_TYPE_WEEK    = 'week';
@@ -56,7 +56,7 @@ class Adyen_Subscription_Model_Product_Profile extends Mage_Core_Model_Abstract
 
     protected function _construct ()
     {
-        $this->_init('adyen_subscription/product_profile');
+        $this->_init('adyen_subscription/product_subscription');
     }
 
     /**
@@ -85,7 +85,7 @@ class Adyen_Subscription_Model_Product_Profile extends Mage_Core_Model_Abstract
             return false;
         }
 
-        $label = Mage::getModel('adyen_subscription/product_profile_label')->loadByProfile($this, $store);
+        $label = Mage::getModel('adyen_subscription/product_subscription_label')->loadBySubscription($this, $store);
 
         if ($label->getId()) {
             return $label->getLabel();

@@ -19,28 +19,28 @@
 class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
 {
     /**
-     * Retrieve product profile, if product is a subscription, else false
+     * Retrieve product subscription, if product is a subscription, else false
      *
      * @param Mage_Catalog_Model_Product $product
-     * @return Adyen_Subscription_Model_Product_Profile|false
+     * @return Adyen_Subscription_Model_Product_Subscription|false
      */
-    public function getProductProfile($product)
+    public function getProductSubscription($product)
     {
         if (isset($product->getAttributes()['adyen_subscription_type'])) {
-            if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Profile::TYPE_DISABLED) {
+            if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED) {
                 $option = $product->getCustomOption('additional_options');
 
                 if ($option) {
                     $additionalOptions = unserialize($option->getValue());
                     foreach ($additionalOptions as $additional) {
-                        if ($additional['code'] == 'adyen_subscription_profile') {
+                        if ($additional['code'] == 'adyen_subscription_subscription') {
                             if ($additional['option_value'] != 'none') {
-                                $profile = Mage::getModel('adyen_subscription/product_profile')->load($additional['option_value']);
-                                if (! $profile->getId()) {
+                                $subscription = Mage::getModel('adyen_subscription/product_subscription')->load($additional['option_value']);
+                                if (! $subscription->getId()) {
                                     return false;
                                 }
 
-                                return $profile;
+                                return $subscription;
                             }
                         }
                     }
@@ -53,15 +53,15 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
 
     /**
      * @param Mage_Catalog_Model_Product $product
-     * @return Adyen_Subscription_Model_Profile_Item|false
+     * @return Adyen_Subscription_Model_Subscription_Item|false
      */
-    public function getProfileItem($product)
+    public function getSubscriptionItem($product)
     {
-        if ($profileItemId = $product->getData('is_created_from_profile_item')) {
-            $profileItem = Mage::getModel('adyen_subscription/profile_item')->load($profileItemId);
+        if ($subscriptionItemId = $product->getData('is_created_from_subscription_item')) {
+            $subscriptionItem = Mage::getModel('adyen_subscription/subscription_item')->load($subscriptionItemId);
 
-            if ($profileItem->getId()) {
-                return $profileItem;
+            if ($subscriptionItem->getId()) {
+                return $subscriptionItem;
             }
         }
 

@@ -33,10 +33,10 @@
         <!--</reference>-->
 
         <reference name="product.info.options.wrapper">
-            <block type="adyen_subscription/catalog_product_view_profile"
+            <block type="adyen_subscription/catalog_product_view_subscription"
                    name="product.info.options.adyen_subscription"
                    as="adyen_subscription_options"
-                   template="adyen/subscription/catalog/product/view/profile.phtml"/>
+                   template="adyen/subscription/catalog/product/view/subscription.phtml"/>
         </reference>
         <!--<reference name="product.clone_prices">-->
             <!--<action method="addPriceBlockType"><type>giftcard</type><block>enterprise_giftcard/catalog_product_price</block><template>giftcard/catalog/product/price.phtml</template></action>-->
@@ -47,7 +47,7 @@
         <reference name="top.links">
             <action method="addLink" translate="label" module="adyen_subscription">
                 <label>My Subscriptions</label>
-                <url helper="ho_bootstrap/getUrl"><path>adyen_subscription/customer/profiles</path></url>
+                <url helper="ho_bootstrap/getUrl"><path>adyen_subscription/customer/subscriptions</path></url>
                 <title>My Subscriptions</title>
                 <prepare/><urlParams/>
                 <position>60</position>
@@ -59,32 +59,32 @@
         <reference name="customer_account_navigation">
             <action method="addLink" translate="label" module="adyen_subscription">
                 <name>subscriptions</name>
-                <path>adyen_subscription/customer/profiles</path>
+                <path>adyen_subscription/customer/subscriptions</path>
                 <label>My Subscriptions</label>
             </action>
         </reference>
     </customer_account>
 
-    <adyen_subscription_customer_profiles translate="label">
+    <adyen_subscription_customer_subscriptions translate="label">
         <label>Customer My Account Subscriptions</label>
         <update handle="customer_account" />
         <reference name="my.account.wrapper">
-            <block type="adyen_subscription/customer_profiles_list" name="adyen_subscription_customer_profiles_list"
-                   template="adyen_subscription/customer/profiles/list.phtml" />
+            <block type="adyen_subscription/customer_subscriptions_list" name="adyen_subscription_customer_subscriptions_list"
+                   template="adyen_subscription/customer/subscriptions/list.phtml" />
         </reference>
         <reference name="root">
             <action method="setHeaderTitle" translate="title" module="adyen_subscription">
                 <title>My Subscriptions</title>
             </action>
         </reference>
-    </adyen_subscription_customer_profiles>
+    </adyen_subscription_customer_subscriptions>
 
     <adyen_subscription_customer_view translate="label">
         <label>Customer My Account View Subscription</label>
         <update handle="customer_account" />
         <reference name="my.account.wrapper">
-            <block type="adyen_subscription/customer_profiles_view" name="adyen_subscription_customer_profiles_view"
-                   template="adyen_subscription/customer/profiles/view.phtml"/>
+            <block type="adyen_subscription/customer_subscriptions_view" name="adyen_subscription_customer_subscriptions_view"
+                   template="adyen_subscription/customer/subscriptions/view.phtml"/>
         </reference>
     </adyen_subscription_customer_view>
 </layout>

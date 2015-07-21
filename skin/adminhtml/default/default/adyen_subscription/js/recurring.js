@@ -16,24 +16,24 @@
  */
 
 jQuery(function($){
-    var profileType = $('#adyen_subscription_type');
-    var tab = $('#product_info_tabs_adyen_subscription_profile_tab_content');
-    var profileTemplate = tab.find('.product-fieldset-template')
-        .parents('.profile-fieldset-container');
+    var subscriptionType = $('#adyen_subscription_type');
+    var tab = $('#product_info_tabs_adyen_subscription_subscription_tab_content');
+    var subscriptionTemplate = tab.find('.product-fieldset-template')
+        .parents('.subscription-fieldset-container');
     var sortableArea = $('#subscriptions_fieldset');
-    var addButton = tab.find('.product-profile-add');
+    var addButton = tab.find('.product-subscription-add');
 
-    var newProfileId = 0;
+    var newSubscriptionId = 0;
 
     //hide the template
-    profileTemplate.hide().find('textarea, input, select').prop('disabled', true);
+    subscriptionTemplate.hide().find('textarea, input, select').prop('disabled', true);
 
 
-    $(document).on('change', profileType, function(){
+    $(document).on('change', subscriptionType, function(){
 
-        var container = $('.profile-fieldset-container').not(profileTemplate);
+        var container = $('.subscription-fieldset-container').not(subscriptionTemplate);
 
-        if (profileType.val() <= 0) {
+        if (subscriptionType.val() <= 0) {
             addButton.hide();
             container.hide().find('textarea, input, select').prop('disabled', true);
         } else {
@@ -43,47 +43,47 @@ jQuery(function($){
     }).trigger('change');
 
 
-    // Make profiles sortable
+    // Make subscriptions sortable
     sortableArea.sortable({
         placeholder: 'ui-state-highlight',
-        items: '.profile-fieldset-container'
+        items: '.subscription-fieldset-container'
     });
 
-    $(document).on('click', '#subscriptions_fieldset .product-profile-delete', function(){
-        $(this).parents('.profile-fieldset-container').remove();
+    $(document).on('click', '#subscriptions_fieldset .product-subscription-delete', function(){
+        $(this).parents('.subscription-fieldset-container').remove();
     });
 
     addButton .on('click', function(){
-        var newProfile = profileTemplate.clone();
-        newProfileId++;
+        var newSubscription = subscriptionTemplate.clone();
+        newSubscriptionId++;
 
-        newProfile.find('select, input').each(function() {
+        newSubscription.find('select, input').each(function() {
             var elem = $(this);
 
             elem.attr('name',
                 elem.attr('name').replace(
                     '[template]',
-                    '[new' + newProfileId + ']'
+                    '[new' + newSubscriptionId + ']'
                 )
             );
 
             elem.attr('id',
                 elem.attr('id').replace(
                     '[template]',
-                    '[new' + newProfileId + ']'
+                    '[new' + newSubscriptionId + ']'
                 )
             );
             elem.prop('disabled', false);
         });
 
         //Add dynamic tax calculation
-        newProfile.find('#dynamic-tax-profile-template')
-            .attr('id','dynamic-tax-product_profile[new'+newProfileId+'][price]');
-        dynamicTaxes.push('product_profile[new'+newProfileId+'][price]');
-        newProfile.find('.price-tax-calc').on('change keyup', recalculateTax);
+        newSubscription.find('#dynamic-tax-subscription-template')
+            .attr('id','dynamic-tax-product_subscription[new'+newSubscriptionId+'][price]');
+        dynamicTaxes.push('product_subscription[new'+newSubscriptionId+'][price]');
+        newSubscription.find('.price-tax-calc').on('change keyup', recalculateTax);
 
-        newProfile.show();
-        newProfile.find('.profile-fieldset').removeClass('product-fieldset-template');
-        sortableArea.append(newProfile);
+        newSubscription.show();
+        newSubscription.find('.subscription-fieldset').removeClass('product-fieldset-template');
+        sortableArea.append(newSubscription);
     });
 });

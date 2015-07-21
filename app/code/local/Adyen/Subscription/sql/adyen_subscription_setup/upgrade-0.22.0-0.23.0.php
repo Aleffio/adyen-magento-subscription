@@ -29,7 +29,7 @@ $connection->addColumn($quoteTable, 'subscription_id', [
     'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'unsigned'  => true,
     'nullable'  => true,
-    'comment'   => 'Adyen_Subscription Profile ID',
+    'comment'   => 'Adyen Subscription ID',
 ]);
 
 $orderTable = $installer->getTable('sales/order');
@@ -37,7 +37,7 @@ $connection->addColumn($orderTable, 'subscription_id', [
     'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'unsigned'  => true,
     'nullable'  => true,
-    'comment'   => 'Adyen_Subscription Profile ID',
+    'comment'   => 'Adyen Subscription ID',
 ]);
 
 $orderGridTable = $installer->getTable('sales/order_grid');
@@ -45,7 +45,7 @@ $connection->addColumn($orderGridTable, 'subscription_id', [
     'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'unsigned'  => true,
     'nullable'  => true,
-    'comment'   => 'Adyen_Subscription Profile ID',
+    'comment'   => 'Adyen Subscription ID',
 ]);
 
 $installer->endSetup();

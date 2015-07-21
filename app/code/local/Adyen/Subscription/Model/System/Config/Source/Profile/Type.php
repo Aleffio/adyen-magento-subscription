@@ -16,8 +16,8 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-//@todo move to Product_Profile?
-class Adyen_Subscription_Model_System_Config_Source_Profile_Type
+//@todo move to Product_Subscription?
+class Adyen_Subscription_Model_System_Config_Source_Subscription_Type
     extends Mage_Eav_Model_Entity_Attribute_Source_Abstract
 {
 
@@ -26,14 +26,14 @@ class Adyen_Subscription_Model_System_Config_Source_Profile_Type
         if ($this->_options === null) {
             $this->_options = [
                 [
-                    'label' => Mage::helper('adyen_subscription')->__('Profile Disabled'),
-                    'value' => Adyen_Subscription_Model_Product_Profile::TYPE_DISABLED
+                    'label' => Mage::helper('adyen_subscription')->__('Subscription Disabled'),
+                    'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED
                 ],[
-                    'label' => Mage::helper('eav')->__('Profile Enabled + Standalone purchase possible'),
-                    'value' => Adyen_Subscription_Model_Product_Profile::TYPE_ENABLED_ALLOW_STANDALONE
+                    'label' => Mage::helper('eav')->__('Subscription Enabled + Standalone purchase possible'),
+                    'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ALLOW_STANDALONE
                 ],[
-                    'label' => Mage::helper('eav')->__('Profile Enabled + Profile option selection required'),
-                    'value' => Adyen_Subscription_Model_Product_Profile::TYPE_ENABLED_ONLY_PROFILE
+                    'label' => Mage::helper('eav')->__('Subscription Enabled + Subscription option selection required'),
+                    'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ONLY_PROFILE
                 ]
             ];
         }

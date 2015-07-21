@@ -24,19 +24,19 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileQuoteTable = $installer->getTable('adyen_subscription/profile_address');
-$connection->dropTable($profileQuoteTable);
+$subscriptionQuoteTable = $installer->getTable('adyen_subscription/subscription_address');
+$connection->dropTable($subscriptionQuoteTable);
 $table = $connection
-    ->newTable($profileQuoteTable)
+    ->newTable($subscriptionQuoteTable)
     ->addColumn('item_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 11, [
         'unsigned'  => true,
         'nullable'  => false,
         'primary'   => true
         ], 'Item ID')
-    ->addColumn('profile_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 11, [
+    ->addColumn('subscription_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 11, [
         'unsigned'  => true,
         'nullable'  => false,
-        ], 'Profile ID')
+        ], 'Subscription ID')
     ->addColumn('source', Varien_Db_Ddl_Table::TYPE_INTEGER, 5, [
         'unsigned'  => true,
         'nullable'  => false,
@@ -55,26 +55,26 @@ $table = $connection
         ], 'Customer Address ID')
     ->addIndex(
         $installer->getIdxName(
-            'adyen_subscription/profile_address',
-            ['profile_id', 'type'],
+            'adyen_subscription/subscription_address',
+            ['subscription_id', 'type'],
             Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
         ),
-        ['profile_id', 'type'],
+        ['subscription_id', 'type'],
         ['type' => Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE]
     )
     ->addForeignKey(
         $installer->getFkName(
-            'adyen_subscription/profile_address',
-            'profile_id',
-            'adyen_subscription/profile',
+            'adyen_subscription/subscription_address',
+            'subscription_id',
+            'adyen_subscription/subscription',
             'entity_id'
         ),
-        'profile_id', $installer->getTable('adyen_subscription/profile'), 'entity_id',
+        'subscription_id', $installer->getTable('adyen_subscription/subscription'), 'entity_id',
          Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
     )
     ->addForeignKey(
         $installer->getFkName(
-            'adyen_subscription/profile_address',
+            'adyen_subscription/subscription_address',
             'order_address_id',
             'sales/order_address',
             'entity_id'
@@ -84,7 +84,7 @@ $table = $connection
     )
     ->addForeignKey(
         $installer->getFkName(
-            'adyen_subscription/profile_address',
+            'adyen_subscription/subscription_address',
             'shipping_address_id',
             'customer/address_entity',
             'entity_id'

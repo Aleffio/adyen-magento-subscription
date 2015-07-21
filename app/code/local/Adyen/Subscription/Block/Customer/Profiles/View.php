@@ -16,16 +16,16 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Customer_Profiles_View extends Mage_Core_Block_Template
+class Adyen_Subscription_Block_Customer_Subscriptions_View extends Mage_Core_Block_Template
 {
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    public function getProfile()
+    public function getSubscription()
     {
-        $profile = Mage::registry('adyen_subscription_profile');
+        $subscription = Mage::registry('adyen_subscription_subscription');
 
-        return $profile;
+        return $subscription;
     }
 
     /**
@@ -33,6 +33,6 @@ class Adyen_Subscription_Block_Customer_Profiles_View extends Mage_Core_Block_Te
      */
     public function getBackUrl()
     {
-        return $this->getUrl('adyen_subscription/customer/profiles');
+        return $this->getUrl('adyen_subscription/customer/subscriptions');
     }
 }

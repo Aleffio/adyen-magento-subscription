@@ -24,9 +24,9 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileTable = $installer->getTable('adyen_subscription/profile');
+$subscriptionTable = $installer->getTable('adyen_subscription/subscription');
 
-$connection->changeColumn($profileTable, 'next_order_at', 'scheduled_at', [
+$connection->changeColumn($subscriptionTable, 'next_order_at', 'scheduled_at', [
     'type'      => Varien_Db_Ddl_Table::TYPE_TIMESTAMP,
     'nullable'  => true,
     'comment'   => 'Scheduled At',

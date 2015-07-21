@@ -17,31 +17,31 @@
  */
 
 /**
- * Class Adyen_Subscription_Model_Product_Profile_Label
+ * Class Adyen_Subscription_Model_Product_Subscription_Label
  *
- * @method int getProfileId()
- * @method $this setProfileId(int $value)
+ * @method int getSubscriptionId()
+ * @method $this setSubscriptionId(int $value)
  * @method int getStoreId()
  * @method $this setStoreId(int $value)
  * @method string getLabel()
  * @method $this setLabel(string $value)
  */
-class Adyen_Subscription_Model_Product_Profile_Label extends Mage_Core_Model_Abstract
+class Adyen_Subscription_Model_Product_Subscription_Label extends Mage_Core_Model_Abstract
 {
     protected function _construct ()
     {
-        $this->_init('adyen_subscription/product_profile_label');
+        $this->_init('adyen_subscription/product_subscription_label');
     }
 
     /**
-     * @param Adyen_Subscription_Model_Product_Profile $profile
+     * @param Adyen_Subscription_Model_Product_Subscription $subscription
      * @param Mage_Core_Model_Store|int $store
      * @return $this
      */
-    public function loadByProfile(Adyen_Subscription_Model_Product_Profile $profile, $store)
+    public function loadBySubscription(Adyen_Subscription_Model_Product_Subscription $subscription, $store)
     {
         $labels = $this->getCollection()
-            ->addFieldToFilter('profile_id', $profile->getId());
+            ->addFieldToFilter('subscription_id', $subscription->getId());
 
         if ($store instanceof Mage_Core_Model_Store) {
             $storeId = $store->getId();

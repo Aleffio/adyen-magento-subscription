@@ -16,8 +16,8 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 ?>
-<?php /** @var Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Info $this */ ?>
-<?php $_profile = $this->getProfile(); ?>
+<?php /** @var Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_Info $this */ ?>
+<?php $_subscription = $this->getSubscription(); ?>
 <?php $_billingAgreement = $this->getBillingAgreement(); ?>
 
 <div class="box-left">
@@ -33,18 +33,18 @@
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Customer') ?></label></td>
                 <td class="value">
                     <a href="<?php echo $this->getCustomerViewUrl(); ?>" target="_blank">
-                        <strong><?php echo $this->escapeHtml($_profile->getCustomerName()); ?></strong>
+                        <strong><?php echo $this->escapeHtml($_subscription->getCustomerName()); ?></strong>
                     </a>
                 </td>
             </tr>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Status'); ?></label></td>
-                <td class="value"><?php echo $_profile->renderStatusBar();?></td>
+                <td class="value"><?php echo $_subscription->renderStatusBar();?></td>
             </tr>
-            <?php if ($_profile->getErrorMessage()): ?>
+            <?php if ($_subscription->getErrorMessage()): ?>
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Error Message'); ?></label></td>
-                    <td class="value"><?php echo $_profile->getErrorMessage();?></td>
+                    <td class="value"><?php echo $_subscription->getErrorMessage();?></td>
                 </tr>
             <?php endif; ?>
             <tr>
@@ -55,27 +55,27 @@
     </div>
 </div>
 <div class="box-right">
-    <!--Profile Info-->
+    <!--Subscription Info-->
     <div class="entry-edit">
         <div class="entry-edit-head">
-            <h4 class="icon-head head-profile-info"><?php echo Mage::helper('adyen_subscription')->__('Profile Information'); ?></h4>
+            <h4 class="icon-head head-subscription-info"><?php echo Mage::helper('adyen_subscription')->__('Subscription Information'); ?></h4>
         </div>
     </div>
     <div class="fieldset">
         <table cellspacing="0" class="form-list">
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Created at'); ?></label></td>
-                <td class="value"><strong><?php echo $_profile->getCreatedAtFormatted(); ?></strong></td>
+                <td class="value"><strong><?php echo $_subscription->getCreatedAtFormatted(); ?></strong></td>
             </tr>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Updated at'); ?></label></td>
-                <td class="value"><strong><?php echo $_profile->getUpdatedAtFormatted(); ?></strong></td>
+                <td class="value"><strong><?php echo $_subscription->getUpdatedAtFormatted(); ?></strong></td>
             </tr>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Scheduled Order'); ?></label></td>
                 <td class="value">
-                    <?php if ($_profile->getScheduledAt()): ?>
-                        <strong><?php echo $_profile->getScheduledAtFormatted(); ?></strong>
+                    <?php if ($_subscription->getScheduledAt()): ?>
+                        <strong><?php echo $_subscription->getScheduledAtFormatted(); ?></strong>
                     <?php else: ?>
                         <strong><?php echo $this->__('Not Scheduled') ?></strong>
                     <?php endif; ?>
@@ -83,12 +83,12 @@
             </tr>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Period'); ?></label></td>
-                <td class="value"><strong><?php echo $_profile->getTermLabel(); ?></strong></td>
+                <td class="value"><strong><?php echo $_subscription->getTermLabel(); ?></strong></td>
             </tr>
-            <?php if ($_profile->getEndsAt()): ?>
+            <?php if ($_subscription->getEndsAt()): ?>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Runs until'); ?></label></td>
-                <td class="value"><strong><?php echo $_profile->getEndsAt(); ?></strong></td>
+                <td class="value"><strong><?php echo $_subscription->getEndsAt(); ?></strong></td>
             </tr>
             <?php endif; ?>
         </table>
@@ -103,7 +103,7 @@
             <h4 class="icon-head head-billing-address"><?php echo Mage::helper('sales')->__('Billing Address') ?></h4>
         </div>
         <fieldset>
-            <address><?php echo $_profile->getBillingAddress()->format('html'); ?></address>
+            <address><?php echo $_subscription->getBillingAddress()->format('html'); ?></address>
         </fieldset>
     </div>
 </div>
@@ -114,7 +114,7 @@
             <h4 class="icon-head head-shipping-address"><?php echo Mage::helper('sales')->__('Shipping Address') ?></h4>
         </div>
         <fieldset>
-            <address><?php echo $_profile->getShippingAddress()->format('html'); ?></address>
+            <address><?php echo $_subscription->getShippingAddress()->format('html'); ?></address>
         </fieldset>
     </div>
 </div>
@@ -174,11 +174,11 @@
         <table cellspacing="0" class="form-list">
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Shipping Method Code'); ?></label></td>
-                <td class="value"><strong><?php echo $_profile->getShippingMethod(); ?></strong></td>
+                <td class="value"><strong><?php echo $_subscription->getShippingMethod(); ?></strong></td>
             </tr>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Shipping Method Title'); ?></label></td>
-                <td class="value"><strong><?php echo $_profile->getShippingMethodTitle(); ?></strong></td>
+                <td class="value"><strong><?php echo $_subscription->getShippingMethodTitle(); ?></strong></td>
             </tr>
         </table>
     </div>
@@ -186,10 +186,10 @@
 
 <div class="clear"></div>
 
-<!--Profile Products-->
+<!--Subscription Products-->
 <div class="edit-entry">
     <div class="entry-edit-head">
-        <h4 class="icon-head"><?php echo Mage::helper('adyen_subscription')->__('Profile Products'); ?></h4>
+        <h4 class="icon-head"><?php echo Mage::helper('adyen_subscription')->__('Subscription Products'); ?></h4>
     </div>
-    <?php echo $this->getChildHtml('profile_products'); ?>
+    <?php echo $this->getChildHtml('subscription_products'); ?>
 </div>

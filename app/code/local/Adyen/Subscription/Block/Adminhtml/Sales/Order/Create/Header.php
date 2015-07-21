@@ -24,26 +24,26 @@ class Adyen_Subscription_Block_Adminhtml_Sales_Order_Create_Header
      */
     protected function _toHtml()
     {
-        /** @var Adyen_Subscription_Model_Profile $profile */
-        $profile = Mage::registry('current_profile');
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::registry('current_subscription');
 
-        if (! $profile) {
+        if (! $subscription) {
             return parent::_toHtml();
         }
 
 
         if ($this->getRequest()->getParam('full_update')) {
             $out = Mage::helper('adyen_subscription')->__(
-                'Edit Profile #%s for %s in %s',
-                $profile->getIncrementId(),
-                $profile->getCustomer()->getName(),
+                'Edit Subscription #%s for %s in %s',
+                $subscription->getIncrementId(),
+                $subscription->getCustomer()->getName(),
                 $this->getStore()->getName()
             );
         } else {
             $out = Mage::helper('adyen_subscription')->__(
-                'Edit Scheduled Order for Profile #%s for %s in %s',
-                $profile->getIncrementId(),
-                $profile->getCustomer()->getName(),
+                'Edit Scheduled Order for Subscription #%s for %s in %s',
+                $subscription->getIncrementId(),
+                $subscription->getCustomer()->getName(),
                 $this->getStore()->getName()
             );
         }

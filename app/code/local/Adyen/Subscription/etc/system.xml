@@ -27,8 +27,8 @@
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
-                <profile translate="label">
-                    <label>Profile</label>
+                <subscription translate="label">
+                    <label>Subscription</label>
                     <sort_order>10</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -43,7 +43,7 @@
                             <comment><![CDATA[]]></comment>
                         </cancel_reasons>
                     </fields>
-                </profile>
+                </subscription>
             </groups>
         </adyen_subscription>
     </sections>

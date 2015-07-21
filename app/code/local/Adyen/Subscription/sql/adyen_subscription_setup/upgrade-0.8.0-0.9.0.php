@@ -23,9 +23,9 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- DROP TABLE IF EXISTS `{$this->getTable('adyen_subscription/product_profile')}`;
+    -- DROP TABLE IF EXISTS `{$this->getTable('adyen_subscription/product_subscription')}`;
 
-    CREATE TABLE `{$this->getTable('adyen_subscription/product_profile')}` (
+    CREATE TABLE `{$this->getTable('adyen_subscription/product_subscription')}` (
       `entity_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
       `product_id` int(10) unsigned DEFAULT NULL,
       `label` varchar(255) DEFAULT NULL,

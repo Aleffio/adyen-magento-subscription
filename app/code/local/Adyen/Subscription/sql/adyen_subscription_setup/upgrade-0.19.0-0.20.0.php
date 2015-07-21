@@ -24,9 +24,9 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileAddressTable = $installer->getTable('adyen_subscription/profile_address');
+$subscriptionAddressTable = $installer->getTable('adyen_subscription/subscription_address');
 
-$connection->modifyColumn($profileAddressTable, 'item_id', [
+$connection->modifyColumn($subscriptionAddressTable, 'item_id', [
     'type'           => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'auto_increment' => true,
     'unsigned'       => true,

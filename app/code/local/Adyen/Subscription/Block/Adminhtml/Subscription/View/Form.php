@@ -16,14 +16,14 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_View_Form extends Mage_Adminhtml_Block_Widget_Form
+class Adyen_Subscription_Block_Adminhtml_Subscription_View_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     public function __construct()
     {
         parent::__construct();
 
-        $this->setId('adyen_subscription_profile_form');
-        $this->setTitle(Mage::helper('adyen_subscription')->__('Profile Information'));
+        $this->setId('adyen_subscription_subscription_form');
+        $this->setTitle(Mage::helper('adyen_subscription')->__('Subscription Information'));
     }
 
     protected function _prepareForm()

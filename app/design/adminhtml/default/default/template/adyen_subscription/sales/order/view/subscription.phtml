@@ -18,43 +18,43 @@
 
 /** @var $this Adyen_Subscription_Block_Adminhtml_Sales_Order_View_Subscription */
 
-$_profileQuoteAdd = $this->getProfileQuoteAdditionalInfo();
-$_profile = $this->getProfile();
+$_subscriptionQuoteAdd = $this->getSubscriptionQuoteAdditionalInfo();
+$_subscription = $this->getSubscription();
 ?>
 <div class="box-right">
     <!--Subscription Information-->
     <div class="entry-edit">
         <div class="entry-edit-head">
-            <h4 class="icon-head head-account"><?php echo $this->__('Related Profile') ?></h4>
+            <h4 class="icon-head head-account"><?php echo $this->__('Related Subscription') ?></h4>
         </div>
     </div>
     <div class="fieldset">
         <table cellspacing="0" class="form-list">
             <tr>
-                <td class="label"><label><?php echo Mage::helper('sales')->__('Profile ID') ?></label></td>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Subscription ID') ?></label></td>
                 <td class="value">
-                    <a href="<?php echo $this->getUrl('adyen_subscription/adminhtml_profile/view', ['id' => $this->getProfile()->getId()]); ?>">
-                        <strong>#<?php echo $_profile->getIncrementId(); ?></strong>
+                    <a href="<?php echo $this->getUrl('adyen_subscription/adminhtml_subscription/view', ['id' => $this->getSubscription()->getId()]); ?>">
+                        <strong>#<?php echo $_subscription->getIncrementId(); ?></strong>
                     </a>
                 </td>
             </tr>
             <tr>
-                <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Profile Status'); ?></label></td>
+                <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Subscription Status'); ?></label></td>
                 <td class="value">
-                    <strong><?php echo $_profile->getStatusLabel($_profile->getStatus());?></strong>
+                    <strong><?php echo $_subscription->getStatusLabel($_subscription->getStatus());?></strong>
                 </td>
             </tr>
-            <?php if ($_profileQuoteAdd): ?>
+            <?php if ($_subscriptionQuoteAdd): ?>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Period Date') ?></label></td>
                 <td class="value">
-                    <strong><?php echo $_profile->getTermLabel(); ?></strong>
+                    <strong><?php echo $_subscription->getTermLabel(); ?></strong>
                 </td>
             </tr>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Schedule Date') ?></label></td>
                 <td class="value">
-                    <strong><?php echo $_profileQuoteAdd->getScheduledAtFormatted(); ?></strong>
+                    <strong><?php echo $_subscriptionQuoteAdd->getScheduledAtFormatted(); ?></strong>
                 </td>
             </tr>
             <?php endif; ?>

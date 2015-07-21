@@ -16,26 +16,26 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Model_Resource_Profile_Address extends Mage_Core_Model_Resource_Db_Abstract
+class Adyen_Subscription_Model_Resource_Subscription_Address extends Mage_Core_Model_Resource_Db_Abstract
 {
     public function _construct()
     {
-        $this->_init('adyen_subscription/profile_address', 'item_id');
+        $this->_init('adyen_subscription/subscription_address', 'item_id');
     }
 
     /**
-     * @param Adyen_Subscription_Model_Profile_Address $object
-     * @param Adyen_Subscription_Model_Profile $profile
+     * @param Adyen_Subscription_Model_Subscription_Address $object
+     * @param Adyen_Subscription_Model_Subscription $subscription
      * @param int $type
      * @return $this
      */
-    public function loadByProfile(
-        Adyen_Subscription_Model_Profile_Address $object,
-        Adyen_Subscription_Model_Profile $profile,
+    public function loadBySubscription(
+        Adyen_Subscription_Model_Subscription_Address $object,
+        Adyen_Subscription_Model_Subscription $subscription,
         $type
     ) {
-        $select = Mage::getResourceModel('adyen_subscription/profile_address_collection')
-            ->addFieldToFilter('profile_id', $profile->getId())
+        $select = Mage::getResourceModel('adyen_subscription/subscription_address_collection')
+            ->addFieldToFilter('subscription_id', $subscription->getId())
             ->addFieldToFilter('type', $type)
             ->getSelect();
 

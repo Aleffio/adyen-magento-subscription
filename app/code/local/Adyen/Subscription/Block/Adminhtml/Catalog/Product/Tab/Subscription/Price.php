@@ -30,7 +30,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription_Price
         $html.= '<strong>['.(string)$store->getBaseCurrencyCode().']</strong>';
         if (Mage::helper('tax')->priceIncludesTax($store)) {
             $inclTax = Mage::helper('tax')->__('Inc. Tax');
-            $html.= " <strong>[{$inclTax} <span id=\"dynamic-tax-profile-{$this->getData('identifier')}\"></span>]</strong>";
+            $html.= " <strong>[{$inclTax} <span id=\"dynamic-tax-subscription-{$this->getData('identifier')}\"></span>]</strong>";
         }
 
         return $html;

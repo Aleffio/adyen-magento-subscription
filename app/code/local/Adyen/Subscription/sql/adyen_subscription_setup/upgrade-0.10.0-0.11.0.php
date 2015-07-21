@@ -24,10 +24,10 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$productProfileTable = $installer->getTable('adyen_subscription/product_profile');
+$productSubscriptionTable = $installer->getTable('adyen_subscription/product_subscription');
 
 //product_id
-$connection->modifyColumn($productProfileTable, 'product_id', [
+$connection->modifyColumn($productSubscriptionTable, 'product_id', [
     'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'nullable' => false,
     'unsigned' => true,
@@ -35,12 +35,12 @@ $connection->modifyColumn($productProfileTable, 'product_id', [
 
 $productTable = $installer->getTable('catalog/product');
 $connection->addForeignKey(
-    $installer->getFkName($productProfileTable, 'product_id', $productTable, 'entity_id'),
-    $productProfileTable, 'product_id', $productTable, 'entity_id'
+    $installer->getFkName($productSubscriptionTable, 'product_id', $productTable, 'entity_id'),
+    $productSubscriptionTable, 'product_id', $productTable, 'entity_id'
 );
 
 //website_id
-$connection->modifyColumn($productProfileTable, 'website_id', [
+$connection->modifyColumn($productSubscriptionTable, 'website_id', [
     'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'nullable' => false,
     'unsigned' => true,
@@ -48,12 +48,12 @@ $connection->modifyColumn($productProfileTable, 'website_id', [
 
 $websiteTable = $installer->getTable('core/website');
 $connection->addForeignKey(
-    $installer->getFkName($productProfileTable, 'website_id', $websiteTable, 'website_id'),
-    $productProfileTable, 'website_id', $websiteTable, 'website_id'
+    $installer->getFkName($productSubscriptionTable, 'website_id', $websiteTable, 'website_id'),
+    $productSubscriptionTable, 'website_id', $websiteTable, 'website_id'
 );
 
 //customer_group_id
-$connection->modifyColumn($productProfileTable, 'customer_group_id', [
+$connection->modifyColumn($productSubscriptionTable, 'customer_group_id', [
     'type' => Varien_Db_Ddl_Table::TYPE_SMALLINT,
     'length' => 5,
     'default' => null,
@@ -63,40 +63,40 @@ $connection->modifyColumn($productProfileTable, 'customer_group_id', [
 
 $customerGroupTable = $installer->getTable('customer/customer_group');
 $connection->addForeignKey(
-    $installer->getFkName($productProfileTable, 'customer_group_id', $customerGroupTable, 'customer_group_id'),
-    $productProfileTable, 'customer_group_id', $customerGroupTable, 'customer_group_id'
+    $installer->getFkName($productSubscriptionTable, 'customer_group_id', $customerGroupTable, 'customer_group_id'),
+    $productSubscriptionTable, 'customer_group_id', $customerGroupTable, 'customer_group_id'
 );
 
-$connection->modifyColumn($productProfileTable, 'label', [
+$connection->modifyColumn($productSubscriptionTable, 'label', [
     'type' => Varien_Db_Ddl_Table::TYPE_TEXT,
     'length' => 255,
     'nullable' => false,
 ]);
 
-$connection->modifyColumn($productProfileTable, 'term', [
+$connection->modifyColumn($productSubscriptionTable, 'term', [
     'type' => Varien_Db_Ddl_Table::TYPE_SMALLINT,
     'length' => 5,
     'nullable' => false,
 ]);
 
-$connection->modifyColumn($productProfileTable, 'term_type', [
+$connection->modifyColumn($productSubscriptionTable, 'term_type', [
     'type' => Varien_Db_Ddl_Table::TYPE_TEXT,
     'length' => 40,
     'nullable' => false,
 ]);
 
-$connection->modifyColumn($productProfileTable, 'min_billing_cycles', [
+$connection->modifyColumn($productSubscriptionTable, 'min_billing_cycles', [
     'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'nullable' => false,
     'default' => 0
 ]);
 
-$connection->modifyColumn($productProfileTable, 'max_billing_cycles', [
+$connection->modifyColumn($productSubscriptionTable, 'max_billing_cycles', [
     'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'default' => false
 ]);
 
-$connection->modifyColumn($productProfileTable, 'qty', [
+$connection->modifyColumn($productSubscriptionTable, 'qty', [
     'type' => Varien_Db_Ddl_Table::TYPE_DECIMAL,
     'scale'     => 4,
     'precision' => 12,
@@ -104,7 +104,7 @@ $connection->modifyColumn($productProfileTable, 'qty', [
     'nullable' => false,
 ]);
 
-$connection->modifyColumn($productProfileTable, 'price', [
+$connection->modifyColumn($productSubscriptionTable, 'price', [
     'type' => Varien_Db_Ddl_Table::TYPE_DECIMAL,
     'default' => false
 ]);

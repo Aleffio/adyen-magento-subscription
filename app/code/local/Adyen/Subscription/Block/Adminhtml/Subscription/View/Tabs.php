@@ -16,13 +16,13 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
+class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
 {
     public function __construct()
     {
         parent::__construct();
-        $this->setId('profile_tabs');
+        $this->setId('subscription_tabs');
         $this->setDestElementId('edit_form');
-        $this->setTitle(Mage::helper('adyen_subscription')->__('Manage Profile'));
+        $this->setTitle(Mage::helper('adyen_subscription')->__('Manage Subscription'));
     }
 }

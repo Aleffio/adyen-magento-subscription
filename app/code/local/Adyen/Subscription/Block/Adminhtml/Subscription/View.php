@@ -16,12 +16,12 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_View extends Mage_Adminhtml_Block_Widget_Form_Container
+class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtml_Block_Widget_Form_Container
 {
     public function __construct()
     {
         $this->_blockGroup = 'adyen_subscription';
-        $this->_controller = 'adminhtml_profile';
+        $this->_controller = 'adminhtml_subscription';
         $this->_mode = 'view';
 
         parent::__construct();
@@ -29,50 +29,50 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View extends Mage_Adminhtml_Blo
         $this->_removeButton('save');
         $this->_removeButton('reset');
 
-        if ($this->getProfile()->canCancel()) {
-            $this->_addButton('stop_profile', [
+        if ($this->getSubscription()->canCancel()) {
+            $this->_addButton('stop_subscription', [
                 'class'     => 'delete',
-                'label'     => Mage::helper('adyen_subscription')->__('Stop Profile'),
+                'label'     => Mage::helper('adyen_subscription')->__('Stop Subscription'),
                 'onclick'   => "setLocation('{$this->getUrl('*/*/cancel',
-                    ['id' => $this->getProfile()->getIncrementId()])}')",
+                    ['id' => $this->getSubscription()->getIncrementId()])}')",
             ], 10);
         }
 
-        if ($this->getProfile()->isCanceled()) {
-            $this->_addButton('activate_profile', [
-                'label'     => Mage::helper('adyen_subscription')->__('Activate Profile'),
-                'onclick' => "deleteConfirm('" . Mage::helper('adminhtml')->__('Are you sure you want to do reactivate this profile?')
-                    . "', '" . $this->getUrl('*/*/activateProfile', ['id' => $this->getProfile()->getId()]) . "')",
+        if ($this->getSubscription()->isCanceled()) {
+            $this->_addButton('activate_subscription', [
+                'label'     => Mage::helper('adyen_subscription')->__('Activate Subscription'),
+                'onclick' => "deleteConfirm('" . Mage::helper('adminhtml')->__('Are you sure you want to do reactivate this subscription?')
+                    . "', '" . $this->getUrl('*/*/activateSubscription', ['id' => $this->getSubscription()->getId()]) . "')",
             ], 10);
         }
 
-        if ($this->getProfile()->canCreateQuote()) {
+        if ($this->getSubscription()->canCreateQuote()) {
             $this->_addButton('create_quote', [
                 'label' => Mage::helper('adyen_subscription')->__('Schedule Order'),
                 'class' => 'add',
                 'onclick' => "setLocation('{$this->getUrl('*/*/createQuote',
-                    ['id' => $this->getProfile()->getId()])}')",
+                    ['id' => $this->getSubscription()->getId()])}')",
             ], 20);
         }
 
-        if ($this->getProfile()->canEditProfile()) {
-            $this->_addButton('edit_profile', [
-                'label' => Mage::helper('adyen_subscription')->__('Edit Profile'),
+        if ($this->getSubscription()->canEditSubscription()) {
+            $this->_addButton('edit_subscription', [
+                'label' => Mage::helper('adyen_subscription')->__('Edit Subscription'),
                 'class' => 'add',
-                'onclick' => "setLocation('{$this->getUrl('*/*/editProfile',
-                    ['id' => $this->getProfile()->getId()])}')",
+                'onclick' => "setLocation('{$this->getUrl('*/*/editSubscription',
+                    ['id' => $this->getSubscription()->getId()])}')",
             ], 30);
         }
     }
 
     public function getHeaderText()
     {
-        $profile = $this->getProfile();
+        $subscription = $this->getSubscription();
 
-        if ($profile->getId()) {
+        if ($subscription->getId()) {
             return Mage::helper('adyen_subscription')->__('Subscription %s for %s',
-                sprintf('<i>#%s</i>', $profile->getIncrementId()),
-                sprintf('<i>%s</i>', $profile->getCustomerName())
+                sprintf('<i>#%s</i>', $subscription->getIncrementId()),
+                sprintf('<i>%s</i>', $subscription->getCustomerName())
             );
         }
         else {
@@ -81,9 +81,9 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View extends Mage_Adminhtml_Blo
     }
 
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    public function getProfile()
+    public function getSubscription()
     {
         return Mage::registry('adyen_subscription');
     }

@@ -24,8 +24,8 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileQuoteTable = $installer->getTable('adyen_subscription/profile_quote');
+$subscriptionQuoteTable = $installer->getTable('adyen_subscription/subscription_quote');
 
-$connection->dropColumn($profileQuoteTable, 'scheduled_at');
+$connection->dropColumn($subscriptionQuoteTable, 'scheduled_at');
 
 $installer->endSetup();

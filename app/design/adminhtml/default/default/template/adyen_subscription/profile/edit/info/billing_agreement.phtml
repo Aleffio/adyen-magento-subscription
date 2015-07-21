@@ -16,11 +16,11 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-/** @var $this Adyen_Subscription_Block_Adminhtml_Profile_Edit_Info_BillingAgreement */
+/** @var $this Adyen_Subscription_Block_Adminhtml_Subscription_Edit_Info_BillingAgreement */
 $_billingAgreementCollection = $this->getBACollection();
 $_activeBA = $this->getActiveBA();
 ?>
-<select name="profile[billing_agreement_id]">
+<select name="subscription[billing_agreement_id]">
     <?php if (! $this->isActiveBAValid()): ?>
         <?php echo $this->__("#%s %s (%s)",
             $_activeBA->getReferenceId(),

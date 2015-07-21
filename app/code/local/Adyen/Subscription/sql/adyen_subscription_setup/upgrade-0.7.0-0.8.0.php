@@ -23,9 +23,9 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- Add columns to profile table
+    -- Add columns to subscription table
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription')}`
         ADD COLUMN `error_message` varchar(255) DEFAULT NULL AFTER `status`;
 
 ");

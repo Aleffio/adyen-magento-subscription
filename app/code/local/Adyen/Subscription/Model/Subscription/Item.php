@@ -17,44 +17,44 @@
  */
 
 /**
- * Class Adyen_Subscription_Model_Profile_Item
+ * Class Adyen_Subscription_Model_Subscription_Item
  *
  * @method string getStatus()
- * @method $this setStatus(string $value)
- * @method int getProfileId()
- * @method $this setProfileId(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setStatus(string $value)
+ * @method int getSubscriptionId()
+ * @method Adyen_Subscription_Model_Subscription_Item setSubscriptionId(int $value)
  * @method int getProductId()
- * @method $this setProductId(int $value)
- * @method $this setProductOptions(string $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setProductId(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setProductOptions(string $value)
  * @method string getSku()
- * @method $this setSku(string $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setSku(string $value)
  * @method string getName()
- * @method $this setName(string $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setName(string $value)
  * @method string getLabel()
- * @method $this setLabel(string $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setLabel(string $value)
  * @method float getPrice()
- * @method $this setPrice(float $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setPrice(float $value)
  * @method float getPriceInclTax()
- * @method $this setPriceInclTax(float $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setPriceInclTax(float $value)
  * @method int getQty()
- * @method $this setQty(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setQty(int $value)
  * @method bool getOnce()
- * @method $this setOnce(bool $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setOnce(bool $value)
  * @method int getMinBillingCycles()
- * @method $this setMinBillingCycles(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setMinBillingCycles(int $value)
  * @method int getMaxBillingCycles()
- * @method $this setMaxBillingCycles(int $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setMaxBillingCycles(int $value)
  * @method string getCreatedAt()
- * @method $this setCreatedAt(string $value)
+ * @method Adyen_Subscription_Model_Subscription_Item setCreatedAt(string $value)
  */
-class Adyen_Subscription_Model_Profile_Item extends Mage_Core_Model_Abstract
+class Adyen_Subscription_Model_Subscription_Item extends Mage_Core_Model_Abstract
 {
     const STATUS_ACTIVE     = 'active';
     const STATUS_EXPIRED    = 'expired';
 
     protected function _construct ()
     {
-        $this->_init('adyen_subscription/profile_item');
+        $this->_init('adyen_subscription/subscription_item');
     }
 
     /**

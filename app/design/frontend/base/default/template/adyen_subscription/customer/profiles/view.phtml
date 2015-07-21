@@ -16,10 +16,10 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 ?>
-<?php /* @var Adyen_Subscription_Block_Customer_Profiles_View $this */ ?>
-<?php $_profile = $this->getProfile(); ?>
+<?php /* @var Adyen_Subscription_Block_Customer_Subscriptions_View $this */ ?>
+<?php $_subscription = $this->getSubscription(); ?>
 <div class="page-title title-buttons subscription-view-header-wrapper">
-    <h1 class="heading"><?php echo $this->__('Subscription # %s', $this->escapeHtml($_profile->getId())); ?></h1>
+    <h1 class="heading"><?php echo $this->__('Subscription # %s', $this->escapeHtml($_subscription->getId())); ?></h1>
 </div>
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 <div class="subscription">
@@ -30,39 +30,39 @@
                 <tbody>
                 <tr>
                     <th><?php echo $this->__('Reference ID:') ?></th>
-                    <td><?php echo $this->escapeHtml($_profile->getId()); ?></td>
+                    <td><?php echo $this->escapeHtml($_subscription->getId()); ?></td>
                 </tr>
                 <tr>
                     <th><?php echo $this->__('Status:') ?></th>
-                    <td><?php echo ucfirst($_profile->getStatus()); ?></td>
+                    <td><?php echo ucfirst($_subscription->getStatus()); ?></td>
                 </tr>
                 <tr>
                     <th><?php echo $this->__('Created At:') ?></th>
-                    <td><?php echo $this->escapeHtml($_profile->getCreatedAtFormatted()); ?></td>
+                    <td><?php echo $this->escapeHtml($_subscription->getCreatedAtFormatted()); ?></td>
                 </tr>
                 <tr>
                     <th><?php echo $this->__('Updated At:') ?></th>
-                    <td><?php echo $this->escapeHtml($_profile->getUpdatedAtFormatted()); ?></td>
+                    <td><?php echo $this->escapeHtml($_subscription->getUpdatedAtFormatted()); ?></td>
                 </tr>
                 <tr>
                     <th><?php echo $this->__('Next Order At:') ?></th>
-                    <td><?php echo $this->escapeHtml($_profile->getScheduledAtFormatted()); ?></td>
+                    <td><?php echo $this->escapeHtml($_subscription->getScheduledAtFormatted()); ?></td>
                 </tr>
                 <tr>
                     <th><?php echo $this->__('Period:') ?></th>
-                    <td><?php echo $this->escapeHtml($_profile->getTermLabel()); ?></td>
+                    <td><?php echo $this->escapeHtml($_subscription->getTermLabel()); ?></td>
                 </tr>
                 <tr>
                     <th><?php echo $this->__('Billing Agreement:') ?></th>
-                    <td><a href="<?php echo $this->getUrl('sales/billing_agreement/view', array('agreement' => $_profile->getBillingAgreementId())); ?>">
-                            <?php echo $_profile->getBillingAgreement()->getReferenceId(); ?></a>
+                    <td><a href="<?php echo $this->getUrl('sales/billing_agreement/view', array('agreement' => $_subscription->getBillingAgreementId())); ?>">
+                            <?php echo $_subscription->getBillingAgreement()->getReferenceId(); ?></a>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <?php $pastOrders = $_profile->getOrders(); ?>
+    <?php $pastOrders = $_subscription->getOrders(); ?>
     <?php if(count($pastOrders) > 0): ?>
         <?php echo $this->getChildHtml('pager'); ?>
         <h2 class="table-caption"><?php echo $this->__('Past Orders') ?></h2>

@@ -24,9 +24,9 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileAddressTable = $installer->getTable('adyen_subscription/profile_address');
+$subscriptionAddressTable = $installer->getTable('adyen_subscription/subscription_address');
 
-$connection->addColumn($profileAddressTable, 'quote_address_id', [
+$connection->addColumn($subscriptionAddressTable, 'quote_address_id', [
     'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'unsigned'  => true,
     'nullable'  => true,

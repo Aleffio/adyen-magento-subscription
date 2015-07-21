@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_Renderer_Status extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
+class Adyen_Subscription_Block_Adminhtml_Subscription_Renderer_Status extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
 {
     /**
      * @param Varien_Object $row
@@ -24,10 +24,10 @@ class Adyen_Subscription_Block_Adminhtml_Profile_Renderer_Status extends Mage_Ad
      */
     public function render(Varien_Object $row)
     {
-        $profile = Mage::getModel('adyen_subscription/profile');
+        $subscription = Mage::getModel('adyen_subscription/subscription');
 
         $value = $row->getData($this->getColumn()->getIndex());
 
-        return $profile->renderStatusBar($value);
+        return $subscription->renderStatusBar($value);
     }
 }

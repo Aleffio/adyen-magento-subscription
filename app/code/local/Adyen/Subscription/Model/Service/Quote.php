@@ -20,24 +20,24 @@ class Adyen_Subscription_Model_Service_Quote
 {
     /**
      * @param Mage_Sales_Model_Quote     $quote
-     * @param Adyen_Subscription_Model_Profile $profile
+     * @param Adyen_Subscription_Model_Subscription $subscription
      *
      * @return Mage_Sales_Model_Order
      * @throws Adyen_Subscription_Exception|Exception
      */
     public function createOrder(
         Mage_Sales_Model_Quote $quote,
-        Adyen_Subscription_Model_Profile $profile
+        Adyen_Subscription_Model_Subscription $subscription
     ) {
         try {
-            if (! $profile->canCreateOrder()) {
+            if (! $subscription->canCreateOrder()) {
                 Adyen_Subscription_Exception::throwException(
                     Mage::helper('adyen_subscription')->__('Not allowed to create order from quote')
                 );
             }
             foreach ($quote->getAllItems() as $item) {
                 /** @var Mage_Sales_Model_Quote_Item $item */
-                $item->getProduct()->setData('is_created_from_profile_item', $item->getData('subscription_item_id'));
+                $item->getProduct()->setData('is_created_from_subscription_item', $item->getData('subscription_item_id'));
             }
 
             $quote->collectTotals();
@@ -45,37 +45,37 @@ class Adyen_Subscription_Model_Service_Quote
             $service->submitAll();
             $order = $service->getOrder();
 
-            // Save order addresses at profile when they're currently quote addresses
-            $profileBillingAddress = Mage::getModel('adyen_subscription/profile_address')
-                ->getProfileAddress($profile, Adyen_Subscription_Model_Profile_Address::ADDRESS_TYPE_BILLING);
+            // Save order addresses at subscription when they're currently quote addresses
+            $subscriptionBillingAddress = Mage::getModel('adyen_subscription/subscription_address')
+                ->getSubscriptionAddress($subscription, Adyen_Subscription_Model_Subscription_Address::ADDRESS_TYPE_BILLING);
 
-            if ($profileBillingAddress->getSource() == Adyen_Subscription_Model_Profile_Address::ADDRESS_SOURCE_QUOTE) {
-                $profileBillingAddress
-                    ->initAddress($profile, $order->getBillingAddress())
+            if ($subscriptionBillingAddress->getSource() == Adyen_Subscription_Model_Subscription_Address::ADDRESS_SOURCE_QUOTE) {
+                $subscriptionBillingAddress
+                    ->initAddress($subscription, $order->getBillingAddress())
                     ->save();
             }
 
-            $profileShippingAddress = Mage::getModel('adyen_subscription/profile_address')
-                ->getProfileAddress($profile, Adyen_Subscription_Model_Profile_Address::ADDRESS_TYPE_SHIPPING);
+            $subscriptionShippingAddress = Mage::getModel('adyen_subscription/subscription_address')
+                ->getSubscriptionAddress($subscription, Adyen_Subscription_Model_Subscription_Address::ADDRESS_TYPE_SHIPPING);
 
-            if ($profileShippingAddress->getSource() == Adyen_Subscription_Model_Profile_Address::ADDRESS_SOURCE_QUOTE) {
-                $profileShippingAddress
-                    ->initAddress($profile, $order->getShippingAddress())
+            if ($subscriptionShippingAddress->getSource() == Adyen_Subscription_Model_Subscription_Address::ADDRESS_SOURCE_QUOTE) {
+                $subscriptionShippingAddress
+                    ->initAddress($subscription, $order->getShippingAddress())
                     ->save();
             }
 
-            $orderAdditional = $profile->getOrderAdditional($service->getOrder(), true)->save();
-            $quoteAdditional = $profile->getActiveQuoteAdditional()->setOrder($order)->save();
+            $orderAdditional = $subscription->getOrderAdditional($service->getOrder(), true)->save();
+            $quoteAdditional = $subscription->getActiveQuoteAdditional()->setOrder($order)->save();
 
-            $profile->setErrorMessage(null);
-            if ($profile->getStatus() == $profile::STATUS_ORDER_ERROR) {
-                $profile->setStatus($profile::STATUS_ACTIVE);
+            $subscription->setErrorMessage(null);
+            if ($subscription->getStatus() == $subscription::STATUS_ORDER_ERROR) {
+                $subscription->setStatus($subscription::STATUS_ACTIVE);
             }
 
-            $profile->setScheduledAt($profile->calculateNextScheduleDate());
+            $subscription->setScheduledAt($subscription->calculateNextScheduleDate());
 
             Mage::getModel('core/resource_transaction')
-                ->addObject($profile)
+                ->addObject($subscription)
                 ->addObject($orderAdditional)
                 ->addObject($quoteAdditional)
                 ->save();
@@ -83,35 +83,35 @@ class Adyen_Subscription_Model_Service_Quote
             return $service->getOrder();
 
         } catch (Mage_Payment_Exception $e) {
-            $profile->setStatus($profile::STATUS_PAYMENT_ERROR);
-            $profile->setErrorMessage($e->getMessage());
-            $profile->save();
+            $subscription->setStatus($subscription::STATUS_PAYMENT_ERROR);
+            $subscription->setErrorMessage($e->getMessage());
+            $subscription->save();
             throw $e;
         } catch (Exception $e) {
-            $profile->setStatus($profile::STATUS_ORDER_ERROR);
-            $profile->setErrorMessage($e->getMessage());
-            $profile->save();
+            $subscription->setStatus($subscription::STATUS_ORDER_ERROR);
+            $subscription->setErrorMessage($e->getMessage());
+            $subscription->save();
             throw $e;
         }
     }
 
     /**
-     * Update profile based on given quote
+     * Update subscription based on given quote
      *
      * @param Mage_Sales_Model_Quote $quote
-     * @param Adyen_Subscription_Model_Profile $profile
-     * @return Adyen_Subscription_Model_Profile $profile
+     * @param Adyen_Subscription_Model_Subscription $subscription
+     * @return Adyen_Subscription_Model_Subscription $subscription
      */
-    public function updateProfile(
+    public function updateSubscription(
         Mage_Sales_Model_Quote $quote,
-        Adyen_Subscription_Model_Profile $profile
+        Adyen_Subscription_Model_Subscription $subscription
     ) {
         $term = $termType = $stockId = null;
         foreach ($quote->getItemsCollection() as $quoteItem) {
             /** @var Mage_Sales_Model_Quote_Item $quoteItem */
-            $productProfile = $this->_getProductProfile($quoteItem);
+            $productSubscription = $this->_getProductSubscription($quoteItem);
 
-            if (!$productProfile) {
+            if (!$productSubscription) {
                 // No product subscription found, no subscription needs to be created
                 continue;
             }
@@ -121,12 +121,12 @@ class Adyen_Subscription_Model_Service_Quote
             }
 
             if (is_null($term)) {
-                $term = $productProfile->getTerm();
+                $term = $productSubscription->getTerm();
             }
             if (is_null($termType)) {
-                $termType = $productProfile->getTermType();
+                $termType = $productSubscription->getTermType();
             }
-            if ($term != $productProfile->getTerm() || $termType != $productProfile->getTermType()) {
+            if ($term != $productSubscription->getTerm() || $termType != $productSubscription->getTermType()) {
                 Adyen_Subscription_Exception::throwException('Subscription options of products in quote have different terms');
             }
         }
@@ -139,8 +139,8 @@ class Adyen_Subscription_Model_Service_Quote
             Adyen_Subscription_Exception::throwException('No shipping method selected');
         }
 
-        // Update profile
-        $profile->setStatus(Adyen_Subscription_Model_Profile::STATUS_ACTIVE)
+        // Update subscription
+        $subscription->setStatus(Adyen_Subscription_Model_Subscription::STATUS_ACTIVE)
             ->setStockId($stockId)
             ->setBillingAgreementId($billingAgreement->getId())
             ->setTerm($term)
@@ -149,33 +149,33 @@ class Adyen_Subscription_Model_Service_Quote
             ->setUpdatedAt(now())
             ->save();
 
-        // Create profile addresses
-        $profileBillingAddress = Mage::getModel('adyen_subscription/profile_address')
-            ->getProfileAddress($profile, Adyen_Subscription_Model_Profile_Address::ADDRESS_TYPE_BILLING)
-            ->initAddress($profile, $quote->getBillingAddress())
+        // Create subscription addresses
+        $subscriptionBillingAddress = Mage::getModel('adyen_subscription/subscription_address')
+            ->getSubscriptionAddress($subscription, Adyen_Subscription_Model_Subscription_Address::ADDRESS_TYPE_BILLING)
+            ->initAddress($subscription, $quote->getBillingAddress())
             ->save();
 
-        $profileShippingAddress = Mage::getModel('adyen_subscription/profile_address')
-            ->getProfileAddress($profile, Adyen_Subscription_Model_Profile_Address::ADDRESS_TYPE_SHIPPING)
-            ->initAddress($profile, $quote->getShippingAddress())
+        $subscriptionShippingAddress = Mage::getModel('adyen_subscription/subscription_address')
+            ->getSubscriptionAddress($subscription, Adyen_Subscription_Model_Subscription_Address::ADDRESS_TYPE_SHIPPING)
+            ->initAddress($subscription, $quote->getShippingAddress())
             ->save();
 
-        // Delete current profile items
-        foreach ($profile->getItemCollection() as $profileItem) {
-            /** @var Adyen_Subscription_Model_Profile_Item $profileItem */
-            $profileItem->delete();
+        // Delete current subscription items
+        foreach ($subscription->getItemCollection() as $subscriptionItem) {
+            /** @var Adyen_Subscription_Model_Subscription_Item $subscriptionItem */
+            $subscriptionItem->delete();
         }
 
         $i = 0;
-        // Create new profile items
+        // Create new subscription items
         foreach ($quote->getItemsCollection() as $quoteItem) {
             /** @var Mage_Sales_Model_Quote_Item $quoteItem */
 
-            /** @var Adyen_Subscription_Model_Product_Profile $productProfile */
-            $productProfile = $this->_getProductProfile($quoteItem);
+            /** @var Adyen_Subscription_Model_Product_Subscription $productSubscription */
+            $productSubscription = $this->_getProductSubscription($quoteItem);
 
-            if (!$productProfile) {
-                // No subscription profile found, no subscription needs to be created
+            if (!$productSubscription) {
+                // No product subscription found, no subscription needs to be created
                 continue;
             }
 
@@ -183,22 +183,22 @@ class Adyen_Subscription_Model_Service_Quote
             $productOptions['info_buyRequest'] = unserialize($quoteItem->getOptionByCode('info_buyRequest')->getValue());
             $productOptions['additional_options'] = unserialize($quoteItem->getOptionByCode('additional_options')->getValue());
 
-            /** @var Adyen_Subscription_Model_Profile_Item $profileItem */
-            $profileItem = Mage::getModel('adyen_subscription/profile_item')
-                ->setProfileId($profile->getId())
-                ->setStatus(Adyen_Subscription_Model_Profile_Item::STATUS_ACTIVE)
+            /** @var Adyen_Subscription_Model_Subscription_Item $subscriptionItem */
+            $subscriptionItem = Mage::getModel('adyen_subscription/subscription_item')
+                ->setSubscriptionId($subscription->getId())
+                ->setStatus(Adyen_Subscription_Model_Subscription_Item::STATUS_ACTIVE)
                 ->setProductId($quoteItem->getProductId())
                 ->setProductOptions(serialize($productOptions))
                 ->setSku($quoteItem->getSku())
                 ->setName($quoteItem->getName())
-                ->setLabel($productProfile->getLabel())
+                ->setLabel($productSubscription->getLabel())
                 ->setPrice($quoteItem->getPrice())
                 ->setPriceInclTax($quoteItem->getPriceInclTax())
                 ->setQty($quoteItem->getQty())
                 ->setOnce(0)
                 // Currently not in use
-//                ->setMinBillingCycles($productProfile->getMinBillingCycles())
-//                ->setMaxBillingCycles($productProfile->getMaxBillingCycles())
+//                ->setMinBillingCycles($productSubscription->getMinBillingCycles())
+//                ->setMaxBillingCycles($productSubscription->getMaxBillingCycles())
                 ->setCreatedAt(now())
                 ->save();
 
@@ -209,12 +209,12 @@ class Adyen_Subscription_Model_Service_Quote
             Adyen_Subscription_Exception::throwException('No subscription products in the subscription');
         }
 
-        return $profile;
+        return $subscription;
     }
 
     /**
      * The additional info and cc type of a quote payment are not updated when
-     * selecting another payment method while editing a profile or profile quote,
+     * selecting another payment method while editing a subscription or subscription quote,
      * but they have to be updated for the payment method to be valid
      *
      * @param Mage_Sales_Model_Quote $quote
@@ -260,22 +260,22 @@ class Adyen_Subscription_Model_Service_Quote
 
     /**
      * @param Mage_Sales_Model_Quote_Item $quoteItem
-     * @return Adyen_Subscription_Model_Product_Profile
+     * @return Adyen_Subscription_Model_Product_Subscription
      */
-    protected function _getProductProfile(Mage_Sales_Model_Quote_Item $quoteItem)
+    protected function _getProductSubscription(Mage_Sales_Model_Quote_Item $quoteItem)
     {
-        $profileId = $quoteItem->getBuyRequest()->getData('adyen_subscription_profile');
-        if (! $profileId) {
+        $subscriptionId = $quoteItem->getBuyRequest()->getData('adyen_subscription_subscription');
+        if (! $subscriptionId) {
             return false;
         }
 
-        $subscriptionProductProfile = Mage::getModel('adyen_subscription/product_profile')
-            ->load($profileId);
+        $subscriptionProductSubscription = Mage::getModel('adyen_subscription/product_subscription')
+            ->load($subscriptionId);
 
-        if (!$subscriptionProductProfile->getId()) {
+        if (!$subscriptionProductSubscription->getId()) {
             return false;
         }
 
-        return $subscriptionProductProfile;
+        return $subscriptionProductSubscription;
     }
 }

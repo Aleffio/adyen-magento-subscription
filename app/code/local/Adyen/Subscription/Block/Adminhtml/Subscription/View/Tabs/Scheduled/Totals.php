@@ -16,7 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals
+class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_Scheduled_Totals
     extends Mage_Adminhtml_Block_Sales_Order_Create_Totals
 {
     /**
@@ -26,15 +26,15 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals
      */
     public function getQuote()
     {
-        return $this->getProfile()->getActiveQuote();
+        return $this->getSubscription()->getActiveQuote();
     }
 
     /**
-     * @return Adyen_Subscription_Model_Profile_Quote
+     * @return Adyen_Subscription_Model_Subscription_Quote
      */
     public function getQuoteAdditional()
     {
-        return $this->getProfile()->getActiveQuoteAdditional();
+        return $this->getSubscription()->getActiveQuoteAdditional();
     }
 
     /**
@@ -44,7 +44,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals
      */
     public function getCustomer()
     {
-        return $this->getProfile()->getCustomer();
+        return $this->getSubscription()->getCustomer();
     }
 
     /**
@@ -54,7 +54,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals
      */
     public function getCustomerId()
     {
-        return $this->getProfile()->getCustomerId();
+        return $this->getSubscription()->getCustomerId();
     }
 
     /**
@@ -64,7 +64,7 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals
      */
     public function getStore()
     {
-        return Mage::app()->getStore($this->getProfile()->getStoreId());
+        return Mage::app()->getStore($this->getSubscription()->getStoreId());
     }
 
     /**
@@ -74,13 +74,13 @@ class Adyen_Subscription_Block_Adminhtml_Profile_View_Tabs_Scheduled_Totals
      */
     public function getStoreId()
     {
-        return $this->getProfile()->getStoreId();
+        return $this->getSubscription()->getStoreId();
     }
 
     /**
-     * @return Adyen_Subscription_Model_Profile
+     * @return Adyen_Subscription_Model_Subscription
      */
-    public function getProfile()
+    public function getSubscription()
     {
         return Mage::registry('adyen_subscription');
     }

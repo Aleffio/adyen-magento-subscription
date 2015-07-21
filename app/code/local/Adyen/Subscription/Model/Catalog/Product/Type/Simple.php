@@ -27,7 +27,7 @@ class Adyen_Subscription_Model_Catalog_Product_Type_Simple extends Mage_Catalog_
     public function canConfigure($product = null)
     {
         if (isset($product->getAttributes()['adyen_subscription_type'])) {
-            if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Profile::TYPE_DISABLED) {
+            if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED) {
                 return true;
             }
         }
@@ -36,7 +36,7 @@ class Adyen_Subscription_Model_Catalog_Product_Type_Simple extends Mage_Catalog_
     }
 
     /**
-     * Prepare selected options for simple profile product
+     * Prepare selected options for simple subscription product
      *
      * @param  Mage_Catalog_Model_Product $product
      * @param  Varien_Object $buyRequest
@@ -44,10 +44,10 @@ class Adyen_Subscription_Model_Catalog_Product_Type_Simple extends Mage_Catalog_
      */
     public function processBuyRequest($product, $buyRequest)
     {
-        $option = $buyRequest->getData('adyen_subscription_profile');
+        $option = $buyRequest->getData('adyen_subscription_subscription');
 
         $options = array(
-            'adyen_subscription_profile'     => $option,
+            'adyen_subscription_subscription'     => $option,
         );
 
         return $options;

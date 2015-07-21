@@ -21,12 +21,12 @@
     <menu>
         <sales>
             <children>
-                <recurring_profile>
+                <recurring_subscription>
                     <disabled>1</disabled>
-                </recurring_profile>
+                </recurring_subscription>
                 <adyen_subscriptions translate="title" module="adyen_subscription">
                     <title>Adyen Subscriptions</title>
-                    <action>adyen_subscription/adminhtml_profile</action>
+                    <action>adyen_subscription/adminhtml_subscription</action>
                     <sort_order>100</sort_order>
                 </adyen_subscriptions>
             </children>

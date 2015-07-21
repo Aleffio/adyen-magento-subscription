@@ -16,10 +16,10 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Model_Resource_Profile_Item extends Mage_Core_Model_Resource_Db_Abstract
+class Adyen_Subscription_Model_Resource_Subscription_Item extends Mage_Core_Model_Resource_Db_Abstract
 {
     public function _construct()
     {
-        $this->_init('adyen_subscription/profile_item', 'entity_id');
+        $this->_init('adyen_subscription/subscription_item', 'entity_id');
     }
 }

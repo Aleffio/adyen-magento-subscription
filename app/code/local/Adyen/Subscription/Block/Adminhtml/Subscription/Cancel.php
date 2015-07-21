@@ -16,16 +16,16 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Profile_Cancel extends Mage_Adminhtml_Block_Widget_Form_Container
+class Adyen_Subscription_Block_Adminhtml_Subscription_Cancel extends Mage_Adminhtml_Block_Widget_Form_Container
 {
     public function __construct()
     {
         parent::__construct();
 
         $this->_blockGroup = 'adyen_subscription';
-        $this->_controller = 'adminhtml_profile';
+        $this->_controller = 'adminhtml_subscription';
         $this->_mode = 'cancel';
-        $this->_headerText = Mage::helper('adyen_subscription')->__('Cancel Profile');
+        $this->_headerText = Mage::helper('adyen_subscription')->__('Cancel Subscription');
 
         $this->_removeButton('delete');
         $this->_removeButton('reset');

@@ -24,22 +24,22 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileLabelTable = $installer->getTable('adyen_subscription/product_profile_label');
+$subscriptionLabelTable = $installer->getTable('adyen_subscription/product_subscription_label');
 
-$connection->dropTable($profileLabelTable);
+$connection->dropTable($subscriptionLabelTable);
 
 $table = $connection
-    ->newTable($profileLabelTable)
+    ->newTable($subscriptionLabelTable)
     ->addColumn('label_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 11, [
         'unsigned'  => true,
         'nullable'  => false,
         'primary'   => true,
         'auto_increment' => true,
     ], 'Label ID')
-    ->addColumn('profile_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 11, [
+    ->addColumn('subscription_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 11, [
         'unsigned'  => true,
         'nullable'  => false,
-    ], 'Profile ID')
+    ], 'Subscription ID')
     ->addColumn('store_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 5, [
         'unsigned'  => true,
         'nullable'  => false,
@@ -50,17 +50,17 @@ $table = $connection
     ], 'Label')
     ->addForeignKey(
         $installer->getFkName(
-            'adyen_subscription/product_profile_label',
+            'adyen_subscription/product_subscription_label',
             'entity_id',
-            'adyen_subscription/profile',
+            'adyen_subscription/subscription',
             'entity_id'
         ),
-        'profile_id', $installer->getTable('adyen_subscription/product_profile'), 'entity_id',
+        'subscription_id', $installer->getTable('adyen_subscription/product_subscription'), 'entity_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
     )
     ->addForeignKey(
         $installer->getFkName(
-            'adyen_subscription/product_profile_label',
+            'adyen_subscription/product_subscription_label',
             'store_id',
             'core/store',
             'store_id'
@@ -68,7 +68,7 @@ $table = $connection
         'store_id', $installer->getTable('core/store'), 'store_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
     )
-    ->setComment('Adyen Subscription Product Profile Label');
+    ->setComment('Adyen Subscription Product Subscription Label');
 
 $connection->createTable($table);
 

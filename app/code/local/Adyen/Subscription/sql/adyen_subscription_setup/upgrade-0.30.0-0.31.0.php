@@ -24,9 +24,9 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$profileTable = $installer->getTable('adyen_subscription/product_profile');
+$subscriptionTable = $installer->getTable('adyen_subscription/product_subscription');
 
-$connection->addColumn($profileTable, 'show_on_frontend', [
+$connection->addColumn($subscriptionTable, 'show_on_frontend', [
     'type'      => Varien_Db_Ddl_Table::TYPE_BOOLEAN,
     'nullable'  => false,
     'default'   => 0,

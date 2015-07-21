@@ -23,9 +23,9 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- Add columns to profile table
+    -- Add columns to subscription table
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription')}`
         ADD COLUMN `status` varchar(255) AFTER `entity_id`,
         ADD COLUMN `created_at` timestamp AFTER `store_id`,
         ADD COLUMN `ends_at` timestamp AFTER `created_at`,

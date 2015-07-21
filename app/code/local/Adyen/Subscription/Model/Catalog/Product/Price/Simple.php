@@ -28,12 +28,12 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Simple extends Mage_Catalog
      */
     public function getFinalPrice($qty = null, $product)
     {
-        if ($profileItem = $this->_helper()->getProfileItem($product)) {
-            return $profileItem->getPriceInclTax();
+        if ($subscriptionItem = $this->_helper()->getSubscriptionItem($product)) {
+            return $subscriptionItem->getPriceInclTax();
         }
 
-        if ($profile = $this->_helper()->getProductProfile($product)) {
-            return $profile->getPrice();
+        if ($subscription = $this->_helper()->getProductSubscription($product)) {
+            return $subscription->getPrice();
         }
 
         return parent::getFinalPrice($qty, $product);
@@ -49,7 +49,7 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Simple extends Mage_Catalog
      */
     public function getTierPrice($qty = null, $product)
     {
-        if ($profile = $this->_helper()->getProductProfile($product)) {
+        if ($subscription = $this->_helper()->getProductSubscription($product)) {
             return array();
         }
 

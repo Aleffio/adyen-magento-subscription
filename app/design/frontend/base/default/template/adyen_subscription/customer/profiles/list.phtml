@@ -16,17 +16,17 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 ?>
-<?php /** @var Adyen_Subscription_Block_Customer_Profiles_List $this */ ?>
+<?php /** @var Adyen_Subscription_Block_Customer_Subscriptions_List $this */ ?>
 
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 
-<?php $_profiles = $this->getProfiles(); ?>
+<?php $_subscriptions = $this->getSubscriptions(); ?>
     <div class="page-title">
         <h1><?php echo $this->__('My Subscriptions') ?></h1>
     </div>
 <?php echo $this->getPagerHtml(); ?>
-<?php if($_profiles->getSize()): ?>
-    <table class="data-table" id="my-subscription-profiles-table">
+<?php if($_subscriptions->getSize()): ?>
+    <table class="data-table" id="my-subscription-subscriptions-table">
         <col width="1" />
         <col width="1" />
         <col />
@@ -36,7 +36,7 @@
         <col width="1" />
         <thead>
         <tr>
-            <th><?php echo $this->__('Profile #') ?></th>
+            <th><?php echo $this->__('Subscription #') ?></th>
             <th><?php echo $this->__('Status') ?></th>
             <th><?php echo $this->__('Ship To'); ?></th>
             <th><?php echo $this->__('Created At') ?></th>
@@ -48,26 +48,26 @@
         </thead>
         <tbody>
         <?php $_odd = ''; ?>
-        <?php foreach ($_profiles as $_profile): ?>
-            <?php /** @var Adyen_Subscription_Model_Profile $_profile */ ?>
+        <?php foreach ($_subscriptions as $_subscription): ?>
+            <?php /** @var Adyen_Subscription_Model_Subscription $_subscription */ ?>
             <tr>
-                <td>#<?php echo $_profile->getId() ?></td>
-                <td><em><?php echo ucfirst($_profile->getStatus()); ?></em></td>
-                <td><?php echo $_profile->getShippingAddress()->getName(); ?></td>
-                <td><?php echo $_profile->getCreatedAtFormatted(false); ?></td>
-                <td><?php echo $_profile->getScheduledAtFormatted(false); ?></td>
-                <td><span class="nobr"><?php echo $_profile->getTermLabel(); ?></span></td>
-                <td><a href="<?php echo $this->getAgreementUrl($_profile); ?>">
-                        <?php echo $_profile->getBillingAgreement()->getReferenceId(); ?></a>
+                <td>#<?php echo $_subscription->getId() ?></td>
+                <td><em><?php echo ucfirst($_subscription->getStatus()); ?></em></td>
+                <td><?php echo $_subscription->getShippingAddress()->getName(); ?></td>
+                <td><?php echo $_subscription->getCreatedAtFormatted(false); ?></td>
+                <td><?php echo $_subscription->getScheduledAtFormatted(false); ?></td>
+                <td><span class="nobr"><?php echo $_subscription->getTermLabel(); ?></span></td>
+                <td><a href="<?php echo $this->getAgreementUrl($_subscription); ?>">
+                        <?php echo $_subscription->getBillingAgreement()->getReferenceId(); ?></a>
                 </td>
-                <td><a href="<?php echo $this->getViewUrl($_profile) ?>">
-                        <?php echo $this->__('View Profile') ?></a>
+                <td><a href="<?php echo $this->getViewUrl($_subscription) ?>">
+                        <?php echo $this->__('View Subscription') ?></a>
                 </td>
             </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
-    <script type="text/javascript">decorateTable('my-subscription-profiles-table');</script>
+    <script type="text/javascript">decorateTable('my-subscription-subscriptions-table');</script>
     <?php echo $this->getPagerHtml(); ?>
 <?php else: ?>
     <p><?php echo $this->__("You don't have any subscriptions yet."); ?></p>

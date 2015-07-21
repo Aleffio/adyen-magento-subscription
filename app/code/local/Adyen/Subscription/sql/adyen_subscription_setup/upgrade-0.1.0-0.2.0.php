@@ -23,11 +23,11 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- Add product_id column to profile item table
+    -- Add product_id column to subscription item table
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile_item')}`
-        ADD COLUMN `product_id` int(10) unsigned DEFAULT NULL AFTER `profile_id`,
-        ADD CONSTRAINT `adyen_subscription_profile_item_product_id` FOREIGN KEY (`product_id`) REFERENCES `catalog_product_entity` (`entity_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription_item')}`
+        ADD COLUMN `product_id` int(10) unsigned DEFAULT NULL AFTER `subscription_id`,
+        ADD CONSTRAINT `adyen_subscription_subscription_item_product_id` FOREIGN KEY (`product_id`) REFERENCES `catalog_product_entity` (`entity_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ");
 

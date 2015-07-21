@@ -23,15 +23,15 @@ $installer->startSetup();
 
 $installer->run("
 
-    -- Add columns to profile table
+    -- Add columns to subscription table
 
-    ALTER TABLE `{$this->getTable('adyen_subscription/profile')}`
+    ALTER TABLE `{$this->getTable('adyen_subscription/subscription')}`
         ADD COLUMN `customer_id` int(10) unsigned DEFAULT NULL AFTER `entity_id`,
         ADD COLUMN `store_id` smallint(5) unsigned DEFAULT NULL AFTER `billing_agreement_id`,
         ADD COLUMN `payment_method` varchar(255) DEFAULT NULL AFTER `store_id`,
         ADD COLUMN `shipping_method` varchar(255) DEFAULT NULL AFTER `payment_method`,
-        ADD CONSTRAINT `adyen_subscription_profile_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer_entity` (`entity_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-        ADD CONSTRAINT `adyen_subscription_profile_store_id` FOREIGN KEY (`store_id`) REFERENCES `core_store` (`store_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+        ADD CONSTRAINT `adyen_subscription_subscription_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer_entity` (`entity_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+        ADD CONSTRAINT `adyen_subscription_subscription_store_id` FOREIGN KEY (`store_id`) REFERENCES `core_store` (`store_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ");
 
