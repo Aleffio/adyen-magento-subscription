@@ -79,7 +79,10 @@ jQuery(function($){
         //Add dynamic tax calculation
         newSubscription.find('#dynamic-tax-subscription-template')
             .attr('id','dynamic-tax-product_subscription[new'+newSubscriptionId+'][price]');
-        dynamicTaxes.push('product_subscription[new'+newSubscriptionId+'][price]');
+
+        if (typeof dynamicTaxes != 'undefined') {
+            dynamicTaxes.push('product_subscription[new'+newSubscriptionId+'][price]');
+        }
         newSubscription.find('.price-tax-calc').on('change keyup', recalculateTax);
 
         newSubscription.show();
