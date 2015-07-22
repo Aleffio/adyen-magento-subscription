@@ -275,8 +275,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     {
         /** @var Adyen_Subscription_Model_Subscription_Quote $quoteAddCollection */
         $latestQuoteSchedule = $this->getQuoteAdditionalCollection()
-            ->addFieldToFilter('order_id', ['notnull' => true])
-            ->setOrder('scheduled_at', Varien_Data_Collection::SORT_ORDER_DESC);
+            ->addFieldToFilter('order_id', ['notnull' => true]);
 
         $latestQuoteSchedule->getSelect()->joinLeft(
             array('order' => 'sales_flat_order'),
