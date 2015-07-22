@@ -128,7 +128,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         $collection->addFieldToFilter('state', Mage_Sales_Model_Order::STATE_PROCESSING);
         $collection->addFieldToFilter('subscription.entity_id', array('null' => true));
         $collection->addFieldToFilter('parent_item_id', array('null' => true));
-        $collection->addFieldToFilter('product_options', array('nlike' => '%;s:20:"adyen_subscription";s:4:"none"%'));
+        $collection->addFieldToFilter('product_options', array('nlike' => '%;s:18:"adyen_subscription";s:4:"none"%'));
 
         $collection->getSelect()->group('main_table.entity_id');
 
