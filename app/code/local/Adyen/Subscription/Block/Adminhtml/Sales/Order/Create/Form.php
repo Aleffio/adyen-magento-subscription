@@ -18,7 +18,7 @@
 
 // @todo Don't depend on Innoexts_Warehouse module
 class Adyen_Subscription_Block_Adminhtml_Sales_Order_Create_Form
-    extends Innoexts_Warehouse_Block_Adminhtml_Sales_Order_Create_Form {
+    extends Mage_Adminhtml_Block_Sales_Order_Create_Form {
     /**
      * Retrieve url for loading blocks
      * @return string
