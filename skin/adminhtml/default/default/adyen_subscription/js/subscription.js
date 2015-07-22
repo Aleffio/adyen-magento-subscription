@@ -49,7 +49,7 @@ jQuery(function($){
         items: '.subscription-fieldset-container'
     });
 
-    $(document).on('click', '#subscriptions_fieldset .product-subscription-delete', function(){
+    $(document).on('click', '#subscription_fieldset .product-subscription-delete', function(){
         $(this).parents('.subscription-fieldset-container').remove();
     });
 
