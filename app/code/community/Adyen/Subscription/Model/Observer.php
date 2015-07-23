@@ -307,6 +307,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                     /** @var Mage_Sales_Model_Order_Item $childItem */
                     $childItemQty = $childItem->getQtyOrdered() * $subscriptionQty;
 
+                    $childItem = $this->_correctPrices($childItem, $childItem->getQtyOrdered(), $childItemQty);
                     $childItem->setQtyOrdered($childItemQty);
                     $childItem->save();
                 }
