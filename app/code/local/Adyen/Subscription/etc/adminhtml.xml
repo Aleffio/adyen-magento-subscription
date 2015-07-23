@@ -21,9 +21,9 @@
     <menu>
         <sales>
             <children>
-                <recurring_subscription>
+                <recurring_profile>
                     <disabled>1</disabled>
-                </recurring_subscription>
+                </recurring_profile>
                 <adyen_subscriptions translate="title" module="adyen_subscription">
                     <title>Adyen Subscriptions</title>
                     <action>adyen_subscription/adminhtml_subscription</action>
