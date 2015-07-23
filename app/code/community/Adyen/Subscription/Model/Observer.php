@@ -299,6 +299,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             if ($subscriptionQty > 1) {
                 $qty = $orderItem->getQtyOrdered() * $subscriptionQty;
 
+                $orderItem = $this->_correctPrices($orderItem, $orderItem->getQtyOrdered(), $qty);
                 $orderItem->setQtyOrdered($qty);
                 $orderItem->save();
 
@@ -311,6 +312,27 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                 }
             }
         }
+    }
+
+    /**
+     * Set correct item prices ((original price / new qty) * old qty)
+     *
+     * @param Mage_Sales_Model_Order_Item $orderItem
+     * @param int $oldQty
+     * @param int $newQty
+     * @return Mage_Sales_Model_Order_Item
+     */
+    protected function _correctPrices($orderItem, $oldQty, $newQty)
+    {
+        $orderItem->setPrice(($orderItem->getPrice() / $newQty) * $oldQty);
+        $orderItem->setBasePrice(($orderItem->getBasePrice() / $newQty) * $oldQty);
+        $orderItem->setOriginalPrice(($orderItem->getOriginalPrice() / $newQty) * $oldQty);
+        $orderItem->setBaseOriginalPrice(($orderItem->getBaseOriginalPrice() / $newQty) * $oldQty);
+
+        $orderItem->setPriceInclTax(($orderItem->getPriceInclTax() / $newQty) * $oldQty);
+        $orderItem->setBasePriceInclTax(($orderItem->getPriceInclTax() / $newQty) * $oldQty);
+
+        return $orderItem;
     }
 
     /**
