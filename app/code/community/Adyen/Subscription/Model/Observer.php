@@ -351,7 +351,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         /** @var Mage_Core_Model_Session $session */
         $session = $observer->getSessionQuote();
 
-        if ($session->getData('subscription_quote_initialized')) {
+        if ($session->getData('subscription_quote_initialized') || ! $session->getReordered()) {
             return;
         }
 
