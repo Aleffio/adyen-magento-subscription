@@ -21,7 +21,7 @@
     <modules>
         <Adyen_Subscription>
             <active>true</active>
-            <codePool>local</codePool>
+            <codePool>community</codePool>
             <depends>
                 <Adyen_Payment />
             </depends>

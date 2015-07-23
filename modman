@@ -13,7 +13,7 @@
 #
 # Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
 
-app/code/local/Adyen/Subscription/                                   app/code/local/Adyen/Subscription/
+app/code/community/Adyen/Subscription/                               app/code/community/Adyen/Subscription/
 app/etc/modules/Adyen_Subscription.xml                               app/etc/modules/Adyen_Subscription.xml
 app/design/adminhtml/default/default/layout/adyen_subscription.xml   app/design/adminhtml/default/default/layout/adyen_subscription.xml
 app/design/adminhtml/default/default/template/adyen_subscription     app/design/adminhtml/default/default/template/adyen_subscription/
