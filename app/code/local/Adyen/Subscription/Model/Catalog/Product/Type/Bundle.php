@@ -16,8 +16,7 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-// @todo Don't depend on Ho_SimpleBundle module (or check if it's installed)
-class Adyen_Subscription_Model_Catalog_Product_Type_Bundle extends Ho_SimpleBundle_Model_Bundle_Product_Type
+class Adyen_Subscription_Model_Catalog_Product_Type_Bundle extends Mage_Bundle_Model_Product_Type
 {
     /**
      * Prepare selected options for simple subscription product

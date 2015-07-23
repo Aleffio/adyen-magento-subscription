@@ -16,7 +16,6 @@
  * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
  */
 
-// @todo Don't depend on Innoexts_Warehouse module
 class Adyen_Subscription_Block_Adminhtml_Sales_Order_Create_Form
     extends Mage_Adminhtml_Block_Sales_Order_Create_Form {
     /**

@@ -24,8 +24,6 @@
             <codePool>local</codePool>
             <depends>
                 <Adyen_Payment />
-                <Innoexts_Warehouse />
-                <Ho_SimpleBundle />
             </depends>
         </Adyen_Subscription>
     </modules>
