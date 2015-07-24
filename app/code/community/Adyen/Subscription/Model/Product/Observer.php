@@ -318,8 +318,30 @@ class Adyen_Subscription_Model_Product_Observer
         /** @var Mage_Payment_Model_Method_Abstract $methodInstance */
         /** @noinspection PhpUndefinedMethodInspection */
         $methodInstance = $observer->getMethodInstance();
-        if (! $methodInstance->canCreateBillingAgreement()) {
+        $methodInstance->setMode('subscription');
+
+        /**
+         * The method canCreateContractTypeRecurring returns true for:
+         * Inital Payments:   checks for setting in Admin Panel: payment/adyen_abstract/recurringtypes
+         *                    if RECURRING or ONECLICK,RECURRING is set
+         * Stored cards/sepa: checks recurring_type in BA agreement_data.
+         *                    if RECURRING or ONECLICK,RECURRING is set
+         *
+         * For instances that allow ONECLICK (ONECLICK,RECURRING) we need to set the mode to RECURRING.
+         */
+
+        // Validate if payment method is available for Adyen subscription
+        if(method_exists($methodInstance, 'canCreateAdyenSubscription')) {
+            if($methodInstance->canCreateAdyenSubscription() != true) {
+                $observer->getResult()->isAvailable = false;
+            }
+        } else {
             $observer->getResult()->isAvailable = false;
+        }
+
+        // You need to do a recurring transaction for subscriptions
+        if(method_exists($methodInstance, 'setCustomerInteraction')) {
+            $methodInstance->setCustomerInteraction = false;
         }
 
         if (Mage::app()->getRequest()->getParam('subscription')) {
