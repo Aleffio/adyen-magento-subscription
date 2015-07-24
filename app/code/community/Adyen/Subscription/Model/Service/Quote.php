@@ -225,7 +225,7 @@ class Adyen_Subscription_Model_Service_Quote
     {
         $subscriptionDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
 
-        $quote->getPayment()->setAdditionalInformation('subscription_detail_reference', $subscriptionDetailReference);
+        $quote->getPayment()->setAdditionalInformation('recurring_detail_reference', $subscriptionDetailReference);
         $quote->getPayment()->setCcType(null);
         $quote->getPayment()->save();
 
