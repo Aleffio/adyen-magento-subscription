@@ -86,7 +86,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     {
         if (!$this->hasData('_active_quote_additional')) {
             $quoteAdd = Mage::getResourceModel('adyen_subscription/subscription_quote_collection')
-                ->addFieldToFilter('subscription_id', $this->getId())
+                ->addFieldToFilter('main_table.subscription_id', $this->getId())
                 ->addFieldToFilter('order_id', ['null' => true])
                 ->getFirstItem();
             $this->setData('_active_quote_additional', $quoteAdd);
