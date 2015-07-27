@@ -42,6 +42,15 @@
                             <show_in_default>1</show_in_default>
                             <comment><![CDATA[]]></comment>
                         </cancel_reasons>
+                        <allowed_payment_methods translate="label">
+                                <label>Allowed payment methods</label>
+                                <frontend_type>multiselect</frontend_type>
+                                <sort_order>20</sort_order>
+                                <source_model>adyen_subscription/system_config_source_allowedPaymentMethods</source_model>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                        </allowed_payment_methods>
                     </fields>
                 </subscription>
             </groups>

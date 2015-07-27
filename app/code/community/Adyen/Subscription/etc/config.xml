@@ -267,6 +267,36 @@
         </events>
     </adminhtml>
 
+    <default>
+        <adyen_subscription>
+            <subscription>
+                <allowed_payment_methods>adyen_cc</allowed_payment_methods>
+            </subscription>
+            <allowed_payment_methods>
+                <creditcards>
+                    <code>adyen_cc</code>
+                    <label>Credit Card</label>
+                </creditcards>
+                <sepa>
+                    <code>adyen_sepa</code>
+                    <label>SEPA Direct Debit</label>
+                </sepa>
+                <paypal>
+                    <code>adyen_hpp_paypal</code>
+                    <label>PayPal</label>
+                </paypal>
+                <ideal>
+                    <code>adyen_ideal</code>
+                    <label>Ideal</label>
+                </ideal>
+                <directebanking>
+                    <code>adyen_hpp_directEbanking</code>
+                    <label>directEbanking (Sofort)</label>
+                </directebanking>
+            </allowed_payment_methods>
+        </adyen_subscription>
+    </default>
+
     <crontab>
         <jobs>
             <adyen_subscription_create_subscriptions>
