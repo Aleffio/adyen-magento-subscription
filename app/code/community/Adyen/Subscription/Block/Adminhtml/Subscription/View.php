@@ -46,7 +46,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
             ], 10);
         }
 
-        if ($this->getSubscription()->canCreateQuote()) {
+        if ($this->getSubscription()->canCreateQuote() && $this->getSubscription()->getActiveQuote()) {
             $this->_addButton('create_quote', [
                 'label' => Mage::helper('adyen_subscription')->__('Schedule Order'),
                 'class' => 'add',
