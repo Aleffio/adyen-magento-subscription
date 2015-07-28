@@ -347,7 +347,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     public function getBillingAgreement()
     {
         if (! $this->hasData('_billing_agreement')) {
-            $billingAgreement = Mage::getModel('sales/billing_agreement')
+            $billingAgreement = Mage::getModel('adyen/billing_agreement')
                 ->load($this->getBillingAgreementId());
 
             $this->setData('_billing_agreement', $billingAgreement);
