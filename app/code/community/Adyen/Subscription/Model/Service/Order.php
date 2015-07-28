@@ -59,11 +59,13 @@ class Adyen_Subscription_Model_Service_Order
         foreach ($productTerms as $productTerm) {
             $billingAgreement = $this->_getBillingAgreement($order);
 
+            $stockId = $order->getStockId() ?: 1;
+
             // Create subscription
             /** @var Adyen_Subscription_Model_Subscription $subscription */
             $subscription = Mage::getModel('adyen_subscription/subscription')
                 ->setStatus(Adyen_Subscription_Model_Subscription::STATUS_ACTIVE)
-                ->setStockId($order->getStockId())
+                ->setStockId($stockId)
                 ->setCustomerId($order->getCustomerId())
                 ->setCustomerName($order->getCustomerName())
                 ->setOrderId($order->getId())
