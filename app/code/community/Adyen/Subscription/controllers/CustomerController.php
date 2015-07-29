@@ -62,8 +62,8 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
 
         Mage::register('adyen_subscription', $subscription);
 
-        $this->_title($this->__('Subscription'))
-            ->_title($this->__('Subscription # %s', $subscription->getId()));
+        $this->_title($this->__('Adyen Subscription'))
+            ->_title($this->__('Adyen Subscription # %s', $subscription->getId()));
         $this->loadLayout();
         $this->_initLayoutMessages('customer/session');
 

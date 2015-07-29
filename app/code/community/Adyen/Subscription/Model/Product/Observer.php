@@ -57,7 +57,7 @@ class Adyen_Subscription_Model_Product_Observer
             if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED) {
                 $product->setData('adyen_subscription_type', Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED);
                 Mage::getSingleton('adminhtml/session')->addNotice(
-                    Mage::helper('adyen_subscription')->__('Subscription Type is set back to \'Disabled\' because no subscriptions were defined')
+                    Mage::helper('adyen_subscription')->__('Adyen Subscription Type is set back to \'Disabled\' because no subscriptions were defined')
                 );
             }
             return;
@@ -265,7 +265,7 @@ class Adyen_Subscription_Model_Product_Observer
 
         if ($subscription) {
             $subscriptionOption = [
-                'label'        => 'Subscription',
+                'label'        => 'Adyen Subscription',
                 'code'         => 'adyen_subscription',
                 'option_value' => $subscriptionId,
                 'value'        => $subscription->getFrontendLabel(),

@@ -31,7 +31,7 @@ $_subscription = $this->getSubscription();
     <div class="fieldset">
         <table cellspacing="0" class="form-list">
             <tr>
-                <td class="label"><label><?php echo Mage::helper('sales')->__('Subscription ID') ?></label></td>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Adyen Subscription ID') ?></label></td>
                 <td class="value">
                     <a href="<?php echo $this->getUrl('adyen_subscription/adminhtml_subscription/view', ['id' => $this->getSubscription()->getId()]); ?>">
                         <strong>#<?php echo $_subscription->getIncrementId(); ?></strong>
@@ -39,7 +39,7 @@ $_subscription = $this->getSubscription();
                 </td>
             </tr>
             <tr>
-                <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Subscription Status'); ?></label></td>
+                <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Adyen Subscription Status'); ?></label></td>
                 <td class="value">
                     <strong><?php echo $_subscription->getStatusLabel($_subscription->getStatus());?></strong>
                 </td>

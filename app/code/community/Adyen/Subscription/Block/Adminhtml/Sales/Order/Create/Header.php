@@ -41,7 +41,7 @@ class Adyen_Subscription_Block_Adminhtml_Sales_Order_Create_Header
             );
         } else {
             $out = Mage::helper('adyen_subscription')->__(
-                'Edit Scheduled Order for Subscription #%s for %s in %s',
+                'Edit Scheduled Order for Adyen Subscription #%s for %s in %s',
                 $subscription->getIncrementId(),
                 $subscription->getCustomer()->getName(),
                 $this->getStore()->getName()

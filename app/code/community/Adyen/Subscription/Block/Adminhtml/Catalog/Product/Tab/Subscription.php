@@ -37,7 +37,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
 
         /** @var Mage_Adminhtml_Block_Widget_Button $addSubscriptionButton */
         $addSubscriptionButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
-            'label'        => Mage::helper('adyen_subscription')->__('Add New Subscription'),
+            'label'        => Mage::helper('adyen_subscription')->__('Add New Adyen Subscription'),
             'class'        => 'add product-subscription-add',
             'element_name' => 'product_subscription_add',
         ]);
@@ -56,7 +56,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
         $adyenSubscriptionType->setName('product[adyen_subscription_type]');
         $adyenSubscriptionType->setValue($product->getData('adyen_subscription_type'));
         $adyenSubscriptionType->setNote(
-            $helper->__('%s to add a new subscription.', '<i>'.$helper->__('Add New Subscription').'</i>')."<br />\n".
+            $helper->__('%s to add a new subscription.', '<i>'.$helper->__('Add New Adyen Subscription').'</i>')."<br />\n".
             $helper->__('Drag and drop to reorder')
         );
 
@@ -86,7 +86,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
         $elementId = $subscription ? 'product_subscription[' . $subscription->getId() . ']' : 'product_subscription[template]';
 
         $subscriptionFieldset = $parentFieldset->addFieldset($elementId, array(
-            'legend'    => $helper->__($subscription ? 'Subscription: <em>' . $subscription->getLabel() . '</em>' : 'New Subscription'),
+            'legend'    => $helper->__($subscription ? 'Subscription: <em>' . $subscription->getLabel() . '</em>' : 'New Adyen Subscription'),
             'class'     => 'subscription-fieldset' . (!$subscription ? ' product-fieldset-template' : ''),
             'name'      => $elementId . '[fieldset]'
         ))->setRenderer(
@@ -201,7 +201,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
      */
     public function getTabLabel()
     {
-        return $this->__('Subscription');
+        return $this->__('Adyen Subscription');
     }
 
     /**
@@ -209,7 +209,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
      */
     public function getTabTitle()
     {
-        return $this->__('Subscription');
+        return $this->__('Adyen Subscription');
     }
 
     /**

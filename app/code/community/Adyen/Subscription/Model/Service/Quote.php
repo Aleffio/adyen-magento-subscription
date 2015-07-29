@@ -127,7 +127,7 @@ class Adyen_Subscription_Model_Service_Quote
                 $termType = $productSubscription->getTermType();
             }
             if ($term != $productSubscription->getTerm() || $termType != $productSubscription->getTermType()) {
-                Adyen_Subscription_Exception::throwException('Subscription options of products in quote have different terms');
+                Adyen_Subscription_Exception::throwException('Adyen Subscription options of products in quote have different terms');
             }
         }
 

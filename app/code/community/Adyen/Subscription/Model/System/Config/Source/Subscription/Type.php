@@ -26,13 +26,13 @@ class Adyen_Subscription_Model_System_Config_Source_Subscription_Type
         if ($this->_options === null) {
             $this->_options = [
                 [
-                    'label' => Mage::helper('adyen_subscription')->__('Subscription Disabled'),
+                    'label' => Mage::helper('adyen_subscription')->__('Adyen Subscription Disabled'),
                     'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED
                 ],[
-                    'label' => Mage::helper('adyen_subscription')->__('Subscription Enabled + Standalone purchase possible'),
+                    'label' => Mage::helper('adyen_subscription')->__('Adyen Subscription Enabled + Standalone purchase possible'),
                     'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ALLOW_STANDALONE
                 ],[
-                    'label' => Mage::helper('adyen_subscription')->__('Subscription Enabled + Subscription option selection required'),
+                    'label' => Mage::helper('adyen_subscription')->__('Adyen Subscription Enabled + Subscription option selection required'),
                     'value' => Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ONLY_SUBSCRIPTION
                 ]
             ];

@@ -70,13 +70,13 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
         $subscription = $this->getSubscription();
 
         if ($subscription->getId()) {
-            return Mage::helper('adyen_subscription')->__('Subscription %s for %s',
+            return Mage::helper('adyen_subscription')->__('Adyen Subscription %s for %s',
                 sprintf('<i>#%s</i>', $subscription->getIncrementId()),
                 sprintf('<i>%s</i>', $subscription->getCustomerName())
             );
         }
         else {
-            return Mage::helper('adyen_subscription')->__('New Subscription');
+            return Mage::helper('adyen_subscription')->__('New Adyen Subscription');
         }
     }
 

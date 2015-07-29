@@ -28,13 +28,13 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $helper = Mage::helper('adyen_subscription');
 
         $this->_title($helper->__('Sales'))
-             ->_title($helper->__('Subscription'));
+             ->_title($helper->__('Adyen Subscription'));
 
         $this->loadLayout()
             ->_setActiveMenu('sales/adyen_subscriptions');
 
         $this->_addBreadcrumb($helper->__('Sales'), $helper->__('Sales'))
-            ->_addBreadcrumb($helper->__('Subscription'), $helper->__('Subscription'));
+            ->_addBreadcrumb($helper->__('Adyen Subscription'), $helper->__('Adyen Subscription'));
 
         return $this;
     }
@@ -141,7 +141,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
             $this->_getSession()->setSubscriptionData(null);
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Subscription successfully saved')
+                Mage::helper('adyen_subscription')->__('Adyen Subscription successfully saved')
             );
             $this->_redirect('*/*/view', ['id' => $subscription->getId()]);
         } catch (Exception $e) {
@@ -193,7 +193,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription->save();
 
         $this->_getSession()->addSuccess(
-            Mage::helper('adyen_subscription')->__('Subscription %s successfully cancelled', $subscription->getIncrementId())
+            Mage::helper('adyen_subscription')->__('Adyen Subscription %s successfully cancelled', $subscription->getIncrementId())
         );
         $this->_redirect('*/*/');
     }
@@ -358,7 +358,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             $subscription->setActive()->save();
 
             $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('Subscription and scheduled order successfully updated')
+                Mage::helper('adyen_subscription')->__('Adyen Subscription and scheduled order successfully updated')
             );
         }
         catch (Mage_Core_Exception $e) {
