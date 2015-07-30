@@ -19,6 +19,8 @@
 /**
  * Class Adyen_Subscription_Model_Subscription_Item
  *
+ * @method Adyen_Subscription_Model_Subscription_Item setProductSubscriptionId(int $id)
+ * @method int getProductSubscriptionId()
  * @method string getStatus()
  * @method Adyen_Subscription_Model_Subscription_Item setStatus(string $value)
  * @method int getSubscriptionId()
@@ -68,6 +70,20 @@ class Adyen_Subscription_Model_Subscription_Item extends Mage_Core_Model_Abstrac
             self::STATUS_ACTIVE             => $helper->__('Active'),
             self::STATUS_EXPIRED            => $helper->__('Expired'),
         );
+    }
+
+
+    /**
+     * @return Adyen_Subscription_Model_Subscription
+     */
+    public function getSubscription()
+    {
+        if (! $this->hasData('_subscription')) {
+            $subscription = Mage::getModel('adyen_subscription/subscription')->load($this->getSubscriptionId());
+            $this->setData('_subscription', $subscription);
+        }
+
+        return $this->getData('_subscription');
     }
 
     /**

@@ -20,7 +20,7 @@
 <config>
     <modules>
         <Adyen_Subscription>
-            <version>0.34.0</version>
+            <version>0.39.0</version>
         </Adyen_Subscription>
     </modules>
     <global>
@@ -271,16 +271,20 @@
         <jobs>
             <adyen_subscription_create_subscriptions>
                 <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
-                <run><model>adyen_subscription/observer::createSubscriptions</model></run>
+                <run><model>adyen_subscription/cron::createSubscriptions</model></run>
             </adyen_subscription_create_subscriptions>
             <adyen_subscription_create_quotes>
                 <schedule><cron_expr>0 6 * * *</cron_expr></schedule>
-                <run><model>adyen_subscription/observer::createQuotes</model></run>
+                <run><model>adyen_subscription/cron::createQuotes</model></run>
             </adyen_subscription_create_quotes>
             <adyen_subscription_create_orders>
                 <schedule><cron_expr>15 6 * * *</cron_expr></schedule>
-                <run><model>adyen_subscription/observer::createOrders</model></run>
+                <run><model>adyen_subscription/cron::createOrders</model></run>
             </adyen_subscription_create_orders>
+            <adyen_subscription_create_update_prices>
+                <schedule><cron_expr/></schedule>
+                <run><model>adyen_subscription/cron::updatePrices</model></run>
+            </adyen_subscription_create_update_prices>
         </jobs>
     </crontab>
 </config>

@@ -139,7 +139,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
             'name'      => $elementId . '[term]',
             'required'  => true,
             'class' => 'validate-digits validate-digits-range digits-range-1-3153600000',
-            'label'     => $helper->__('Billing Frequency'),
+            'label'     => $helper->__('Billing Period'),
         ))->setValue($subscription ? $subscription->getTerm() : '');
 
         $subscriptionFieldset->addField($elementId . '[term_type]', 'select', array(
@@ -147,6 +147,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
             'label'     => $helper->__('Billing Period Unit'),
             'required'  => true,
             'values'    => Mage::getSingleton('adyen_subscription/system_config_source_term')->toOptionArray(true),
+            'note'      => $this->__('Subscription will be created every [Billing Period] [Billing Period Unit], e.g. every 3 months.')
         ))->setValue($subscription ? $subscription->getTermType() : '');
 
         // Min and max billing cycle currently not in use
@@ -174,7 +175,8 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
             'name'      => $elementId . '[price]',
             'label'     => $helper->__('Price'),
             'class'     => 'price-tax-calc',
-            'identifier' => $subscription ? $subscription->getId() : 'template'
+            'identifier' => $subscription ? $subscription->getId() : 'template',
+            'subscription_count' => $subscription ? $this->_getSubscriptionUsedCount($subscription) : 0
         ));
         $priceField->setValue($subscription ? $subscription->getPrice() * 1 : '');
         $priceField->setSubscription($subscription);
@@ -186,6 +188,19 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
         ))->setValue($subscription ? $subscription->getShowOnFrontend() : 0);
 
         return $subscriptionFieldset;
+    }
+
+
+    /**
+     * @param Adyen_Subscription_Model_Product_Subscription $subscription
+     *
+     * @return int
+     */
+    protected function _getSubscriptionUsedCount(Adyen_Subscription_Model_Product_Subscription $subscription)
+    {
+        return 0;
+        Mage::getResourceModel('adyen_subscription/subscription_item_collection')
+            ->addFieldToFilter('subscription_product_id', $subscription->getId());
     }
 
     /**

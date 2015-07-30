@@ -28,9 +28,7 @@ jQuery(function($){
     //hide the template
     subscriptionTemplate.hide().find('textarea, input, select').prop('disabled', true);
 
-
     $(document).on('change', subscriptionType, function(){
-
         var container = $('.subscription-fieldset-container').not(subscriptionTemplate);
 
         if (subscriptionType.val() <= 0) {
@@ -42,7 +40,6 @@ jQuery(function($){
         }
     }).trigger('change');
 
-
     // Make subscriptions sortable
     sortableArea.sortable({
         placeholder: 'ui-state-highlight',
@@ -53,11 +50,11 @@ jQuery(function($){
         $(this).parents('.subscription-fieldset-container').remove();
     });
 
-    addButton .on('click', function(){
+    addButton.on('click', function(){
         var newSubscription = subscriptionTemplate.clone();
         newSubscriptionId++;
 
-        newSubscription.find('select, input').each(function() {
+        newSubscription.find('textarea, select, input').each(function() {
             var elem = $(this);
 
             elem.attr('name',
@@ -76,8 +73,10 @@ jQuery(function($){
             elem.prop('disabled', false);
         });
 
+        sortableArea.append(newSubscription);
+
         //Add dynamic tax calculation
-        newSubscription.find('#dynamic-tax-subscription-template')
+        newSubscription.find('[id="dynamic-tax-product_subscription[template][price]"]')
             .attr('id','dynamic-tax-product_subscription[new'+newSubscriptionId+'][price]');
 
         if (typeof dynamicTaxes != 'undefined') {
@@ -87,6 +86,25 @@ jQuery(function($){
 
         newSubscription.show();
         newSubscription.find('.subscription-fieldset').removeClass('product-fieldset-template');
-        sortableArea.append(newSubscription);
+    });
+
+    sortableArea.find('.subscription-fieldset').each(function(){
+        var id = $(this).attr('id');
+        if (id.indexOf('[template]') > 0) {
+            return;
+        }
+
+        if (typeof dynamicTaxes != 'undefined') {
+            dynamicTaxes.push(id+'[price]');
+        }
+        $('[id="'+id+'[price]"]').on('change keyup', function(){
+            recalculateTax();
+        });
+
+        console.log('[id="'+id+'[update_price]"]');
+        $('[id="'+id+'[update_price]"]', function(){
+            console.log(this);
+            $(this).prop('disabled', true);
+        });
     });
 });
