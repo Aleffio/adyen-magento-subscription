@@ -24,6 +24,7 @@
 /**
  * Class Adyen_Subscription_Model_Subscription
  *
+ * @method Adyen_Subscription_Model_Subscription setIncrementId(string $value)
  * @method string getErrorMessage()
  * @method Adyen_Subscription_Model_Subscription setErrorMessage(string $value)
  * @method string getStoreId()
@@ -80,7 +81,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
     public function getIncrementId()
     {
-        return $this->getId();
+        return $this->getData('increment_id') ?: $this->getId();
     }
 
 
