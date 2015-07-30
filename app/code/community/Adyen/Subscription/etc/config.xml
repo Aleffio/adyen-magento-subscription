@@ -153,6 +153,14 @@
                     </adyen_subscription_calculate_item_qty_reorder>
                 </observers>
             </create_order_session_quote_initialized>
+            <adyen_payment_process_notifications_after>
+                <observers>
+                    <adyen_subscription_update_billing_agreement_in_subscription>
+                        <class>adyen_subscription/observer</class>
+                        <method>updateBillingAgreementInSubscription</method>
+                    </adyen_subscription_update_billing_agreement_in_subscription>
+                </observers>
+            </adyen_payment_process_notifications_after>
         </events>
         <sales>
             <quote>
@@ -271,6 +279,7 @@
         <adyen_subscription>
             <subscription>
                 <allowed_payment_methods>adyen_cc</allowed_payment_methods>
+                <debug>1</debug>
             </subscription>
             <allowed_payment_methods>
                 <creditcards>
