@@ -24,6 +24,7 @@
 /**
  * Class Adyen_Subscription_Model_Subscription
  *
+ * @method Adyen_Subscription_Model_Subscription setIncrementId(string $value)
  * @method string getErrorMessage()
  * @method Adyen_Subscription_Model_Subscription setErrorMessage(string $value)
  * @method string getStoreId()
@@ -80,7 +81,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
     public function getIncrementId()
     {
-        return $this->getId();
+        return $this->getData('increment_id') ?: $this->getId();
     }
 
 
@@ -91,7 +92,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     {
         if (!$this->hasData('_active_quote_additional')) {
             $quoteAdd = Mage::getResourceModel('adyen_subscription/subscription_quote_collection')
-                ->addFieldToFilter('subscription_id', $this->getId())
+                ->addFieldToFilter('main_table.subscription_id', $this->getId())
                 ->addFieldToFilter('order_id', ['null' => true])
                 ->getFirstItem();
             $this->setData('_active_quote_additional', $quoteAdd);
@@ -145,7 +146,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     public function getQuoteAdditionalCollection()
     {
         return Mage::getResourceModel('adyen_subscription/subscription_quote_collection')
-            ->addFieldToFilter('subscription_id', $this->getId());
+            ->addFieldToFilter('main_table.subscription_id', $this->getId());
     }
 
 
@@ -159,7 +160,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     {
         $orderAdditional = Mage::getModel('adyen_subscription/subscription_order')
             ->getCollection()
-            ->addFieldToFilter('subscription_id', $this->getId())
+            ->addFieldToFilter('main_table.subscription_id', $this->getId())
             ->addFieldToFilter('order_id', $order->getId())
             ->getFirstItem();
 
@@ -195,7 +196,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     public function getItemCollection($active = true)
     {
         $items = Mage::getResourceModel('adyen_subscription/subscription_item_collection')
-            ->addFieldToFilter('subscription_id', $this->getId());
+            ->addFieldToFilter('main_table.subscription_id', $this->getId());
 
         if ($active) {
             $items->addFieldToFilter('status', Adyen_Subscription_Model_Subscription_Item::STATUS_ACTIVE);
