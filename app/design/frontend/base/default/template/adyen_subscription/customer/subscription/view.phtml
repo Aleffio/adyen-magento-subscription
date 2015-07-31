@@ -20,6 +20,9 @@
 <?php $_subscription = $this->getSubscription(); ?>
 <div class="page-title title-buttons subscription-view-header-wrapper">
     <h1 class="heading"><?php echo $this->__('Subscription # %s', $this->escapeHtml($_subscription->getId())); ?></h1>
+    <?php if ($this->getCanCancel()): ?>
+        <button type="button" title="<?php echo $this->__('Cancel') ?>" class="button" onclick="window.location.href = '<?php echo $this->getCancelUrl() ?>';"><span><span><?php echo $this->__('Cancel') ?></span></span></button>
+    <?php endif; ?>
 </div>
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 <div class="subscription">
