@@ -30,7 +30,7 @@
                     <?php endif; ?>
                     <?php foreach ($options as $option) : ?>
                         <?php /** @var Adyen_Subscription_Model_Product_Subscription $option */ ?>
-                        <option value="<?=$option->getId();?>" <?=$this->_isSelected($option->getId()) ? 'selected="selected"' : ''; ?>><?php echo $option->getLabel(); ?></option>
+                        <option value="<?=$option->getId();?>" <?=$this->_isSelected($option->getId()) ? 'selected="selected"' : ''; ?>><?php echo $option->getAdminLabel(); ?></option>
                     <?php endforeach; ?>
                 </select>
             </dl>

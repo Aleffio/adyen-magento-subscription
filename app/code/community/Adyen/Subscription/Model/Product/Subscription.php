@@ -122,4 +122,26 @@ class Adyen_Subscription_Model_Product_Subscription extends Mage_Core_Model_Abst
         }
         return Mage::helper('adyen_subscription')->__("%s (Every %s)", $this->getLabel(), $termType);
     }
+
+    /**
+     * @return string
+     */
+    public function getAdminLabel()
+    {
+        $helper = Mage::helper('core');
+
+        $label = $this->getFrontendLabel();
+
+        $termType = $this->getTermTypes()[$this->getTermType()];
+
+        $pricePerTerm = $this->getPrice() / $this->getTerm();
+
+        $priceLabel = Mage::helper('adyen_subscription')->__("(%s - %s per %s)",
+            $helper->formatPrice($this->getPrice(), false),
+            $helper->formatPrice($pricePerTerm, false),
+            $termType
+        );
+
+        return $label . ' ' . $priceLabel;
+    }
 }
