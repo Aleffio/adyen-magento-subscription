@@ -118,8 +118,8 @@ class Adyen_Subscription_Model_Product_Subscription extends Mage_Core_Model_Abst
         $multiple = $this->getTerm() > 1;
         $termType = $this->getTermTypes($multiple)[$this->getTermType()];
         if ($multiple) {
-            return sprintf("%s (Every %s %s)", $this->getLabel(), $this->getTerm(), $termType);
+            return Mage::helper('adyen_subscription')->__("%s (Every %s %s)", $this->getLabel(), $this->getTerm(), $termType);
         }
-        return sprintf("%s (Every %s)", $this->getLabel(), $termType);
+        return Mage::helper('adyen_subscription')->__("%s (Every %s)", $this->getLabel(), $termType);
     }
 }
