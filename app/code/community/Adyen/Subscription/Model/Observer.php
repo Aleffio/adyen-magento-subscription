@@ -476,4 +476,24 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         return $billingAgreementId;
     }
 
+
+    /**
+     * Check if billing agreement is not linked to a subscription. If this is the case return an exception
+     * @param Varien_Event_Observer $observer
+     */
+    public function updateBillingAgreementStatus(Varien_Event_Observer $observer) {
+
+        $agreement = $observer->getAgreement();
+        $agreementId = $agreement->getId();
+
+        $subscriptionCollection = Mage::getModel('adyen_subscription/subscription')
+            ->getCollection()
+            ->addFieldToFilter('billing_agreement_id', $agreementId);
+
+        if ($subscriptionCollection->count() > 0) {
+            Mage::throwException(Mage::helper('adyen_subscription')->__(
+                'You cannot cancel this billing agreement because it is used for a subscription.'
+            ));
+        }
+    }
 }

@@ -161,6 +161,14 @@
                     </adyen_subscription_update_billing_agreement_in_subscription>
                 </observers>
             </adyen_payment_process_notifications_after>
+            <adyen_payment_update_billing_agreement_status>
+                <observers>
+                    <adyen_subscription_update_billing_agreement_status>
+                        <class>adyen_subscription/observer</class>
+                        <method>updateBillingAgreementStatus</method>
+                    </adyen_subscription_update_billing_agreement_status>
+                </observers>
+            </adyen_payment_update_billing_agreement_status>
         </events>
         <sales>
             <quote>
