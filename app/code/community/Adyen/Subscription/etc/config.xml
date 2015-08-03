@@ -86,6 +86,11 @@
                     <product_type>Adyen_Subscription_Model_Catalog_Product_Type_Bundle</product_type>
                 </rewrite>
             </bundle>
+            <enterprise_admingws>
+                <rewrite>
+                    <collections>Adyen_Subscription_Model_AdminGws_Collections</collections>
+                </rewrite>
+            </enterprise_admingws>
         </models>
         <catalog>
             <product>
