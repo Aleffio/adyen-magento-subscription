@@ -70,6 +70,26 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </allow_cancel_subscription>
+                        <show_upcoming_orders>
+                            <label>Show upcoming orders</label>
+                            <comment>Show upcoming orders for the shopper</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </show_upcoming_orders>
+                        <number_of_upcoming_orders>
+                            <label>Number of upcomming orders</label>
+                            <comment>Number of upcomming orders to show</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><show_upcoming_orders>1</show_upcoming_orders></depends>
+                        </number_of_upcoming_orders>
                     </fields>
                 </subscription>
             </groups>

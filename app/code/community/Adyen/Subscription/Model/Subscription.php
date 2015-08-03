@@ -225,6 +225,69 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             ->addFieldToFilter('entity_id', array('in' => $this->getOrderIds()));
     }
 
+
+    public function getUpcomingOrders()
+    {
+        $result = array();
+
+        // check if setting is enabled
+        $showUpcomingOrders = Mage::getStoreConfigFlag(
+            'adyen_subscription/subscription/show_upcoming_orders', Mage::app()->getStore()
+        );
+
+        if($showUpcomingOrders) {
+            $nextFormatted = $this->getScheduledAtFormatted();
+            $date = $this->getScheduledAt();
+
+            $timezone = new DateTimeZone(Mage::getStoreConfig(
+                Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
+            ));
+
+            $result[] = $nextFormatted;
+
+            // count is minus 1 because first item is already in list
+            $count = (int) Mage::getStoreConfig(
+                'adyen_subscription/subscription/number_of_upcoming_orders', Mage::app()->getStore()
+            ) - 1;
+
+            for($i = 0; $i < $count; $i++) {
+                $date = $this->calculateNextUpcomingOrderDate($date, $timezone);
+                $result[] = Mage::helper('core')->formatDate($date, 'medium', true);
+
+            }
+        }
+        return $result;
+    }
+
+    public function calculateNextUpcomingOrderDate($date, $timezone) {
+
+        $schedule = new DateTime($date, $timezone);
+
+        $dateInterval = null;
+        switch ($this->getTermType()) {
+            case Adyen_Subscription_Model_Product_Subscription::TERM_TYPE_DAY:
+                $dateInterval = new DateInterval(sprintf('P%sD',$this->getTerm()));
+                break;
+            case Adyen_Subscription_Model_Product_Subscription::TERM_TYPE_WEEK:
+                $dateInterval = new DateInterval(sprintf('P%sW',$this->getTerm()));
+                break;
+            case Adyen_Subscription_Model_Product_Subscription::TERM_TYPE_MONTH:
+                $dateInterval = new DateInterval(sprintf('P%sM',$this->getTerm()));
+                break;
+            case Adyen_Subscription_Model_Product_Subscription::TERM_TYPE_YEAR:
+                $dateInterval = new DateInterval(sprintf('P%sY',$this->getTerm()));
+                break;
+        }
+        if (! isset($dateInterval)) {
+            Adyen_Subscription_Exception::throwException('Could not calculate a correct date interval');
+        }
+
+        $schedule->add($dateInterval);
+
+        return  $schedule->format('Y-m-d H:i:s');
+    }
+
+
     /**
      * @return array
      */
@@ -327,7 +390,6 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
         return $schedule->format('Y-m-d H:i:s');
     }
-
 
     public function setBillingAgreement(Mage_Sales_Model_Billing_Agreement $billingAgreement, $validate = false)
     {

@@ -65,6 +65,20 @@
             </table>
         </div>
     </div>
+
+    <?php $upcomingOrders = $_subscription->getUpcomingOrders();?>
+
+    <?php if(count($upcomingOrders) > 0): ?>
+
+        <h2 class="table-caption"><?php echo $this->__('Upcoming Orders') ?></h2>
+        <ul>
+            <?php foreach ($upcomingOrders as $order): ?>
+                <li><?php echo $order; ?></li>
+            <?php endforeach; ?>
+        </ul>
+
+    <?php endif; ?>
+
     <?php $pastOrders = $_subscription->getOrders(); ?>
     <?php if(count($pastOrders) > 0): ?>
         <?php echo $this->getChildHtml('pager'); ?>
