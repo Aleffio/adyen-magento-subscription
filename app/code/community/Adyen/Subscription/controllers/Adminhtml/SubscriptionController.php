@@ -395,7 +395,8 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
         try {
             $quote = $subscription->getActiveQuote();
-            Mage::getModel('adyen_subscription/service_quote')->updateQuotePayment($quote);
+            $billingAgreement = Mage::getModel('adyen_subscription/service_quote')->getBillingAgreement($quote);
+            Mage::getModel('adyen_subscription/service_quote')->updateQuotePayment($quote, $billingAgreement);
 
             $subscription->importPostData($postData);
 

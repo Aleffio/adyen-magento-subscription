@@ -136,9 +136,9 @@ class Adyen_Subscription_Model_Service_Quote
             }
         }
 
-        $this->updateQuotePayment($quote);
+        $billingAgreement = $this->getBillingAgreement($quote);
 
-        $billingAgreement = $this->_getBillingAgreement($quote);
+        $this->updateQuotePayment($quote, $billingAgreement);
 
         if (!$quote->getShippingAddress()->getShippingMethod()) {
             Adyen_Subscription_Exception::throwException('No shipping method selected');
@@ -226,12 +226,19 @@ class Adyen_Subscription_Model_Service_Quote
      * @return Mage_Sales_Model_Quote
      * @throws Exception
      */
-    public function updateQuotePayment(Mage_Sales_Model_Quote $quote)
+    public function updateQuotePayment(Mage_Sales_Model_Quote $quote, Adyen_Payment_Model_Billing_Agreement $billingAgreement)
     {
         $subscriptionDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
 
         $quote->getPayment()->setAdditionalInformation('recurring_detail_reference', $subscriptionDetailReference);
-        $quote->getPayment()->setCcType(null);
+
+        $agreementData = $billingAgreement->getAgreementData();
+        if(isset($agreementData['variant'])) {
+            $quote->getPayment()->setCcType($agreementData['variant']);
+        } else {
+            $quote->getPayment()->setCcType(null);
+        }
+
         $quote->getPayment()->save();
 
         return $quote;
@@ -241,7 +248,7 @@ class Adyen_Subscription_Model_Service_Quote
      * @param Mage_Sales_Model_Quote $quote
      * @return Mage_Sales_Model_Billing_Agreement
      */
-    protected function _getBillingAgreement(Mage_Sales_Model_Quote $quote)
+    public function getBillingAgreement(Mage_Sales_Model_Quote $quote)
     {
         /** @var Mage_Sales_Model_Quote_Payment $quotePayment */
         $quotePayment = Mage::getModel('sales/quote_payment')
