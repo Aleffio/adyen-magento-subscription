@@ -521,4 +521,33 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             ));
         }
     }
+
+
+    /**
+     * Do not delete products that are used for active subscriptions
+     * @param Varien_Event_Observer $observer
+     */
+    public function preventProductDeleteForSubscription(Varien_Event_Observer $observer) {
+
+        $product = $observer->getProduct();
+        $collection = Mage::getModel('adyen_subscription/subscription_item')->getCollection();
+        $resource = $collection->getResource();
+
+        $collection->getSelect()->joinLeft(
+            array('subscription' => $resource->getTable('adyen_subscription/subscription')),
+            'main_table.subscription_id = subscription.entity_id'
+        );
+
+        $collection->addFieldToFilter('product_id', $product->getId());
+        $collection->addFieldToFilter('subscription.status', Adyen_Subscription_Model_Subscription::STATUS_ACTIVE);
+
+
+        $count = $collection->count();
+        if ($count > 0) {
+
+            Mage::throwException(Mage::helper('adyen_subscription')->__(
+                'You cannot delete product (#%s) because it is attached to %s active subscription(s)', $product->getId(), $count
+            ));
+        }
+    }
 }
