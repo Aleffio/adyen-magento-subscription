@@ -61,7 +61,7 @@ class Adyen_Subscription_Block_Catalog_Product_View_Subscription extends Mage_Co
 
     public function getJsonConfig()
     {
-        $json = [];
+        $json = array();
         $json['none'] = $this->_getPriceStandaloneConfiguration();
         foreach ($this->getSubscriptionCollection() as $subscription) {
             /** @var Adyen_Subscription_Model_Product_Subscription $subscription */

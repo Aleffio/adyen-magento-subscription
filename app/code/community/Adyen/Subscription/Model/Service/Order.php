@@ -29,7 +29,7 @@ class Adyen_Subscription_Model_Service_Order
      */
     public function createSubscription(Mage_Sales_Model_Order $order)
     {
-        $subscriptions = [];
+        $subscriptions = array();
 
         if ($order->getSubscriptionId()) {
             // Don't create subscription, since this order is created by a subscription
@@ -88,7 +88,7 @@ class Adyen_Subscription_Model_Service_Order
 
             $subscription->save();
 
-            $transactionItems = [];
+            $transactionItems = array();
             foreach ($productTerm['order_items'] as $orderItem) {
                 /** @var Adyen_Subscription_Model_Product_Subscription $productSubscription */
                 $productSubscription = $this->_getProductSubscription($orderItem);

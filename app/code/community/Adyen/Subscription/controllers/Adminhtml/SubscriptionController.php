@@ -470,7 +470,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
     protected function _editSubscription(
         Adyen_Subscription_Model_Subscription $subscription,
-        array $params = [])
+        array $params = array())
     {
         $quote = $subscription->getActiveQuote();
 

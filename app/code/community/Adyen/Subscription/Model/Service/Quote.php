@@ -184,7 +184,7 @@ class Adyen_Subscription_Model_Service_Quote
                 continue;
             }
 
-            $productOptions = [];
+            $productOptions = array();
             $productOptions['info_buyRequest'] = unserialize($quoteItem->getOptionByCode('info_buyRequest')->getValue());
             $productOptions['additional_options'] = unserialize($quoteItem->getOptionByCode('additional_options')->getValue());
 
