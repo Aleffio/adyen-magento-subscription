@@ -31,6 +31,7 @@ class Adyen_Subscription_Model_Service_Quote
     ) {
         try {
             if (! $subscription->canCreateOrder()) {
+                Mage::helper('adyen_subscription')->logOrderCron("Not allowed to create order from quote");
                 Adyen_Subscription_Exception::throwException(
                     Mage::helper('adyen_subscription')->__('Not allowed to create order from quote')
                 );
@@ -80,14 +81,18 @@ class Adyen_Subscription_Model_Service_Quote
                 ->addObject($quoteAdditional)
                 ->save();
 
+            Mage::helper('adyen_subscription')->logOrderCron(sprintf("Successful created order (#%s) for subscription (#%s)" , $order->getId(), $subscription->getId()));
+
             return $service->getOrder();
 
         } catch (Mage_Payment_Exception $e) {
+            Mage::helper('adyen_subscription')->logOrderCron("Error in creating order: " . $e->getMessage());
             $subscription->setStatus($subscription::STATUS_PAYMENT_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
             throw $e;
         } catch (Exception $e) {
+            Mage::helper('adyen_subscription')->logOrderCron("Error in creating order: " . $e->getMessage());
             $subscription->setStatus($subscription::STATUS_ORDER_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();

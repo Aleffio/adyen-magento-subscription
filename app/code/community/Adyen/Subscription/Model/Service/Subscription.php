@@ -29,10 +29,12 @@ class Adyen_Subscription_Model_Service_Subscription
     {
         try {
             if (! $subscription->canCreateQuote()) {
+                Mage::helper('adyen_subscription')->logQuoteCron('Can not create quote from subscription');
                 Adyen_Subscription_Exception::throwException('Can not create quote from subscription');
             }
 
             if ($quote = $subscription->getActiveQuote()) {
+                Mage::helper('adyen_subscription')->logQuoteCron('There is already an active quote present for this subscription');
                 Adyen_Subscription_Exception::throwException('There is already an active quote present for this subscription');
             }
 
@@ -60,6 +62,7 @@ class Adyen_Subscription_Model_Service_Subscription
                 $quoteItem = $quote->addProduct($product, $subscriptionItem->getQty());
 
                 if (! $quoteItem instanceof Mage_Sales_Model_Quote_Item) {
+                    Mage::helper('adyen_subscription')->logQuoteCron(sprintf('An error occurred while adding a product to the quote: %s', $quoteItem));
                     Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
                         'An error occurred while adding a product to the quote: %s', $quoteItem
                     ));
@@ -110,6 +113,7 @@ class Adyen_Subscription_Model_Service_Subscription
             $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
 
             if (! $subscription->getBillingAgreement()->getId()) {
+                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('No billing agreement found', $quoteItem));
                 Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
                     'No billing agreement found'
                 ));
@@ -119,6 +123,7 @@ class Adyen_Subscription_Model_Service_Subscription
             $methodInstance = $subscription->getBillingAgreement()->getPaymentMethodInstance();
 
             if (! method_exists($methodInstance, 'initBillingAgreementPaymentInfo')) {
+                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Payment method %s does not support Adyen_Subscription', $methodInstance->getCode()));
                 Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
                     'Payment method %s does not support Adyen_Subscription', $methodInstance->getCode()
                 ));
@@ -131,6 +136,7 @@ class Adyen_Subscription_Model_Service_Subscription
                 /** @noinspection PhpUndefinedMethodInspection */
                 $methodInstance->initBillingAgreementPaymentInfo($subscription->getBillingAgreement(), $quote->getPayment());
             } catch(Mage_Core_Exception $e) {
+                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Failed to set billing agreement data %s', $e->getMessage()));
                 $subscription->setErrorMessage($e->getMessage());
                 $subscription->setStatus($subscription::STATUS_QUOTE_ERROR);
             }
@@ -154,12 +160,19 @@ class Adyen_Subscription_Model_Service_Subscription
 
             $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
 
+            Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Created quote (#%s) for subscription (#%s)', $quote->getId(), $subscription->getId()));
+
             return $quote;
         } catch (Exception $e) {
+            Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Exception in creating quote: %s', $e->getMessage()));
             $subscription->setStatus($subscription::STATUS_QUOTE_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
             throw $e;
         }
     }
+
+
+
+
 }

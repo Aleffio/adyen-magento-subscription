@@ -23,10 +23,12 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function createQuotes()
     {
+        Mage::helper('adyen_subscription')->logQuoteCron("Start quote cronjob");
         $subscriptionCollection = Mage::getResourceModel('adyen_subscription/subscription_collection');
         $subscriptionCollection->addScheduleQuoteFilter();
 
         if ($subscriptionCollection->count() <= 0) {
+            Mage::helper('adyen_subscription')->logQuoteCron("For all subscriptions there is already a quote created");
             return '';
         }
 
@@ -35,6 +37,8 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         ));
         $scheduleBefore = new DateTime('now', $timezone);
         $scheduleBefore->add(new DateInterval('P2W'));
+
+        Mage::helper('adyen_subscription')->logQuoteCron(sprintf("Create quote if schedule is before %s", $scheduleBefore->format('Y-m-d H:i:s')));
 
         $successCount = 0;
         $failureCount = 0;
@@ -53,20 +57,27 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $subscription->setScheduledAt($scheduleDate->format('Y-m-d H:i:s'));
 
+            Mage::helper('adyen_subscription')->logQuoteCron(sprintf("ScheduleDate of subscription (#%s) is %s", $subscription->getId(), $subscription->getScheduledAt()));
+
             if ($scheduleDate < $scheduleBefore) {
                 try {
                     Mage::getSingleton('adyen_subscription/service_subscription')->createQuote($subscription);
                     $successCount++;
                 } catch (Exception $e) {
+                    Mage::helper('adyen_subscription')->logQuoteCron("Create quote error: " . $e->getMessage());
                     Adyen_Subscription_Exception::logException($e);
                     $failureCount++;
                 }
             }
         }
 
-        return Mage::helper('adyen_subscription')->__(
+        $result = Mage::helper('adyen_subscription')->__(
             'Quotes created, %s successful, %s failed', $successCount, $failureCount
         );
+
+        Mage::helper('adyen_subscription')->logQuoteCron($result);
+
+        return $result;
     }
 
     /**
@@ -74,10 +85,12 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function createOrders()
     {
+        Mage::helper('adyen_subscription')->logOrderCron("Start order cronjob");
         $subscriptionCollection = Mage::getResourceModel('adyen_subscription/subscription_collection');
         $subscriptionCollection->addPlaceOrderFilter();
 
         if ($subscriptionCollection->count() <= 0) {
+            Mage::helper('adyen_subscription')->logOrderCron("There are no subscriptions that have quotes and a schedule date in the past");
             return '';
         }
 
@@ -89,6 +102,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             try {
                 $quote = $subscription->getActiveQuote();
                 if (! $quote) {
+                    Mage::helper('adyen_subscription')->logOrderCron("Can\'t create order: No quote created yet.");
                     Adyen_Subscription_Exception::throwException('Can\'t create order: No quote created yet.');
                 }
 
@@ -100,9 +114,13 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             }
         }
 
-        return Mage::helper('adyen_subscription')->__(
+        $result = Mage::helper('adyen_subscription')->__(
             'Quotes created, %s successful, %s failed', $successCount, $failureCount
         );
+
+        Mage::helper('adyen_subscription')->logOrderCron($result);
+
+        return $result;
     }
 
     /**
@@ -110,6 +128,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function createSubscriptions()
     {
+        Mage::helper('adyen_subscription')->logSubscriptionCron("Start subscription cronjob");
         $collection = Mage::getModel('sales/order')->getCollection();
 
         $resource = $collection->getResource();
@@ -140,7 +159,9 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                 foreach ($subscriptions as $subscription) {
                     /** @var Adyen_Subscription_Model_Subscription $subscription */
                     $message = Mage::helper('adyen_subscription')->__('Created a subscription (#%s) from order.', $subscription->getId());
+                    Mage::helper('adyen_subscription')->logSubscriptionCron(sprintf("Created a subscription (#%s) from order (#%s)", $subscription->getId(), $order->getId()));
                     $order->addStatusHistoryComment($message);
+                    //TODO: FLag order that subscription is created so it will not recreate it when you delete the subscription and add it to filter so it is not looped to it again that will be better for performance
                     $order->save();
                     $p++;
                 }
@@ -152,9 +173,13 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             }
         }
 
-        return Mage::helper('adyen_subscription')->__(
+        $result = Mage::helper('adyen_subscription')->__(
             '%s orders processed, %s subscriptions created (%s errors)', $o, $p, $e
         );
+
+        Mage::helper('adyen_subscription')->logSubscriptionCron($result);
+
+        return $result;
     }
 
     /**
