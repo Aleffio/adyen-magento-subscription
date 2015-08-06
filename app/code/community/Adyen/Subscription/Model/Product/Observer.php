@@ -330,15 +330,6 @@ class Adyen_Subscription_Model_Product_Observer
          * For instances that allow ONECLICK (ONECLICK,RECURRING) we need to set the mode to RECURRING.
          */
 
-        // Validate if payment method is available for Adyen subscription
-        if(method_exists($methodInstance, 'canCreateAdyenSubscription')) {
-            if($methodInstance->canCreateAdyenSubscription() != true) {
-                $observer->getResult()->isAvailable = false;
-            }
-        } else {
-            $observer->getResult()->isAvailable = false;
-        }
-
         // You need to do a recurring transaction for subscriptions
         if(method_exists($methodInstance, 'setCustomerInteraction')) {
             $methodInstance->setCustomerInteraction = false;
@@ -350,12 +341,19 @@ class Adyen_Subscription_Model_Product_Observer
         // check if payment method is in the key
         $code = $methodInstance->getCode();
 
-        // set method to not available and check later if it should be available
+        // Set method to unavailable and check below if it is possible to use
         $observer->getResult()->isAvailable = false;
 
-        // if payment method is in selectedPaymentMethods enable it.
+        /*
+         * Check if payment method is in selectedPaymentMethods and
+         * validate if payment method is available for Adyen subscription
+         */
         if (array_key_exists($code, $selectedSubscriptionPaymentMethods)) {
-            $observer->getResult()->isAvailable = true;
+            if(method_exists($methodInstance, 'canCreateAdyenSubscription')) {
+                if($methodInstance->canCreateAdyenSubscription()) {
+                    $observer->getResult()->isAvailable = true;
+                }
+            }
         }
 
         // restrict MAESTRO payment method for creditcards because MEASTRO does not support Recurring
