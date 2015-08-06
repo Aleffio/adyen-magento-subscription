@@ -356,7 +356,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         $orderItem->setBaseOriginalPrice(($orderItem->getBaseOriginalPrice() / $newQty) * $oldQty);
 
         $orderItem->setPriceInclTax(($orderItem->getPriceInclTax() / $newQty) * $oldQty);
-        $orderItem->setBasePriceInclTax(($orderItem->getPriceInclTax() / $newQty) * $oldQty);
+        $orderItem->setBasePriceInclTax(($orderItem->getBasePriceInclTax() / $newQty) * $oldQty);
 
         return $orderItem;
     }
