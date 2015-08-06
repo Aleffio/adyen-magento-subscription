@@ -154,6 +154,9 @@ class Adyen_Subscription_Model_Service_Order
             $subscriptions[] = $subscription;
         }
 
+        if(!empty($subscription)) {
+            $order->setCreatedAdyenSubscription(true);
+        }
         return $subscriptions;
     }
 

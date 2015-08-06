@@ -148,6 +148,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         $collection->addFieldToFilter('subscription.entity_id', array('null' => true));
         $collection->addFieldToFilter('parent_item_id', array('null' => true));
         $collection->addFieldToFilter('product_options', array('nlike' => '%;s:18:"adyen_subscription";s:4:"none"%'));
+        $collection->addFieldToFilter('created_adyen_subscription', array('null' => true));
 
         $collection->getSelect()->group('main_table.entity_id');
 
@@ -161,7 +162,6 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                     $message = Mage::helper('adyen_subscription')->__('Created a subscription (#%s) from order.', $subscription->getId());
                     Mage::helper('adyen_subscription')->logSubscriptionCron(sprintf("Created a subscription (#%s) from order (#%s)", $subscription->getId(), $order->getId()));
                     $order->addStatusHistoryComment($message);
-                    //TODO: FLag order that subscription is created so it will not recreate it when you delete the subscription and add it to filter so it is not looped to it again that will be better for performance
                     $order->save();
                     $p++;
                 }
