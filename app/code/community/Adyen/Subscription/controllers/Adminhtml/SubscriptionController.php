@@ -483,4 +483,29 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
         $this->_redirect('adminhtml/sales_order_create/index', $params);
     }
+
+    public function massDeleteAction()
+    {
+        $subscriptionIds = $this->getRequest()->getParam('subscription_id');      // $this->getMassactionBlock()->setFormFieldName('subscription_id'); from Adyen_Subscription_Block_Adminhtml_Subscription_Grid
+
+        if(!is_array($subscriptionIds)) {
+            Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adyen_subscription')->__('Please select subscription(s).'));
+        } else {
+            try {
+                $subscriptionModel = Mage::getModel('adyen_subscription/subscription');
+                foreach ($subscriptionIds as $subscriptionId) {
+                    $subscriptionModel->load($subscriptionId)->delete();
+                }
+                Mage::getSingleton('adminhtml/session')->addSuccess(
+                    Mage::helper('adyen_subscription')->__(
+                        'Total of %d record(s) were deleted.', count($subscriptionIds)
+                    )
+                );
+            } catch (Exception $e) {
+                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+            }
+        }
+
+        $this->_redirect('*/*/index');
+    }
 }
