@@ -86,13 +86,13 @@ class Adyen_Subscription_Model_Service_Quote
             return $service->getOrder();
 
         } catch (Mage_Payment_Exception $e) {
-            Mage::helper('adyen_subscription')->logOrderCron("Error in creating order: " . $e->getMessage());
+            Mage::helper('adyen_subscription')->logOrderCron(sprintf("Error in subscription (#%s) creating order from quote (#%s) error is: %s", $subscription->getId(), $quote->getId(), $e->getMessage()));
             $subscription->setStatus($subscription::STATUS_PAYMENT_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
             throw $e;
         } catch (Exception $e) {
-            Mage::helper('adyen_subscription')->logOrderCron("Error in creating order: " . $e->getMessage());
+            Mage::helper('adyen_subscription')->logOrderCron(sprintf("Error in subscription (#%s) creating order from quote (#%s) error is: %s", $subscription->getId(), $quote->getId(), $e->getMessage()));
             $subscription->setStatus($subscription::STATUS_ORDER_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
