@@ -35,10 +35,13 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
      */
     public function getSubscriptionPaymentMethods()
     {
-        $_types = Mage::getConfig()->getNode('default/adyen_subscription/allowed_payment_methods')->asArray();
+        $_types = Mage::getConfig()->getNode('default/adyen_subscription/allowed_payment_methods');
+        if (! $_types) {
+            return [];
+        }
 
         $types = array();
-        foreach ($_types as $data) {
+        foreach ($_types->asArray() as $data) {
             $types[$data['code']] = $data['label'];
         }
         return $types;
