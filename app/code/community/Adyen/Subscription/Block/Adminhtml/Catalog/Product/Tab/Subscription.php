@@ -217,6 +217,12 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
             'options'   => array(1 => $helper->__('Yes'), 0 => $helper->__('No')),
         ))->setValue($subscription ? $subscription->getShowOnFrontend() : 0);
 
+        if ($subscriptionCount > 0) {
+            $subscriptionFieldset->addField($elementId . '[warning]', 'note', array(
+                'text'     => '<p style="display:none;" class=\'adyen_notice notice\'>' . $helper->__('Watch out! this product subscription is used in current subscriptions. Change this will not change the current subscriptions') . '</p>'
+            ));
+        }
+
         return $subscriptionFieldset;
     }
 

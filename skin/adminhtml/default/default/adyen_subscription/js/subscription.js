@@ -49,6 +49,11 @@ jQuery(function($){
         items: '.subscription-fieldset-container'
     });
 
+    // Show noti
+    $(document).on('change', '#subscription_fieldset :input', function(){
+        $(this).parents('.subscription-fieldset-container').find('.adyen_notice').show();
+    });
+
     addButton .on('click', function(){
         var newSubscription = subscriptionTemplate.clone();
         newSubscriptionId++;
