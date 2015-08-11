@@ -105,6 +105,7 @@ class Adyen_Subscription_Model_Service_Order
                     ->setProductOptions(serialize($orderItem->getProductOptions()))
                     ->setSku($orderItem->getSku())
                     ->setName($orderItem->getName())
+                    ->setProductSubscriptionId($productSubscription->getId())
                     ->setLabel($productSubscription->getLabel())
                     ->setPrice($orderItem->getPrice())
                     ->setPriceInclTax($orderItem->getPriceInclTax())

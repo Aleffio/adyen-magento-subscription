@@ -30,6 +30,8 @@
  * @method Adyen_Subscription_Model_Subscription_Item setSku(string $value)
  * @method string getName()
  * @method Adyen_Subscription_Model_Subscription_Item setName(string $value)
+ * @method string getProductSubscriptionId()
+ * @method Adyen_Subscription_Model_Subscription_Item setProductSubscriptionId(int $value)
  * @method string getLabel()
  * @method Adyen_Subscription_Model_Subscription_Item setLabel(string $value)
  * @method float getPrice()
