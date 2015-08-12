@@ -29,6 +29,15 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
         $this->_removeButton('save');
         $this->_removeButton('reset');
 
+        if ($this->getSubscription()->canPause()) {
+            $this->_addButton('pause_subscription', [
+                'class'     => 'delete',
+                'label'     => Mage::helper('adyen_subscription')->__('Pause Subscription'),
+                'onclick'   => "setLocation('{$this->getUrl('*/*/pause',
+                    ['id' => $this->getSubscription()->getIncrementId()])}')",
+            ], 5);
+        }
+
         if ($this->getSubscription()->canCancel()) {
             $this->_addButton('stop_subscription', [
                 'class'     => 'delete',
@@ -38,7 +47,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
             ], 10);
         }
 
-        if ($this->getSubscription()->isCanceled()) {
+        if ($this->getSubscription()->isCanceled() || $this->getSubscription()->isPaused()) {
             $this->_addButton('activate_subscription', [
                 'label'     => Mage::helper('adyen_subscription')->__('Activate Subscription'),
                 'onclick' => "deleteConfirm('" . Mage::helper('adminhtml')->__('Are you sure you want to do reactivate this subscription?')

@@ -39,9 +39,33 @@ class Adyen_Subscription_Block_Customer_Subscription_View extends Mage_Core_Bloc
     public function getCanCancel()
     {
         $subscription = $this->getSubscription();
-        if($subscription->getStatus() == Adyen_Subscription_Model_Subscription_Item::STATUS_ACTIVE) {
+        if($subscription->getStatus() == Adyen_Subscription_Model_Subscription::STATUS_ACTIVE) {
             return Mage::getStoreConfigFlag(
                 'adyen_subscription/subscription/allow_cancel_subscription',
+                Mage::app()->getStore()
+            );
+        }
+        return false;
+    }
+
+    public function getCanPause()
+    {
+        $subscription = $this->getSubscription();
+        if($subscription->getStatus() == Adyen_Subscription_Model_Subscription::STATUS_ACTIVE) {
+            return Mage::getStoreConfigFlag(
+                'adyen_subscription/subscription/allow_pause_resume_subscription',
+                Mage::app()->getStore()
+            );
+        }
+        return false;
+    }
+
+    public function getCanResume()
+    {
+        $subscription = $this->getSubscription();
+        if($subscription->getStatus() == Adyen_Subscription_Model_Subscription::STATUS_PAUSED) {
+            return Mage::getStoreConfigFlag(
+                'adyen_subscription/subscription/allow_pause_resume_subscription',
                 Mage::app()->getStore()
             );
         }
@@ -59,6 +83,14 @@ class Adyen_Subscription_Block_Customer_Subscription_View extends Mage_Core_Bloc
         if($this->getSubscription()) {
             $this->setCancelUrl(
                 $this->getUrl('adyen_subscription/customer/cancel', array(
+                    '_current' => true))
+            );
+            $this->setPauseUrl(
+                $this->getUrl('adyen_subscription/customer/pause', array(
+                    '_current' => true))
+            );
+            $this->setResumeUrl(
+                $this->getUrl('adyen_subscription/customer/resume', array(
                     '_current' => true))
             );
         }

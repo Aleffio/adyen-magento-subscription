@@ -76,6 +76,69 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
     }
 
     /**
+     * Pause subscription
+     */
+    public function pauseAction()
+    {
+        $subscriptionId = $this->getRequest()->getParam('subscription_id');
+
+        if($subscriptionId) {
+            /** @var Adyen_Subscription_Model_Subscription $subscription */
+            $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
+
+            if(Mage::getStoreConfigFlag('adyen_subscription/subscription/allow_pause_resume_subscription', Mage::app()->getStore())) {
+                // pause subscription
+                $subscription->pause();
+
+                Mage::getSingleton('customer/session')->addSuccess(
+                    Mage::helper('adyen_subscription')->__('Subscription %s successfully paused', $subscription->getIncrementId())
+                );
+
+            } else {
+                Mage::getSingleton('customer/session')->addError(
+                    Mage::helper('adyen_subscription')->__('Something went wrong')
+                );
+            }
+
+            $this->_redirect('adyen_subscription/customer/view/subscription_id/'.$subscriptionId);
+            return;
+        }
+        $this->_redirect('adyen_subscription/customer/subscriptions');
+    }
+
+    /**
+     * Resume subscription
+     */
+    public function resumeAction()
+    {
+        $subscriptionId = $this->getRequest()->getParam('subscription_id');
+
+        if($subscriptionId) {
+            /** @var Adyen_Subscription_Model_Subscription $subscription */
+            $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
+
+            if(Mage::getStoreConfigFlag('adyen_subscription/subscription/allow_pause_resume_subscription', Mage::app()->getStore())) {
+                // resume subscription
+                $subscription->activate();
+
+                Mage::getSingleton('customer/session')->addSuccess(
+                    Mage::helper('adyen_subscription')->__('Subscription %s successfully activated', $subscription->getIncrementId())
+                );
+
+            } else {
+                Mage::getSingleton('customer/session')->addError(
+                    Mage::helper('adyen_subscription')->__('Something went wrong')
+                );
+            }
+
+            $this->_redirect('adyen_subscription/customer/view/subscription_id/'.$subscriptionId);
+            return;
+        }
+        $this->_redirect('adyen_subscription/customer/subscriptions');
+    }
+
+
+    /**
      * Subscription cancellation form
      */
     public function cancelAction()
@@ -124,22 +187,7 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
                 && $this->getRequest()->getParam('reason')) {
                 // cancel subscription with this reason
                 $reason = $this->getRequest()->getParam('reason');
-                $subscription->setCancelCode($reason);
-                $subscription->setStatus($subscription::STATUS_CANCELED);
-                $subscription->setEndsAt(now());
-                $subscription->save();
-
-                // log this as well in history table
-                $customerData = Mage::getSingleton('customer/session')->getCustomer();
-                $customerId = $customerData->getId();
-
-                $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-                $subscriptionHistory->setSubscription($subscription);
-                $subscriptionHistory->setCustomerId($customerId);
-                $subscriptionHistory->setStatus($subscription::STATUS_CANCELED);
-                $subscriptionHistory->setCode($reason);
-                $subscriptionHistory->save();
-
+                $subscription->cancel($reason);
 
                 Mage::getSingleton('customer/session')->addSuccess(
                     Mage::helper('adyen_subscription')->__('Subscription %s successfully cancelled', $subscription->getIncrementId())

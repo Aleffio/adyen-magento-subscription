@@ -23,6 +23,17 @@
     <?php if ($this->getCanCancel()): ?>
         <button type="button" title="<?php echo $this->__('Cancel') ?>" class="button" onclick="window.location.href = '<?php echo $this->getCancelUrl() ?>';"><span><span><?php echo $this->__('Cancel') ?></span></span></button>
     <?php endif; ?>
+    <?php if ($this->getCanPause()):
+
+        $extraStyle = "";
+        if($this->getCanCancel()) {
+            $extraStyle = "style=\"right:95px; \" ";
+        } ?>
+        <button <?php echo $extraStyle; ?>type="button" title="<?php echo $this->__('Pause') ?>" class="button" onclick="window.location.href = '<?php echo $this->getPauseUrl() ?>';"><span><span><?php echo $this->__('Pause') ?></span></span></button>
+    <?php endif; ?>
+    <?php if ($this->getCanResume()): ?>
+        <button type="button" title="<?php echo $this->__('Resume') ?>" class="button" onclick="window.location.href = '<?php echo $this->getResumeUrl() ?>';"><span><span><?php echo $this->__('Resume') ?></span></span></button>
+    <?php endif; ?>
 </div>
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 <div class="subscription">

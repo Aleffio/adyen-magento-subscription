@@ -153,6 +153,38 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         }
     }
 
+    public function pauseAction()
+    {
+        $subscriptionId = $this->getRequest()->getParam('id');
+
+        /** @var Adyen_Subscription_Model_Subscription $subscription */
+        $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
+
+        if (!$subscription->getId()) {
+            $this->_getSession()->addSuccess(
+                Mage::helper('adyen_subscription')->__('Could not find subscription')
+            );
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        try {
+            $subscription->pause();
+
+            $this->_getSession()->addSuccess(
+                Mage::helper('adyen_subscription')->__('The subscription has been successfully paused')
+            );
+        }
+        catch (Mage_Core_Exception $e) {
+            $this->_getSession()->addError(
+                Mage::helper('adyen_subscription')->__('An error occurred while trying to pause this subscription')
+            );
+        }
+
+        $this->_redirectReferer();
+
+    }
+
     /**
      * Subscription cancellation form
      */
@@ -187,19 +219,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             return;
         }
 
-        $subscription->setCancelCode($reason);
-        $subscription->setStatus($subscription::STATUS_CANCELED);
-        $subscription->setEndsAt(now());
-        $subscription->save();
-
-        // log this as well in history table
-        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-        $subscriptionHistory->setSubscription($subscription);
-        $subscriptionHistory->setUserId($this->_getUserId());
-        $subscriptionHistory->setStatus($subscription::STATUS_CANCELED);
-        $subscriptionHistory->setCode($reason);
-        $subscriptionHistory->save();
-
+        $subscription->cancel($reason);
 
         $this->_getSession()->addSuccess(
             Mage::helper('adyen_subscription')->__('Adyen Subscription %s successfully cancelled', $subscription->getIncrementId())
@@ -224,13 +244,6 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
         try {
             $subscription->activate();
-
-            // log this as well in history table
-            $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-            $subscriptionHistory->setSubscription($subscription);
-            $subscriptionHistory->setUserId($this->_getUserId());
-            $subscriptionHistory->setStatus($subscription::STATUS_ACTIVE);
-            $subscriptionHistory->save();
 
             $this->_getSession()->addSuccess(
                 Mage::helper('adyen_subscription')->__('The subscription has been successfully activated')

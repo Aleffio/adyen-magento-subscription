@@ -71,6 +71,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     const STATUS_EXPIRED = 'expired';
     const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
     const STATUS_PAYMENT_ERROR = 'payment_error';
+    const STATUS_PAUSED = 'paused';
 
 
     protected function _construct()
@@ -424,6 +425,19 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         return $this->getData('_billing_agreement');
     }
 
+    public function pause()
+    {
+        $this->setStatus(self::STATUS_PAUSED)
+            ->setErrorMessage(null)
+            ->setCancelCode(null)
+            ->save();
+
+        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+        $subscriptionHistory->saveFromSubscription($this);
+
+        return $this;
+    }
+
     /**
      * @return $this
      */
@@ -434,6 +448,21 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             ->setEndsAt('0000-00-00 00:00:00')
             ->setCancelCode(null)
             ->save();
+
+        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+        $subscriptionHistory->saveFromSubscription($this);
+        return $this;
+    }
+
+    public function cancel($reason)
+    {
+        $this->setCancelCode($reason);
+        $this->setStatus(self::STATUS_CANCELED);
+        $this->setEndsAt(now());
+        $this->save();
+
+        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+        $subscriptionHistory->saveFromSubscription($this);
 
         return $this;
     }
@@ -464,6 +493,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             self::STATUS_EXPIRED            => $helper->__('Expired'),
             self::STATUS_AWAITING_PAYMENT   => $helper->__('Awaiting Payment'),
             self::STATUS_PAYMENT_ERROR      => $helper->__('Payment Error'),
+            self::STATUS_PAUSED              => $helper->__('Paused')
         ];
     }
 
@@ -527,7 +557,8 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             self::STATUS_CANCELED           => 'lightgray',
             self::STATUS_EXPIRED            => 'orange',
             self::STATUS_AWAITING_PAYMENT   => 'blue',
-            self::STATUS_PAYMENT_ERROR      => 'orange',
+            self::STATUS_PAYMENT_ERROR      => 'red',
+            self::STATUS_PAUSED             => 'orange',
         );
     }
 
@@ -615,6 +646,22 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     public function getShippingAddressData()
     {
         return $this->getShippingAddress()->getData();
+    }
+
+    /**
+     * @return bool
+     */
+    public function canPause()
+    {
+        return $this->getStatus() != self::STATUS_PAUSED && $this->getStatus() != self::STATUS_CANCELED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPaused()
+    {
+        return $this->getStatus() == self::STATUS_PAUSED;
     }
 
     /**
