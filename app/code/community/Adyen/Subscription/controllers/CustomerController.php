@@ -128,6 +128,19 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
                 $subscription->setStatus($subscription::STATUS_CANCELED);
                 $subscription->setEndsAt(now());
                 $subscription->save();
+
+                // log this as well in history table
+                $customerData = Mage::getSingleton('customer/session')->getCustomer();
+                $customerId = $customerData->getId();
+
+                $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+                $subscriptionHistory->setSubscription($subscription);
+                $subscriptionHistory->setCustomerId($customerId);
+                $subscriptionHistory->setStatus($subscription::STATUS_CANCELED);
+                $subscriptionHistory->setCode($reason);
+                $subscriptionHistory->save();
+
+
                 Mage::getSingleton('customer/session')->addSuccess(
                     Mage::helper('adyen_subscription')->__('Subscription %s successfully cancelled', $subscription->getIncrementId())
                 );
