@@ -37,7 +37,7 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
     {
         $_types = Mage::getConfig()->getNode('default/adyen_subscription/allowed_payment_methods');
         if (! $_types) {
-            return [];
+            return array();
         }
 
         $types = array();
