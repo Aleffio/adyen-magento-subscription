@@ -117,6 +117,11 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_History
         return Mage::helper('adyen_subscription')->__('History');
     }
 
+    public function canShowTab()
+    {
+        return true;
+    }
+
     /**
      * @return bool
      */
