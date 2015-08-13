@@ -48,7 +48,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription_Price
 
         $data['html_id'] = str_replace('[price]', '[update_price]', $this->getHtmlId());
         $data['label'] = Mage::helper('adyen_subscription')->__(
-            'Update prices of all existing subscriptions',
+            'Update prices of all existing subscriptions (prices be updated by cron)',
             $this->getData('subscription_count')
         );
         $data['value'] = 1;
