@@ -356,6 +356,7 @@ class Adyen_Subscription_Model_Product_Observer
             }
         }
 
+        //@todo move paymen specific logic to Adyen_Payments module, this causes tight coupling.
         // restrict MAESTRO payment method for creditcards because MEASTRO does not support Recurring
         if($code == "adyen_cc") {
             $types = $methodInstance->getAvailableCCTypes();
