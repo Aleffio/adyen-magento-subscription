@@ -20,7 +20,7 @@
 <config>
     <modules>
         <Adyen_Subscription>
-            <version>0.39.0</version>
+            <version>0.40.0</version>
         </Adyen_Subscription>
     </modules>
     <global>
@@ -185,6 +185,14 @@
                     </adyen_subscription>
                 </observers>
             </catalog_product_delete_before>
+            <sales_order_resource_init_virtual_grid_columns>
+                <observers>
+                    <adyen_subscription>
+                        <class>adyen_subscription/observer</class>
+                        <method>addColumnToResource</method>
+                    </adyen_subscription>
+                </observers>
+            </sales_order_resource_init_virtual_grid_columns>
         </events>
         <sales>
             <quote>
@@ -278,24 +286,6 @@
                     </adyen_subscription>
                 </observers>
             </controller_action_layout_load_before>
-            <sales_order_grid_collection_load_before>
-                <observers>
-                    <adyen_subscription_sales_order_grid_collection>
-                        <type>singleton</type>
-                        <class>adyen_subscription/observer</class>
-                        <method>beforeOrderCollectionLoad</method>
-                    </adyen_subscription_sales_order_grid_collection>
-                </observers>
-            </sales_order_grid_collection_load_before>
-            <core_block_abstract_prepare_layout_after>
-                <observers>
-                    <adyen_subscription_add_sales_order_grid_column>
-                        <type>singleton</type>
-                        <class>adyen_subscription/observer</class>
-                        <method>addGridColumn</method>
-                    </adyen_subscription_add_sales_order_grid_column>
-                </observers>
-            </core_block_abstract_prepare_layout_after>
         </events>
     </adminhtml>
 

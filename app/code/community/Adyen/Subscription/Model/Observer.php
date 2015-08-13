@@ -66,64 +66,19 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Join subscription ID to sales order grid
-     *
-     * @event sales_order_grid_collection_load_before
+     * Adds virtual grid column to order grid records generation
      * @param Varien_Event_Observer $observer
      */
-    public function beforeOrderCollectionLoad($observer)
+    public function addColumnToResource(Varien_Event_Observer $observer)
     {
-        /** @var Mage_Sales_Model_Resource_Order_Collection $collection */
-        /** @noinspection PhpUndefinedMethodInspection */
-        $collection = $observer->getOrderGridCollection();
-
-        $union = $collection->getSelect()->getPart(Zend_Db_Select::UNION);
-        $resource = $collection->getResource();
-
-        if (count($union) > 1) {
-            foreach ($union as $unionSelect) {
-                list($target, $type) = $unionSelect;
-                $target->joinLeft(
-                    array('subscription' => $resource->getTable('adyen_subscription/subscription')),
-                    '`main_table`.`entity_id` = `subscription`.`order_id`',
-                    array('created_subscription_id' => 'group_concat(subscription.entity_id)')
-                );
-                $target->group('main_table.entity_id');
-            }
-        }
-        else {
-            $collection->getSelect()->joinLeft(
-                array('subscription' => $resource->getTable('adyen_subscription/subscription')),
-                '`main_table`.`entity_id` = `subscription`.`order_id`',
-                array('created_subscription_id' => 'group_concat(subscription.entity_id)')
-            );
-            $collection->getSelect()->group('main_table.entity_id');
-        }
-    }
-
-    /**
-     * Add subscription IDs column to order grid
-     *
-     * @event adyen_subscription_add_sales_order_grid_column
-     * @param Varien_Event_Observer $observer
-     * @return $this
-     */
-    public function addGridColumn(Varien_Event_Observer $observer)
-    {
-        $block = $observer->getBlock();
-        if (! $block instanceof Mage_Adminhtml_Block_Sales_Order_Grid && !$block instanceof Mage_Adminhtml_Block_Customer_Edit_Tab_Orders) {
-            return $this;
-        }
-
-        $block->addColumnAfter('created_subscription_id', array(
-            'header'        => Mage::helper('sales')->__('Created Subscription ID'),
-            'index'         => 'created_subscription_id',
-            'filter_index'  => 'subscription.entity_id',
-            'type'          => 'text',
-            'width'         => '100px',
-        ), 'status');
-
-        return $this;
+        /* @var $resource Mage_Sales_Model_Mysql4_Order */
+        $resource = $observer->getEvent()->getResource();
+        $resource->addVirtualGridColumn(
+            'created_subscription_id',
+            'adyen_subscription/subscription',
+            array('entity_id' => 'order_id'),
+            'entity_id'
+        );
     }
 
     /**
@@ -292,9 +247,9 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                 }
 
                 // If the billingagreementId of the subscription does not match the new billingagreementId change the billingAgreementId to this new value
-                foreach($subscriptionOrders as $subscriptionOrders) {
+                foreach($subscriptionOrders as $subscriptionOrder) {
 
-                    $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionOrders->getSubscriptionId());
+                    $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionOrder->getSubscriptionId());
                     $billingAgreementIdOfSubs = $subscription->getBillingAgreementId();
                     if($billingAgreementIdOfSubs != $billingAgreementId) {
                         try {
