@@ -306,6 +306,9 @@
                 <debug>1</debug>
                 <show_upcoming_orders>1</show_upcoming_orders>
                 <number_of_upcoming_orders>5</number_of_upcoming_orders>
+                <cron_subscription_setting>*/5 * * * *</cron_subscription_setting>
+                <cron_quote_setting>*/20 * * * *</cron_quote_setting>
+                <cron_order_setting>*/30 * * * *</cron_order_setting>
             </subscription>
             <allowed_payment_methods>
                 <creditcards>
@@ -335,17 +338,15 @@
     <crontab>
         <jobs>
             <adyen_subscription_create_subscriptions>
-                <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+                <schedule><config_path>adyen_subscription/subscription/cron_subscription_setting</config_path></schedule>
                 <run><model>adyen_subscription/observer::createSubscriptions</model></run>
             </adyen_subscription_create_subscriptions>
             <adyen_subscription_create_quotes>
-                <!--<schedule><cron_expr>0 6 * * *</cron_expr></schedule>-->
-                <schedule><cron_expr>*/20 * * * *</cron_expr></schedule>
+                <schedule><config_path>adyen_subscription/subscription/cron_quote_setting</config_path></schedule>
                 <run><model>adyen_subscription/observer::createQuotes</model></run>
             </adyen_subscription_create_quotes>
             <adyen_subscription_create_orders>
-                <!--<schedule><cron_expr>15 6 * * *</cron_expr></schedule>-->
-                <schedule><cron_expr>*/30 * * * *</cron_expr></schedule>
+                <schedule><config_path>adyen_subscription/subscription/cron_order_setting</config_path></schedule>
                 <run><model>adyen_subscription/observer::createOrders</model></run>
             </adyen_subscription_create_orders>
         </jobs>
