@@ -27,8 +27,12 @@
 /**
  * Segment condition for sales rules
  */
-class Adyen_Subscription_Model_SalesRule_Condition_ProductSubscription extends Mage_Rule_Model_Condition_Abstract
+class Adyen_Subscription_Model_SalesRule_Condition_QuoteCount extends Mage_Rule_Model_Condition_Abstract
 {
+    /**
+     * @var string
+     */
+    protected $_inputType = 'numeric';
 
     /**
      * Render element HTML
@@ -40,7 +44,7 @@ class Adyen_Subscription_Model_SalesRule_Condition_ProductSubscription extends M
         $this->_valueElement = $this->getValueElement();
         return $this->getTypeElementHtml()
             . Mage::helper('adyen_subscription')->__(
-                'Adyen Subscription: Product Subscription ID %s %s',
+                'Adyen Subscription: Number of created order (1 for the very first order) %s %s',
                 $this->getOperatorElementHtml(), $this->_valueElement->getHtml()
             )
             . $this->getRemoveLinkHtml()
@@ -56,24 +60,23 @@ class Adyen_Subscription_Model_SalesRule_Condition_ProductSubscription extends M
      */
     public function validate(Varien_Object $object)
     {
-        $isSubscription = Mage::getSingleton('adyen_subscription/product_observer')
-            ->isQuoteAdyenSubscription($object->getQuote());
+        $subscriptionId = $object->getQuote()->getSubscriptionId();
+        $quoteCount = 1;
 
-        if (! $isSubscription) {
-            return false;
+        if (! $subscriptionId) {
+            $isSubscription = Mage::getSingleton('adyen_subscription/product_observer')
+                ->isQuoteAdyenSubscription($object->getQuote());
+            if (! $isSubscription) {
+                return false;
+            }
+        } else {
+            $pastOrders = Mage::getResourceModel('adyen_subscription/subscription_quote_collection')
+                ->addFieldToFilter('order_id', array('notnull' => true))
+                ->addFieldToFilter('subscription_id', $subscriptionId);
+
+            $quoteCount += $pastOrders->getSize();
         }
 
-        foreach ($object->getQuote()->getAllVisibleItems() as $quoteItem) {
-            $subscriptionId = $quoteItem->getData('_adyen_subscription');
-            if (! $subscriptionId) {
-                continue;
-            }
-            $validated = $this->validateAttribute($subscriptionId);
-            if ($validated) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->validateAttribute($quoteCount);
     }
 }

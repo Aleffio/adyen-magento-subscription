@@ -27,10 +27,18 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     {
         $additional = $observer->getEvent()->getAdditional();
         $conditions = $additional->getConditions();
-        $conditions = array_merge_recursive($conditions, array(array(
-            'label' => Mage::helper('adyen_subscription')->__('Adyen Product Subscription'),
-            'value' => 'adyen_subscription/salesRule_condition_productSubscription'
-        )));
+        $conditions = array_merge_recursive(array(array(
+            'label' => Mage::helper('adyen_subscription')->__('Adyen Subscription'),
+            'value' => array(
+                array(
+                    'label' => Mage::helper('adyen_subscription')->__('Product Subscription ID'),
+                    'value' => 'adyen_subscription/salesRule_condition_productSubscription'
+                ), array(
+                    'label' => Mage::helper('adyen_subscription')->__('Number of subscription order'),
+                    'value' => 'adyen_subscription/salesRule_condition_quoteCount'
+                )
+            )
+        )), $conditions);
 
         $additional->setConditions($conditions);
         return $this;
