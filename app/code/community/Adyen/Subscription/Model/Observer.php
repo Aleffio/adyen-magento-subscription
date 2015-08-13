@@ -20,8 +20,26 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 {
 
     /**
+     * @event salesrule_rule_condition_combine
      * @param Varien_Event_Observer $observer
-     * @hook controller_action_layout_load_before
+     */
+    public function addFiltersToSalesRuleCombine(Varien_Event_Observer $observer)
+    {
+        $additional = $observer->getEvent()->getAdditional();
+        $conditions = $additional->getConditions();
+        $conditions = array_merge_recursive($conditions, array(array(
+            'label' => Mage::helper('adyen_subscription')->__('Adyen Product Subscription'),
+            'value' => 'adyen_subscription/salesRule_condition_productSubscription'
+        )));
+
+        $additional->setConditions($conditions);
+        return $this;
+    }
+
+
+    /**
+     * @event controller_action_layout_load_before
+     * @param Varien_Event_Observer $observer
      */
     public function addAdminhtmlSalesOrderCreateHandles(Varien_Event_Observer $observer)
     {
@@ -218,11 +236,13 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      * When you do a recurring transaction for Ideal it will transform the payment to a SEPA payment
      * This will resolve in a new recurring_detail_reference that you need to use for future payments
      * so update the subscription with this new reference number
+     *
      * @param Varien_Event_Observer $observer
+     * @return string
      */
     public function updateBillingAgreementInSubscription(Varien_Event_Observer $observer)
     {
-        /** @var Mage_Core_Model_Order $order */
+        /** @var Mage_Sales_Model_Order $order */
         $order = $observer->getOrder();
 
         /** @var Varien_OBject $response */

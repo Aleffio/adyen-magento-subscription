@@ -269,6 +269,14 @@
             </updates>
         </layout>
         <events>
+            <salesrule_rule_condition_combine>
+                <observers>
+                    <zadyen_subscription>
+                        <class>adyen_subscription/observer</class>
+                        <method>addFiltersToSalesRuleCombine</method>
+                    </zadyen_subscription>
+                </observers>
+            </salesrule_rule_condition_combine>
             <catalog_product_save_before>
                 <observers>
                     <adyen_subscription_save_subscription_product_data>
