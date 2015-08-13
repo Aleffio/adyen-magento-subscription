@@ -229,14 +229,6 @@
             </updates>
         </layout>
         <events>
-            <product_option_renderer_init>
-                <observers>
-                    <adyen_subscription>
-                        <class>adyen_subscription/product_observer</class>
-                        <method>initOptionRenderer</method>
-                    </adyen_subscription>
-                </observers>
-            </product_option_renderer_init>
             <controller_action_layout_load_before>
                 <observers>
                     <adyen_subscription>

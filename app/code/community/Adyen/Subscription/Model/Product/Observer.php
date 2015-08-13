@@ -179,22 +179,6 @@ class Adyen_Subscription_Model_Product_Observer
         return $this;
     }
 
-    /**
-     * Initialize product options renderer with giftcard specific params
-     *
-     * @param Varien_Event_Observer $observer
-     * @return $this
-     */
-    public function initOptionRenderer(Varien_Event_Observer $observer)
-    {
-        Adyen_Subscription_Exception::throwException('Not yet implemented');
-
-
-//        $block = $observer->getBlock();
-//        $block->addOptionsRenderCfg('giftcard', 'enterprise_giftcard/catalog_product_configuration');
-        return $this;
-    }
-
 
     /**
      * @event catalog_controller_product_view
