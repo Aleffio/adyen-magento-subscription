@@ -46,8 +46,9 @@ jQuery(function($){
         items: '.subscription-fieldset-container'
     });
 
-    $(document).on('click', '#subscription_fieldset .product-subscription-delete', function(){
-        $(this).parents('.subscription-fieldset-container').remove();
+    // Show noti
+    $(document).on('change', '#subscription_fieldset :input', function(){
+        $(this).parents('.subscription-fieldset-container').find('.adyen_notice').show();
     });
 
     addButton.on('click', function(){

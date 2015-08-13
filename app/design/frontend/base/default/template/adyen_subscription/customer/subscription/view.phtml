@@ -20,6 +20,20 @@
 <?php $_subscription = $this->getSubscription(); ?>
 <div class="page-title title-buttons subscription-view-header-wrapper">
     <h1 class="heading"><?php echo $this->__('Subscription # %s', $this->escapeHtml($_subscription->getId())); ?></h1>
+    <?php if ($this->getCanCancel()): ?>
+        <button type="button" title="<?php echo $this->__('Cancel') ?>" class="button" onclick="window.location.href = '<?php echo $this->getCancelUrl() ?>';"><span><span><?php echo $this->__('Cancel') ?></span></span></button>
+    <?php endif; ?>
+    <?php if ($this->getCanPause()):
+
+        $extraStyle = "";
+        if($this->getCanCancel()) {
+            $extraStyle = "style=\"right:95px; \" ";
+        } ?>
+        <button <?php echo $extraStyle; ?>type="button" title="<?php echo $this->__('Pause') ?>" class="button" onclick="window.location.href = '<?php echo $this->getPauseUrl() ?>';"><span><span><?php echo $this->__('Pause') ?></span></span></button>
+    <?php endif; ?>
+    <?php if ($this->getCanResume()): ?>
+        <button type="button" title="<?php echo $this->__('Resume') ?>" class="button" onclick="window.location.href = '<?php echo $this->getResumeUrl() ?>';"><span><span><?php echo $this->__('Resume') ?></span></span></button>
+    <?php endif; ?>
 </div>
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 <div class="subscription">
@@ -62,6 +76,20 @@
             </table>
         </div>
     </div>
+
+    <?php $upcomingOrders = $_subscription->getUpcomingOrders();?>
+
+    <?php if(count($upcomingOrders) > 0): ?>
+
+        <h2 class="table-caption"><?php echo $this->__('Upcoming Orders') ?></h2>
+        <ul>
+            <?php foreach ($upcomingOrders as $order): ?>
+                <li><?php echo $order; ?></li>
+            <?php endforeach; ?>
+        </ul>
+
+    <?php endif; ?>
+
     <?php $pastOrders = $_subscription->getOrders(); ?>
     <?php if(count($pastOrders) > 0): ?>
         <?php echo $this->getChildHtml('pager'); ?>

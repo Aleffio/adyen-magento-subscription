@@ -57,7 +57,7 @@ class Adyen_Subscription_Model_Product_Observer
             if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED) {
                 $product->setData('adyen_subscription_type', Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED);
                 Mage::getSingleton('adminhtml/session')->addNotice(
-                    Mage::helper('adyen_subscription')->__('Subscription Type is set back to \'Disabled\' because no subscriptions were defined')
+                    Mage::helper('adyen_subscription')->__('Adyen Subscription Type is set back to \'Disabled\' because no subscriptions were defined')
                 );
             }
             return;
@@ -265,7 +265,7 @@ class Adyen_Subscription_Model_Product_Observer
 
         if ($subscription) {
             $subscriptionOption = [
-                'label'        => 'Subscription',
+                'label'        => 'Adyen Subscription',
                 'code'         => 'adyen_subscription',
                 'option_value' => $subscriptionId,
                 'value'        => $subscription->getFrontendLabel(),
@@ -318,8 +318,84 @@ class Adyen_Subscription_Model_Product_Observer
         /** @var Mage_Payment_Model_Method_Abstract $methodInstance */
         /** @noinspection PhpUndefinedMethodInspection */
         $methodInstance = $observer->getMethodInstance();
-        if (! $methodInstance->canCreateBillingAgreement()) {
-            $observer->getResult()->isAvailable = false;
+        $methodInstance->setMode('subscription');
+
+        /**
+         * The method canCreateContractTypeRecurring returns true for:
+         * Inital Payments:   checks for setting in Admin Panel: payment/adyen_abstract/recurringtypes
+         *                    if RECURRING or ONECLICK,RECURRING is set
+         * Stored cards/sepa: checks recurring_type in BA agreement_data.
+         *                    if RECURRING or ONECLICK,RECURRING is set
+         *
+         * For instances that allow ONECLICK (ONECLICK,RECURRING) we need to set the mode to RECURRING.
+         */
+
+        // You need to do a recurring transaction for subscriptions
+        if(method_exists($methodInstance, 'setCustomerInteraction')) {
+            $methodInstance->setCustomerInteraction = false;
+        }
+
+        // check if payment method is selected in config
+        $selectedSubscriptionPaymentMethods = Mage::helper('adyen_subscription/config')->getSelectedSubscriptionPaymentMethods();
+
+        // check if payment method is in the key
+        $code = $methodInstance->getCode();
+
+        // Set method to unavailable and check below if it is possible to use
+        $observer->getResult()->isAvailable = false;
+
+        /*
+         * Check if payment method is in selectedPaymentMethods and
+         * validate if payment method is available for Adyen subscription
+         */
+        if (array_key_exists($code, $selectedSubscriptionPaymentMethods)) {
+            if(method_exists($methodInstance, 'canCreateAdyenSubscription')) {
+                if($methodInstance->canCreateAdyenSubscription()) {
+                    $observer->getResult()->isAvailable = true;
+                }
+            }
+        }
+
+        // restrict MAESTRO payment method for creditcards because MEASTRO does not support Recurring
+        if($code == "adyen_cc") {
+            $types = $methodInstance->getAvailableCCTypes();
+            if(isset($types['SM'])) {
+                unset($types['SM']);
+                $methodInstance->setAvailableCCypes($types);
+            }
+        }
+
+        /*
+         * For ONECLCIK payment check if it is allowed by selectedPaymentMethods configuration
+         */
+        if($code != "adyen_oneclick" && strpos($code, 'adyen_oneclick') !== false)
+        {
+            $recurringDetails = $methodInstance->getRecurringDetails();
+
+            if(isset($recurringDetails['variant'])) {
+
+                $creditcards = array(
+                    'visa',
+                    'mc',
+                    'amex',
+                    'discover',
+                    'diners',
+                    'maestro',
+                    'jcb',
+                    'elo',
+                    'Hipercard'
+                );
+
+                if(in_array($recurringDetails['variant'],$creditcards) && isset($selectedSubscriptionPaymentMethods['adyen_cc'])) {
+                    $observer->getResult()->isAvailable = true;
+                } elseif($recurringDetails['variant'] == "sepadirectdebit" && isset($selectedSubscriptionPaymentMethods['adyen_sepa'])) {
+                    $observer->getResult()->isAvailable = true;
+                } elseif($recurringDetails['variant'] == "paypal" && isset($selectedSubscriptionPaymentMethods['adyen_hpp_paypal'])) {
+                    $observer->getResult()->isAvailable = true;
+                } elseif($recurringDetails['variant'] == "directEbanking" && isset($selectedSubscriptionPaymentMethods['adyen_hpp_directEbanking'])) {
+                    $observer->getResult()->isAvailable = true;
+                }
+            }
         }
 
         if (Mage::app()->getRequest()->getParam('subscription')) {

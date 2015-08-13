@@ -135,6 +135,20 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
         return parent::_prepareColumns();
     }
 
+    protected function _prepareMassaction()
+    {
+        $this->setMassactionIdField('main_table.entity_id');
+        $this->getMassactionBlock()->setFormFieldName('subscription_id');
+
+        $this->getMassactionBlock()->addItem('delete', array(
+            'label'=> Mage::helper('adyen_subscription')->__('Delete'),
+            'url'  => $this->getUrl('*/*/massDelete', array('' => '')),        // public function massDeleteAction() in Adyen_Subscription_Adminhtml_SubscriptionController
+            'confirm' => Mage::helper('adyen_subscription')->__('Are you sure?')
+        ));
+
+        return $this;
+    }
+
     public function getRowUrl($row)
     {
         return $this->getUrl('adyen_subscription/adminhtml_subscription/view', array('id' => $row->getId()));

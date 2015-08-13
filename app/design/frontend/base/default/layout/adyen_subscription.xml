@@ -75,4 +75,14 @@
                    template="adyen_subscription/customer/subscription/view.phtml"/>
         </reference>
     </adyen_subscription_customer_view>
+
+    <adyen_subscription_customer_cancel>
+        <label>Cancel Subscription</label>
+        <update handle="customer_account" />
+        <reference name="my.account.wrapper">
+            <block type="adyen_subscription/customer_subscription_cancel" name="adyen_subscription_customer_subscriptions_cancel"
+                   template="adyen_subscription/customer/subscription/cancel.phtml"/>
+        </reference>
+    </adyen_subscription_customer_cancel>
+
 </layout>

@@ -51,4 +51,23 @@ class Adyen_Subscription_Block_Customer_Subscription_List extends Mage_Core_Bloc
 
         return $this->getUrl('sales/billing_agreement/view', array('agreement' => $agreementId));
     }
+
+    /**
+     * Set data to block
+     *
+     * @return string
+     */
+    protected function _toHtml()
+    {
+
+        if($this->getSubscription()) {
+            $this->setCancelUrl(
+                $this->getUrl('adyen_subscription/customer/cancel', array(
+                    '_current' => true))
+            );
+        }
+
+
+        return parent::_toHtml();
+    }
 }

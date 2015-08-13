@@ -29,7 +29,7 @@ class Adyen_Subscription_Model_Service_Order
      */
     public function createSubscription(Mage_Sales_Model_Order $order)
     {
-        $subscriptions = [];
+        $subscriptions = array();
 
         if ($order->getSubscriptionId()) {
             // Don't create subscription, since this order is created by a subscription
@@ -59,11 +59,13 @@ class Adyen_Subscription_Model_Service_Order
         foreach ($productTerms as $productTerm) {
             $billingAgreement = $this->_getBillingAgreement($order);
 
+            $stockId = $order->getStockId() ?: 1;
+
             // Create subscription
             /** @var Adyen_Subscription_Model_Subscription $subscription */
             $subscription = Mage::getModel('adyen_subscription/subscription')
                 ->setStatus(Adyen_Subscription_Model_Subscription::STATUS_ACTIVE)
-                ->setStockId($order->getStockId())
+                ->setStockId($stockId)
                 ->setCustomerId($order->getCustomerId())
                 ->setCustomerName($order->getCustomerName())
                 ->setOrderId($order->getId())
@@ -86,7 +88,7 @@ class Adyen_Subscription_Model_Service_Order
 
             $subscription->save();
 
-            $transactionItems = [];
+            $transactionItems = array();
             foreach ($productTerm['order_items'] as $orderItem) {
                 /** @var Adyen_Subscription_Model_Product_Subscription $productSubscription */
                 $productSubscription = $this->_getProductSubscription($orderItem);
@@ -104,6 +106,7 @@ class Adyen_Subscription_Model_Service_Order
                     ->setProductOptions(serialize($orderItem->getProductOptions()))
                     ->setSku($orderItem->getSku())
                     ->setName($orderItem->getName())
+                    ->setProductSubscriptionId($productSubscription->getId())
                     ->setLabel($productSubscription->getLabel())
                     ->setPrice($orderItem->getPrice())
                     ->setPriceInclTax($orderItem->getPriceInclTax())
@@ -153,6 +156,9 @@ class Adyen_Subscription_Model_Service_Order
             $subscriptions[] = $subscription;
         }
 
+        if(!empty($subscription)) {
+            $order->setCreatedAdyenSubscription(true);
+        }
         return $subscriptions;
     }
 

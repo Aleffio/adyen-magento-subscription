@@ -44,7 +44,7 @@ class Adyen_Subscription_Block_Adminhtml_Customer_Edit_Tab_Subscription
      */
     public function getTabLabel()
     {
-        return $this->__('Subscriptions');
+        return $this->__('Adyen Subscriptions');
     }
 
     /**
@@ -54,7 +54,7 @@ class Adyen_Subscription_Block_Adminhtml_Customer_Edit_Tab_Subscription
      */
     public function getTabTitle()
     {
-        return $this->__('Subscriptions');
+        return $this->__('Adyen Subscriptions');
     }
 
     /**

@@ -1,12 +1,17 @@
 <?php
 /**
- *               _
- *              | |
- *     __ _   _ | | _  _   ___  _ __
- *    / _` | / || || || | / _ \| '  \
- *   | (_| ||  || || || ||  __/| || |
- *    \__,_| \__,_|\__, | \___||_||_|
- *                 |___/
+ *                       ######
+ *                       ######
+ * ############    ####( ######  #####. ######  ############   ############
+ * #############  #####( ######  #####. ######  #############  #############
+ *        ######  #####( ######  #####. ######  #####  ######  #####  ######
+ * ###### ######  #####( ######  #####. ######  #####  #####   #####  ######
+ * ###### ######  #####( ######  #####. ######  #####          #####  ######
+ * #############  #############  #############  #############  #####  ######
+ *  ############   ############  #############   ############  #####  ######
+ *                                      ######
+ *                               #############
+ *                               ############
  *
  * Adyen Subscription module (https://www.adyen.com/)
  *
@@ -19,6 +24,7 @@
 /**
  * Class Adyen_Subscription_Model_Subscription
  *
+ * @method Adyen_Subscription_Model_Subscription setIncrementId(string $value)
  * @method string getErrorMessage()
  * @method Adyen_Subscription_Model_Subscription setErrorMessage(string $value)
  * @method string getStoreId()
@@ -65,6 +71,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     const STATUS_EXPIRED            = 'expired';
     const STATUS_AWAITING_PAYMENT   = 'awaiting_payment';
     const STATUS_PAYMENT_ERROR      = 'payment_error';
+    const STATUS_PAUSED             = 'paused';
 
     protected $_eventPrefix = 'adyen_subscription';
 
@@ -76,7 +83,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
     public function getIncrementId()
     {
-        return $this->getId();
+        return $this->getData('increment_id') ?: $this->getId();
     }
 
 
@@ -221,6 +228,69 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             ->addFieldToFilter('entity_id', array('in' => $this->getOrderIds()));
     }
 
+
+    public function getUpcomingOrders()
+    {
+        $result = array();
+
+        // check if setting is enabled
+        $showUpcomingOrders = Mage::getStoreConfigFlag(
+            'adyen_subscription/subscription/show_upcoming_orders', Mage::app()->getStore()
+        );
+
+        if($showUpcomingOrders) {
+            $nextFormatted = $this->getScheduledAtFormatted();
+            $date = $this->getScheduledAt();
+
+            $timezone = new DateTimeZone(Mage::getStoreConfig(
+                Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
+            ));
+
+            $result[] = $nextFormatted;
+
+            // count is minus 1 because first item is already in list
+            $count = (int) Mage::getStoreConfig(
+                'adyen_subscription/subscription/number_of_upcoming_orders', Mage::app()->getStore()
+            ) - 1;
+
+            for($i = 0; $i < $count; $i++) {
+                $date = $this->calculateNextUpcomingOrderDate($date, $timezone);
+                $result[] = Mage::helper('core')->formatDate($date, 'medium', true);
+
+            }
+        }
+        return $result;
+    }
+
+    public function calculateNextUpcomingOrderDate($date, $timezone) {
+
+        $schedule = new DateTime($date, $timezone);
+
+        $dateInterval = null;
+        switch ($this->getTermType()) {
+            case Adyen_Subscription_Model_Product_Subscription::TERM_TYPE_DAY:
+                $dateInterval = new DateInterval(sprintf('P%sD',$this->getTerm()));
+                break;
+            case Adyen_Subscription_Model_Product_Subscription::TERM_TYPE_WEEK:
+                $dateInterval = new DateInterval(sprintf('P%sW',$this->getTerm()));
+                break;
+            case Adyen_Subscription_Model_Product_Subscription::TERM_TYPE_MONTH:
+                $dateInterval = new DateInterval(sprintf('P%sM',$this->getTerm()));
+                break;
+            case Adyen_Subscription_Model_Product_Subscription::TERM_TYPE_YEAR:
+                $dateInterval = new DateInterval(sprintf('P%sY',$this->getTerm()));
+                break;
+        }
+        if (! isset($dateInterval)) {
+            Adyen_Subscription_Exception::throwException('Could not calculate a correct date interval');
+        }
+
+        $schedule->add($dateInterval);
+
+        return  $schedule->format('Y-m-d H:i:s');
+    }
+
+
     /**
      * @return array
      */
@@ -324,7 +394,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         return $schedule->format('Y-m-d H:i:s');
     }
 
-
+    
     public function setBillingAgreement(Mage_Sales_Model_Billing_Agreement $billingAgreement, $validate = false)
     {
 
@@ -349,13 +419,26 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     public function getBillingAgreement()
     {
         if (! $this->hasData('_billing_agreement')) {
-            $billingAgreement = Mage::getModel('sales/billing_agreement')
+            $billingAgreement = Mage::getModel('adyen/billing_agreement')
                 ->load($this->getBillingAgreementId());
 
             $this->setData('_billing_agreement', $billingAgreement);
         }
 
         return $this->getData('_billing_agreement');
+    }
+
+    public function pause()
+    {
+        $this->setStatus(self::STATUS_PAUSED)
+            ->setErrorMessage(null)
+            ->setCancelCode(null)
+            ->save();
+
+        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+        $subscriptionHistory->saveFromSubscription($this);
+
+        return $this;
     }
 
     /**
@@ -366,7 +449,23 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $this->setActive()
             ->setScheduledAt(now())
             ->setEndsAt('0000-00-00 00:00:00')
+            ->setCancelCode(null)
             ->save();
+
+        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+        $subscriptionHistory->saveFromSubscription($this);
+        return $this;
+    }
+
+    public function cancel($reason)
+    {
+        $this->setCancelCode($reason);
+        $this->setStatus(self::STATUS_CANCELED);
+        $this->setEndsAt(now());
+        $this->save();
+
+        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+        $subscriptionHistory->saveFromSubscription($this);
 
         return $this;
     }
@@ -397,6 +496,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             self::STATUS_EXPIRED            => $helper->__('Expired'),
             self::STATUS_AWAITING_PAYMENT   => $helper->__('Awaiting Payment'),
             self::STATUS_PAYMENT_ERROR      => $helper->__('Payment Error'),
+            self::STATUS_PAUSED             => $helper->__('Paused')
         ];
     }
 
@@ -460,7 +560,8 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             self::STATUS_CANCELED           => 'lightgray',
             self::STATUS_EXPIRED            => 'orange',
             self::STATUS_AWAITING_PAYMENT   => 'blue',
-            self::STATUS_PAYMENT_ERROR      => 'orange',
+            self::STATUS_PAYMENT_ERROR      => 'red',
+            self::STATUS_PAUSED             => 'orange',
         );
     }
 
@@ -553,6 +654,22 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     /**
      * @return bool
      */
+    public function canPause()
+    {
+        return $this->getStatus() != self::STATUS_PAUSED && $this->getStatus() != self::STATUS_CANCELED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPaused()
+    {
+        return $this->getStatus() == self::STATUS_PAUSED;
+    }
+
+    /**
+     * @return bool
+     */
     public function canCancel()
     {
         return $this->getStatus() != self::STATUS_CANCELED;
@@ -581,10 +698,6 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
      */
     public function canCreateQuote()
     {
-        if ($this->getActiveQuote()) {
-            return false;
-        }
-
         if (! in_array($this->getStatus(), self::getScheduleQuoteStatuses())) {
             return false;
         }

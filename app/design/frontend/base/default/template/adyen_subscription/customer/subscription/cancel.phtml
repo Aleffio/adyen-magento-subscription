@@ -1,0 +1,45 @@
+<?php
+/**
+ *               _
+ *              | |
+ *     __ _   _ | | _  _   ___  _ __
+ *    / _` | / || || || | / _ \| '  \
+ *   | (_| ||  || || || ||  __/| || |
+ *    \__,_| \__,_|\__, | \___||_||_|
+ *                 |___/
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O <info@h-o.nl>
+ */
+?>
+<?php /* @var Adyen_Subscription_Block_Customer_Subscriptions_Cancel $this */ ?>
+<?php $_subscription = $this->getSubscription(); ?>
+<div class="page-title title-buttons subscription-view-header-wrapper">
+    <h1 class="heading"><?php echo $this->__('Cancel Subscription # %s', $this->escapeHtml($_subscription->getId())); ?></h1>
+</div>
+<?php echo $this->getMessagesBlock()->toHtml() ?>
+<div class="subscription">
+
+    <form id="subscription_cancel" action="<?php echo $this->escapeUrl($this->getFormAction()) ?>" method="post">
+
+        <select id="reason" name="reason" class=" required-entry select required-entry validate-select">
+            <?php foreach ($this->getReasons() as $reason): ?>
+                <option value="<?php echo $reason['value']; ?>"><?php echo $reason['label']; ?></option>
+            <?php endforeach; ?>
+        </select>
+
+
+        <div class="buttons-set">
+            <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+            <button type="submit" title="<?php echo $this->__('Cancel Subscription') ?>" class="button"><span><span><?php echo $this->__('Cancel Subscription') ?></span></span></button>
+        </div>
+
+    </form>
+
+    <script type="text/javascript"> var newRequestTutorForm = new VarienForm('subscription_cancel', true); </script>
+
+</div>

@@ -70,6 +70,9 @@
                     <product_subscription_label>
                         <table>adyen_subscription_product_subscription_label</table>
                     </product_subscription_label>
+                    <subscription_history>
+                        <table>adyen_subscription_history</table>
+                    </subscription_history>
                 </entities>
             </adyen_subscription_resource>
             <catalog>
@@ -86,6 +89,11 @@
                     <product_type>Adyen_Subscription_Model_Catalog_Product_Type_Bundle</product_type>
                 </rewrite>
             </bundle>
+            <enterprise_admingws>
+                <rewrite>
+                    <collections>Adyen_Subscription_Model_AdminGws_Collections</collections>
+                </rewrite>
+            </enterprise_admingws>
         </models>
         <catalog>
             <product>
@@ -153,6 +161,30 @@
                     </adyen_subscription_calculate_item_qty_reorder>
                 </observers>
             </create_order_session_quote_initialized>
+            <adyen_payment_process_notifications_after>
+                <observers>
+                    <adyen_subscription_update_billing_agreement_in_subscription>
+                        <class>adyen_subscription/observer</class>
+                        <method>updateBillingAgreementInSubscription</method>
+                    </adyen_subscription_update_billing_agreement_in_subscription>
+                </observers>
+            </adyen_payment_process_notifications_after>
+            <adyen_payment_update_billing_agreement_status>
+                <observers>
+                    <adyen_subscription_update_billing_agreement_status>
+                        <class>adyen_subscription/observer</class>
+                        <method>updateBillingAgreementStatus</method>
+                    </adyen_subscription_update_billing_agreement_status>
+                </observers>
+            </adyen_payment_update_billing_agreement_status>
+            <catalog_product_delete_before>
+                <observers>
+                    <adyen_subscription>
+                        <class>adyen_subscription/observer</class>
+                        <method>preventProductDeleteForSubscription</method>
+                    </adyen_subscription>
+                </observers>
+            </catalog_product_delete_before>
         </events>
         <sales>
             <quote>
@@ -266,6 +298,39 @@
             </core_block_abstract_prepare_layout_after>
         </events>
     </adminhtml>
+
+    <default>
+        <adyen_subscription>
+            <subscription>
+                <allowed_payment_methods>adyen_cc</allowed_payment_methods>
+                <debug>1</debug>
+                <show_upcoming_orders>1</show_upcoming_orders>
+                <number_of_upcoming_orders>5</number_of_upcoming_orders>
+            </subscription>
+            <allowed_payment_methods>
+                <creditcards>
+                    <code>adyen_cc</code>
+                    <label>Credit Card</label>
+                </creditcards>
+                <sepa>
+                    <code>adyen_sepa</code>
+                    <label>SEPA Direct Debit</label>
+                </sepa>
+                <paypal>
+                    <code>adyen_hpp_paypal</code>
+                    <label>PayPal</label>
+                </paypal>
+                <ideal>
+                    <code>adyen_ideal</code>
+                    <label>Ideal</label>
+                </ideal>
+                <directebanking>
+                    <code>adyen_hpp_directEbanking</code>
+                    <label>directEbanking (Sofort)</label>
+                </directebanking>
+            </allowed_payment_methods>
+        </adyen_subscription>
+    </default>
 
     <crontab>
         <jobs>

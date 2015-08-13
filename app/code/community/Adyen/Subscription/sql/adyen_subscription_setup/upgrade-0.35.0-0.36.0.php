@@ -24,14 +24,13 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$subscriptionTable = $installer->getTable('adyen_subscription/subscription');
-
-$connection->addColumn($subscriptionTable, 'increment_id', [
-    'type'      => Varien_Db_Ddl_Table::TYPE_TEXT,
-    'length'    => 50,
+$orderTable = $installer->getTable('sales/order');
+$connection->addColumn($orderTable, 'created_adyen_subscription', [
+    'type'      => Varien_Db_Ddl_Table::TYPE_BOOLEAN,
+    'unsigned'  => true,
     'nullable'  => true,
-    'comment'   => 'Increment ID',
-    'after'     => 'entity_id',
+    'comment'   => 'Created Adyen subscription',
 ]);
+
 
 $installer->endSetup();

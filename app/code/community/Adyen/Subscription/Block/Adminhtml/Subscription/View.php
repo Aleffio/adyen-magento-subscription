@@ -29,6 +29,15 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
         $this->_removeButton('save');
         $this->_removeButton('reset');
 
+        if ($this->getSubscription()->canPause()) {
+            $this->_addButton('pause_subscription', [
+                'class'     => 'delete',
+                'label'     => Mage::helper('adyen_subscription')->__('Pause Subscription'),
+                'onclick'   => "setLocation('{$this->getUrl('*/*/pause',
+                    ['id' => $this->getSubscription()->getIncrementId()])}')",
+            ], 5);
+        }
+
         if ($this->getSubscription()->canCancel()) {
             $this->_addButton('stop_subscription', [
                 'class'     => 'delete',
@@ -38,7 +47,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
             ], 10);
         }
 
-        if ($this->getSubscription()->isCanceled()) {
+        if ($this->getSubscription()->isCanceled() || $this->getSubscription()->isPaused()) {
             $this->_addButton('activate_subscription', [
                 'label'     => Mage::helper('adyen_subscription')->__('Activate Subscription'),
                 'onclick' => "deleteConfirm('" . Mage::helper('adminhtml')->__('Are you sure you want to do reactivate this subscription?')
@@ -46,7 +55,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
             ], 10);
         }
 
-        if ($this->getSubscription()->canCreateQuote()) {
+        if ($this->getSubscription()->canCreateQuote() && $this->getSubscription()->getActiveQuote()) {
             $this->_addButton('create_quote', [
                 'label' => Mage::helper('adyen_subscription')->__('Schedule Order'),
                 'class' => 'add',
@@ -70,13 +79,13 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
         $subscription = $this->getSubscription();
 
         if ($subscription->getId()) {
-            return Mage::helper('adyen_subscription')->__('Subscription %s for %s',
+            return Mage::helper('adyen_subscription')->__('Adyen Subscription %s for %s',
                 sprintf('<i>#%s</i>', $subscription->getIncrementId()),
                 sprintf('<i>%s</i>', $subscription->getCustomerName())
             );
         }
         else {
-            return Mage::helper('adyen_subscription')->__('New Subscription');
+            return Mage::helper('adyen_subscription')->__('New Adyen Subscription');
         }
     }
 

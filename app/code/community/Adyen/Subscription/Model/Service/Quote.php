@@ -31,6 +31,7 @@ class Adyen_Subscription_Model_Service_Quote
     ) {
         try {
             if (! $subscription->canCreateOrder()) {
+                Mage::helper('adyen_subscription')->logOrderCron("Not allowed to create order from quote");
                 Adyen_Subscription_Exception::throwException(
                     Mage::helper('adyen_subscription')->__('Not allowed to create order from quote')
                 );
@@ -80,14 +81,18 @@ class Adyen_Subscription_Model_Service_Quote
                 ->addObject($quoteAdditional)
                 ->save();
 
+            Mage::helper('adyen_subscription')->logOrderCron(sprintf("Successful created order (#%s) for subscription (#%s)" , $order->getId(), $subscription->getId()));
+
             return $service->getOrder();
 
         } catch (Mage_Payment_Exception $e) {
+            Mage::helper('adyen_subscription')->logOrderCron(sprintf("Error in subscription (#%s) creating order from quote (#%s) error is: %s", $subscription->getId(), $quote->getId(), $e->getMessage()));
             $subscription->setStatus($subscription::STATUS_PAYMENT_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
             throw $e;
         } catch (Exception $e) {
+            Mage::helper('adyen_subscription')->logOrderCron(sprintf("Error in subscription (#%s) creating order from quote (#%s) error is: %s", $subscription->getId(), $quote->getId(), $e->getMessage()));
             $subscription->setStatus($subscription::STATUS_ORDER_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
@@ -127,13 +132,13 @@ class Adyen_Subscription_Model_Service_Quote
                 $termType = $productSubscription->getTermType();
             }
             if ($term != $productSubscription->getTerm() || $termType != $productSubscription->getTermType()) {
-                Adyen_Subscription_Exception::throwException('Subscription options of products in quote have different terms');
+                Adyen_Subscription_Exception::throwException('Adyen Subscription options of products in quote have different terms');
             }
         }
 
-        $this->updateQuotePayment($quote);
+        $billingAgreement = $this->getBillingAgreement($quote);
 
-        $billingAgreement = $this->_getBillingAgreement($quote);
+        $this->updateQuotePayment($quote, $billingAgreement);
 
         if (!$quote->getShippingAddress()->getShippingMethod()) {
             Adyen_Subscription_Exception::throwException('No shipping method selected');
@@ -179,7 +184,7 @@ class Adyen_Subscription_Model_Service_Quote
                 continue;
             }
 
-            $productOptions = [];
+            $productOptions = array();
             $productOptions['info_buyRequest'] = unserialize($quoteItem->getOptionByCode('info_buyRequest')->getValue());
             $productOptions['additional_options'] = unserialize($quoteItem->getOptionByCode('additional_options')->getValue());
 
@@ -221,12 +226,19 @@ class Adyen_Subscription_Model_Service_Quote
      * @return Mage_Sales_Model_Quote
      * @throws Exception
      */
-    public function updateQuotePayment(Mage_Sales_Model_Quote $quote)
+    public function updateQuotePayment(Mage_Sales_Model_Quote $quote, Adyen_Payment_Model_Billing_Agreement $billingAgreement)
     {
         $subscriptionDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
 
-        $quote->getPayment()->setAdditionalInformation('subscription_detail_reference', $subscriptionDetailReference);
-        $quote->getPayment()->setCcType(null);
+        $quote->getPayment()->setAdditionalInformation('recurring_detail_reference', $subscriptionDetailReference);
+
+        $agreementData = $billingAgreement->getAgreementData();
+        if(isset($agreementData['variant'])) {
+            $quote->getPayment()->setCcType($agreementData['variant']);
+        } else {
+            $quote->getPayment()->setCcType(null);
+        }
+
         $quote->getPayment()->save();
 
         return $quote;
@@ -236,7 +248,7 @@ class Adyen_Subscription_Model_Service_Quote
      * @param Mage_Sales_Model_Quote $quote
      * @return Mage_Sales_Model_Billing_Agreement
      */
-    protected function _getBillingAgreement(Mage_Sales_Model_Quote $quote)
+    public function getBillingAgreement(Mage_Sales_Model_Quote $quote)
     {
         /** @var Mage_Sales_Model_Quote_Payment $quotePayment */
         $quotePayment = Mage::getModel('sales/quote_payment')

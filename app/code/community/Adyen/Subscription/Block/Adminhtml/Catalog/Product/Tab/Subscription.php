@@ -37,7 +37,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
 
         /** @var Mage_Adminhtml_Block_Widget_Button $addSubscriptionButton */
         $addSubscriptionButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
-            'label'        => Mage::helper('adyen_subscription')->__('Add New Subscription'),
+            'label'        => Mage::helper('adyen_subscription')->__('Add New Adyen Subscription'),
             'class'        => 'add product-subscription-add',
             'element_name' => 'product_subscription_add',
         ]);
@@ -56,7 +56,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
         $adyenSubscriptionType->setName('product[adyen_subscription_type]');
         $adyenSubscriptionType->setValue($product->getData('adyen_subscription_type'));
         $adyenSubscriptionType->setNote(
-            $helper->__('%s to add a new subscription.', '<i>'.$helper->__('Add New Subscription').'</i>')."<br />\n".
+            $helper->__('%s to add a new subscription.', '<i>'.$helper->__('Add New Adyen Subscription').'</i>')."<br />\n".
             $helper->__('Drag and drop to reorder')
         );
 
@@ -82,11 +82,37 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
         Adyen_Subscription_Model_Product_Subscription $subscription = null)
     {
         $helper = Mage::helper('adyen_subscription');
+        $subscriptionCount = 0;
+
+        // retrieve
+        $linkedSubscriptionText = "";
+        if($subscription) {
+
+            $productSubscriptionCollection = Mage::getModel('adyen_subscription/subscription_item')
+                ->getCollection();
+
+            $productSubscriptionCollection->addFieldToFilter('product_subscription_id', $subscription->getId());
+            $resource = $productSubscriptionCollection->getResource();
+
+            $productSubscriptionCollection->getSelect()->joinLeft(
+                array('subscription' => $resource->getTable('adyen_subscription/subscription')),
+                'main_table.subscription_id = subscription.entity_id'
+            );
+            $productSubscriptionCollection->getSelect()->where('main_table.status = ?', Adyen_Subscription_Model_Subscription::STATUS_ACTIVE);
+
+            $subscriptionCount = $productSubscriptionCollection->count();
+            if ($subscriptionCount > 0) {
+                $linkedSubscriptionText = "<br />" . $helper->__(" Currently used in %s active subscription(s)", $subscriptionCount);
+                // add extra classname to indicate there are linked subscription to this productSubscription on removal
+            } else {
+                $linkedSubscriptionText = "<br />" . $helper->__(" Currently not used in any active subscription");
+            }
+        }
 
         $elementId = $subscription ? 'product_subscription[' . $subscription->getId() . ']' : 'product_subscription[template]';
 
         $subscriptionFieldset = $parentFieldset->addFieldset($elementId, array(
-            'legend'    => $helper->__($subscription ? 'Subscription: <em>' . $subscription->getLabel() . '</em>' : 'New Subscription'),
+            'legend'    => $helper->__($subscription ? 'Subscription: <em>' . $subscription->getLabel() . '</em>' : 'New Adyen Subscription') . $linkedSubscriptionText,
             'class'     => 'subscription-fieldset' . (!$subscription ? ' product-fieldset-template' : ''),
             'name'      => $elementId . '[fieldset]'
         ))->setRenderer(
@@ -97,12 +123,18 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
             Mage::getConfig()->getBlockClassName('adyen_subscription/adminhtml_catalog_product_tab_subscription_price')
         );
 
+        $data = array(  'label'   => 'Delete Subscription',
+                        'class'   => 'delete product-subscription-delete');
+
+        if ($subscriptionCount > 0) {
+            $data['onclick'] = 'var message = \'' . $helper->__('There are subscriptions using this method are you sure you want to delete it? it will not change the current subscriptions.') . '\'; if( confirm(message) ) { $(this).up(\'.subscription-fieldset-container\').remove(); }';
+        } else {
+            $data['onclick'] = '$(this).up(\'.subscription-fieldset-container\').remove();';
+        }
+
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
-            ->setData(array(
-                'label'   => 'Delete Subscription',
-                'onclick' => 'return false;',
-                'class'   => 'delete product-subscription-delete',
-            ));
+            ->setData($data);
+
         $button->setName('delete_subscription');
         $subscriptionFieldset->setHeaderBar($button->toHtml());
 
@@ -187,6 +219,12 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
             'options'   => array(1 => $helper->__('Yes'), 0 => $helper->__('No')),
         ))->setValue($subscription ? $subscription->getShowOnFrontend() : 0);
 
+        if ($subscriptionCount > 0) {
+            $subscriptionFieldset->addField($elementId . '[warning]', 'note', array(
+                'text'     => '<p style="display:none;" class=\'adyen_notice notice\'>' . $helper->__('Watch out! this product subscription is used in current subscriptions. Change this will not change the current subscriptions') . '</p>'
+            ));
+        }
+
         return $subscriptionFieldset;
     }
 
@@ -216,7 +254,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
      */
     public function getTabLabel()
     {
-        return $this->__('Subscription');
+        return $this->__('Adyen Subscription');
     }
 
     /**
@@ -224,7 +262,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
      */
     public function getTabTitle()
     {
-        return $this->__('Subscription');
+        return $this->__('Adyen Subscription');
     }
 
     /**

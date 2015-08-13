@@ -24,14 +24,12 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-$subscriptionTable = $installer->getTable('adyen_subscription/subscription');
+$productSubscriptionTable = $installer->getTable('adyen_subscription/subscription_item');
 
-$connection->addColumn($subscriptionTable, 'increment_id', [
-    'type'      => Varien_Db_Ddl_Table::TYPE_TEXT,
-    'length'    => 50,
-    'nullable'  => true,
-    'comment'   => 'Increment ID',
-    'after'     => 'entity_id',
+$connection->addColumn($productSubscriptionTable, 'product_subscription_id', [
+    'type'      => Varien_Db_Ddl_Table::TYPE_INTEGER,
+    'after'     => 'name',
+    'comment'   => 'Product Subscription ID',
 ]);
 
 $installer->endSetup();
