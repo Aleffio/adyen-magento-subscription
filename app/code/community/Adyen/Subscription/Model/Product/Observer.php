@@ -311,7 +311,7 @@ class Adyen_Subscription_Model_Product_Observer
             return $this;
         }
 
-        if (! $this->_isQuoteAdyenSubscription($quote)) {
+        if (! $this->isQuoteAdyenSubscription($quote)) {
             return $this;
         }
 
@@ -413,7 +413,7 @@ class Adyen_Subscription_Model_Product_Observer
      *
      * @return mixed|Varien_Object
      */
-    protected function _isQuoteAdyenSubscription(Mage_Sales_Model_Quote $quote)
+    public function isQuoteAdyenSubscription(Mage_Sales_Model_Quote $quote)
     {
         if (! $quote->hasData('_is_adyen_subscription')) {
             foreach ($quote->getAllItems() as $quoteItem) {
@@ -428,6 +428,7 @@ class Adyen_Subscription_Model_Product_Observer
                 foreach ($options as $option) {
                     if ($option['code'] == 'adyen_subscription' && $option['option_value'] != 'none') {
                         $quote->setData('_is_adyen_subscription', true);
+                        $quoteItem->setData('_adyen_subscription', $option['option_value']);
                         return $quote->getData('_is_adyen_subscription');
                     }
                 }

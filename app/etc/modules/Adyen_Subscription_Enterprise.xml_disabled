@@ -20,11 +20,9 @@
 <config>
     <modules>
         <Adyen_Subscription>
-            <active>true</active>
-            <codePool>community</codePool>
             <depends>
-                <Adyen_Payment />
                 <Enterprise_SalesArchive />
+                <Enterprise_CustomerSegment />
             </depends>
         </Adyen_Subscription>
     </modules>
