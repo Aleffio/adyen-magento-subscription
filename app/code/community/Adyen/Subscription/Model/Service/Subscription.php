@@ -172,7 +172,36 @@ class Adyen_Subscription_Model_Service_Subscription
         }
     }
 
+    public function updateQuotePayment(
+        Adyen_Subscription_Model_Subscription $subscription,
+        Mage_Sales_Model_Quote $quote
+    )
+    {
+        // Set payment method
+        $methodInstance = $subscription->getBillingAgreement()->getPaymentMethodInstance();
 
+        if (!method_exists($methodInstance, 'initBillingAgreementPaymentInfo')) {
+            Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Payment method %s does not support Adyen_Subscription', $methodInstance->getCode()));
+            Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
+                'Payment method %s does not support Adyen_Subscription', $methodInstance->getCode()
+            ));
+        }
+        // Set billing agreement data
+        /* @noinspection PhpUndefinedMethodInspection */
+        try {
+            /* @noinspection PhpUndefinedMethodInspection */
+            $methodInstance->initBillingAgreementPaymentInfo($subscription->getBillingAgreement(), $quote->getPayment());
+            $quote->save();
+        } catch (Mage_Core_Exception $e) {
+            Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Failed to set billing agreement data %s', $e->getMessage()));
+            $subscription->setErrorMessage($e->getMessage());
+            $subscription->setStatus($subscription::STATUS_QUOTE_ERROR);
 
-
+            Mage::getModel('core/resource_transaction')
+                ->addObject($quote)
+                ->addObject($subscription)
+                ->save();;
+        }
+    }
 }
+
