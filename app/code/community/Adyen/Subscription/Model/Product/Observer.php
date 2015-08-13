@@ -265,7 +265,7 @@ class Adyen_Subscription_Model_Product_Observer
 
         if ($subscription) {
             $subscriptionOption = [
-                'label'        => 'Adyen Subscription',
+                'label'        => 'Subscription',
                 'code'         => 'adyen_subscription',
                 'option_value' => $subscriptionId,
                 'value'        => $subscription->getFrontendLabel(),
