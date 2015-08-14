@@ -290,7 +290,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                              */
                             $quote = $subscription->getActiveQuote();
                             if($quote) {
-                                $subscriptions = Mage::getModel('adyen_subscription/service_subscription')->updateQuotePayment($order);
+                                $subscriptions = Mage::getModel('adyen_subscription/service_subscription')->updateQuotePayment($subscription, $quote);
                             }
                         } catch(Exception $e) {
                             new Adyen_Subscription_Exception('Could not update subscrription '.$e->getMessage());
