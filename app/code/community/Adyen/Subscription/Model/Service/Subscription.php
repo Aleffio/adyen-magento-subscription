@@ -191,7 +191,9 @@ class Adyen_Subscription_Model_Service_Subscription
         try {
             /* @noinspection PhpUndefinedMethodInspection */
             $methodInstance->initBillingAgreementPaymentInfo($subscription->getBillingAgreement(), $quote->getPayment());
-            $quote->save();
+            // importan $quote->save() will not update payment object so use this:
+            $quote->getPayment()->save();
+
         } catch (Mage_Core_Exception $e) {
             Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Failed to set billing agreement data %s', $e->getMessage()));
             $subscription->setErrorMessage($e->getMessage());
