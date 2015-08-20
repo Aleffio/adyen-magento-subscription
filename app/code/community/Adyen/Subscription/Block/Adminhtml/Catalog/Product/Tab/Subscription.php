@@ -99,6 +99,7 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
                 'main_table.subscription_id = subscription.entity_id'
             );
             $productSubscriptionCollection->getSelect()->where('main_table.status = ?', Adyen_Subscription_Model_Subscription::STATUS_ACTIVE);
+            $productSubscriptionCollection->getSelect()->group('subscription_id');
 
             $subscriptionCount = $productSubscriptionCollection->count();
             if ($subscriptionCount > 0) {
