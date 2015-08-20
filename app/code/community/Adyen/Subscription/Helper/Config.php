@@ -18,7 +18,18 @@
 
 class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
 {
-    const XML_PATH_SUBSCRIPTION_CANCEL_REASONS   = 'adyen_subscription/subscription/cancel_reasons';
+    const XML_PATH_GENERAL_SHOW_TERM_LABEL      = 'adyen_subscription/general/show_term_label';
+
+    const XML_PATH_SUBSCRIPTION_CANCEL_REASONS  = 'adyen_subscription/subscription/cancel_reasons';
+
+    /**
+     * @param null|Mage_Core_Model_Store|int $store
+     * @return bool
+     */
+    public function getShowTermLabel($store = null)
+    {
+        return Mage::getStoreConfigFlag(self::XML_PATH_GENERAL_SHOW_TERM_LABEL, $store);
+    }
 
     /**
      * @return array

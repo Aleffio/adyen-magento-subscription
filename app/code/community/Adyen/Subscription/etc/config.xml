@@ -345,4 +345,12 @@
             </adyen_subscription_create_update_prices>
         </jobs>
     </crontab>
+
+    <default>
+        <adyen_subscription>
+            <general>
+                <show_term_label>1</show_term_label>
+            </general>
+        </adyen_subscription>
+    </default>
 </config>
