@@ -287,6 +287,8 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
         $schedule->add($dateInterval);
 
+        Mage::dispatchEvent('adyen_subscription_calculatenextupcomingorderdate', array('subscription' => $this, 'schedule' => $schedule));
+
         return  $schedule->format('Y-m-d H:i:s');
     }
 
@@ -386,6 +388,8 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         }
 
         $schedule->add($dateInterval);
+
+        Mage::dispatchEvent('adyen_subscription_calculatenextscheduledate', array('subscription' => $this, 'schedule' => $schedule));
 
         if ($asObject) {
             return $schedule;
