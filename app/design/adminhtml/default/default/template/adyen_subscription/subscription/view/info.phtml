@@ -88,7 +88,7 @@
             <?php if ($_subscription->getEndsAt()): ?>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Runs until'); ?></label></td>
-                <td class="value"><strong><?php echo $_subscription->getEndsAt(); ?></strong></td>
+                <td class="value"><strong><?php echo $_subscription->getEndsAtFormatted(); ?></strong></td>
             </tr>
             <?php endif; ?>
         </table>

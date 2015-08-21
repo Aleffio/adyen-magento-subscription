@@ -364,7 +364,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $timezone = new DateTimeZone(Mage::getStoreConfig(
             Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
         ));
-        $schedule = new DateTime($lastScheduleDate, $timezone);
+        $schedule = new DateTime($lastScheduleDate);
 
         $dateInterval = null;
         switch ($this->getTermType()) {
@@ -753,6 +753,14 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     public function getScheduledAtFormatted($showTime = true)
     {
         return Mage::helper('core')->formatDate($this->getScheduledAt(), 'medium', $showTime);
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndsAtFormatted($showTime = true)
+    {
+        return Mage::helper('core')->formatDate($this->getEndsAt(), 'medium', $showTime);
     }
 
     /**

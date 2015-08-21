@@ -113,7 +113,7 @@ class Adyen_Subscription_Model_Cron
                 $timezone = new DateTimeZone(Mage::getStoreConfig(
                     Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
                 ));
-                $scheduleDate = new DateTime($subscription->getScheduledAt(), $timezone);
+                $scheduleDate = new DateTime($subscription->getScheduledAt());
             } else {
                 $scheduleDate = $subscription->calculateNextScheduleDate(true);
             }
