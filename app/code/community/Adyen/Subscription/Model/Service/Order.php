@@ -29,6 +29,8 @@ class Adyen_Subscription_Model_Service_Order
      */
     public function createSubscription(Mage_Sales_Model_Order $order)
     {
+        Mage::dispatchEvent('adyen_subscription_order_createsubscription_before', array('order' => $order));
+
         $subscriptions = array();
 
         if ($order->getSubscriptionId()) {
@@ -117,6 +119,8 @@ class Adyen_Subscription_Model_Service_Order
 //                    ->setMaxBillingCycles($productSubscription->getMaxBillingCycles())
                     ->setCreatedAt(now());
 
+                Mage::dispatchEvent('adyen_subscription_order_createsubscription_add_item', array('subscription' => $subscription, 'item' => $subscriptionItem));
+
                 $transactionItems[] = $subscriptionItem;
             }
 
@@ -154,11 +158,14 @@ class Adyen_Subscription_Model_Service_Order
             $transaction->save();
 
             $subscriptions[] = $subscription;
+
+            Mage::dispatchEvent('adyen_subscription_order_createsubscription_after', array('order' => $order, 'subscription' => $subscription));
         }
 
         if(!empty($subscription)) {
             $order->setCreatedAdyenSubscription(true);
         }
+
         return $subscriptions;
     }
 
@@ -186,7 +193,11 @@ class Adyen_Subscription_Model_Service_Order
             return false;
         }
 
-        return Mage::getModel('sales/billing_agreement')->load($billingAgreementId);
+        $billingAgreement = Mage::getModel('sales/billing_agreement')->load($billingAgreementId);
+
+        Mage::dispatchEvent('adyen_subscription_quote_getbillingagreement', array('billingAgreement' => $billingAgreement, 'order' => $order));
+
+        return $billingAgreement;
     }
 
     /**
@@ -206,6 +217,8 @@ class Adyen_Subscription_Model_Service_Order
         if (!$subscriptionProductSubscription->getId()) {
             return false;
         }
+
+        Mage::dispatchEvent('adyen_subscription_order_getproductsubscription', array('productSubscription' => $subscriptionProductSubscription, 'item' => $orderItem));
 
         return $subscriptionProductSubscription;
     }
