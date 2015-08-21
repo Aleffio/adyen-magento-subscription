@@ -56,6 +56,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
             'align'     =>'right',
             'width'     => 1,
             'index'     => 'entity_id',
+            'filter_index' => 'main_table.entity_id',
         ]);
 
         $this->addColumn('increment_id', [
