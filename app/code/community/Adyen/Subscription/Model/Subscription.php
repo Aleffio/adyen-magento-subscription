@@ -75,8 +75,6 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     const STATUS_PAYMENT_ERROR      = 'payment_error';
     const STATUS_PAUSED             = 'paused';
 
-    protected $_eventPrefix = 'adyen_subscription';
-
     protected function _construct()
     {
         $this->_init('adyen_subscription/subscription');
