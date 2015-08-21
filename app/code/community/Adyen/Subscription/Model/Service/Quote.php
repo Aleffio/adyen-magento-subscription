@@ -309,7 +309,7 @@ class Adyen_Subscription_Model_Service_Quote
             return false;
         }
 
-        Mage::dispatchEvent('adyen_subscription_quote_getproductsubscription', array('productSubscription' => $subscriptionProductSubscription, 'quoteItem' => $quoteItem));
+        Mage::dispatchEvent('adyen_subscription_quote_getproductsubscription', array('productSubscription' => $subscriptionProductSubscription, 'item' => $quoteItem));
 
         return $subscriptionProductSubscription;
     }

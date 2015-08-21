@@ -27,6 +27,8 @@ class Adyen_Subscription_Model_Service_Subscription
      */
     public function createQuote(Adyen_Subscription_Model_Subscription $subscription)
     {
+        Mage::dispatchEvent('adyen_subscription_service_createquote_before', array('subscription' => $subscription));
+
         try {
             if (! $subscription->canCreateQuote()) {
                 Mage::helper('adyen_subscription')->logQuoteCron('Can not create quote from subscription');
@@ -88,6 +90,8 @@ class Adyen_Subscription_Model_Service_Subscription
                 $quoteItem->addOption($buyRequest);
 
                 $quoteItem->checkData();
+
+                Mage::dispatchEvent('adyen_subscription_service_createquote_add_item', array('item' => $quoteItem, 'quote' => $quote));
             }
 
             // Set billing address data
@@ -162,12 +166,16 @@ class Adyen_Subscription_Model_Service_Subscription
 
             Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Created quote (#%s) for subscription (#%s)', $quote->getId(), $subscription->getId()));
 
+            Mage::dispatchEvent('adyen_subscription_service_createquote_after', array('subscription' => $subscription, 'quote' => $quote));
+
             return $quote;
         } catch (Exception $e) {
             Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Exception in creating quote: %s', $e->getMessage()));
             $subscription->setStatus($subscription::STATUS_QUOTE_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
+
+            Mage::dispatchEvent('adyen_subscription_service_createquote_fail', array('subscription' => $subscription, 'status' => $subscription::STATUS_QUOTE_ERROR, 'error' => $e->getMessage()));
             throw $e;
         }
     }
@@ -177,6 +185,8 @@ class Adyen_Subscription_Model_Service_Subscription
         Mage_Sales_Model_Quote $quote
     )
     {
+        Mage::dispatchEvent('adyen_subscription_service_updatequotepayment_before', array('subscription' => $subscription, 'quote' => $quote));
+
         // Set payment method
         $methodInstance = $subscription->getBillingAgreement()->getPaymentMethodInstance();
 
@@ -194,6 +204,8 @@ class Adyen_Subscription_Model_Service_Subscription
             // importan $quote->save() will not update payment object so use this:
             $quote->getPayment()->save();
 
+            Mage::dispatchEvent('adyen_subscription_service_updatequotepayment_after', array('subscription' => $subscription, 'quote' => $quote));
+
         } catch (Mage_Core_Exception $e) {
             Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Failed to set billing agreement data %s', $e->getMessage()));
             $subscription->setErrorMessage($e->getMessage());
@@ -202,7 +214,9 @@ class Adyen_Subscription_Model_Service_Subscription
             Mage::getModel('core/resource_transaction')
                 ->addObject($quote)
                 ->addObject($subscription)
-                ->save();;
+                ->save();
+
+            Mage::dispatchEvent('adyen_subscription_service_updatequotepayment_fail', array('subscription' => $subscription, 'status' => $subscription::STATUS_QUOTE_ERROR, 'error' => $e->getMessage()));
         }
     }
 }
