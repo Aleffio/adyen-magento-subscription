@@ -4,6 +4,16 @@ Adyen Subscription plugin for Magento
 
 ## Dispatched events
 
+**Adyen_Subscription_Model_Subscription**
+
+    290 adyen_subscription_calculatenextupcomingorderdate
+        @param $subscription Adyen_Subscription_Model_Subscription
+        @param $schedule DateTime
+        
+    390 adyen_subscription_calculatenextscheduledate
+        @param $subscription Adyen_Subscription_Model_Subscription
+        @param $schedule DateTime
+
 **Adyen_Subscription_Model_Service_Subscription**
 
     30 adyen_subscription_service_createquote_before
