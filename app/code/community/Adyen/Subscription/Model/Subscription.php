@@ -62,6 +62,8 @@
  */
 class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 {
+    protected $_eventPrefix = 'adyen_subscription';
+    protected $_eventObject = 'subscription';
 
     const STATUS_ACTIVE             = 'active';
     const STATUS_QUOTE_ERROR        = 'quote_error';
