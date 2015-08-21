@@ -164,6 +164,12 @@ class Adyen_Subscription_Model_Cron
         foreach ($subscriptionCollection as $subscription) {
             /** @var Adyen_Subscription_Model_Subscription $subscription */
 
+            $_customer = Mage::getModel('customer/customer')->load($subscription->getCustomerId());
+            if ($_customer->getId() && (int)$_customer->getData('adyen_can_recur') == 1) { // if set to 1 (bool true) no orders are allowed to be created from subscription
+                Mage::helper('adyen_subscription')->logOrderCron("Subscription {$subscription->getId()} from customer {$_customer->getId()} is not allowed");
+                continue;
+            }
+
             try {
                 $quote = $subscription->getActiveQuote();
                 if (! $quote) {
