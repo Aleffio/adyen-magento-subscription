@@ -111,6 +111,8 @@ class Adyen_Subscription_Model_Service_Quote
         Mage_Sales_Model_Quote $quote,
         Adyen_Subscription_Model_Subscription $subscription
     ) {
+        Mage::dispatchEvent('adyen_subscription_quote_updatesubscription_before', array('subscription' => $subscription, 'quote' => $quote));
+
         $term = $termType = $stockId = null;
         foreach ($quote->getItemsCollection() as $quoteItem) {
             /** @var Mage_Sales_Model_Quote_Item $quoteItem */
@@ -213,6 +215,8 @@ class Adyen_Subscription_Model_Service_Quote
         if ($i <= 0) {
             Adyen_Subscription_Exception::throwException('No subscription products in the subscription');
         }
+        
+        Mage::dispatchEvent('adyen_subscription_quote_updatesubscription_after', array('subscription' => $subscription, 'quote' => $quote));
 
         return $subscription;
     }
