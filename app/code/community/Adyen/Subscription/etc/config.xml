@@ -237,6 +237,14 @@
                     </adyen_subscription>
                 </observers>
             </controller_action_layout_load_before>
+            <checkout_allow_guest>
+                <observers>
+                    <adyen_subscription>
+                        <class>adyen_subscription/observer</class>
+                        <method>isAllowedGuestCheckout</method>
+                    </adyen_subscription>
+                </observers>
+            </checkout_allow_guest>
         </events>
     </frontend>
 

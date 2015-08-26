@@ -335,8 +335,8 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      * Check if billing agreement is not linked to a subscription. If this is the case return an exception
      * @param Varien_Event_Observer $observer
      */
-    public function updateBillingAgreementStatus(Varien_Event_Observer $observer) {
-
+    public function updateBillingAgreementStatus(Varien_Event_Observer $observer)
+    {
         $agreement = $observer->getAgreement();
         $agreementId = $agreement->getId();
 
@@ -356,8 +356,8 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      * Do not delete products that are used for active subscriptions
      * @param Varien_Event_Observer $observer
      */
-    public function preventProductDeleteForSubscription(Varien_Event_Observer $observer) {
-
+    public function preventProductDeleteForSubscription(Varien_Event_Observer $observer)
+    {
         $product = $observer->getProduct();
         $collection = Mage::getModel('adyen_subscription/subscription_item')->getCollection();
         $resource = $collection->getResource();
@@ -377,6 +377,20 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             Mage::throwException(Mage::helper('adyen_subscription')->__(
                 'You cannot delete product (#%s) because it is attached to %s active subscription(s)', $product->getId(), $count
             ));
+        }
+    }
+
+    /**
+     * Do not allow guest checkout when adyen subscription item is added
+     * @param Varien_Event_Observer $observer
+     */
+    public function isAllowedGuestCheckout(Varien_Event_Observer $observer)
+    {
+        $quote = $observer->getEvent()->getQuote();
+        $result = $observer->getEvent()->getResult();
+
+        if($quote->getData('_is_adyen_subscription')) {
+            $result->setIsAllowed(false); //don't allow checkout
         }
     }
 }
