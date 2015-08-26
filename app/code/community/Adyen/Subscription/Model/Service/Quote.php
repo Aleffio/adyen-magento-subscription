@@ -71,17 +71,28 @@ class Adyen_Subscription_Model_Service_Quote
             $quoteAdditional = $subscription->getActiveQuoteAdditional()->setOrder($order)->save();
 
             $subscription->setErrorMessage(null);
-            if ($subscription->getStatus() == $subscription::STATUS_ORDER_ERROR) {
+
+            $subscriptionHistory = null;
+
+            if ($subscription->getStatus() == $subscription::STATUS_ORDER_ERROR || $subscription->getStatus() == $subscription::STATUS_PAYMENT_ERROR) {
                 $subscription->setStatus($subscription::STATUS_ACTIVE);
+
+                $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+                $subscriptionHistory->createHistoryFromSubscription($subscription);
             }
 
             $subscription->setScheduledAt($subscription->calculateNextScheduleDate());
 
-            Mage::getModel('core/resource_transaction')
-                ->addObject($subscription)
-                ->addObject($orderAdditional)
-                ->addObject($quoteAdditional)
-                ->save();
+            $transaction = Mage::getModel('core/resource_transaction');
+
+            $transaction->addObject($subscription)
+                        ->addObject($orderAdditional)
+                        ->addObject($quoteAdditional);
+
+            if($subscriptionHistory) {
+                $transaction->addObject($subscriptionHistory);
+            }
+            $transaction->save();
 
             Mage::helper('adyen_subscription')->logOrderCron(sprintf("Successful created order (#%s) for subscription (#%s)" , $order->getId(), $subscription->getId()));
 
@@ -92,10 +103,7 @@ class Adyen_Subscription_Model_Service_Quote
 
         } catch (Mage_Payment_Exception $e) {
             Mage::helper('adyen_subscription')->logOrderCron(sprintf("Error in subscription (#%s) creating order from quote (#%s) error is: %s", $subscription->getId(), $quote->getId(), $e->getMessage()));
-            $subscription->setStatus($subscription::STATUS_PAYMENT_ERROR);
-            $subscription->setErrorMessage($e->getMessage());
-            $subscription->save();
-
+            $subscription->savePaymentError($e);
             Mage::dispatchEvent('adyen_subscription_quote_createorder_fail', array('subscription' => $subscription, 'status' => $subscription::STATUS_PAYMENT_ERROR, 'error' => $e->getMessage()));
             throw $e;
         } catch (Exception $e) {

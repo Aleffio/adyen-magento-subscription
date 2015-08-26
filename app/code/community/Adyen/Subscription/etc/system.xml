@@ -99,6 +99,40 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </allow_pause_resume_subscription>
+                        <retry_failed_payment>
+                            <label>Retry failed payment</label>
+                            <comment>If a payment failed do you want to try the payment again</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>46</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </retry_failed_payment>
+                        <number_retry_failed_payment>
+                            <label>Number of retries for payment failure</label>
+                            <comment>Keep empty for always</comment>
+                            <tooltip>How many times do you want to retry it</tooltip>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-number</validate>
+                            <sort_order>47</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><retry_failed_payment>1</retry_failed_payment></depends>
+                        </number_retry_failed_payment>
+                        <time_between_retry_failed_payment>
+                            <label>Time (in hours) between retries payment failue</label>
+                            <comment>Keep empty for the default time configured in cronjob schedule</comment>
+                            <tooltip>When a payment failed how long do you want to wait for the next try. Keep in mind that it is depending on your create order cronjob as well.</tooltip>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-number</validate>
+                            <sort_order>48</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><retry_failed_payment>1</retry_failed_payment></depends>
+                        </time_between_retry_failed_payment>
                         <show_upcoming_orders>
                             <label>Show upcoming orders</label>
                             <comment>Show upcoming orders for the shopper</comment>

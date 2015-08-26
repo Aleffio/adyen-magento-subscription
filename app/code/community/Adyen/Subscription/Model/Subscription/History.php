@@ -65,24 +65,38 @@ class Adyen_Subscription_Model_Subscription_History extends Mage_Core_Model_Abst
         parent::save();
     }
 
-    public function saveFromSubscription(Adyen_Subscription_Model_Subscription $subscription)
+    public function createHistoryFromSubscription(Adyen_Subscription_Model_Subscription $subscription) {
+        return $this->saveFromSubscription($subscription, true);
+    }
+
+    public function saveFromSubscription(Adyen_Subscription_Model_Subscription $subscription, $save = true)
     {
         $this->setSubscription($subscription);
         // check if user is frontend or admin user
         if(Mage::app()->getStore()->isAdmin())
         {
             $user = Mage::getSingleton('admin/session');
-            $userid = $user->getUser()->getUserId();
-            $this->setUserId($userid);
+            if($user->getUser()) {
+                $userid = $user->getUser()->getUserId();
+                $this->setUserId($userid);
+            }
         } else {
             $customerData = Mage::getSingleton('customer/session')->getCustomer();
             $customerId = $customerData->getId();
             $this->setCustomerId($customerId);
         }
         $this->setStatus($subscription->getStatus());
-        $this->setCode($subscription->getCancelCode());
 
-        $this->save();
+        if($subscription->getStatus() == Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR) {
+            $this->setCode($subscription->getErrorMessage());
+        } else {
+            $this->setCode($subscription->getCancelCode());
+        }
+
+        if($save) {
+            $this->save();
+        } else {
+            return $this;
+        }
     }
-
 }

@@ -161,8 +161,69 @@ class Adyen_Subscription_Model_Cron
 
         $successCount = 0;
         $failureCount = 0;
+        $skippedCount = 0;
         foreach ($subscriptionCollection as $subscription) {
             /** @var Adyen_Subscription_Model_Subscription $subscription */
+
+            if($subscription->getStatus() == Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR) {
+
+                $retryFailedPayment = Mage::getStoreConfigFlag(
+                    'adyen_subscription/subscription/retry_failed_payment'
+                );
+
+                // If setting 'retry payment failed' is off do not try to create order again
+                if(!$retryFailedPayment) {
+                    Mage::helper('adyen_subscription')->logOrderCron(sprintf("Subscription (#%s) is in status " . Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR . " so do not create order from quote because setting 'Retry failed payment' is set to no", $subscription->getId()));
+                    $skippedCount++;
+                    continue;
+                }
+
+                // setting that indicates how many times a failed payment is allowed to try again
+                $numberOfFailedPaymentsAllowed = Mage::getStoreConfig(
+                    'adyen_subscription/subscription/number_retry_failed_payment'
+                );
+
+                // setting that indicates what the time 
+                $timeBetweenPaymentFailed = Mage::getStoreConfig(
+                    'adyen_subscription/subscription/time_between_retry_failed_payment'
+                );
+
+                if($numberOfFailedPaymentsAllowed != "" || $timeBetweenPaymentFailed != "") {
+
+                    // get history of payment errors
+                    $subscriptionHistoryCollection = Mage::getResourceModel('adyen_subscription/subscription_history_collection');
+                    $subscriptionHistoryCollection->getPaymentHistoryErrors($subscription);
+
+
+                    // check how many times the payment is failed. And check if this is less then the chosen failed payments allowed settting
+                    if($numberOfFailedPaymentsAllowed != "")
+                    {
+                        $numberOfPaymentErrors = $subscriptionHistoryCollection->getSize();
+                        if($numberOfPaymentErrors > $numberOfFailedPaymentsAllowed) {
+                            Mage::helper('adyen_subscription')->logOrderCron(sprintf("Subscription (#%s) is in status " . Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR . " you have configured to do not execute this if this happened more then %s times this is the %s time.", $subscription->getId(), $numberOfFailedPaymentsAllowed, $numberOfPaymentErrors));
+                            $skippedCount++;
+                            continue;
+                        }
+                    }
+
+                    if($timeBetweenPaymentFailed != "")
+                    {
+                        $now = new DateTime('now'); // -2 hours
+                        $lastPaymentErrorDate =  $subscriptionHistoryCollection->getLastItem()->getDate(); // -2 hours
+
+                        $nextTry = new DateTime($lastPaymentErrorDate);
+                        $nextTry->add(new DateInterval('PT' . $timeBetweenPaymentFailed . 'H'));
+
+                        if($now < $nextTry) {
+                            // do not update
+                            Mage::helper('adyen_subscription')->logOrderCron(sprintf("Subscription (#%s) is in status " . Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR . " you have configured that the next time is %s hours after last payment error this is not yet the case. Next try will be at %s", $subscription->getId(), $timeBetweenPaymentFailed, $nextTry->format('Y-m-d H:i:s')));
+                            $skippedCount++;
+                            continue;
+
+                        }
+                    }
+                }
+            }
 
             try {
                 $quote = $subscription->getActiveQuote();
@@ -180,7 +241,7 @@ class Adyen_Subscription_Model_Cron
         }
 
         $result = Mage::helper('adyen_subscription')->__(
-            'Quotes created, %s successful, %s failed', $successCount, $failureCount
+            'Quotes created, %s successful, %s failed, %s skipped', $successCount, $failureCount, $skippedCount
         );
 
         Mage::helper('adyen_subscription')->logOrderCron($result);
