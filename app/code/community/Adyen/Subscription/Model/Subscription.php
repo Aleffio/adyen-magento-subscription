@@ -442,6 +442,8 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
         $subscriptionHistory->saveFromSubscription($this);
 
+        Mage::dispatchEvent('adyen_subscription_pause', array('subscription' => $this, 'history' => $subscriptionHistory));
+
         return $this;
     }
 
@@ -458,6 +460,9 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
         $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
         $subscriptionHistory->saveFromSubscription($this);
+
+        Mage::dispatchEvent('adyen_subscription_activate', array('subscription' => $this, 'history' => $subscriptionHistory));
+
         return $this;
     }
 
@@ -471,6 +476,8 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
         $subscriptionHistory->saveFromSubscription($this);
 
+        Mage::dispatchEvent('adyen_subscription_cancel', array('subscription' => $this, 'history' => $subscriptionHistory));
+
         return $this;
     }
 
@@ -482,6 +489,17 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $this->setStatus(self::STATUS_ACTIVE);
         $this->setErrorMessage(null);
         return $this;
+    }
+
+    /**
+     * Delete object from database
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    public function delete()
+    {
+        Mage::dispatchEvent('adyen_subscription_delete', array('subscription' => $this));
+        return parent::delete();
     }
 
     /**

@@ -13,6 +13,21 @@ Adyen Subscription plugin for Magento
     390 adyen_subscription_calculatenextscheduledate
         @param $subscription Adyen_Subscription_Model_Subscription
         @param $schedule DateTime
+        
+    445 adyen_subscription_pause
+        @param $subscription Adyen_Subscription_Model_Subscription
+        @param $history Adyen_Subscription_Model_Subscription_History
+        
+    464 adyen_subscription_activate
+        @param $subscription Adyen_Subscription_Model_Subscription
+        @param $history Adyen_Subscription_Model_Subscription_History
+        
+    479 adyen_subscription_cancel
+        @param $subscription Adyen_Subscription_Model_Subscription
+        @param $history Adyen_Subscription_Model_Subscription_History
+        
+    501 adyen_subscription_delete
+        @param $subscription Adyen_Subscription_Model_Subscription
 
 **Adyen_Subscription_Model_Service_Subscription**
 
