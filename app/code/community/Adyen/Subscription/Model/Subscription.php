@@ -437,9 +437,6 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $this->setStatus(self::STATUS_PAYMENT_ERROR);
         $this->setErrorMessage($e->getMessage());
         $this->save();
-
-        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-        $subscriptionHistory->saveFromSubscription($this);
     }
 
     public function pause()
@@ -449,10 +446,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             ->setCancelCode(null)
             ->save();
 
-        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-        $subscriptionHistory->saveFromSubscription($this);
-
-        Mage::dispatchEvent('adyen_subscription_pause', array('subscription' => $this, 'history' => $subscriptionHistory));
+        Mage::dispatchEvent('adyen_subscription_pause', array('subscription' => $this));
 
         return $this;
     }
@@ -468,10 +462,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             ->setCancelCode(null)
             ->save();
 
-        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-        $subscriptionHistory->saveFromSubscription($this);
-
-        Mage::dispatchEvent('adyen_subscription_activate', array('subscription' => $this, 'history' => $subscriptionHistory));
+        Mage::dispatchEvent('adyen_subscription_activate', array('subscription' => $this));
 
         return $this;
     }
@@ -483,10 +474,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $this->setEndsAt(now());
         $this->save();
 
-        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-        $subscriptionHistory->saveFromSubscription($this);
-
-        Mage::dispatchEvent('adyen_subscription_cancel', array('subscription' => $this, 'history' => $subscriptionHistory));
+        Mage::dispatchEvent('adyen_subscription_cancel', array('subscription' => $this));
 
         return $this;
     }
@@ -498,6 +486,14 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     {
         $this->setStatus(self::STATUS_ACTIVE);
         $this->setErrorMessage(null);
+        return $this;
+    }
+
+    public function save()
+    {
+        parent::save();
+        $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
+        $subscriptionHistory->saveFromSubscription($this);
         return $this;
     }
 

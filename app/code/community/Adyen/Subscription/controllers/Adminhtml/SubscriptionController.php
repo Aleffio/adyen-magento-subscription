@@ -388,9 +388,9 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         try {
             $quote = $subscription->getActiveQuote();
 
-            Mage::getModel('adyen_subscription/service_quote')->updateSubscription($quote, $subscription);
+            $subscription->setActive();
             $subscription->importPostData($postData);
-            $subscription->setActive()->save();
+            Mage::getModel('adyen_subscription/service_quote')->updateSubscription($quote, $subscription);
 
             $this->_getSession()->addSuccess(
                 Mage::helper('adyen_subscription')->__('Adyen Subscription and scheduled order successfully updated')

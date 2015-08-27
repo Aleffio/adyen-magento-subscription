@@ -90,10 +90,6 @@ class Adyen_Subscription_Model_Service_Order
 
             $subscription->save();
 
-            // save into history
-            $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-            $subscriptionHistory->saveFromSubscription($subscription);
-
             $transactionItems = array();
             foreach ($productTerm['order_items'] as $orderItem) {
                 /** @var Adyen_Subscription_Model_Product_Subscription $productSubscription */

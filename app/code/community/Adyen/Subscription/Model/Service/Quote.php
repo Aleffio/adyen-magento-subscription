@@ -67,7 +67,7 @@ class Adyen_Subscription_Model_Service_Quote
                     ->save();
             }
 
-            $orderAdditional = $subscription->getOrderAdditional($service->getOrder(), true)->save();
+            $orderAdditional = $subscription->getOrderAdditional($order, true)->save();
             $quoteAdditional = $subscription->getActiveQuoteAdditional()->setOrder($order)->save();
 
             $subscription->setErrorMessage(null);
