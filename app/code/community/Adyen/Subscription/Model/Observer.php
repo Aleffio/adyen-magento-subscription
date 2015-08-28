@@ -386,11 +386,24 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function isAllowedGuestCheckout(Varien_Event_Observer $observer)
     {
-        $quote = $observer->getEvent()->getQuote();
-        $result = $observer->getEvent()->getResult();
+        if (Mage::helper('core')->isModuleEnabled('Ho_Customer') &&
+            Mage::helper('ho_customer')->autoCreateCustomers())
+        {
+            return;
+        }
 
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Mage_Sales_Model_Quote $quote */
+        $quote = $observer->getQuote();
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Varien_Object $result */
+        $result = $observer->getResult();
+
+        Mage::getSingleton('adyen_subscription/product_observer')->isQuoteAdyenSubscription($quote);
         if($quote->getData('_is_adyen_subscription')) {
-            $result->setIsAllowed(false); //don't allow checkout
+            /** @noinspection PhpUndefinedMethodInspection */
+            $result->setIsAllowed(false);
         }
     }
 }
