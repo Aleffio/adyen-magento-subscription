@@ -18,7 +18,7 @@
  * @copyright 2015 Copyright © H&O (http://www.h-o.nl/)
  * @license   H&O Commercial License (http://www.h-o.nl/license)
  */
- 
+
 class Adyen_Subscription_Model_Cron
 {
 
@@ -43,12 +43,18 @@ class Adyen_Subscription_Model_Cron
             array('oi.item_id', 'oi.parent_item_id', 'oi.product_options')
         );
 
+        $collection->getSelect()->joinLeft(
+            array('bao' => $resource->getTable('sales/billing_agreement_order')),
+            'main_table.entity_id = bao.order_id',
+            array('agreement_id')
+        );
+
         $collection->addFieldToFilter('state', Mage_Sales_Model_Order::STATE_PROCESSING);
         $collection->addFieldToFilter('subscription.entity_id', array('null' => true));
         $collection->addFieldToFilter('parent_item_id', array('null' => true));
         $collection->addFieldToFilter('product_options', array('nlike' => '%;s:18:"adyen_subscription";s:4:"none"%'));
         $collection->addFieldToFilter('created_adyen_subscription', array('null' => true));
-
+        $collection->addFieldToFilter('bao.agreement_id', array('notnull' => true)); // must have a billing agreements
         $collection->getSelect()->group('main_table.entity_id');
 
         $o = $p = $e = 0;
