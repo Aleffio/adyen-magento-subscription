@@ -20,7 +20,7 @@
 <config>
     <modules>
         <Adyen_Subscription>
-            <version>0.40.0</version>
+            <version>0.41.0</version>
         </Adyen_Subscription>
     </modules>
     <global>
