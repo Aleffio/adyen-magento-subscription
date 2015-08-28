@@ -1,129 +1,49 @@
-# Adyen_Subscription
-Adyen Subscription plugin for Magento
+# Adyen Magento Subscription module
 
 
-## Dispatched events
+## Magento CE installation
 
-**Adyen_Subscription_Model_Subscription**
+1. Copy files to your installation
 
-    290 adyen_subscription_calculatenextupcomingorderdate
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $schedule DateTime
-        
-    390 adyen_subscription_calculatenextscheduledate
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $schedule DateTime
-        
-    445 adyen_subscription_pause
-        @param $subscription Adyen_Subscription_Model_Subscription
-        
-    464 adyen_subscription_activate
-        @param $subscription Adyen_Subscription_Model_Subscription
-        
-    479 adyen_subscription_cancel
-        @param $subscription Adyen_Subscription_Model_Subscription
-        
-    501 adyen_subscription_delete
-        @param $subscription Adyen_Subscription_Model_Subscription
+  a. You can install the module via modman:
+  ```bash
+  modman clone git@github.com:Adyen/Adyen_Subscription.git
+  ```
 
-**Adyen_Subscription_Model_Service_Subscription**
+  b. Or you can [download the latest release](https://github.com/Adyen/Adyen_Subscription/releases) it and place it in you Magento root.
+  
+  c. Download from Magento Connect [TODO]
 
-    30 adyen_subscription_service_createquote_before
-        @param $subscription Adyen_Subscription_Model_Subscription
+2. Flush your cache
+3. Log in to your Magento Admin Panel
 
-    94 adyen_subscription_service_createquote_add_item
-        @param $item Mage_Sales_Model_Quote_Item
-        @param $quote Mage_Sales_Model_Quote
+## Magento EE installation
 
-    169 adyen_subscription_service_createquote_after
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $quote Mage_Sales_Model_Quote
+1. Install the module like you would for an CE installation.
+2. Copy the file `app/etc/modules/Adyen_Subscription_Enterprise.xml_disabled` to `app/etc/modules/Adyen_Subscription_Enterprise.xml`
 
-    178 adyen_subscription_service_createquote_fail
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $status Adyen_Subscription_Model_Subscription::STATUS_QUOTE_ERROR
-        @param $error string
+## Getting started
 
-    188 adyen_subscription_service_updatequotepayment_before
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $quote Mage_Sales_Model_Quote
+1.
+2.
+3.
+4.
+5.
 
-    207 adyen_subscription_service_updatequotepayment_after
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $quote Mage_Sales_Model_Quote
 
-    219 adyen_subscription_service_updatequotepayment_fail
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $status Adyen_Subscription_Model_Subscription::STATUS_QUOTE_ERROR
-        @param $error string
+## Why build it and open source it?
+We at Adyen believe (...subscription based commerce...) and (...open source natural fit...).
 
-**Adyen_Subscription_Model_Service_Quote**
+## Support
+For bugreports, please file a ticket, for store specific requests, please contact Adyen Magento support at magento@adyen.com
 
-    32 adyen_subscription_quote_createorder_before
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $quote Mage_Sales_Model_Quote
-        
-    32 adyen_subscription_quote_createorder_after
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $quote Mage_Sales_Model_Quote
-        @param $order Mage_Sales_Model_Order
-        
-    99 adyen_subscription_quote_createorder_fail
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $status Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR
-        @param $error string
-        
-    107 adyen_subscription_quote_createorder_fail
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $status Adyen_Subscription_Model_Subscription::STATUS_ORDER_ERROR
-        @param $error string
-    
-    114 adyen_subscription_quote_updatesubscription_before
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $quote Mage_Sales_Model_Quote
-        
-    212 adyen_subscription_quote_updatesubscription_add_item
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $item Adyen_Subscription_Model_Subscription_Item
-        
-    221 adyen_subscription_quote_updatesubscription_after
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $quote Mage_Sales_Model_Quote
-        
-    237 adyen_subscription_quote_updatequotepayment_before
-        @param $billingAgreement Adyen_Payment_Model_Billing_Agreement
-        @param $quote Mage_Sales_Model_Quote
-     
-    252 adyen_subscription_quote_updatequotepayment_after
-        @param $billingAgreement Adyen_Payment_Model_Billing_Agreement
-        @param $quote Mage_Sales_Model_Quote
-    
-    280 adyen_subscription_quote_getbillingagreement
-        @param $billingAgreement Adyen_Payment_Model_Billing_Agreement
-        @param $quote Mage_Sales_Model_Quote
-    
-    303 adyen_subscription_quote_getproductsubscription
-        @param $productSubscription Adyen_Subscription_Model_Product_Subscription
-        @param $item Mage_Sales_Model_Quote_Item
-        
-**Adyen_Subscription_Model_Service_Order**
+## Core Contributors
+H&O E-commerce specialists B.V.
+Adyen B.V.
 
-    32 adyen_subscription_order_createsubscription_before
-        @param $order Mage_Sales_Model_Order
-        
-    122 adyen_subscription_order_createsubscription_add_item
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $item Adyen_Subscription_Model_Subscription_Item	
-        
-    162 adyen_subscription_order_createsubscription_after
-        @param $subscription Adyen_Subscription_Model_Subscription
-        @param $order Mage_Sales_Model_Order
-        
-    198 adyen_subscription_quote_getbillingagreement
-        @param $billingAgreement Mage_Sales_Billing_Agreement
-        @param $order Mage_Sales_Model_Order
-        
-    221 adyen_subscription_order_getproductsubscription
-        @param $productSubscription Adyen_Subscription_Model_Product_Subscription
-        @param $item Mage_Sales_Model_Order_Item
-	
+## License
+Open Software License ("OSL") v. 3.0
+
+## Copyright ©
+2015 H&O E-commerce specialists B.V. (http://www.h-o.nl/)
+
