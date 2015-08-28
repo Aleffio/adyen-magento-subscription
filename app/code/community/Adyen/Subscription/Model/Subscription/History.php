@@ -70,8 +70,11 @@ class Adyen_Subscription_Model_Subscription_History extends Mage_Core_Model_Abst
     }
 
     /**
-     * Save object data
+     * saveComment
+     * Insert description as comment in database
      *
+     * @param Adyen_Subscription_Model_Subscription $subscription
+     * @param string $description
      * @return Mage_Core_Model_Abstract
      */
     public function saveComment(Adyen_Subscription_Model_Subscription $subscription, $description)
