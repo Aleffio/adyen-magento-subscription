@@ -26,7 +26,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     public function addFiltersToSalesRuleCombine(Varien_Event_Observer $observer)
     {
         $additional = $observer->getEvent()->getAdditional();
-        $conditions = $additional->getConditions();
+        $conditions = $additional->getConditions() ?: array();
         $conditions = array_merge_recursive(array(array(
             'label' => Mage::helper('adyen_subscription')->__('Adyen Subscription'),
             'value' => array(
