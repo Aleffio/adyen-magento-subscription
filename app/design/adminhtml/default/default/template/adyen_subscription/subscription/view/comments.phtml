@@ -1,0 +1,61 @@
+<?php
+
+$_historys = $this->getHistory();
+
+?><div class="ajax_wrapper">
+    <div class="box-left" id="subscription_comments_block">
+        <div class="entry-edit">
+            <div class="entry-edit-head">
+                <h4><?php echo Mage::helper('adyen_subscription')->__('Comments History') ?></h4>
+            </div>
+            <fieldset>
+                <div id="comment_form" class="order-history-form">
+                    <span class="field-row">
+                        <label class="normal" for="comment"><?php echo Mage::helper('adyen_subscription')->__('Comment') ?></label>
+                        <textarea name="comment" rows="3" cols="5" style="height:6em; width:99%;" id="comment"></textarea>
+                    </span>
+
+                    <div class="f-left"></div>
+                    <div class="f-right">
+                        <?php echo $this->getChildHtml('comment_submit_button') ?>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="divider"></div>
+
+                <ul class="note-list">
+                    <?php foreach ($_historys as $_history): ?>
+                        <li>
+                            <strong><?php echo $this->helper('core')->formatDate($_history->getDate(), 'medium') ?></strong>
+                            <?php echo $this->helper('core')->formatTime($_history->getDate(), 'medium') ?>
+                            <span class="separator">|</span>
+                            <strong><?php echo $this->getUsername($_history);?></strong><br/>
+                            <?php if ($description = $_history->getDescription()): ?>
+                                <br/>
+<?php
+    if (is_array($object = json_decode($description, true))) {
+        foreach ($object['general'] as $label => $value) {
+            echo "<strong><i>{$label}:</i></strong> {$value['was']} > {$value['is']}<br/>\r\n";
+        }
+
+        if (count($object['items'])) {
+            echo "<br/><strong>Products</strong><br/>\r\n";
+            foreach ($object['items'] as $label => $value) {
+                $value = ($value['qty'] > 0) ? "+{$value['qty']}" : "{$value['qty']}";
+                echo "<strong><i>{$label}:</i></strong> {$value}<br/>\r\n";
+            }
+        }
+    } else {
+        echo $this->escapeHtml($description, array('b', 'br', 'strong', 'i', 'u', 'a'));
+    }
+?>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+           </fieldset>
+        </div>
+    </div>
+
+</div>

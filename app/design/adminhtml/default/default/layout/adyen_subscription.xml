@@ -72,6 +72,7 @@
     <adyen_subscription_adminhtml_subscription_view>
         <reference name="content">
             <block type="adyen_subscription/adminhtml_subscription_view" />
+            <block type="adyen_subscription/adminhtml_subscription_view_comments" name="subscription.comments" after="-"/>
         </reference>
         <reference name="left">
             <block type="adyen_subscription/adminhtml_subscription_view_tabs" name="subscription_view_tabs">
