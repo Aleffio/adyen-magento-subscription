@@ -715,7 +715,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
         $result->setData('is_allowed', $this->getStatus() != self::STATUS_CANCELED);
 
-        if (! $result->getData('is_allowed')) {
+        if ($result->getData('is_allowed')) {
             Mage::dispatchEvent(
                 'adyen_subscription_subscription_can_cancel',
                 array('subscription' => $this, 'result' => $result)
@@ -754,7 +754,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             $result->setData('is_allowed', false);
         }
 
-        if (! $result->getData('is_allowed')) {
+        if ($result->getData('is_allowed')) {
             Mage::dispatchEvent(
                 'adyen_subscription_subscription_can_create_quote',
                 array('subscription' => $this, 'result' => $result)
