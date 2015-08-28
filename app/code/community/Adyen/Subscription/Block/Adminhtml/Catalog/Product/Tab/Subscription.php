@@ -113,7 +113,10 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
         $elementId = $subscription ? 'product_subscription[' . $subscription->getId() . ']' : 'product_subscription[template]';
 
         $subscriptionFieldset = $parentFieldset->addFieldset($elementId, array(
-            'legend'    => $helper->__($subscription ? 'Subscription: <em>' . $subscription->getLabel() . '</em>' : 'New Adyen Subscription') . $linkedSubscriptionText,
+            'legend'    => $subscription
+                    ? $helper->__('Subscription: %s (ID: %s)', '<em>' . $subscription->getLabel() . '</em>', $subscription->getId())
+                    : $helper->__('New Adyen Subscription')
+                    . $linkedSubscriptionText,
             'class'     => 'subscription-fieldset' . (!$subscription ? ' product-fieldset-template' : ''),
             'name'      => $elementId . '[fieldset]'
         ))->setRenderer(
