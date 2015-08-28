@@ -684,7 +684,21 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
      */
     public function canPause()
     {
-        return $this->getStatus() != self::STATUS_PAUSED && $this->getStatus() != self::STATUS_CANCELED;
+        $result = new Varien_Object(array('is_allowed' => 1));
+
+        $result->setData(
+            'is_allowed',
+            $this->getStatus() != self::STATUS_PAUSED && $this->getStatus() != self::STATUS_CANCELED
+        );
+
+        if (! $result->getData('is_allowed')) {
+            Mage::dispatchEvent(
+                'adyen_subscription_subscription_can_pause',
+                array('subscription' => $this, 'result' => $result)
+            );
+        }
+
+        return $result->getData('is_allowed');
     }
 
     /**
@@ -700,7 +714,18 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
      */
     public function canCancel()
     {
-        return $this->getStatus() != self::STATUS_CANCELED;
+        $result = new Varien_Object(array('is_allowed' => 1));
+
+        $result->setData('is_allowed', $this->getStatus() != self::STATUS_CANCELED);
+
+        if (! $result->getData('is_allowed')) {
+            Mage::dispatchEvent(
+                'adyen_subscription_subscription_can_cancel',
+                array('subscription' => $this, 'result' => $result)
+            );
+        }
+
+        return $result->getData('is_allowed');
     }
 
     /**
@@ -726,11 +751,20 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
      */
     public function canCreateQuote()
     {
+        $result = new Varien_Object(array('is_allowed' => 1));
+
         if (! in_array($this->getStatus(), self::getScheduleQuoteStatuses())) {
-            return false;
+            $result->setData('is_allowed', false);
         }
 
-        return true;
+        if (! $result->getData('is_allowed')) {
+            Mage::dispatchEvent(
+                'adyen_subscription_subscription_can_create_quote',
+                array('subscription' => $this, 'result' => $result)
+            );
+        }
+
+        return $result->getData('is_allowed');
     }
 
 
@@ -748,15 +782,22 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
      */
     public function canCreateOrder()
     {
+        $result = new Varien_Object(array('is_allowed' => 1));
+
         if (! $this->getActiveQuote()) {
-            return false;
+            $result->setData('is_allowed', false);
+        } elseif (! in_array($this->getStatus(), self::getPlaceOrderStatuses())) {
+            $result->setData('is_allowed', false);
         }
 
-        if (! in_array($this->getStatus(), self::getPlaceOrderStatuses())) {
-            return false;
+        if (! $result->getData('is_allowed')) {
+            Mage::dispatchEvent(
+                    'adyen_subscription_subscription_can_create_order',
+                    array('subscription' => $this, 'result' => $result)
+            );
         }
 
-        return true;
+        return $result->getData('is_allowed');
     }
 
     /**
