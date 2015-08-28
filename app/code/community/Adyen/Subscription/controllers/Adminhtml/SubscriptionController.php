@@ -104,6 +104,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
              ->_title($helper->__('Edit Subscription #%s for %s',
                  $subscription->getIncrementId(), $subscription->getCustomerName()));
 
+        /** @noinspection PhpUndefinedMethodInspection */
         $data = $this->_getSession()->getSubscriptionData(true);
         if (!empty($data)) {
             $subscription->addData($data);
@@ -139,6 +140,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
             $subscription->save();
 
+            /** @noinspection PhpUndefinedMethodInspection */
             $this->_getSession()->setSubscriptionData(null);
             $this->_getSession()->addSuccess(
                 Mage::helper('adyen_subscription')->__('Adyen Subscription successfully saved')
@@ -147,8 +149,12 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         } catch (Exception $e) {
             Adyen_Subscription_Exception::logException($e);
 
+            /** @noinspection PhpUndefinedMethodInspection */
             $this->_getSession()->setSubscriptionData($postData);
-            $this->_getSession()->addError($helper->__('There was an error saving the subscription: %s', $e->getMessage()));
+            $this->_getSession()->addError($helper->__(
+                'There was an error saving the subscription: %s',
+                $e->getMessage()
+            ));
             $this->_redirectReferer();
         }
     }
@@ -221,9 +227,10 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
         $subscription->cancel($reason);
 
-        $this->_getSession()->addSuccess(
-            Mage::helper('adyen_subscription')->__('Adyen Subscription %s successfully cancelled', $subscription->getIncrementId())
-        );
+        $this->_getSession()->addSuccess(Mage::helper('adyen_subscription')->__(
+            'Adyen Subscription %s successfully cancelled',
+            $subscription->getIncrementId()
+        ));
         $this->_redirect('*/*/');
     }
 
@@ -245,9 +252,9 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         try {
             $subscription->activate();
 
-            $this->_getSession()->addSuccess(
-                Mage::helper('adyen_subscription')->__('The subscription has been successfully activated')
-            );
+            $this->_getSession()->addSuccess(Mage::helper('adyen_subscription')->__(
+                'The subscription has been successfully activated'
+            ));
         }
         catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError(
@@ -258,12 +265,6 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $this->_redirectReferer();
     }
 
-    private function _getUserId()
-    {
-        // get userId of admin
-        $user = Mage::getSingleton('admin/session');
-        return $user->getUser()->getUserId();
-    }
     /**
      * Delete subscription
      */
@@ -324,9 +325,10 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             );
         }
         catch (Mage_Core_Exception $e) {
-            $this->_getSession()->addError(
-                Mage::helper('adyen_subscription')->__('An error occurred while trying to create a quote for this subscription: ' . $e->getMessage())
-            );
+            $this->_getSession()->addError(Mage::helper('adyen_subscription')->__(
+                'An error occurred while trying to create a quote for this subscription: %s',
+                $e->getMessage()
+            ));
         }
 
         $this->_redirectReferer();
@@ -358,9 +360,10 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             $this->_editSubscription($subscription, ['full_update' => true]);
             return;
         } catch (Mage_Core_Exception $e) {
-            $this->_getSession()->addError(
-                Mage::helper('adyen_subscription')->__('An error occurred while trying to create a quote for this subscription: ' . $e->getMessage())
-            );
+            $this->_getSession()->addError(Mage::helper('adyen_subscription')->__(
+                'An error occurred while trying to create a quote for this subscription: %s',
+                $e->getMessage()
+            ));
         }
 
         $this->_redirectReferer();
@@ -471,13 +474,15 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
                     $order = Mage::getSingleton('adyen_subscription/service_quote')->createOrder($quote, $subscription);
 
-                    $this->_getSession()->addSuccess(
-                        Mage::helper('adyen_subscription')->__('Order successfully created (#%s)', $order->getIncrementId())
-                    );
+                    $this->_getSession()->addSuccess(Mage::helper('adyen_subscription')->__(
+                        'Order successfully created (#%s)',
+                        $order->getIncrementId()
+                    ));
                 } catch (Exception $e) {
-                    $this->_getSession()->addError(
-                        Mage::helper('adyen_subscription')->__('An error occurred while trying to create a order for this subscription: ' . $e->getMessage())
-                    );
+                    $this->_getSession()->addError(Mage::helper('adyen_subscription')->__(
+                        'An error occurred while trying to create a order for this subscription: %s',
+                        $e->getMessage()
+                    ));
                 }
             }
         }
@@ -521,10 +526,14 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
     public function massDeleteAction()
     {
-        $subscriptionIds = $this->getRequest()->getParam('subscription_id');      // $this->getMassactionBlock()->setFormFieldName('subscription_id'); from Adyen_Subscription_Block_Adminhtml_Subscription_Grid
+        $subscriptionIds = $this->getRequest()->getParam('subscription_id');
+        // $this->getMassactionBlock()->setFormFieldName('subscription_id');
+        // from Adyen_Subscription_Block_Adminhtml_Subscription_Grid
 
         if(!is_array($subscriptionIds)) {
-            Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adyen_subscription')->__('Please select subscription(s).'));
+            Mage::getSingleton('adminhtml/session')->addError(
+                    Mage::helper('adyen_subscription')->__('Please select subscription(s).')
+            );
         } else {
             try {
                 $subscriptionModel = Mage::getModel('adyen_subscription/subscription');

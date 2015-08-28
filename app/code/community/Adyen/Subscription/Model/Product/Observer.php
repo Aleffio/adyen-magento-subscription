@@ -316,7 +316,8 @@ class Adyen_Subscription_Model_Product_Observer
 
         // You need to do a recurring transaction for subscriptions
         if(method_exists($methodInstance, 'setCustomerInteraction')) {
-            $methodInstance->setCustomerInteraction = false;
+            /** @var $methodInstance Adyen_Payment_Model_Adyen_Oneclick */
+            $methodInstance->setCustomerInteraction(false);
         }
 
         // check if payment method is selected in config
@@ -332,12 +333,10 @@ class Adyen_Subscription_Model_Product_Observer
          * Check if payment method is in selectedPaymentMethods and
          * validate if payment method is available for Adyen subscription
          */
-        if (array_key_exists($code, $selectedSubscriptionPaymentMethods)) {
-            if(method_exists($methodInstance, 'canCreateAdyenSubscription')) {
-                if($methodInstance->canCreateAdyenSubscription()) {
-                    $observer->getResult()->isAvailable = true;
-                }
-            }
+        if (array_key_exists($code, $selectedSubscriptionPaymentMethods) &&
+            method_exists($methodInstance, 'canCreateAdyenSubscription') &&
+            $methodInstance->canCreateAdyenSubscription()) {
+                $observer->getResult()->isAvailable = true;
         }
 
         //@todo move paymen specific logic to Adyen_Payments module, this causes tight coupling.
@@ -359,6 +358,7 @@ class Adyen_Subscription_Model_Product_Observer
 
             if(isset($recurringDetails['variant'])) {
 
+                //@todo move the available credit cards to the config, one location where all the credit cards are specified
                 $creditcards = array(
                     'visa',
                     'mc',

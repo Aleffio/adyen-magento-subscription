@@ -22,6 +22,7 @@
 <div class="grid np">
     <div class="hor-scroll">
         <table cellspacing="0" class="data order-tables">
+            <col width="100" />
             <col />
             <col width="1" />
             <col width="1" />
@@ -32,6 +33,7 @@
             <col width="1" />
             <thead>
                 <tr class="headings">
+                    <th class="no-link"><?php echo $this->helper('sales')->__('SKU') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Product') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Price') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Qty') ?></th>
@@ -47,6 +49,7 @@
             <?php $i = 1; foreach ($_items as $_item): ?>
                 <?php /** @var Mage_Sales_Model_Quote_Item $_item */ ?>
                 <tr class="<?php echo $i%2 ? 'even' : 'odd'; ?>">
+                    <td><?php echo $_item->getSku(); ?></td>
                     <td><?php echo $_item->getName(); ?></td>
                     <td><?php echo $helper->formatPrice($_item->getPriceInclTax()); ?></td>
                     <td><?php echo $_item->getQty() * 1; ?></td>

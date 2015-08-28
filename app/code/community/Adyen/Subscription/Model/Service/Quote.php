@@ -275,7 +275,7 @@ class Adyen_Subscription_Model_Service_Quote
 
     /**
      * @param Mage_Sales_Model_Quote $quote
-     * @return Mage_Sales_Model_Billing_Agreement
+     * @return Adyen_Payment_Model_Billing_Agreement
      */
     public function getBillingAgreement(Mage_Sales_Model_Quote $quote)
     {
@@ -287,7 +287,7 @@ class Adyen_Subscription_Model_Service_Quote
 
         $subscriptionReference = str_replace('adyen_oneclick_', '', $quotePayment->getMethod());
 
-        $billingAgreement = Mage::getModel('sales/billing_agreement')
+        $billingAgreement = Mage::getModel('adyen/billing_agreement')
             ->getCollection()
             ->addFieldToFilter('reference_id', $subscriptionReference)
             ->getFirstItem();

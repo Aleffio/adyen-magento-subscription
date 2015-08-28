@@ -183,15 +183,15 @@ class Adyen_Subscription_CustomerController extends Mage_Core_Controller_Front_A
             /** @var Adyen_Subscription_Model_Subscription $subscription */
             $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
-            if(Mage::getStoreConfigFlag('adyen_subscription/subscription/allow_cancel_subscription', Mage::app()->getStore())
+            if( Mage::getStoreConfigFlag('adyen_subscription/subscription/allow_cancel_subscription', Mage::app()->getStore())
                 && $this->getRequest()->getParam('reason')) {
                 // cancel subscription with this reason
                 $reason = $this->getRequest()->getParam('reason');
                 $subscription->cancel($reason);
 
-                Mage::getSingleton('customer/session')->addSuccess(
-                    Mage::helper('adyen_subscription')->__('Subscription %s successfully cancelled', $subscription->getIncrementId())
-                );
+                Mage::getSingleton('customer/session')->addSuccess(Mage::helper('adyen_subscription')->__(
+                    'Subscription %s successfully cancelled', $subscription->getIncrementId()
+                ));
 
             } else {
                 Mage::getSingleton('customer/session')->addError(
