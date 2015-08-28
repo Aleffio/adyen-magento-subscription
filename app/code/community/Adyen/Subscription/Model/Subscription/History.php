@@ -69,6 +69,28 @@ class Adyen_Subscription_Model_Subscription_History extends Mage_Core_Model_Abst
         return $this->saveFromSubscription($subscription, true);
     }
 
+    /**
+     * Save object data
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    public function saveComment(Adyen_Subscription_Model_Subscription $subscription, $description)
+    {
+        $this->setSubscription($subscription);
+
+        $this->setData('description', $description);
+        $this->setData('date', now());
+        $this->setData('subscription_id', (int)$subscription->getId());
+
+        $user = Mage::getSingleton('admin/session');
+        if($user->getUser()) {
+            $userid = $user->getUser()->getUserId();
+            $this->setData('user_id', $userid);
+        }
+
+        $this->save();
+    }
+
     public function saveFromSubscription(Adyen_Subscription_Model_Subscription $subscription, $save = true)
     {
         $this->setSubscription($subscription);
