@@ -242,8 +242,6 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
                 $quoteItem->setQty($qty);
                 $quoteItem->save();
-
-                $subscriptionQuote = true;
             }
 
             if (! Mage::helper('adyen_subscription/config')->getReorderSubscription()) {
@@ -268,6 +266,8 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                 $quoteItem->addOption($buyRequest);
                 $quoteItem->save();
             }
+
+            $subscriptionQuote = true;
         }
 
         if ($subscriptionQuote) {
