@@ -22,11 +22,17 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     /**
      * @event salesrule_rule_condition_combine
      * @param Varien_Event_Observer $observer
+     * @return $this
      */
     public function addFiltersToSalesRuleCombine(Varien_Event_Observer $observer)
     {
-        $additional = $observer->getEvent()->getAdditional();
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Varien_Object $additional */
+        $additional = $observer->getAdditional();
+
+        /** @noinspection PhpUndefinedMethodInspection */
         $conditions = $additional->getConditions() ?: array();
+
         $conditions = array_merge_recursive(array(array(
             'label' => Mage::helper('adyen_subscription')->__('Adyen Subscription'),
             'value' => array(
@@ -40,6 +46,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             )
         )), $conditions);
 
+        /** @noinspection PhpUndefinedMethodInspection */
         $additional->setConditions($conditions);
         return $this;
     }
@@ -97,6 +104,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function addColumnToResource(Varien_Event_Observer $observer)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         /* @var $resource Mage_Sales_Model_Mysql4_Order */
         $resource = $observer->getEvent()->getResource();
         $resource->addVirtualGridColumn(
@@ -117,6 +125,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function calculateItemQty(Varien_Event_Observer $observer)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         /** @var Mage_Sales_Model_Order $order */
         $order = $observer->getOrder();
 
@@ -191,6 +200,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     {
         $subscriptionQuote = false;
 
+        /** @noinspection PhpUndefinedMethodInspection */
         /** @var Mage_Core_Model_Session $session */
         $session = $observer->getSessionQuote();
 
