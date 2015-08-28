@@ -89,7 +89,6 @@
                 <action method="addTab"><name>subscription_info</name><block>subscription_info_block</block></action>
                 <action method="addTab"><name>subscription_scheduled_order</name><block>subscription_scheduled_order_block</block></action>
                 <action method="addTab"><name>subscription_past_orders</name><block>adyen_subscription/adminhtml_subscription_view_tabs_pastOrders</block></action>
-                <action method="addTab"><name>subscription_history</name><block>adyen_subscription/adminhtml_subscription_view_tabs_history</block></action>
             </block>
         </reference>
     </adyen_subscription_adminhtml_subscription_view>
