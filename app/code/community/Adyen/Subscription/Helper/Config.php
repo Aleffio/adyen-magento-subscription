@@ -22,6 +22,8 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
 
     const XML_PATH_SUBSCRIPTION_CANCEL_REASONS  = 'adyen_subscription/subscription/cancel_reasons';
 
+    const XML_PATH_ORDER_REORDER_SUBSCRIPTION   = 'adyen_subscription/order/reorder_subscription';
+
     /**
      * @param null|Mage_Core_Model_Store|int $store
      * @return bool
@@ -39,6 +41,15 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
         $config = Mage::getStoreConfig(self::XML_PATH_SUBSCRIPTION_CANCEL_REASONS);
 
         return $config ? unserialize($config) : array();
+    }
+
+    /**
+     * @param null|Mage_Core_Model_Store|int $store
+     * @return bool
+     */
+    public function getReorderSubscription($store = null)
+    {
+        return Mage::getStoreConfigFlag(self::XML_PATH_ORDER_REORDER_SUBSCRIPTION, $store);
     }
 
     /**

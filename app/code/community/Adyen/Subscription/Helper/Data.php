@@ -18,8 +18,6 @@
 
 class Adyen_Subscription_Helper_Data extends Mage_Core_Helper_Abstract
 {
-
-
     public function logSubscriptionCron($message)
     {
         $this->log($message, "adyen_subscription_cron");
@@ -37,7 +35,6 @@ class Adyen_Subscription_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function log($message, $filename)
     {
-
         if(Mage::getStoreConfigFlag(
             'adyen_subscription/subscription/debug',
             Mage::app()->getStore()

@@ -308,6 +308,9 @@
                 <cron_quote_setting>*/20 * * * *</cron_quote_setting>
                 <cron_order_setting>*/30 * * * *</cron_order_setting>
             </subscription>
+            <order>
+                <reorder_subscription>0</reorder_subscription>
+            </order>
             <allowed_payment_methods>
                 <creditcards>
                     <code>adyen_cc</code>

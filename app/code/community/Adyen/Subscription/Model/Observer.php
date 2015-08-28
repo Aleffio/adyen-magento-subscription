@@ -213,11 +213,11 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
         foreach ($quote->getItemsCollection() as $quoteItem) {
             /** @var Mage_Sales_Model_Quote_Item $quoteItem */
-            $additionalOptions = $quoteItem->getOptionByCode('additional_options');
+            $option = $quoteItem->getOptionByCode('additional_options');
 
-            if (! $additionalOptions || $quoteItem->getParentItemId()) continue;
+            if (! $option || $quoteItem->getParentItemId()) continue;
 
-            $additionalOptions = unserialize($additionalOptions->getValue());
+            $additionalOptions = unserialize($option->getValue());
 
             $subscriptionOptions = false;
             foreach ($additionalOptions as $additionalOption) {
@@ -239,6 +239,29 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                 $quoteItem->save();
 
                 $subscriptionQuote = true;
+            }
+
+            if (! Mage::helper('adyen_subscription/config')->getReorderSubscription()) {
+                // Delete product subscriptions from products in reorder
+                $newAdditionalOptions = [];
+                foreach ($additionalOptions as $additionalOption) {
+                    if ($additionalOption['code'] == 'adyen_subscription') {
+                        continue;
+                    }
+                    $newAdditionalOptions[] = $additionalOption;
+                }
+
+                $option->setValue(serialize($newAdditionalOptions));
+
+                $newBuyRequest = $quoteItem->getBuyRequest()->unsetData('adyen_subscription')->getData();
+                $buyRequest = Mage::getModel('sales/quote_item_option')->setData([
+                    'code'       => 'info_buyRequest',
+                    'product_id' => $quoteItem->getProductId(),
+                    'value'      => serialize($newBuyRequest)
+                ]);
+
+                $quoteItem->addOption($buyRequest);
+                $quoteItem->save();
             }
         }
 
