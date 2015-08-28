@@ -74,27 +74,11 @@ class Adyen_Subscription_Model_Subscription_History extends Mage_Core_Model_Abst
      * Insert description as comment in database
      *
      * @param Adyen_Subscription_Model_Subscription $subscription
-     * @param string $description
-     * @return Mage_Core_Model_Abstract
+     * @param string/bool $description
+     * @param bool $save
+     * @return null / Adyen_Subscription_Model_Subscription_History
      */
-    public function saveComment(Adyen_Subscription_Model_Subscription $subscription, $description)
-    {
-        $this->setSubscription($subscription);
-
-        $this->setData('description', $description);
-        $this->setData('date', now());
-        $this->setData('subscription_id', (int)$subscription->getId());
-
-        $user = Mage::getSingleton('admin/session');
-        if($user->getUser()) {
-            $userid = $user->getUser()->getUserId();
-            $this->setData('user_id', $userid);
-        }
-
-        $this->save();
-    }
-
-    public function saveFromSubscription(Adyen_Subscription_Model_Subscription $subscription, $save = true)
+    public function saveComment(Adyen_Subscription_Model_Subscription $subscription, $description = null, $save = true)
     {
         $this->setSubscription($subscription);
         // check if user is frontend or admin user
@@ -112,15 +96,26 @@ class Adyen_Subscription_Model_Subscription_History extends Mage_Core_Model_Abst
         }
         $this->setStatus($subscription->getStatus());
 
-        if($subscription->getStatus() == Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR) {
-            $this->setCode($subscription->getErrorMessage());
+        if (is_string($description) && !empty($description)) {
+            $this->setDescription($description);
+        } elseif($subscription->getStatus() == Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR) {
+            $this->setDescription($subscription->getErrorMessage());
         } else {
-            $this->setCode($subscription->getCancelCode());
+            $this->setDescription($subscription->getCancelCode());
         }
 
         if($save) {
             $this->save();
         } else {
+            return $this;
+        }
+    }
+
+    public function saveFromSubscription(Adyen_Subscription_Model_Subscription $subscription, $save = true)
+    {
+        $this->saveComment($subscription, null, $save);
+
+        if(!$save) {
             return $this;
         }
     }

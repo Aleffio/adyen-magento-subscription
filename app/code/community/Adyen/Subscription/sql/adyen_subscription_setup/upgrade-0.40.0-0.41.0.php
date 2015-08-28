@@ -23,12 +23,7 @@ $installer->startSetup();
 /** @var Magento_Db_Adapter_Pdo_Mysql $connection */
 $connection = $installer->getConnection();
 
-// Add description column to history table
-$connection->addColumn($this->getTable('adyen_subscription/subscription_history'), 'description', array(
-    'type'      => Varien_Db_Ddl_Table::TYPE_TEXT,
-    'nullable'  => false,
-    'default'   => '',
-    'comment'   => 'Subscription change description',
-));
+// Cahnge code to description column in history table
+$connection->changeColumn($this->getTable('adyen_subscription/subscription_history'), 'code', 'description', Varien_Db_Ddl_Table::TYPE_TEXT);
 
 $installer->endSetup();
