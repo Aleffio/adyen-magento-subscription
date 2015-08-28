@@ -14,7 +14,7 @@
  *
  * @category  Adyen
  * @package   Adyen_Subscription
- * @author    Paul Hachmang – H&O <info@h-o.nl>
+ * @author    Paul Hachmang – H&O E-commerce specialists B.V. <info@h-o.nl>
  * @copyright 2015 Copyright © H&O (http://www.h-o.nl/)
  * @license   H&O Commercial License (http://www.h-o.nl/license)
  */
