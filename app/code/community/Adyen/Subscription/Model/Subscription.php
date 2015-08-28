@@ -363,9 +363,6 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             $lastScheduleDate = $latestQuoteSchedule->getCreatedAt();
         }
 
-        $timezone = new DateTimeZone(Mage::getStoreConfig(
-            Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
-        ));
         $schedule = new DateTime($lastScheduleDate);
 
         $dateInterval = null;
