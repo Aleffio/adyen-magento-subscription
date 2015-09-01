@@ -42,8 +42,8 @@ class Adyen_Subscription_Model_Sales_Quote_Address_Total_SubscriptionFee extends
         {
             if($paymentMethod != "adyen_oneclick" && strpos($paymentMethod, 'adyen_oneclick') !== false)
             {
-                $recurringDetails = $quote->getPayment()->getMethodInstance()->getRecurringDetails();
-                if($recurringDetails['variant'] == "sepadirectdebit" || $recurringDetails['variant'] == "directEbanking") {
+                $variant = $quote->getPayment()->getCcType();
+                if($variant == "sepadirectdebit" || $variant == "directEbanking") {
                     $this->setSubscriptionFee($address);
                 }
             } else if(($paymentMethod == "adyen_oneclick") ||$paymentMethod == "adyen_ideal" || $paymentMethod == "adyen_hpp_sofort" ||
