@@ -25,7 +25,7 @@
 <config>
     <modules>
         <Adyen_Subscription>
-            <version>0.40.0</version>
+            <version>0.41.0</version>
         </Adyen_Subscription>
     </modules>
     <global>
@@ -38,6 +38,9 @@
                     <sales_order_create_header>Adyen_Subscription_Block_Adminhtml_Sales_Order_Create_Header</sales_order_create_header>
                     <sales_order_create>Adyen_Subscription_Block_Adminhtml_Sales_Order_Create</sales_order_create>
                     <sales_order_create_form>Adyen_Subscription_Block_Adminhtml_Sales_Order_Create_Form</sales_order_create_form>
+                    <sales_order_totals>Adyen_Subscription_Block_Adminhtml_Sales_Order_Totals</sales_order_totals>
+                    <sales_order_invoice_totals>Adyen_Subscription_Block_Adminhtml_Sales_Order_Invoice_Totals</sales_order_invoice_totals>
+                    <sales_order_creditmemo_totals>Adyen_Subscription_Block_Adminhtml_Sales_Order_Creditmemo_Totals</sales_order_creditmemo_totals>
                 </rewrite>
             </adminhtml>
         </blocks>
@@ -206,7 +209,29 @@
                         <adyen_subscription_type />
                     </product_attributes>
                 </item>
+                <totals>
+                    <subscription_fee>
+                        <class>adyen_subscription/sales_quote_address_total_subscriptionFee</class>
+                        <after>grand_total</after>
+                    </subscription_fee>
+                </totals>
             </quote>
+            <order_invoice>
+                <totals>
+                    <subscription_fee>
+                        <class>adyen_subscription/total_subscriptionFee_invoice</class>
+                        <after>grand_total</after>
+                    </subscription_fee>
+                </totals>
+            </order_invoice>
+            <order_creditmemo>
+                <totals>
+                    <subscription_fee>
+                        <class>adyen_subscription/total_subscriptionFee_creditmemo</class>
+                        <after>grand_total</after>
+                    </subscription_fee>
+                </totals>
+            </order_creditmemo>
         </sales>
         <fieldsets>
             <sales_convert_quote>
@@ -214,6 +239,16 @@
                     <to_order>*</to_order>
                 </subscription_id>
             </sales_convert_quote>
+            <sales_convert_quote_address>
+                <subscription_fee_amount><to_order>*</to_order></subscription_fee_amount>
+                <base_subscription_amount><to_order>*</to_order></base_subscription_amount>
+            </sales_convert_quote_address>
+            <sales_convert_order>
+                <subscription_fee_amount><to_invoice>*</to_invoice></subscription_fee_amount>
+                <base_subscription_amount><to_invoice>*</to_invoice></base_subscription_amount>
+                <subscription_fee_amount><to_cm>*</to_cm></subscription_fee_amount>
+                <base_subscription_amount><to_cm>*</to_cm></base_subscription_amount>
+            </sales_convert_order>
         </fieldsets>
     </global>
     <frontend>
@@ -339,6 +374,11 @@
                 </directebanking>
             </allowed_payment_methods>
         </adyen_subscription>
+        <sales>
+            <totals_sort>
+                <subscription_fee>17</subscription_fee>
+            </totals_sort>
+        </sales>
     </default>
 
     <crontab>
