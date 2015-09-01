@@ -77,7 +77,7 @@ class Adyen_Subscription_Model_Sales_Quote_Address_Total_SubscriptionFee extends
         if ($subscriptionFee != 0) {
             $address->addTotal(array(
                     'code'=>$this->getCode(),
-                    'title'=> Mage::helper('adyen')->__('Subscription Fee'),
+                    'title'=> Mage::helper('adyen_subscription')->__('Subscription Fee'),
                     'value'=> $subscriptionFee
             ));
         } else {
