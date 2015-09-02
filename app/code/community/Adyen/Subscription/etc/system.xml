@@ -41,13 +41,13 @@
                     <fields>
                         <show_term_label translate="label">
                             <label>Show Term Label</label>
+                            <tooltip><![CDATA[Renders a term label (ie. 'Every 6 months') after the custom Product Subscription label]]></tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <sort_order>10</sort_order>
-                            <comment><![CDATA[Renders a term label (ie. 'Every 6 months') after the custom Product Subscription label]]></comment>
                         </show_term_label>
                     </fields>
                 </general>
@@ -60,23 +60,25 @@
                     <fields>
                         <cancel_reasons translate="label">
                             <label>Cancel Reasons</label>
+                            <comment><![CDATA[Cancel Reason Code will be saved and will be visable in the history tab of the subscription]]></comment>
                             <frontend_model>adyen_subscription/adminhtml_system_config_cancelReasons</frontend_model>
                             <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
                             <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
-                            <comment><![CDATA[]]></comment>
                         </cancel_reasons>
                         <allowed_payment_methods translate="label">
-                                <label>Allowed payment methods</label>
-                                <frontend_type>multiselect</frontend_type>
-                                <sort_order>20</sort_order>
-                                <source_model>adyen_subscription/system_config_source_allowedPaymentMethods</source_model>
-                                <show_in_default>1</show_in_default>
-                                <show_in_website>1</show_in_website>
-                                <show_in_store>1</show_in_store>
+                            <label>Allowed payment methods</label>
+                            <tooltip>Select here the payment methods that you want to show to the shopper if they select a product with subscription</tooltip>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>20</sort_order>
+                            <source_model>adyen_subscription/system_config_source_allowedPaymentMethods</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
                         </allowed_payment_methods>
                         <debug translate="label">
                             <label>Debug</label>
+                            <tooltip>This will write the results of the conjob to a log file. You can find this log file in your var/log directory</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>30</sort_order>
@@ -86,7 +88,7 @@
                         </debug>
                         <allow_cancel_subscription>
                             <label>Cancel Subscription</label>
-                            <comment>Allow the shopper to cancel the subscription</comment>
+                            <tooltip>Allow the shopper to cancel the subscription</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>40</sort_order>
@@ -96,7 +98,7 @@
                         </allow_cancel_subscription>
                         <allow_pause_resume_subscription>
                             <label>Pause/Resume Subscription</label>
-                            <comment>Allow the shopper to pause/resume the subscription</comment>
+                            <tooltip>Allow the shopper to pause/resume the subscription</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>45</sort_order>
@@ -106,7 +108,7 @@
                         </allow_pause_resume_subscription>
                         <retry_failed_payment>
                             <label>Retry failed payment</label>
-                            <comment>If a payment failed do you want to try the payment again</comment>
+                            <tooltip>If the payment of the subscription is failed do you want to retry this later</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>46</sort_order>
@@ -116,8 +118,7 @@
                         </retry_failed_payment>
                         <number_retry_failed_payment>
                             <label>Number of retries for payment failure</label>
-                            <comment>Keep empty for always</comment>
-                            <tooltip>How many times do you want to retry it</tooltip>
+                            <tooltip>How many times do you want to retry it (Keep empty for always)</tooltip>
                             <frontend_type>text</frontend_type>
                             <validate>validate-number</validate>
                             <sort_order>47</sort_order>
@@ -128,8 +129,7 @@
                         </number_retry_failed_payment>
                         <time_between_retry_failed_payment>
                             <label>Time (in hours) between retries payment failue</label>
-                            <comment>Keep empty for the default time configured in cronjob schedule</comment>
-                            <tooltip>When a payment failed how long do you want to wait for the next try. Keep in mind that it is depending on your create order cronjob as well.</tooltip>
+                            <tooltip>When a payment failed how long do you want to wait for the next try. (Keep in mind that it will only be checked when cronjob is running) Keep this setting empty if you want it to be executed on the next cronjob </tooltip>
                             <frontend_type>text</frontend_type>
                             <validate>validate-number</validate>
                             <sort_order>48</sort_order>
@@ -140,7 +140,7 @@
                         </time_between_retry_failed_payment>
                         <show_upcoming_orders>
                             <label>Show upcoming orders</label>
-                            <comment>Show upcoming orders for the shopper</comment>
+                            <tooltip>Show upcoming orders to the shopper. This will be visable inside the subscription overview.</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>50</sort_order>
@@ -150,33 +150,34 @@
                         </show_upcoming_orders>
                         <number_of_upcoming_orders>
                             <label>Number of upcomming orders</label>
-                            <comment>Number of upcomming orders to show</comment>
+                            <tooltip>How many upcomming order dates do you want to show to the shopper</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <frontend_class>validate-number</frontend_class>
                             <depends><show_upcoming_orders>1</show_upcoming_orders></depends>
                         </number_of_upcoming_orders>
                         <cron_subscription_setting>
                             <label>How often do you want the create subscription cron to run?</label>
+                            <tooltip>Use Crontab Format (Eg. "*/5 * * * *" for every 5 minutes)</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>70</sort_order>
-                            <comment>Use Crontab Format (Eg. "*/5 * * * *" for every 5 minutes)</comment>
                             <show_in_default>1</show_in_default>
                         </cron_subscription_setting>
                         <cron_quote_setting>
                             <label>How often do you want the create quote cron to run?</label>
+                            <tooltip>Use Crontab Format (Eg. "*/5 * * * *" for every 5 minutes)</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>80</sort_order>
-                            <comment>Use Crontab Format (Eg. "*/5 * * * *" for every 5 minutes)</comment>
                             <show_in_default>1</show_in_default>
                         </cron_quote_setting>
                         <cron_order_setting>
                             <label>How often do you want the create order to run?</label>
+                            <tooltip>Use Crontab Format (Eg. "*/5 * * * *" for every 5 minutes)</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>90</sort_order>
-                            <comment>Use Crontab Format (Eg. "*/5 * * * *" for every 5 minutes)</comment>
                             <show_in_default>1</show_in_default>
                         </cron_order_setting>
                     </fields>
@@ -190,14 +191,14 @@
                     <fields>
                         <reorder_subscription translate="label">
                             <label>Subscription at reorder</label>
+                            <tooltip><![CDATA[When set to Yes, the product subscriptions will be included in a reorder.
+                            Default is No, then a reorder of a subscription order will be a single order.]]></tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <sort_order>10</sort_order>
-                            <comment><![CDATA[When set to Yes, the product subscriptions will be included in a reorder.
-                            Default is No, then a reorder of a subscription order will be a single order.]]></comment>
                         </reorder_subscription>
                     </fields>
                 </order>
