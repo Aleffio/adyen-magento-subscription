@@ -46,7 +46,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
         if ($this->getSubscription()->canCancel()) {
             $this->_addButton('stop_subscription', [
                 'class'     => 'delete',
-                'label'     => Mage::helper('adyen_subscription')->__('Stop Subscription'),
+                'label'     => Mage::helper('adyen_subscription')->__('Cancel Subscription'),
                 'onclick'   => "setLocation('{$this->getUrl('*/*/cancel',
                     ['id' => $this->getSubscription()->getIncrementId()])}')",
             ], 10);

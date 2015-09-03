@@ -466,7 +466,9 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
     public function cancel($reason)
     {
-        $this->setCancelCode($reason);
+        if($reason) {
+            $this->setCancelCode($reason);
+        }
         $this->setStatus(self::STATUS_CANCELED);
         $this->setEndsAt(now());
         $this->save();

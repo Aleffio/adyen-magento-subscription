@@ -201,7 +201,25 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
      */
     public function cancelAction()
     {
-        $this->_initAction()->renderLayout();
+
+        // get cancelreasons
+        $reasons = Mage::helper('adyen_subscription/config')->getCancelReasons();
+        if(!empty($reasons)) {
+            $this->_initAction()->renderLayout();
+        } else {
+            // just cancel without a reason
+            $subscriptionId = $this->getRequest()->getParam('id');
+            /** @var Adyen_Subscription_Model_Subscription $subscription */
+            $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
+            $subscription->cancel(null);
+            $this->_getSession()->addSuccess(Mage::helper('adyen_subscription')->__(
+                'Adyen Subscription %s successfully cancelled',
+                $subscription->getIncrementId()
+            ));
+            $this->_redirect('*/*/');
+        }
+
+
     }
 
     /**
