@@ -38,7 +38,7 @@
     <?php if ($this->getSubscription()->canCreateOrder()): ?>
     <p>
         <?php echo $this->getButtonHtml(
-            Mage::helper('adyen_subscription')->__('Edit Quote'),
+            Mage::helper('adyen_subscription')->__('Edit Scheduled Order'),
             "setLocation('{$this->getUrl('*/*/editQuote', ['id' => $this->getSubscription()->getId()])}','edit_quote')",
             'edit'
         ); ?>
