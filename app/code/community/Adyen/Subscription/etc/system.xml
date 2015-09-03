@@ -128,7 +128,7 @@
                             <depends><retry_failed_payment>1</retry_failed_payment></depends>
                         </number_retry_failed_payment>
                         <time_between_retry_failed_payment>
-                            <label>Time (in hours) between retries payment failue</label>
+                            <label>Time (in hours) between retries payment failure</label>
                             <tooltip>When a payment failed how long do you want to wait for the next try. (Keep in mind that it will only be checked when cronjob is running) Keep this setting empty if you want it to be executed on the next cronjob </tooltip>
                             <frontend_type>text</frontend_type>
                             <validate>validate-number</validate>
