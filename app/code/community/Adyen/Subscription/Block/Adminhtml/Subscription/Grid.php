@@ -64,13 +64,6 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
             'filter_index' => 'main_table.entity_id',
         ]);
 
-        $this->addColumn('increment_id', [
-            'header'    => $helper->__('Increment ID'),
-            'index'     => 'increment_id',
-            'width'     => 1,
-            'filter_index' => 'main_table.increment_id',
-        ]);
-
         $this->addColumn('error_message', [
             'header'    => $helper->__('Error Message'),
             'index'     => 'error_message',

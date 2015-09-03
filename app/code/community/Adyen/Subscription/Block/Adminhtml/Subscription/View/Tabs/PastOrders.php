@@ -57,11 +57,6 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_PastOrders
     {
         $helper = Mage::helper('adyen_subscription');
 
-        $this->addColumn('increment_id', array(
-            'header'    => $helper->__('Order #'),
-            'index'     => 'increment_id',
-        ));
-
         $this->addColumn('created_at', array(
             'header'    => $helper->__('Purchased On'),
             'index'     => 'created_at',
