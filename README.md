@@ -7,12 +7,12 @@
 
   a. You can install the module via modman:
   ```bash
-  modman clone git@github.com:Adyen/Adyen_Subscription.git
+  modman clone git@github.com:Adyen/adyen-magento-subscription.git
   ```
 
-  b. Or you can [download the latest release](https://github.com/Adyen/Adyen_Subscription/releases) it and place it in you Magento root.
+  b. Or you can [download the latest release](https://github.com/Adyen/adyen-magento-subscription/releases) it and place it in you Magento root.
   
-  c. Download from Magento Connect [TODO]
+  c. Download from Magento Connect (not yet availble, waiting for approval Magento)
 
 2. Flush your cache
 3. Log in to your Magento Admin Panel
@@ -24,26 +24,17 @@
 
 ## Getting started
 
-1.
-2.
-3.
-4.
-5.
-
-
-## Why build it and open source it?
-We at Adyen believe (...subscription based commerce...) and (...open source natural fit...).
+[Click here to go into the manual](https://docs.adyen.com/display/TD/Adyen+Documentation)
 
 ## Support
 For bugreports, please file a ticket, for store specific requests, please contact Adyen Magento support at magento@adyen.com
 
 ## Core Contributors
-H&O E-commerce specialists B.V.
-Adyen B.V.
+* H&O E-commerce specialists B.V.
+* Adyen B.V.
 
 ## License
 Open Software License ("OSL") v. 3.0
 
 ## Copyright ©
 2015 H&O E-commerce specialists B.V. (http://www.h-o.nl/)
-
