@@ -368,7 +368,7 @@
                 </paypal>
                 <ideal>
                     <code>adyen_ideal</code>
-                    <label>Ideal</label>
+                    <label>IDeal</label>
                 </ideal>
                 <directebanking>
                     <code>adyen_hpp_directEbanking</code>
