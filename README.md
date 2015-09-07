@@ -26,7 +26,7 @@
 [Click here to see and download the official releases of the Adyen Payment subscription plug-in](https://github.com/Adyen/adyen-magento-subscription/releases)
 
 ## Getting started
-
+[You need to have the Adyen Payment module 2.4.0 or higher as well](https://github.com/Adyen/magento/releases)
 <a href="https://docs.is.adyen.com/display/TD/Magento+Subscriptions" target="_blank">Click here to go into the manual]</a>
 
 ## Support
