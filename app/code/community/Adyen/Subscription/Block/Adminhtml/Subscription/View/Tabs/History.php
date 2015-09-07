@@ -134,4 +134,14 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_History
     {
         return false;
     }
+
+    /**
+     * Retrieve grid url
+     *
+     * @return string
+     */
+    public function getGridUrl()
+    {
+        return $this->getUrl('*/*/historyGrid', array('_current' => true));
+    }
 }

@@ -90,6 +90,28 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $this->renderLayout();
     }
 
+    /**
+     * Related orders ajax action
+     *
+     */
+    public function ordersGridAction()
+    {
+        $this->_initSubscription();
+        $this->loadLayout(false)
+            ->renderLayout();
+    }
+
+    /**
+     * Related history ajax action
+     *
+     */
+    public function historyGridAction()
+    {
+        $this->_initSubscription();
+        $this->loadLayout(false)
+            ->renderLayout();
+    }
+
 
     /**
      * Edit Action

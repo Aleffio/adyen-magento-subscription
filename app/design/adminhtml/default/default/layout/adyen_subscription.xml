@@ -99,6 +99,14 @@
         </reference>
     </adyen_subscription_adminhtml_subscription_view>
 
+    <adyen_subscription_adminhtml_subscription_ordersgrid>
+        <block type="adyen_subscription/adminhtml_subscription_view_tabs_pastOrders" name="orders.grid" output="toHtml"></block>
+    </adyen_subscription_adminhtml_subscription_ordersgrid>
+
+    <adyen_subscription_adminhtml_subscription_historygrid>
+        <block type="adyen_subscription/adminhtml_subscription_view_tabs_history" name="history.grid" output="toHtml"></block>
+    </adyen_subscription_adminhtml_subscription_historygrid>
+
     <adyen_subscription_adminhtml_subscription_cancel>
         <reference name="content">
             <block type="adyen_subscription/adminhtml_subscription_cancel" name="adyen_subscription_cancel" />

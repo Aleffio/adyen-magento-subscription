@@ -157,4 +157,14 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_PastOrders
     {
         return false;
     }
+
+    /**
+     * Retrieve grid url
+     *
+     * @return string
+     */
+    public function getGridUrl()
+    {
+        return $this->getUrl('*/*/ordersGrid', array('_current'=>true));
+    }
 }
