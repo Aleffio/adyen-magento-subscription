@@ -22,9 +22,12 @@
 1. Install the module like you would for an CE installation.
 2. Copy the file `app/etc/modules/Adyen_Subscription_Enterprise.xml_disabled` to `app/etc/modules/Adyen_Subscription_Enterprise.xml`
 
+## Offical Releases
+[Click here to see and download the official releases of the Adyen Payment subscription plug-in](https://github.com/Adyen/adyen-magento-subscription/releases)
+
 ## Getting started
 
-[Click here to go into the manual](https://docs.adyen.com/display/TD/Adyen+Documentation)
+<a href="https://docs.is.adyen.com/display/TD/Magento+Subscriptions" target="_blank">Click here to go into the manual]</a>
 
 ## Support
 For bugreports, please file a ticket, for store specific requests, please contact Adyen Magento support at magento@adyen.com
