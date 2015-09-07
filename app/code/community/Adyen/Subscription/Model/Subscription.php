@@ -351,12 +351,14 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $latestQuoteSchedule = $this->getQuoteAdditionalCollection()
             ->addFieldToFilter('order_id', ['notnull' => true]);
 
+        $resource = $latestQuoteSchedule->getResource();
+
         $latestQuoteSchedule->getSelect()->joinLeft(
-            array('order' => 'sales_flat_order'),
+            array('order' => $resource->getTable('sales/order')),
             'main_table.order_id = order.entity_id',
             'created_at'
         );
-        $latestQuoteSchedule = $latestQuoteSchedule->getFirstItem();
+        $latestQuoteSchedule = $latestQuoteSchedule->getLastItem();
 
         $lastScheduleDate = $this->getCreatedAt();
         if ($latestQuoteSchedule->getId()) {
@@ -380,7 +382,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
                 $dateInterval = new DateInterval(sprintf('P%sY',$this->getTerm()));
                 break;
         }
-        if (! isset($dateInterval)) {
+        if ($dateInterval == null) {
             Adyen_Subscription_Exception::throwException('Could not calculate a correct date interval');
         }
 
