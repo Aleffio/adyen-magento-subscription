@@ -265,8 +265,8 @@ class Adyen_Subscription_Model_Product_Observer
                 'label'        => 'Subscription',
                 'code'         => 'adyen_subscription',
                 'option_value' => 'none',
-                'value'        => 'No subscription',
-                'print_value'  => 'No subscription',
+                'value'        => Mage::helper('adyen_subscription')->__('No subscription'),
+                'print_value'  => Mage::helper('adyen_subscription')->__('No subscription'),
             ];
         }
 
