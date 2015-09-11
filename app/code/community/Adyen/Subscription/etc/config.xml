@@ -43,6 +43,11 @@
                     <sales_order_creditmemo_totals>Adyen_Subscription_Block_Adminhtml_Sales_Order_Creditmemo_Totals</sales_order_creditmemo_totals>
                 </rewrite>
             </adminhtml>
+            <sales>
+                <rewrite>
+                    <adminhtml_customer_edit_tab_recurring_profile>Adyen_Subscription_Block_Sales_Adminhtml_Customer_Edit_Tab_Recurring_Profile</adminhtml_customer_edit_tab_recurring_profile>
+                </rewrite>
+            </sales>
         </blocks>
         <helpers>
             <adyen_subscription>
