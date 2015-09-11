@@ -107,9 +107,7 @@ jQuery(function($){
             recalculateTax();
         });
 
-        console.log('[id="'+id+'[update_price]"]');
         $('[id="'+id+'[update_price]"]', function(){
-            console.log(this);
             $(this).prop('disabled', true);
         });
     });
