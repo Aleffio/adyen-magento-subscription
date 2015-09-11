@@ -254,7 +254,7 @@ class Adyen_Subscription_Model_Product_Observer
 
         if ($subscription) {
             $subscriptionOption = [
-                'label'        => 'Subscription',
+                'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
                 'code'         => 'adyen_subscription',
                 'option_value' => $subscriptionId,
                 'value'        => $subscription->getFrontendLabel(),
@@ -262,7 +262,7 @@ class Adyen_Subscription_Model_Product_Observer
             ];
         } else {
             $subscriptionOption = [
-                'label'        => 'Subscription',
+                'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
                 'code'         => 'adyen_subscription',
                 'option_value' => 'none',
                 'value'        => Mage::helper('adyen_subscription')->__('No subscription'),
