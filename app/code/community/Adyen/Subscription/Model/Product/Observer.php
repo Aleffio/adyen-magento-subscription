@@ -141,8 +141,6 @@ class Adyen_Subscription_Model_Product_Observer
     }
 
     /**
-     * Process `giftcard_amounts` attribute afterLoad logic on loading by collection
-     *
      * @param Varien_Event_Observer $observer
      * @return $this
      */
