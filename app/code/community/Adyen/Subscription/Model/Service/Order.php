@@ -68,9 +68,12 @@ class Adyen_Subscription_Model_Service_Order
 
             $stockId = $order->getStockId() ?: 1;
 
+            $createdAt = $order->getScheduledAt() ?: $order->getCreatedAt();
+
             // Create subscription
             /** @var Adyen_Subscription_Model_Subscription $subscription */
             $subscription = Mage::getModel('adyen_subscription/subscription')
+                ->setCreatedAt($createdAt)
                 ->setStatus(Adyen_Subscription_Model_Subscription::STATUS_ACTIVE)
                 ->setStockId($stockId)
                 ->setCustomerId($order->getCustomerId())
