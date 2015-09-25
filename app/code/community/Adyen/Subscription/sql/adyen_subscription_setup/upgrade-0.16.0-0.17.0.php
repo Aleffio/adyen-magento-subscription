@@ -30,10 +30,10 @@ $installer->startSetup();
 $connection = $installer->getConnection();
 
 
-$installer->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'is_subscription', 'is_visible', false);
+$installer->updateAttribute(Mage_Catalog_Model_Product::ENTITY, 'is_recurring', 'is_visible', false);
 
 $eagCollection = Mage::getResourceModel('eav/entity_attribute_group_collection');
-$eagCollection->addFieldToFilter('attribute_group_name', 'Subscription');
+$eagCollection->addFieldToFilter('attribute_group_name', 'Recurring Profile');
 foreach ($eagCollection as $eagItem) {
     /** @var Mage_Eav_Model_Entity_Attribute_Group $eagItem */
     $eagItem->delete();
