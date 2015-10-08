@@ -39,7 +39,8 @@ class Adyen_Subscription_Model_Service_Order
         $subscriptions = array();
 
         if ($order->getSubscriptionId()) {
-            // Don't create subscription, since this order is created by a subscription
+            $msg = "Don't create subscription, since this order %s is created by a subscription";
+            Mage::helper('adyen_subscription')->logSubscriptionCron(sprintf($msg, $order->getIncrementId()));
             return $subscriptions;
         }
 
@@ -51,7 +52,8 @@ class Adyen_Subscription_Model_Service_Order
             $productSubscription = $this->_getProductSubscription($orderItem);
 
             if (!$productSubscription) {
-                // No product subscription found, no subscription needs to be created
+                Mage::helper('adyen_subscription')
+                    ->logSubscriptionCron(sprintf("No subscription found for orderItem %s", $orderItem));
                 continue;
             }
 
@@ -88,7 +90,9 @@ class Adyen_Subscription_Model_Service_Order
                 ->setUpdatedAt(now());
 
             if (!$billingAgreement) {
-                // No billing agreement could be found, subscription is created,
+                Mage::helper('adyen_subscription')
+                    ->logSubscriptionCron(sprintf("No billing agreement could be found, subscription is created but with error"));
+
                 // but set subscription directly to error
                 $subscription->setErrorMessage(
                     Mage::helper('adyen_subscription')->__('No billing agreement found')
@@ -176,7 +180,7 @@ class Adyen_Subscription_Model_Service_Order
             );
         }
 
-        if(!empty($subscription)) {
+        if(!empty($subscription) && $subscription->getId()) {
             $order->setCreatedAdyenSubscription(true);
         }
 
