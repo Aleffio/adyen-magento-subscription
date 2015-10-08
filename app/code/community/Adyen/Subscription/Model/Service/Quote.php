@@ -127,7 +127,14 @@ class Adyen_Subscription_Model_Service_Quote
                 "Error in subscription (#%s) creating order from quote (#%s) error is: %s",
                 $subscription->getId(), $quote->getId(), $e->getMessage()
             ));
-            $subscription->savePaymentError($e);
+
+            if (isset($order)) {
+                $order->delete();
+            }
+            $subscription->setStatus($subscription::STATUS_PAYMENT_ERROR);
+            $subscription->setErrorMessage($e->getMessage());
+            $subscription->save();
+
             Mage::dispatchEvent('adyen_subscription_quote_createorder_fail', array(
                 'subscription' => $subscription,
                 'status' => $subscription::STATUS_PAYMENT_ERROR,
@@ -140,6 +147,9 @@ class Adyen_Subscription_Model_Service_Quote
                 $subscription->getId(), $quote->getId(), $e->getMessage()
             ));
 
+            if (isset($order)) {
+                $order->delete();
+            }
             $subscription->setStatus($subscription::STATUS_ORDER_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
