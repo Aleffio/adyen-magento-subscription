@@ -149,7 +149,7 @@
                 </tr>
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Method'); ?></label></td>
-                    <td class="value"><strong><?php echo $_billingAgreement->getPaymentMethodInstance()->getTitle(); ?></strong></td>
+                    <td class="value"><strong><?php echo $_billingAgreement->getPaymentMethodInstance() ? $_billingAgreement->getPaymentMethodInstance()->getTitle() : ''; ?></strong></td>
                 </tr>
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Created At'); ?></label></td>
