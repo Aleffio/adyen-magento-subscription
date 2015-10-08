@@ -70,7 +70,8 @@ class Adyen_Subscription_Model_Subscription_History extends Mage_Core_Model_Abst
         parent::save();
     }
 
-    public function createHistoryFromSubscription(Adyen_Subscription_Model_Subscription $subscription) {
+    public function createHistoryFromSubscription(Adyen_Subscription_Model_Subscription $subscription)
+    {
         return $this->saveFromSubscription($subscription, true);
     }
 

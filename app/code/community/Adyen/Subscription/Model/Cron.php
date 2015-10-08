@@ -235,13 +235,13 @@ class Adyen_Subscription_Model_Cron
             try {
                 $quote = $subscription->getActiveQuote();
                 if (! $quote) {
-                    Mage::helper('adyen_subscription')->logOrderCron("Can\'t create order: No quote created yet.");
                     Adyen_Subscription_Exception::throwException('Can\'t create order: No quote created yet.');
                 }
 
                 Mage::getSingleton('adyen_subscription/service_quote')->createOrder($subscription->getActiveQuote(), $subscription);
                 $successCount++;
             } catch (Exception $e) {
+                Mage::helper('adyen_subscription')->logOrderCron($e->getMessage());
                 Adyen_Subscription_Exception::logException($e);
                 $failureCount++;
             }
