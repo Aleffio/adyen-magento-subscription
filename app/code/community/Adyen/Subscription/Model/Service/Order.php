@@ -210,7 +210,7 @@ class Adyen_Subscription_Model_Service_Order
         $billingAgreement = Mage::getModel('sales/billing_agreement')->load($billingAgreementId);
 
         Mage::dispatchEvent(
-            'adyen_subscription_quote_getbillingagreement',
+            'adyen_subscription_order_getbillingagreement',
             array('billingAgreement' => $billingAgreement, 'order' => $order)
         );
 

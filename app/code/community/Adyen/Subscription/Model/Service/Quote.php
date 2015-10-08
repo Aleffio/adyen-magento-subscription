@@ -284,20 +284,9 @@ class Adyen_Subscription_Model_Service_Quote
      */
     public function getBillingAgreement(Mage_Sales_Model_Quote $quote)
     {
-        /** @var Mage_Sales_Model_Quote_Payment $quotePayment */
-        $quotePayment = Mage::getModel('sales/quote_payment')
-            ->getCollection()
-            ->addFieldToFilter('quote_id', $quote->getId())
-            ->getFirstItem();
+        $billingAgreement = $quote->getPayment()->getMethodInstance()->getBillingAgreement();
 
-        $subscriptionReference = str_replace('adyen_oneclick_', '', $quotePayment->getMethod());
-
-        $billingAgreement = Mage::getModel('adyen/billing_agreement')
-            ->getCollection()
-            ->addFieldToFilter('reference_id', $subscriptionReference)
-            ->getFirstItem();
-
-        if (! $billingAgreement->getId()) {
+        if (! $billingAgreement) {
             Adyen_Subscription_Exception::throwException('Could not find billing agreement for quote ' . $quote->getId());
         }
 
