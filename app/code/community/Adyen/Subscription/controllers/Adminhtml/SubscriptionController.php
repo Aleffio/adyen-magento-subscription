@@ -404,7 +404,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
             $this->_editSubscription($subscription, ['full_update' => true]);
             return;
-        } catch (Mage_Core_Exception $e) {
+        } catch (Exception $e) {
             $this->_getSession()->addError(Mage::helper('adyen_subscription')->__(
                 'An error occurred while trying to create a quote for this subscription: %s',
                 $e->getMessage()
@@ -444,10 +444,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
                 Mage::helper('adyen_subscription')->__('Adyen Subscription and scheduled order successfully updated')
             );
         }
-        catch (Mage_Core_Exception $e) {
-            $subscription->setErrorMessage($e->getMessage());
-            $subscription->setStatus($subscription::STATUS_SUBSCRIPTION_ERROR);
-            $subscription->save();
+        catch (Exception $e) {
 
             $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('An error occurred: ' . $e->getMessage())
@@ -482,7 +479,6 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             Mage::getModel('adyen_subscription/service_quote')->updateQuotePayment($quote, $billingAgreement);
 
             $subscription->importPostData($postData);
-
             $subscription->save();
 
             $this->_getSession()->addSuccess(
