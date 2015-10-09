@@ -141,8 +141,6 @@ class Adyen_Subscription_Model_Product_Observer
     }
 
     /**
-     * Process `giftcard_amounts` attribute afterLoad logic on loading by collection
-     *
      * @param Varien_Event_Observer $observer
      * @return $this
      */
@@ -254,7 +252,7 @@ class Adyen_Subscription_Model_Product_Observer
 
         if ($subscription) {
             $subscriptionOption = [
-                'label'        => 'Subscription',
+                'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
                 'code'         => 'adyen_subscription',
                 'option_value' => $subscriptionId,
                 'value'        => $subscription->getFrontendLabel(),
@@ -262,11 +260,11 @@ class Adyen_Subscription_Model_Product_Observer
             ];
         } else {
             $subscriptionOption = [
-                'label'        => 'Subscription',
+                'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
                 'code'         => 'adyen_subscription',
                 'option_value' => 'none',
-                'value'        => 'No subscription',
-                'print_value'  => 'No subscription',
+                'value'        => Mage::helper('adyen_subscription')->__('No subscription'),
+                'print_value'  => Mage::helper('adyen_subscription')->__('No subscription'),
             ];
         }
 

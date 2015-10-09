@@ -220,7 +220,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             /** @var Mage_Sales_Model_Quote_Item $quoteItem */
             $option = $quoteItem->getOptionByCode('additional_options');
 
-            if (! $option || $quoteItem->getParentItemId()) continue;
+            if (! $option) continue;
 
             $additionalOptions = unserialize($option->getValue());
 
@@ -236,15 +236,19 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $productSubscription = Mage::getModel('adyen_subscription/product_subscription')->load($subscriptionOptions['option_value']);
 
-            $subscriptionQty = $productSubscription->getQty();
-            if ($subscriptionQty > 1) {
-                $qty = $quoteItem->getQty() / $subscriptionQty;
+            if (Mage::helper('adyen_subscription/config')->getReorderSubscription()) {
+                if ($quoteItem->getParentItemId()) continue;
 
-                $quoteItem->setQty($qty);
-                $quoteItem->save();
+                // Only divide qty if reorder keeps subscription(s)
+                $subscriptionQty = $productSubscription->getQty();
+                if ($subscriptionQty > 1) {
+                    $qty = $quoteItem->getQty() / $subscriptionQty;
+
+                    $quoteItem->setQty($qty);
+                    $quoteItem->save();
+                }
             }
-
-            if (! Mage::helper('adyen_subscription/config')->getReorderSubscription()) {
+            else {
                 // Delete product subscriptions from products in reorder
                 $newAdditionalOptions = [];
                 foreach ($additionalOptions as $additionalOption) {

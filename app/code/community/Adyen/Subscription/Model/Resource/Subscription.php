@@ -45,4 +45,40 @@ class Adyen_Subscription_Model_Resource_Subscription extends Mage_Core_Model_Res
 
         return $this;
     }
+
+
+    /**
+     * @param Adyen_Subscription_Model_Subscription $object
+     *
+     * @return Mage_Core_Model_Resource_Db_Abstract
+     */
+    protected function _beforeSave(Mage_Core_Model_Abstract $object)
+    {
+        $this->setNewIncrementId($object);
+        return parent::_beforeSave($object);
+    }
+
+
+    /**
+     * Set new increment id to object
+     *
+     * @param Adyen_Subscription_Model_Subscription $object
+     * @return Mage_Eav_Model_Entity_Abstract
+     */
+    public function setNewIncrementId(Adyen_Subscription_Model_Subscription $object)
+    {
+        if ($object->getIncrementId() && $object->getIncrementId() != $object->getId()) {
+            return $this;
+        }
+
+        $incrementId = Mage::getSingleton('eav/config')
+            ->getEntityType('adyen_subscription')
+            ->fetchNewIncrementId($object->getStoreId());
+
+        if ($incrementId !== false) {
+            $object->setIncrementId($incrementId);
+        }
+
+        return $this;
+    }
 }

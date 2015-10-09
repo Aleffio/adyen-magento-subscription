@@ -431,13 +431,6 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         return $this->getData('_billing_agreement');
     }
 
-    public function savePaymentError(Mage_Payment_Exception $e)
-    {
-        $this->setStatus(self::STATUS_PAYMENT_ERROR);
-        $this->setErrorMessage($e->getMessage());
-        $this->save();
-    }
-
     public function pause()
     {
         $this->setStatus(self::STATUS_PAUSED)
