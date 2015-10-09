@@ -44,6 +44,8 @@ class Adyen_Subscription_Model_Service_Quote
         ));
 
         try {
+            $subscription->getResource()->beginTransaction();
+
             if (! $subscription->canCreateOrder()) {
                 Mage::helper('adyen_subscription')->logOrderCron("Not allowed to create order from quote");
                 Adyen_Subscription_Exception::throwException(
@@ -79,41 +81,21 @@ class Adyen_Subscription_Model_Service_Quote
                     ->save();
             }
 
-            $orderAdditional = $subscription->getOrderAdditional($order, true)->save();
-            $quoteAdditional = $subscription->getActiveQuoteAdditional()->setOrder($order)->save();
+            $subscription->getOrderAdditional($order, true)->save();
+            $subscription->getActiveQuoteAdditional()->setOrder($order)->save();
 
             $subscription->setErrorMessage(null);
-            $subscriptionHistory = null;
-
-            //Save history
-            if ($subscription->getStatus() == $subscription::STATUS_ORDER_ERROR ||
-                $subscription->getStatus() == $subscription::STATUS_PAYMENT_ERROR
-            ) {
-                $subscription->setStatus($subscription::STATUS_ACTIVE);
-
-                $subscriptionHistory = Mage::getModel('adyen_subscription/subscription_history');
-                $subscriptionHistory->createHistoryFromSubscription($subscription);
-            }
-
             $subscription->setScheduledAt($subscription->calculateNextScheduleDate());
-
-            $transaction = Mage::getModel('core/resource_transaction');
-            $transaction->addObject($subscription)
-                        ->addObject($orderAdditional)
-                        ->addObject($quoteAdditional)
-                        ->addObject($order);
-
-            if($subscriptionHistory) {
-                $transaction->addObject($subscriptionHistory);
-            }
-            $transaction->save();
+            $subscription->save();
 
             Mage::helper('adyen_subscription')->logOrderCron(sprintf(
                 "Successful created order (#%s) for subscription (#%s)",
                 $order->getId(), $subscription->getId()
             ));
 
-            $order = $service->getOrder();
+            $order->save();
+            $subscription->getResource()->commit();
+
             Mage::dispatchEvent('adyen_subscription_quote_createorder_after', array(
                 'subscription' => $subscription,
                 'quote' => $quote,
@@ -121,35 +103,32 @@ class Adyen_Subscription_Model_Service_Quote
             ));
 
             return $order;
-
         } catch (Mage_Payment_Exception $e) {
+            $subscription->getResource()->rollBack();
+
             Mage::helper('adyen_subscription')->logOrderCron(sprintf(
                 "Error in subscription (#%s) creating order from quote (#%s) error is: %s",
                 $subscription->getId(), $quote->getId(), $e->getMessage()
             ));
 
-            if (isset($order)) {
-                $order->delete();
-            }
             $subscription->setStatus($subscription::STATUS_PAYMENT_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();
 
             Mage::dispatchEvent('adyen_subscription_quote_createorder_fail', array(
                 'subscription' => $subscription,
-                'status' => $subscription::STATUS_PAYMENT_ERROR,
+                'status' => $subscription->getStatus(),
                 'error' => $e->getMessage()
             ));
             throw $e;
         } catch (Exception $e) {
+            $subscription->getResource()->rollBack();
+
             Mage::helper('adyen_subscription')->logOrderCron(sprintf(
                 "Error in subscription (#%s) creating order from quote (#%s) error is: %s",
                 $subscription->getId(), $quote->getId(), $e->getMessage()
             ));
 
-            if (isset($order)) {
-                $order->delete();
-            }
             $subscription->setStatus($subscription::STATUS_ORDER_ERROR);
             $subscription->setErrorMessage($e->getMessage());
             $subscription->save();

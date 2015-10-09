@@ -551,6 +551,20 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     /**
      * @return array
      */
+    public static function getErrorStatuses()
+    {
+        return [
+            self::STATUS_ORDER_ERROR,
+            self::STATUS_PAYMENT_ERROR,
+            self::STATUS_QUOTE_ERROR,
+            self::STATUS_SUBSCRIPTION_ERROR
+        ];
+    }
+
+
+    /**
+     * @return array
+     */
     public static function getInactiveStatuses()
     {
         return [
