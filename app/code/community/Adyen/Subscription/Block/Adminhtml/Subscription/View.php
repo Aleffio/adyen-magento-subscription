@@ -39,7 +39,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
                 'class'     => 'delete',
                 'label'     => Mage::helper('adyen_subscription')->__('Pause Subscription'),
                 'onclick'   => "setLocation('{$this->getUrl('*/*/pause',
-                    ['id' => $this->getSubscription()->getIncrementId()])}')",
+                    ['id' => $this->getSubscription()->getId()])}')",
             ], 5);
         }
 
@@ -48,7 +48,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View extends Mage_Adminhtm
                 'class'     => 'delete',
                 'label'     => Mage::helper('adyen_subscription')->__('Cancel Subscription'),
                 'onclick'   => "setLocation('{$this->getUrl('*/*/cancel',
-                    ['id' => $this->getSubscription()->getIncrementId()])}')",
+                    ['id' => $this->getSubscription()->getId()])}')",
             ], 10);
         }
 
