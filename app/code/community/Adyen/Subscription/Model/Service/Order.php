@@ -53,7 +53,7 @@ class Adyen_Subscription_Model_Service_Order
 
             if (!$productSubscription) {
                 Mage::helper('adyen_subscription')
-                    ->logSubscriptionCron(sprintf("No subscription found for orderItem %s", $orderItem));
+                    ->logSubscriptionCron(sprintf("No subscription found for orderItem %s", $orderItem->getSku()));
                 continue;
             }
 
