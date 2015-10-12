@@ -122,8 +122,8 @@ class Adyen_Subscription_Model_Service_Order
                     ->setName($orderItem->getName())
                     ->setProductSubscriptionId($productSubscription->getId())
                     ->setLabel($productSubscription->getLabel())
-                    ->setPrice($orderItem->getRowTotal())
-                    ->setPriceInclTax($orderItem->getRowTotalInclTax())
+                    ->setPrice($orderItem->getRowTotal() / $qty)
+                    ->setPriceInclTax($orderItem->getRowTotalInclTax() / $qty)
                     ->setQty($qty)
                     ->setOnce(0)
                     // Currently not in use
