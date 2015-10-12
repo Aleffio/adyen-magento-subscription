@@ -194,7 +194,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (!$subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -254,7 +254,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (! $subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -287,7 +287,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (!$subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -320,7 +320,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (! $subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -355,7 +355,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (! $subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -390,7 +390,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (! $subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -424,7 +424,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (!$subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -464,7 +464,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (!$subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
