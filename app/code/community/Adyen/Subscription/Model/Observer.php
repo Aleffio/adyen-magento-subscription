@@ -194,9 +194,11 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Set the right amount of qty on the order items when reordering.
+     * Set the right amount of qty on the order items when reordering or editing order.
      * The qty of the ordered items is divided by the 'qty in subscription'
-     * amount of the selected product subscription.
+     * amount of the selected product subscription, when editing order or the config
+     * option is set to keep the subscription at reorder, else qty remains the same
+     * but the subscription is deleted from the quote item.
      *
      * @event create_order_session_quote_initialized
      * @param Varien_Event_Observer $observer
@@ -209,7 +211,10 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         /** @var Mage_Core_Model_Session $session */
         $session = $observer->getSessionQuote();
 
-        if ($session->getData('subscription_quote_initialized') || ! $session->getReordered()) {
+        $editOrder = Mage::app()->getRequest()->getControllerName() == 'sales_order_edit';
+
+        if ($session->getData('subscription_quote_initialized')
+            || (! $session->getReordered() && ! $editOrder)) {
             return;
         }
 
@@ -236,10 +241,11 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $productSubscription = Mage::getModel('adyen_subscription/product_subscription')->load($subscriptionOptions['option_value']);
 
-            if (Mage::helper('adyen_subscription/config')->getReorderSubscription()) {
+            if (Mage::helper('adyen_subscription/config')->getReorderSubscription() || $editOrder) {
                 if ($quoteItem->getParentItemId()) continue;
 
                 // Only divide qty if reorder keeps subscription(s)
+                // or is edit order action
                 $subscriptionQty = $productSubscription->getQty();
                 if ($subscriptionQty > 1) {
                     $qty = $quoteItem->getQty() / $subscriptionQty;
