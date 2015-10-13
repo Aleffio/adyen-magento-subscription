@@ -46,7 +46,7 @@ class Adyen_Subscription_Model_SalesRule_Condition_ProductSubscription extends M
 
 
     /**
-     * Validate if qoute customer is assigned to role segments
+     * Validate if quote customer is assigned to role segments
      *
      * @param Mage_Sales_Model_Quote_Address|Varien_Object $object
      * @return bool
