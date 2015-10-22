@@ -54,7 +54,7 @@ class Adyen_Subscription_Model_Resource_Subscription_Collection extends Mage_Cor
         $select = $this->getSelect()->joinLeft(
             ['ce' => $this->getTable('customer/entity')],
             'ce.entity_id = main_table.customer_id',
-            ['customer_email' => 'email']
+            ['customer_email' => 'email', 'customer_increment_id' => 'increment_id']
         );
 
         $customer = Mage::getResourceSingleton('customer/customer');
