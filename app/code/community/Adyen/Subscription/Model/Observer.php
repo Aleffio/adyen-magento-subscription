@@ -399,6 +399,32 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         }
     }
 
+    /**
+     * Check if billing agreement is not linked to a subscription
+     * If this is the case return an exception when trying to delete
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function deleteBillingAgreement(Varien_Event_Observer $observer)
+    {
+        $agreement = $observer->getObject();
+
+        if (! $agreement instanceof Adyen_Payment_Model_Billing_Agreement) {
+            return;
+        }
+
+        $agreementId = $agreement->getId();
+
+        $subscriptionCollection = Mage::getModel('adyen_subscription/subscription')
+            ->getCollection()
+            ->addFieldToFilter('billing_agreement_id', $agreementId);
+
+        if ($subscriptionCollection->count() > 0) {
+            Mage::throwException(Mage::helper('adyen_subscription')->__(
+                'You cannot delete this billing agreement because it is used for a subscription.'
+            ));
+        }
+    }
 
     /**
      * Do not delete products that are used for active subscriptions
