@@ -149,7 +149,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
             'actions'   => [[
                 'caption' => $helper->__('View'),
                 'url'     => [
-                    'base'  => 'adyen_subscription/adminhtml_subscription/view',
+                    'base'  => '*/subscription/view',
                     'params'=> ['store' => $this->getRequest()->getParam('store')]
                 ],
                 'field'   => 'id'
@@ -177,6 +177,6 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('adyen_subscription/adminhtml_subscription/view', array('id' => $row->getId()));
+        return $this->getUrl('*/subscription/view', array('id' => $row->getId()));
     }
 }

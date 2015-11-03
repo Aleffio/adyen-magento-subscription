@@ -68,8 +68,8 @@ Calendar.setup({
 <?php if ($_subscription): ?>
 <?php
 $_updateUrl = $_fullUpdate
-    ? $this->getUrl('adyen_subscription/adminhtml_subscription/updateSubscription', ['id' => $_subscription->getId()])
-    : $this->getUrl('adyen_subscription/adminhtml_subscription/updateQuote', ['id' => $_subscription->getId()]);
+    ? $this->getUrl('*/subscription/updateSubscription', ['id' => $_subscription->getId()])
+    : $this->getUrl('*/subscription/updateQuote', ['id' => $_subscription->getId()]);
 ?>
 
 <div class="order-totals-bottom">

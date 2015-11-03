@@ -303,13 +303,13 @@
 
     <admin>
         <routers>
-            <adyen_subscription>
-                <use>admin</use>
+            <adminhtml>
                 <args>
-                    <module>Adyen_Subscription</module>
-                    <frontName>adyen_subscription</frontName>
+                    <modules>
+                        <adyen_subscription before="Mage_Adminhtml">Adyen_Subscription_Adminhtml</adyen_subscription>
+                    </modules>
                 </args>
-            </adyen_subscription>
+            </adminhtml>
         </routers>
     </admin>
 
