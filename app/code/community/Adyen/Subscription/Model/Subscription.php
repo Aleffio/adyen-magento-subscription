@@ -468,10 +468,11 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
 
                 if (in_array($order->getStatus(), $helper->getProtectedStatuses())) {
                     $session->addError(
-                        $helper->__('Can\'t hold order #%s (protected status)', $order->getIncrementId())
+                        $helper->__('Can\'t hold order #%s (protected status: %s)', $order->getIncrementId(), $order->getStatusLabel())
                     );
                     continue;
                 }
+
                 $session->addNotice(
                     $helper->__('Order #%s on hold', $order->getIncrementId())
                 );
@@ -485,6 +486,8 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     }
 
     /**
+     * Activate subscription, create scheduled order (quote) and unhold linked orders
+     *
      * @return $this
      */
     public function activate()
@@ -494,6 +497,37 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             ->setEndsAt('0000-00-00 00:00:00')
             ->setCancelCode(null)
             ->save();
+
+        $helper = Mage::helper('adyen_subscription/config');
+        $session = Mage::getSingleton('adminhtml/session');
+
+        if ($helper->getHoldOrders()) {
+            try {
+                $quote = Mage::getSingleton('adyen_subscription/service_subscription')->createQuote($this);
+
+                $session->addNotice(
+                    $helper->__('Quote (#%s) successfully created', $quote->getId())
+                );
+            }
+            catch (Exception $e) {
+                $session->addError($helper->__(
+                    'An error occurred while trying to create a quote for this subscription: %s',
+                    $e->getMessage()
+                ));
+            }
+
+            foreach ($this->getOrders() as $order) {
+                /** @var Mage_Sales_Model_Order $order */
+                if (! $order->canUnhold()) {
+                    continue;
+                }
+
+                $session->addNotice(
+                    $helper->__('Order #%s released from hold', $order->getIncrementId())
+                );
+                $order->unhold()->save();
+            }
+        }
 
         Mage::dispatchEvent('adyen_subscription_activate', array('subscription' => $this));
 
