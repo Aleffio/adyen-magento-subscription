@@ -26,8 +26,10 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
     const XML_PATH_GENERAL_SHOW_TERM_LABEL      = 'adyen_subscription/general/show_term_label';
 
     const XML_PATH_SUBSCRIPTION_CANCEL_REASONS  = 'adyen_subscription/subscription/cancel_reasons';
+    const XML_PATH_SUBSCRIPTION_HOLD_ORDERS     = 'adyen_subscription/subscription/pause_hold_orders';
 
     const XML_PATH_ORDER_REORDER_SUBSCRIPTION   = 'adyen_subscription/order/reorder_subscription';
+    const XML_PATH_ORDER_PROTECTED_STATUSES     = 'adyen_subscription/order/protected_statuses';
 
     /**
      * @param null|Mage_Core_Model_Store|int $store
@@ -52,9 +54,27 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
      * @param null|Mage_Core_Model_Store|int $store
      * @return bool
      */
+    public function getHoldOrders($store = null)
+    {
+        return Mage::getStoreConfigFlag(self::XML_PATH_SUBSCRIPTION_HOLD_ORDERS, $store);
+    }
+
+    /**
+     * @param null|Mage_Core_Model_Store|int $store
+     * @return bool
+     */
     public function getReorderSubscription($store = null)
     {
         return Mage::getStoreConfigFlag(self::XML_PATH_ORDER_REORDER_SUBSCRIPTION, $store);
+    }
+
+    /**
+     * @param null|Mage_Core_Model_Store|int $store
+     * @return array
+     */
+    public function getProtectedStatuses($store = null)
+    {
+        return explode(',', Mage::getStoreConfig(self::XML_PATH_ORDER_PROTECTED_STATUSES, $store));
     }
 
     /**
