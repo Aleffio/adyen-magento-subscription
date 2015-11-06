@@ -508,20 +508,6 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $session = Mage::getSingleton('adminhtml/session');
 
         if ($helper->getHoldOrders()) {
-            try {
-                $quote = Mage::getSingleton('adyen_subscription/service_subscription')->createQuote($this);
-
-                $session->addNotice(
-                    $helper->__('Quote (#%s) successfully created', $quote->getId())
-                );
-            }
-            catch (Exception $e) {
-                $session->addError($helper->__(
-                    'An error occurred while trying to create a quote for this subscription: %s',
-                    $e->getMessage()
-                ));
-            }
-
             foreach ($this->getOrders() as $order) {
                 /** @var Mage_Sales_Model_Order $order */
                 if (! $order->canUnhold()) {
