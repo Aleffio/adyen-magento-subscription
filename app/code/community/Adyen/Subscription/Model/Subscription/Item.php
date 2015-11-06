@@ -24,8 +24,6 @@
 /**
  * Class Adyen_Subscription_Model_Subscription_Item
  *
- * @method Adyen_Subscription_Model_Subscription_Item setProductSubscriptionId(int $id)
- * @method int getProductSubscriptionId()
  * @method string getStatus()
  * @method Adyen_Subscription_Model_Subscription_Item setStatus(string $value)
  * @method int getSubscriptionId()
