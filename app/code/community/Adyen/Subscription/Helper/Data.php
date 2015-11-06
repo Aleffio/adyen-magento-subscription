@@ -49,4 +49,14 @@ class Adyen_Subscription_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return string
+     */
+    public function getAdminOrderUrlHtml(Mage_Sales_Model_Order $order)
+    {
+        return sprintf('<a href="%s">#%s</a>',
+            Mage::helper('adminhtml')->getUrl('*/sales_order/view', ['order_id' => $order->getId()]),
+            $order->getIncrementId());
+    }
 }

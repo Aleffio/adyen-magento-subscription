@@ -461,20 +461,26 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
                 /** @var Mage_Sales_Model_Order $order */
                 if (! $order->canHold()) {
                     $session->addError(
-                        $helper->__('Can\'t hold order #%s', $order->getIncrementId())
+                        $helper->__('Can\'t hold order %s',
+                            Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                            $order->getStatusLabel())
                     );
                     continue;
                 }
 
                 if (in_array($order->getStatus(), $helper->getProtectedStatuses())) {
                     $session->addError(
-                        $helper->__('Can\'t hold order #%s (protected status: %s)', $order->getIncrementId(), $order->getStatusLabel())
+                        $helper->__('Can\'t hold order %s (protected status: %s)',
+                            Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                            $order->getStatusLabel())
                     );
                     continue;
                 }
 
                 $session->addNotice(
-                    $helper->__('Order #%s on hold', $order->getIncrementId())
+                    $helper->__('Order %s on hold',
+                        Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                        $order->getStatusLabel())
                 );
                 $order->hold()->save();
             }
@@ -523,7 +529,9 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
                 }
 
                 $session->addNotice(
-                    $helper->__('Order #%s released from hold', $order->getIncrementId())
+                    $helper->__('Order %s released from hold',
+                        Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                        $order->getStatusLabel())
                 );
                 $order->unhold()->save();
             }
