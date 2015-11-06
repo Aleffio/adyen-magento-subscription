@@ -26,6 +26,7 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
     const XML_PATH_GENERAL_SHOW_TERM_LABEL      = 'adyen_subscription/general/show_term_label';
 
     const XML_PATH_SUBSCRIPTION_CANCEL_REASONS  = 'adyen_subscription/subscription/cancel_reasons';
+    const XML_PATH_SUBSCRIPTION_CANCEL_ORDERS   = 'adyen_subscription/subscription/cancel_delete_orders';
     const XML_PATH_SUBSCRIPTION_HOLD_ORDERS     = 'adyen_subscription/subscription/pause_hold_orders';
 
     const XML_PATH_ORDER_REORDER_SUBSCRIPTION   = 'adyen_subscription/order/reorder_subscription';
@@ -48,6 +49,15 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
         $config = Mage::getStoreConfig(self::XML_PATH_SUBSCRIPTION_CANCEL_REASONS);
 
         return $config ? unserialize($config) : array();
+    }
+
+    /**
+     * @param null|Mage_Core_Model_Store|int $store
+     * @return bool
+     */
+    public function getCancelOrders($store = null)
+    {
+        return Mage::getStoreConfigFlag(self::XML_PATH_SUBSCRIPTION_CANCEL_ORDERS, $store);
     }
 
     /**

@@ -537,6 +537,48 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $this->setEndsAt(now());
         $this->save();
 
+        $helper = Mage::helper('adyen_subscription/config');
+        $session = Mage::getSingleton('adminhtml/session');
+
+        if ($helper->getCancelOrders()) {
+            $activeQuote = $this->getActiveQuote();
+
+            if ($activeQuote instanceof Mage_Sales_Model_Quote) {
+                $session->addNotice(
+                    $helper->__('Scheduled quote #%s deleted', $activeQuote->getId())
+                );
+                $activeQuote->delete();
+            }
+
+            foreach ($this->getOrders() as $order) {
+                /** @var Mage_Sales_Model_Order $order */
+                if (! $order->canCancel()) {
+                    $session->addError(
+                        $helper->__('Can\'t cancel order %s',
+                            Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                            $order->getStatusLabel())
+                    );
+                    continue;
+                }
+
+                if (in_array($order->getStatus(), $helper->getProtectedStatuses())) {
+                    $session->addError(
+                        $helper->__('Can\'t cancel order %s (protected status: %s)',
+                            Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                            $order->getStatusLabel())
+                    );
+                    continue;
+                }
+
+                $session->addNotice(
+                    $helper->__('Order %s canceled',
+                        Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                        $order->getStatusLabel())
+                );
+                $order->cancel()->save();
+            }
+        }
+
         Mage::dispatchEvent('adyen_subscription_cancel', array('subscription' => $this));
 
         return $this;
