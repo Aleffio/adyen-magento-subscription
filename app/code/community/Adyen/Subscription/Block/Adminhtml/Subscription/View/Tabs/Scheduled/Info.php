@@ -39,4 +39,31 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_Scheduled_Info
     {
         return $this->getSubscription()->getActiveQuote();
     }
+
+    /**
+     * @return string
+     */
+    public function getShippingMethodTitle()
+    {
+        $shippingMethod = $this->getQuote()->getShippingAddress()->getShippingMethod();
+        $shippingCode = substr($shippingMethod, strpos($shippingMethod, '_') + 1);
+
+        return $shippingTitle = Mage::getStoreConfig('carriers/' . $shippingCode . '/title');
+    }
+
+    /**
+     * @return Adyen_Payment_Model_Billing_Agreement
+     */
+    public function getBillingAgreement()
+    {
+        return $this->getQuote()->getPayment()->getMethodInstance()->getBillingAgreement();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBillingAgreementViewUrl()
+    {
+        return $this->getUrl('adminhtml/sales_billing_agreement/view', array('agreement' => $this->getBillingAgreement()->getId()));
+    }
 }
