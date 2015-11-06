@@ -431,12 +431,53 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         return $this->getData('_billing_agreement');
     }
 
+    /**
+     * Pause subscription, delete scheduled order (active quote) and hold linked orders (if possible)
+     *
+     * @return $this
+     * @throws Exception
+     */
     public function pause()
     {
         $this->setStatus(self::STATUS_PAUSED)
             ->setErrorMessage(null)
             ->setCancelCode(null)
             ->save();
+
+        $helper = Mage::helper('adyen_subscription/config');
+        $session = Mage::getSingleton('adminhtml/session');
+
+        if ($helper->getHoldOrders()) {
+            $activeQuote = $this->getActiveQuote();
+
+            if ($activeQuote instanceof Mage_Sales_Model_Quote) {
+                $session->addNotice(
+                    $helper->__('Scheduled quote #%s deleted', $activeQuote->getId())
+                );
+                $activeQuote->delete();
+            }
+
+            foreach ($this->getOrders() as $order) {
+                /** @var Mage_Sales_Model_Order $order */
+                if (! $order->canHold()) {
+                    $session->addError(
+                        $helper->__('Can\'t hold order #%s', $order->getIncrementId())
+                    );
+                    continue;
+                }
+
+                if (in_array($order->getStatus(), $helper->getProtectedStatuses())) {
+                    $session->addError(
+                        $helper->__('Can\'t hold order #%s (protected status)', $order->getIncrementId())
+                    );
+                    continue;
+                }
+                $session->addNotice(
+                    $helper->__('Order #%s on hold', $order->getIncrementId())
+                );
+                $order->hold()->save();
+            }
+        }
 
         Mage::dispatchEvent('adyen_subscription_pause', array('subscription' => $this));
 
