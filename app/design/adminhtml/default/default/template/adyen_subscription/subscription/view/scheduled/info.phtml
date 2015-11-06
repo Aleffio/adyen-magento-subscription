@@ -1,0 +1,51 @@
+<?php
+/**
+ *                       ######
+ *                       ######
+ * ############    ####( ######  #####. ######  ############   ############
+ * #############  #####( ######  #####. ######  #############  #############
+ *        ######  #####( ######  #####. ######  #####  ######  #####  ######
+ * ###### ######  #####( ######  #####. ######  #####  #####   #####  ######
+ * ###### ######  #####( ######  #####. ######  #####          #####  ######
+ * #############  #############  #############  #############  #####  ######
+ *  ############   ############  #############   ############  #####  ######
+ *                                      ######
+ *                               #############
+ *                               ############
+ *
+ * Adyen Subscription module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 H&O E-commerce specialists B.V. (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>, H&O E-commerce specialists B.V. <info@h-o.nl>
+ */
+?>
+<?php /** @var Adyen_Subscription_Block_Adminhtml_Subscription_View_Tabs_Scheduled_Info $this */ ?>
+<?php $_subscription = $this->getSubscription(); ?>
+<?php $_quote = $this->getQuote(); ?>
+<?php $_billingAgreement = $this->getBillingAgreement(); ?>
+
+<div class="box-left">
+    <!--Billing Address-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-billing-address"><?php echo Mage::helper('sales')->__('Billing Address') ?></h4>
+        </div>
+        <fieldset>
+            <address><?php echo $_quote->getBillingAddress()->format('html'); ?></address>
+        </fieldset>
+    </div>
+</div>
+<div class="box-right">
+    <!--Shipping Address-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-shipping-address"><?php echo Mage::helper('sales')->__('Shipping Address') ?></h4>
+        </div>
+        <fieldset>
+            <address><?php echo $_quote->getShippingAddress()->format('html'); ?></address>
+        </fieldset>
+    </div>
+</div>
+<div class="clear"></div>

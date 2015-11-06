@@ -88,8 +88,10 @@
                 <block name="subscription_scheduled_order_block"
                        type="adyen_subscription/adminhtml_subscription_view_tabs_scheduled"
                        template="adyen_subscription/subscription/view/scheduled/items.phtml">
+                    <block type="adyen_subscription/adminhtml_subscription_view_tabs_scheduled_info"
+                           name="info" template="adyen_subscription/subscription/view/scheduled/info.phtml" />
                     <block type="adyen_subscription/adminhtml_subscription_view_tabs_scheduled_totals"
-                           name="order_totals" template="adyen_subscription/quote/totals.phtml"  />
+                           name="order_totals" template="adyen_subscription/quote/totals.phtml" />
                 </block>
                 <action method="addTab"><name>subscription_info</name><block>subscription_info_block</block></action>
                 <action method="addTab"><name>subscription_scheduled_order</name><block>subscription_scheduled_order_block</block></action>
