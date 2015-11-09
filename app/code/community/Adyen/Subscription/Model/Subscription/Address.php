@@ -79,15 +79,16 @@ class Adyen_Subscription_Model_Subscription_Address extends Mage_Core_Model_Abst
             $this->setSource(self::ADDRESS_SOURCE_QUOTE)
                 ->setQuoteAddressId($address->getId());
         }
-        // Note: Don't use customer address, because when the address of a quote changes,
-        // and that quote is converted to an order, the customer_address_id is still filled
-        // with the original address ID, but that customer address isn't actually changed,
-        // so we always want to use order address ID at this moment
-//        elseif ($address->getCustomerAddressId()) {
+        // Note: Only use customer address if 'save_in_addres_book' or 'same_as_billing'
+        // is also checked at the address, because it's not enough to rely solely on the
+        // customer address ID, because an address can be changed when creating an order
+        // in the backend, but this ID still remains when a quote is converted to an order
+        elseif ($address->getCustomerAddressId()
+            && ($address->getData('save_in_address_book') || $address->getData('same_as_billing'))) {
             // Create customer address
-//            $this->setSource(self::ADDRESS_SOURCE_CUSTOMER)
-//                ->setCustomerAddressId($address->getCustomerAddressId());
-//        }
+            $this->setSource(self::ADDRESS_SOURCE_CUSTOMER)
+                ->setCustomerAddressId($address->getCustomerAddressId());
+        }
         else {
             // Create order address
             $this->setSource(self::ADDRESS_SOURCE_ORDER)
