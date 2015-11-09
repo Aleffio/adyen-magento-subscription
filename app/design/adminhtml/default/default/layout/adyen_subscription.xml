@@ -138,7 +138,30 @@
         <reference name="totals">
             <action method="setTemplate"><template>adyen_subscription/sales/create/totals.phtml</template></action>
         </reference>
+        <reference name="data">
+            <block type="adminhtml/sales_order_create_shipping_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="shipping_address" />
+            <block type="adminhtml/sales_order_create_billing_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="billing_address" />
+        </reference>
     </adminhtml_sales_order_create_index>
+
+    <adminhtml_sales_order_create_load_block_data>
+        <reference name="data">
+            <block type="adminhtml/sales_order_create_shipping_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="shipping_address" />
+            <block type="adminhtml/sales_order_create_billing_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="billing_address" />
+        </reference>
+    </adminhtml_sales_order_create_load_block_data>
+
+    <adminhtml_sales_order_create_load_block_shipping_address>
+        <reference name="content">
+            <block type="adminhtml/sales_order_create_shipping_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="shipping_address" />
+        </reference>
+    </adminhtml_sales_order_create_load_block_shipping_address>
+
+    <adminhtml_sales_order_create_load_block_billing_address>
+        <reference name="content">
+            <block type="adminhtml/sales_order_create_billing_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="billing_address" />
+        </reference>
+    </adminhtml_sales_order_create_load_block_billing_address>
 
     <adminhtml_sales_order_create_load_block_totals>
         <reference name="totals">
