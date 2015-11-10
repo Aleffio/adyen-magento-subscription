@@ -217,15 +217,19 @@ class Adyen_Subscription_Model_Service_Quote
 
             // Create subscription addresses
             $billingAddress = $quote->getBillingAddress();
-            $billingAddress->setData('save_in_address_book', $subscription->getData('billing_address_save_in_address_book'));
+            $billingAddress
+                ->setCustomerAddressId($subscription->getData('billing_customer_address_id'))
+                ->setSaveInAddressBook($subscription->getData('billing_address_save_in_address_book'));
             Mage::getModel('adyen_subscription/subscription_address')
                 ->getSubscriptionAddress($subscription, self::ADDRESS_TYPE_BILLING)
                 ->initAddress($subscription, $billingAddress)
                 ->save();
 
             $shippingAddress = $quote->getShippingAddress();
-            $shippingAddress->setData('save_in_address_book', $subscription->getData('shipping_address_save_in_address_book'))
-                ->setData('same_as_billing', $billingAddress->getSaveInAddressBook() && $subscription->getData('shipping_as_billing'));
+            $shippingAddress
+                ->setCustomerAddressId($subscription->getData('shipping_customer_address_id'))
+                ->setSaveInAddressBook($subscription->getData('shipping_address_save_in_address_book'))
+                ->setSameAsBilling($billingAddress->getSaveInAddressBook() && $subscription->getData('shipping_as_billing'));
             Mage::getModel('adyen_subscription/subscription_address')
                 ->getSubscriptionAddress($subscription, self::ADDRESS_TYPE_SHIPPING)
                 ->initAddress($subscription, $shippingAddress)
