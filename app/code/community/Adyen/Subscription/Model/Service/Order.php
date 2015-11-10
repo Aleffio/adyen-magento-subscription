@@ -86,7 +86,6 @@ class Adyen_Subscription_Model_Service_Order
                 ->setTerm($productTerm['term'])
                 ->setTermType($productTerm['type'])
                 ->setShippingMethod($order->getShippingMethod())
-                ->setCreatedAt(now())
                 ->setUpdatedAt(now());
 
             if (!$billingAgreement) {
