@@ -225,11 +225,24 @@ class Adyen_Subscription_Model_Service_Quote
 
             $shippingAddress = $quote->getShippingAddress();
             $shippingAddress->setData('save_in_address_book', $subscription->getData('shipping_address_save_in_address_book'))
-                ->setData('same_as_billing', $subscription->getData('shipping_as_billing'));
+                ->setData('same_as_billing', $billingAddress->getSaveInAddressBook() && $subscription->getData('shipping_as_billing'));
             Mage::getModel('adyen_subscription/subscription_address')
                 ->getSubscriptionAddress($subscription, self::ADDRESS_TYPE_SHIPPING)
                 ->initAddress($subscription, $shippingAddress)
                 ->save();
+
+            // Save addresses at customer when 'Save in address book' is selected
+            if ($billingAddress->getCustomerAddressId() && $billingAddress->getSaveInAddressBook()) {
+                $customerBillingAddress = Mage::getModel('customer/address')->load($billingAddress->getCustomerAddressId());
+                Mage::helper('core')->copyFieldset('sales_convert_quote_address', 'to_customer_address', $billingAddress, $customerBillingAddress);
+                $customerBillingAddress->save();
+            }
+
+            if ($shippingAddress->getCustomerAddressId() && $shippingAddress->getSaveInAddressBook()) {
+                $customerShippingAddress = Mage::getModel('customer/address')->load($shippingAddress->getCustomerAddressId());
+                Mage::helper('core')->copyFieldset('sales_convert_quote_address', 'to_customer_address', $shippingAddress, $customerShippingAddress);
+                $customerShippingAddress->save();
+            }
 
             // Delete current subscription items
             foreach ($subscription->getItemCollection() as $subscriptionItem) {
