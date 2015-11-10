@@ -74,20 +74,20 @@ class Adyen_Subscription_Model_Subscription_Address extends Mage_Core_Model_Abst
             $this->setType(self::ADDRESS_TYPE_SHIPPING);
         }
 
-        if ($address instanceof Mage_Sales_Model_Quote_Address) {
-            // Create quote address
-            $this->setSource(self::ADDRESS_SOURCE_QUOTE)
-                ->setQuoteAddressId($address->getId());
-        }
-        // Note: Only use customer address if 'save_in_addres_book' or 'same_as_billing'
+        // Note: Only use customer address if 'save_in_address_book' or 'same_as_billing'
         // is also checked at the address, because it's not enough to rely solely on the
         // customer address ID, because an address can be changed when creating an order
         // in the backend, but this ID still remains when a quote is converted to an order
-        elseif ($address->getCustomerAddressId()
+        if ($address->getCustomerAddressId()
             && ($address->getData('save_in_address_book') || $address->getData('same_as_billing'))) {
             // Create customer address
             $this->setSource(self::ADDRESS_SOURCE_CUSTOMER)
                 ->setCustomerAddressId($address->getCustomerAddressId());
+        }
+        elseif ($address instanceof Mage_Sales_Model_Quote_Address) {
+            // Create quote address
+            $this->setSource(self::ADDRESS_SOURCE_QUOTE)
+                ->setQuoteAddressId($address->getId());
         }
         else {
             // Create order address

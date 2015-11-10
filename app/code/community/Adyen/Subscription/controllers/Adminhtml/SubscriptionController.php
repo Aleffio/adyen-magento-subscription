@@ -431,7 +431,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             return;
         }
 
-        $postData = $this->getRequest()->getParam('adyen_subscription');
+        $postData = $this->getRequest()->getParams();
 
         try {
             $quote = $subscription->getActiveQuote();
@@ -471,7 +471,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             return;
         }
 
-        $postData = $this->getRequest()->getParam('adyen_subscription');
+        $postData = $this->getRequest()->getParams();
 
         try {
             $quote = $subscription->getActiveQuote();
