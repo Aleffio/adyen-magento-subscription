@@ -26,6 +26,8 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Configurable extends Mage_C
     /**
      * Get product final price
      * Extended to return subscription price when product is a subscription product
+     * When configured that catalog prices are including tax and subscription pricee excluding tax,
+     * the subscription item prices of new orders change when tax percentage is changed
      *
      * @param float|null $qty
      * @param Mage_Catalog_Model_Product $product
@@ -34,7 +36,36 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Configurable extends Mage_C
     public function getFinalPrice($qty = null, $product)
     {
         if ($subscriptionItem = $this->_helper()->getSubscriptionItem($product)) {
-            return $subscriptionItem->getPriceInclTax();
+            $subscription = $subscriptionItem->getSubscription(); // @todo Performance
+
+            $store = $product->getStore();
+            $configCatalogInclTax = Mage::getModel('tax/config')->priceIncludesTax($store);
+            $useSubscriptionPricesIncTax = Mage::helper('adyen_subscription/config')->getPriceIncludesTax($store);
+
+            if ($configCatalogInclTax && $useSubscriptionPricesIncTax) {
+                return $subscriptionItem->getPriceInclTax();
+            }
+            if (! $configCatalogInclTax && ! $useSubscriptionPricesIncTax) {
+                return $subscriptionItem->getPrice();
+            }
+            if ($configCatalogInclTax && ! $useSubscriptionPricesIncTax) {
+                $priceExclTax = $subscriptionItem->getPrice();
+
+                $customerPercent = Mage::helper('adyen_subscription/quote')
+                    ->getCustomerTaxPercent($subscription, $product);
+                $customerTax = Mage::getSingleton('tax/calculation')
+                    ->calcTaxAmount($priceExclTax, $customerPercent, false, false);
+
+                $customerPriceInclTax = $store->roundPrice($priceExclTax + $customerTax);
+
+                return $customerPriceInclTax;
+            }
+
+            if (! $configCatalogInclTax && $useSubscriptionPricesIncTax) {
+                $message = 'Please fix the tax settings;'
+                    . ' it\'s not possible to set catalog prices to excl. tax and subscription prices to incl. tax';
+                Adyen_Subscription_Exception::throwException($message);
+            }
         }
 
         if ($subscription = $this->_helper()->getProductSubscription($product)) {

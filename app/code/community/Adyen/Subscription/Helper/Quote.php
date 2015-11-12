@@ -72,4 +72,36 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
 
         return false;
     }
+
+    /**
+     * Retrieve current tax percent for customer based on subscription and product
+     *
+     * @param Adyen_Subscription_Model_Subscription $subscription
+     * @param Mage_Catalog_Model_Product $product
+     * @return int
+     */
+    public function getCustomerTaxPercent(
+        Adyen_Subscription_Model_Subscription $subscription,
+        Mage_Catalog_Model_Product $product)
+    {
+        $percent = $product->getTaxPercent();
+        $includingPercent = null;
+
+        $taxClassId = $product->getTaxClassId();
+        if (is_null($percent)) {
+            if ($taxClassId) {
+                $request = Mage::getSingleton('tax/calculation')
+                    ->getRateRequest(
+                        $subscription->getShippingAddress(),
+                        $subscription->getBillingAddress(),
+                        $subscription->getCustomer()->getTaxClassId(),
+                        $product->getStore()
+                    );
+                $percent = Mage::getSingleton('tax/calculation')
+                    ->getRate($request->setProductClassId($taxClassId));
+            }
+        }
+
+        return $percent ?: 0;
+    }
 }
