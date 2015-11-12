@@ -423,6 +423,7 @@
         <adyen_subscription>
             <general>
                 <show_term_label>1</show_term_label>
+                <price_includes_tax>1</price_includes_tax>
             </general>
         </adyen_subscription>
     </default>

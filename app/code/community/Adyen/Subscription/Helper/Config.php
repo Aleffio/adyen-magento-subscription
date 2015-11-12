@@ -24,6 +24,7 @@
 class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
 {
     const XML_PATH_GENERAL_SHOW_TERM_LABEL      = 'adyen_subscription/general/show_term_label';
+    const XML_PATH_GENERAL_PRICE_INCLUDES_TAX   = 'adyen_subscription/general/price_includes_tax';
 
     const XML_PATH_SUBSCRIPTION_CANCEL_REASONS  = 'adyen_subscription/subscription/cancel_reasons';
     const XML_PATH_SUBSCRIPTION_CANCEL_ORDERS   = 'adyen_subscription/subscription/cancel_delete_orders';
@@ -39,6 +40,15 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
     public function getShowTermLabel($store = null)
     {
         return Mage::getStoreConfigFlag(self::XML_PATH_GENERAL_SHOW_TERM_LABEL, $store);
+    }
+
+    /**
+     * @param null|Mage_Core_Model_Store|int $store
+     * @return mixed
+     */
+    public function getPriceIncludesTax($store = null)
+    {
+        return Mage::getStoreConfig(self::XML_PATH_GENERAL_PRICE_INCLUDES_TAX, $store);
     }
 
     /**
