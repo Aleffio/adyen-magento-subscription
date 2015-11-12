@@ -116,7 +116,9 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             }
 
             $data['billing_customer_address_id'] = $postData['order']['billing_address']['customer_address_id'];
-            $data['shipping_customer_address_id'] = $postData['order']['shipping_address']['customer_address_id'];
+            $data['shipping_customer_address_id'] = isset($postData['order']['shipping_address']['customer_address_id'])
+                ? $postData['order']['shipping_address']['customer_address_id']
+                : $postData['order']['billing_address']['customer_address_id'];
             $data['billing_address_save_in_address_book'] = isset($postData['order']['billing_address']['save_in_address_book'])
                 ? $postData['order']['billing_address']['save_in_address_book']
                 : null;
