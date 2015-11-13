@@ -214,6 +214,14 @@
                     </adyen_subscription>
                 </observers>
             </sales_order_resource_init_virtual_grid_columns>
+            <customer_address_save_after>
+                <observers>
+                    <adyen_subscription_update_address>
+                        <class>adyen_subscription/observer</class>
+                        <method>updateCustomerAddressAtQuotes</method>
+                    </adyen_subscription_update_address>
+                </observers>
+            </customer_address_save_after>
         </events>
         <sales>
             <quote>

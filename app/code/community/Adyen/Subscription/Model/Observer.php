@@ -480,4 +480,44 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             $result->setIsAllowed(false);
         }
     }
+
+    /**
+     * Save changed customer address at customer quotes that are linked
+     *
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     * @throws Exception
+     */
+    public function updateCustomerAddressAtQuotes(Varien_Event_Observer $observer)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Mage_Customer_Model_Address $address */
+        $address = $observer->getCustomerAddress();
+
+        $subscriptions = Mage::getModel('adyen_subscription/subscription')
+            ->getCollection()
+            ->addFieldToFilter('customer_id', $address->getCustomerId());
+
+        foreach ($subscriptions as $subscription) {
+            /** @var Adyen_Subscription_Model_Subscription $subscription */
+            foreach ($subscription->getQuoteAdditionalCollection() as $quoteAdditional) {
+                /** @var Adyen_Subscription_Model_Subscription_Quote $quoteAdditional */
+                $quote = $quoteAdditional->getQuote();
+
+                $billingAddress = $quote->getBillingAddress();
+                if ($billingAddress->getCustomerAddressId() == $address->getId()) {
+                    $billingAddress->addData($address->getData());
+                    $billingAddress->save();
+                }
+
+                $shippingAddress = $quote->getShippingAddress();
+                if ($shippingAddress->getCustomerAddressId() == $address->getId()) {
+                    $shippingAddress->addData($address->getData());
+                    $shippingAddress->save();
+                }
+            }
+        }
+
+        return $this;
+    }
 }
