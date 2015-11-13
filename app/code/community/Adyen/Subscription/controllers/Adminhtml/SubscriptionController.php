@@ -479,6 +479,25 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             Mage::getModel('adyen_subscription/service_quote')->updateQuotePayment($quote, $billingAgreement);
 
             $subscription->importPostData($postData);
+
+            $quote->getBillingAddress()->setCustomerAddressId(null)->save();
+            $quote->getShippingAddress()->setCustomerAddressId(null)->save();
+            if ($subscription->getData('billing_customer_address_id')
+                && $subscription->getData('billing_address_save_in_address_book')) {
+                $quote->getBillingAddress()
+                    ->setCustomerAddressId($subscription->getData('billing_customer_address_id'))->save();
+
+                if ($subscription->getData('shipping_as_billing')) {
+                    $quote->getShippingAddress()
+                        ->setCustomerAddressId($subscription->getData('billing_customer_address_id'))->save();
+                }
+            }
+            if ($subscription->getData('shipping_customer_address_id')
+                && $subscription->getData('shipping_address_save_in_address_book')) {
+                $quote->getShippingAddress()
+                    ->setCustomerAddressId($subscription->getData('shipping_customer_address_id'))->save();
+            }
+
             $subscription->save();
 
             $this->_getSession()->addSuccess(
