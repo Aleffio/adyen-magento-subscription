@@ -424,6 +424,28 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
                 'You cannot delete this billing agreement because it is used for a subscription.'
             ));
         }
+
+        /** @var Mage_Core_Model_Resource $resource */
+        $resource = Mage::getSingleton('core/resource');
+        $connection = $resource->getConnection('core_read');
+        $select = $connection->select();
+
+        $select->from(['a' => $resource->getTableName('sales/billing_agreement_order')]);
+        $select->joinLeft(['order' => $resource->getTableName('sales/order')], 'a.order_id = order.entity_id');
+        $select->reset(Zend_Db_Select::COLUMNS);
+        $select->columns(['a.order_id', 'order.state']);
+        $select->where('agreement_id = ?', $agreementId);
+        $select->where('order.state NOT IN (?)', [
+            Mage_Sales_Model_Order::STATE_CANCELED,
+            Mage_Sales_Model_Order::STATE_CLOSED,
+            Mage_Sales_Model_Order::STATE_COMPLETE,
+        ]);
+
+        if ($connection->fetchOne($select)) {
+            Mage::throwException(Mage::helper('adyen_subscription')->__(
+                'You cannot delete this billing agreement because it is used in active orders.'
+            ));
+        }
     }
 
     /**
