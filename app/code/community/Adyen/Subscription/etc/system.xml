@@ -244,6 +244,26 @@
                         </protected_statuses>
                     </fields>
                 </order>
+                <advanced translate="label">
+                    <label>Advanced</label>
+                    <sort_order>90</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <schedule_quotes_term translate="label">
+                            <label>Schedule Quotes Term</label>
+                            <tooltip><![CDATA[Create quotes of subscriptions if schedule date is within now and this term. Default is P2W (2 weeks).]]></tooltip>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>10</sort_order>
+                            <comment><![CDATA[<b style="color:#eb5e00;">Important note: use the following notation:</b>
+                            <a target="_blank" href="http://php.net/manual/en/dateinterval.createfromdatestring.php">http://php.net/manual/en/dateinterval.createfromdatestring.php</a>]]></comment>
+                        </schedule_quotes_term>
+                    </fields>
+                </advanced>
             </groups>
         </adyen_subscription>
     </sections>

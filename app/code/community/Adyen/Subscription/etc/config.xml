@@ -433,6 +433,9 @@
                 <show_term_label>1</show_term_label>
                 <price_includes_tax>1</price_includes_tax>
             </general>
+            <advanced>
+                <schedule_quotes_term>P2W</schedule_quotes_term>
+            </advanced>
         </adyen_subscription>
     </default>
 </config>

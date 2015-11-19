@@ -33,6 +33,8 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
     const XML_PATH_ORDER_REORDER_SUBSCRIPTION   = 'adyen_subscription/order/reorder_subscription';
     const XML_PATH_ORDER_PROTECTED_STATUSES     = 'adyen_subscription/order/protected_statuses';
 
+    const XML_PATH_ADVANCED_SCHEDULE_QUOTES_TERM= 'adyen_subscription/advanced/schedule_quotes_term';
+
     /**
      * @param null|Mage_Core_Model_Store|int $store
      * @return bool
@@ -95,6 +97,14 @@ class Adyen_Subscription_Helper_Config extends Mage_Core_Helper_Abstract
     public function getProtectedStatuses($store = null)
     {
         return explode(',', Mage::getStoreConfig(self::XML_PATH_ORDER_PROTECTED_STATUSES, $store));
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheduleQuotesTerm()
+    {
+        return Mage::getStoreConfig(self::XML_PATH_ADVANCED_SCHEDULE_QUOTES_TERM);
     }
 
     /**

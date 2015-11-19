@@ -107,7 +107,8 @@ class Adyen_Subscription_Model_Cron
             Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
         ));
         $scheduleBefore = new DateTime('now', $timezone);
-        $scheduleBefore->add(new DateInterval('P2W'));
+        $term = Mage::helper('adyen_subscription/config')->getScheduleQuotesTerm();
+        $scheduleBefore->add(new DateInterval($term));
 
         Mage::helper('adyen_subscription')->logQuoteCron(sprintf("Create quote if schedule is before %s", $scheduleBefore->format('Y-m-d H:i:s')));
 
