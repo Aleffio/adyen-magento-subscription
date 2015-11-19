@@ -900,15 +900,13 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         return $result->getData('is_allowed');
     }
 
-
     /**
      * @return bool
      */
     public function canEditSubscription()
     {
-        return true;
+        return ! $this->isCanceled();
     }
-
 
     /**
      * @return bool
