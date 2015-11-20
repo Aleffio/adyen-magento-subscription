@@ -126,14 +126,6 @@
             </adyen_subscription_setup>
         </resources>
         <events>
-            <sales_quote_add_item>
-                <observers>
-                    <adyen_subscription>
-                        <class>adyen_subscription/product_observer</class>
-                        <method>addSubscriptionProductSubscriptionToQuote</method>
-                    </adyen_subscription>
-                </observers>
-            </sales_quote_add_item>
             <payment_method_is_active>
                 <observers>
                     <adyen_subscription>

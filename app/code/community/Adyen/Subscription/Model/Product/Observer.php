@@ -151,33 +151,7 @@ class Adyen_Subscription_Model_Product_Observer
         $productCollection = $observer->getEvent()->getCollection();
 
         foreach ($productCollection as $product) {
-            $this->_loadProductSubscriptionData($product);
-        }
-        return $this;
-    }
-
-
-    /**
-     * @param Mage_Catalog_Model_Product $product
-     *
-     * @return $this
-     */
-    protected function _loadProductSubscriptionData(Mage_Catalog_Model_Product $product)
-    {
-        if ($product->hasData('adyen_subscription_data')) {
-            return $this;
-        }
-        /** @var Mage_Catalog_Model_Product $product */
-        if ($product->getData('adyen_subscription_type') > 0) {
-            $subscriptionCollection = Mage::getResourceModel('adyen_subscription/product_subscription_collection')
-                ->addProductFilter($product);
-
-            if (! $product->getStore()->isAdmin()) {
-                $subscriptionCollection->addStoreFilter($product->getStore());
-            }
-            $product->setData('adyen_subscription_data', $subscriptionCollection);
-        } else {
-            $product->setData('adyen_subscription_data', null);
+            Mage::helper('adyen_subscription/product')->loadProductSubscriptionData($product);
         }
         return $this;
     }
@@ -197,7 +171,7 @@ class Adyen_Subscription_Model_Product_Observer
             return $this;
         }
 
-        $this->_loadProductSubscriptionData($product);
+        Mage::helper('adyen_subscription/product')->loadProductSubscriptionData($product);
         if (! $product->getData('adyen_subscription_data')) {
             return $this;
         }
@@ -212,77 +186,6 @@ class Adyen_Subscription_Model_Product_Observer
         $layout->getUpdate()->addHandle('PRODUCT_TYPE_adyen_subscription');
         return $this;
     }
-
-    /**
-     * Add the selected subscription product subscription to the quote item, if one is selected
-     *
-     * @event sales_quote_add_item
-     * @param Varien_Event_Observer $observer
-     * @return $this|void
-     */
-    public function addSubscriptionProductSubscriptionToQuote(Varien_Event_Observer $observer)
-    {
-        /** @var Mage_Sales_Model_Quote_Item $quoteItem */
-        /** @noinspection PhpUndefinedMethodInspection */
-        $quoteItem = $observer->getQuoteItem();
-
-        /** @var Mage_Catalog_Model_Product $product */
-        $product = $quoteItem->getProduct();
-
-        $subscriptionId = $quoteItem->getBuyRequest()->getData('adyen_subscription');
-        if (! $subscriptionId) {
-            return $this;
-        }
-
-        $this->_loadProductSubscriptionData($product);
-        if (! $product->getData('adyen_subscription_data')) {
-            return $this;
-        }
-
-        /** @var Adyen_Subscription_Model_Resource_Product_Subscription_Collection $subscriptionCollection */
-        $subscriptionCollection = $product->getData('adyen_subscription_data');
-        if ($subscriptionCollection->count() < 0) {
-            return $this;
-        }
-
-        /** @var Adyen_Subscription_Model_Product_Subscription $subscription */
-        $subscription = $subscriptionCollection->getItemById($subscriptionId);
-
-        $option = $quoteItem->getOptionByCode('additional_options');
-
-        if ($subscription) {
-            $subscriptionOption = [
-                'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
-                'code'         => 'adyen_subscription',
-                'option_value' => $subscriptionId,
-                'value'        => $subscription->getFrontendLabel(),
-                'print_value'  => $subscription->getFrontendLabel(),
-            ];
-        } else {
-            $subscriptionOption = [
-                'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
-                'code'         => 'adyen_subscription',
-                'option_value' => 'none',
-                'value'        => Mage::helper('adyen_subscription')->__('No subscription'),
-                'print_value'  => Mage::helper('adyen_subscription')->__('No subscription'),
-            ];
-        }
-
-        if ($option == null) {
-            $quoteItemOption = Mage::getModel('sales/quote_item_option')->setData([
-                'code'       => 'additional_options',
-                'product_id' => $quoteItem->getProductId(),
-                'value'      => serialize([$subscriptionOption])
-            ]);
-
-            $quoteItem->addOption($quoteItemOption);
-        } else {
-            $additional = unserialize($option->getValue());
-            $additional['adyen_subscription'] = $subscriptionOption;
-            $option->setValue(serialize($additional));
-        }
-    }
-
 
     /**
      * @event payment_method_is_active

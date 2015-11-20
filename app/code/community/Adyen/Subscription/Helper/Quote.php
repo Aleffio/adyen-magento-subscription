@@ -104,4 +104,52 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
 
         return $percent ?: 0;
     }
+
+    /**
+     * @param Varien_Object $buyRequest
+     * @param Mage_Catalog_Model_Product $product
+     * @return array|bool
+     */
+    public function getProductAdditionalOptions(Varien_Object $buyRequest, Mage_Catalog_Model_Product $product)
+    {
+        $subscriptionId = $buyRequest->getData('adyen_subscription');
+        if (! $subscriptionId) {
+            return false;
+        }
+
+        Mage::helper('adyen_subscription/product')->loadProductSubscriptionData($product);
+        if (! $product->getData('adyen_subscription_data')) {
+            return false;
+        }
+
+        /** @var Adyen_Subscription_Model_Resource_Product_Subscription_Collection $subscriptionCollection */
+        $subscriptionCollection = $product->getData('adyen_subscription_data');
+        if ($subscriptionCollection->count() < 0) {
+            return false;
+        }
+
+        /** @var Adyen_Subscription_Model_Product_Subscription $subscription */
+        $subscription = $subscriptionCollection->getItemById($subscriptionId);
+
+        if ($subscription) {
+            $subscriptionOption = [
+                'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
+                'code'         => 'adyen_subscription',
+                'option_value' => $subscriptionId,
+                'value'        => $subscription->getFrontendLabel(),
+                'print_value'  => $subscription->getFrontendLabel(),
+            ];
+        }
+        else {
+            $subscriptionOption = [
+                'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
+                'code'         => 'adyen_subscription',
+                'option_value' => 'none',
+                'value'        => Mage::helper('adyen_subscription')->__('No subscription'),
+                'print_value'  => Mage::helper('adyen_subscription')->__('No subscription'),
+            ];
+        }
+
+        return $subscriptionOption;
+    }
 }
