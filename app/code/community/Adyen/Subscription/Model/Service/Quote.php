@@ -242,10 +242,18 @@ class Adyen_Subscription_Model_Service_Quote
                 $customerBillingAddress->save();
             }
 
+            if (! $subscription->getBillingAddress() instanceof Mage_Customer_Model_Address) {
+                $quote->getBillingAddress()->setCustomerAddressId(null)->save();
+            }
+
             if ($shippingAddress->getCustomerAddressId() && $shippingAddress->getSaveInAddressBook()) {
                 $customerShippingAddress = Mage::getModel('customer/address')->load($shippingAddress->getCustomerAddressId());
                 Mage::helper('core')->copyFieldset('sales_convert_quote_address', 'to_customer_address', $shippingAddress, $customerShippingAddress);
                 $customerShippingAddress->save();
+            }
+
+            if (! $subscription->getShippingAddress() instanceof Mage_Customer_Model_Address) {
+                $quote->getShippingAddress()->setCustomerAddressId(null)->save();
             }
 
             // Delete current subscription items
