@@ -112,6 +112,19 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         if (is_array($postData)) {
             $data = $postData['adyen_subscription'];
             if (isset($postData['adyen_subscription']['scheduled_at'])) {
+                if (Mage::app()->getLocale()->getLocaleCode() != 'en_US') {
+                    /**
+                     * Bugfix: Replace scheduled_at date slashes with dashes when locale is US
+                     * This is done because dates with slashes (US) are handled differently,
+                     * as noted in the documentation (see below), but UK dates also have slashes in their format (d/m/y).
+                     * @see http://php.net/manual/en/function.strtotime.php
+                     * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
+                     * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
+                     * then the European d-m-y format is assumed.
+                     * If, however, the year is given in a two digit format and the separator is a dash (-), the date string is parsed as y-m-d.
+                     */
+                    $postData['adyen_subscription']['scheduled_at'] = str_replace('/', '-', $postData['adyen_subscription']['scheduled_at']);
+                }
                 $data['scheduled_at'] = Mage::getModel('core/date')->gmtDate(null, $postData['adyen_subscription']['scheduled_at']);
             }
 
