@@ -82,14 +82,14 @@
         </div>
     </div>
 
-    <?php $upcomingOrders = $_subscription->getUpcomingOrders();?>
+    <?php $upcomingOrders = $this->getUpcomingOrders();?>
 
     <?php if(count($upcomingOrders) > 0): ?>
 
         <h2 class="table-caption"><?php echo $this->__('Upcoming Orders') ?></h2>
         <ul>
-            <?php foreach ($upcomingOrders as $order): ?>
-                <li><?php echo $order; ?></li>
+            <?php foreach ($upcomingOrders as $date): ?>
+                <li><?php echo Mage::helper('core')->formatDate($date, 'medium', true); ?></li>
             <?php endforeach; ?>
         </ul>
 
