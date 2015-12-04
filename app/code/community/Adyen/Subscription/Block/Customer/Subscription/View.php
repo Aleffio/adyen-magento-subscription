@@ -41,6 +41,20 @@ class Adyen_Subscription_Block_Customer_Subscription_View extends Mage_Core_Bloc
         return $this->getUrl('adyen_subscription/customer/subscriptions');
     }
 
+    /**
+     * @return array
+     */
+    public function getUpcomingOrders()
+    {
+        $showUpcomingOrders = Mage::getStoreConfigFlag('adyen_subscription/subscription/show_upcoming_orders', Mage::app()->getStore());
+        if (!$showUpcomingOrders) return [];
+        
+        // count is minus 1 because first item is already in list
+        $count = (int) Mage::getStoreConfig('adyen_subscription/subscription/number_of_upcoming_orders', Mage::app()->getStore()) - 1;
+        
+        return $this->getSubscription()->getUpcomingOrders($count);
+    }
+
     public function getCanCancel()
     {
         $subscription = $this->getSubscription();
