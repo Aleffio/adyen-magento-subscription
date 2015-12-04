@@ -256,35 +256,19 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     }
 
 
-    public function getUpcomingOrders()
+     public function getUpcomingOrders($count = 0)
     {
-        $result = array();
+        $nextFormatted = $this->getScheduledAt();
+        $date = $this->getScheduledAt();
 
-        // check if setting is enabled
-        $showUpcomingOrders = Mage::getStoreConfigFlag(
-            'adyen_subscription/subscription/show_upcoming_orders', Mage::app()->getStore()
-        );
+        $timezone = new DateTimeZone(Mage::getStoreConfig(
+            Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
+        ));
 
-        if($showUpcomingOrders) {
-            $nextFormatted = $this->getScheduledAtFormatted();
-            $date = $this->getScheduledAt();
+        $result = [$nextFormatted];
 
-            $timezone = new DateTimeZone(Mage::getStoreConfig(
-                Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
-            ));
-
-            $result[] = $nextFormatted;
-
-            // count is minus 1 because first item is already in list
-            $count = (int) Mage::getStoreConfig(
-                'adyen_subscription/subscription/number_of_upcoming_orders', Mage::app()->getStore()
-            ) - 1;
-
-            for($i = 0; $i < $count; $i++) {
-                $date = $this->calculateNextUpcomingOrderDate($date, $timezone);
-                $result[] = Mage::helper('core')->formatDate($date, 'medium', true);
-
-            }
+        for($i = 0; $i < (int)$count; $i++) {
+            $result[] = $this->calculateNextUpcomingOrderDate($date, $timezone);
         }
         return $result;
     }
