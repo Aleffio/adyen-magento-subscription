@@ -117,6 +117,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
         $this->addColumn('created_at', [
             'header'    => $helper->__('Created at'),
             'index'     => 'created_at',
+            'filter_index' => 'main_table.created_at',
             'type'      => 'datetime'
         ]);
 
