@@ -79,7 +79,7 @@ class Adyen_Subscription_Model_Subscription_Address extends Mage_Core_Model_Abst
         // customer address ID, because an address can be changed when creating an order
         // in the backend, but this ID still remains when a quote is converted to an order
         if ($address->getCustomerAddressId()
-            && ($address->getData('save_in_address_book') || $address->getData('same_as_billing'))) {
+            && ($address->getData('save_in_address_book'))) {
             // Create customer address
             $this->setSource(self::ADDRESS_SOURCE_CUSTOMER)
                 ->setCustomerAddressId($address->getCustomerAddressId());
