@@ -21,7 +21,7 @@
  * Author: Adyen <magento@adyen.com>, H&O E-commerce specialists B.V. <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Sales_Order_Creditmemo_Totals extends Mage_Adminhtml_Block_Sales_Order_Creditmemo_Totals {
+class Adyen_Subscription_Block_Adminhtml_Sales_Order_Creditmemo_Totals extends Adyen_Fee_Block_Adminhtml_Sales_Order_Creditmemo_Totals {
 
     protected function _initTotals()
     {

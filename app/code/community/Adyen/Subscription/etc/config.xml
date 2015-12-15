@@ -225,7 +225,7 @@
                 <totals>
                     <subscription_fee>
                         <class>adyen_subscription/sales_quote_address_total_subscriptionFee</class>
-                        <after>grand_total</after>
+                        <after>grand_total,payment_installment_fee</after>
                     </subscription_fee>
                 </totals>
             </quote>
@@ -233,7 +233,7 @@
                 <totals>
                     <subscription_fee>
                         <class>adyen_subscription/total_subscriptionFee_invoice</class>
-                        <after>grand_total</after>
+                        <after>grand_total,payment_installment_fee</after>
                     </subscription_fee>
                 </totals>
             </order_invoice>
@@ -241,7 +241,7 @@
                 <totals>
                     <subscription_fee>
                         <class>adyen_subscription/total_subscriptionFee_creditmemo</class>
-                        <after>grand_total</after>
+                        <after>grand_total,payment_installment_fee</after>
                     </subscription_fee>
                 </totals>
             </order_creditmemo>
@@ -393,7 +393,7 @@
         </adyen_subscription>
         <sales>
             <totals_sort>
-                <subscription_fee>17</subscription_fee>
+                <subscription_fee>20</subscription_fee>
             </totals_sort>
         </sales>
     </default>

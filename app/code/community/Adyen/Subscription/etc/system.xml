@@ -266,5 +266,21 @@
                 </advanced>
             </groups>
         </adyen_subscription>
+        <sales>
+            <groups>
+                <totals_sort>
+                    <fields>
+                        <subscription_fee translate="label">
+                            <label>Adyen payment subscription fee</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>104</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </subscription_fee>
+                    </fields>
+                </totals_sort>
+            </groups>
+        </sales>
     </sections>
 </config>
