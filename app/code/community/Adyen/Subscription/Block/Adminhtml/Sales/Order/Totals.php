@@ -21,7 +21,15 @@
  * Author: Adyen <magento@adyen.com>, H&O E-commerce specialists B.V. <info@h-o.nl>
  */
 
-class Adyen_Subscription_Block_Adminhtml_Sales_Order_Totals extends Adyen_Fee_Block_Adminhtml_Sales_Order_Totals {
+if(Mage::helper('core')->isModuleEnabled('Adyen_Fee')) {
+    class Adyen_Subscription_Block_Adminhtml_Sales_Order_Totals_Base extends Adyen_Fee_Block_Adminhtml_Sales_Order_Totals {
+    }
+} else {
+    class Adyen_Subscription_Block_Adminhtml_Sales_Order_Totals_Base extends Mage_Adminhtml_Block_Sales_Order_Totals {
+    }
+}
+
+class Adyen_Subscription_Block_Adminhtml_Sales_Order_Totals extends Adyen_Subscription_Block_Adminhtml_Sales_Order_Totals_Base {
 
 	protected function _initTotals()
 	{
