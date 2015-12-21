@@ -427,6 +427,7 @@
             </general>
             <advanced>
                 <schedule_quotes_term>P2W</schedule_quotes_term>
+                <enable_logging>0</enable_logging>
             </advanced>
         </adyen_subscription>
     </default>

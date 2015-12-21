@@ -25,17 +25,23 @@ class Adyen_Subscription_Helper_Data extends Mage_Core_Helper_Abstract
 {
     public function logSubscriptionCron($message)
     {
-        $this->log($message, "adyen_subscription_cron");
+        if ($this->_getInfoLoggingEnabled()) {
+            $this->log($message, "adyen_subscription_cron");
+        }
     }
 
     public function logQuoteCron($message)
     {
-        $this->log($message, "adyen_quote_cron");
+        if ($this->_getInfoLoggingEnabled()) {
+            $this->log($message, "adyen_quote_cron");
+        }
     }
 
     public function logOrderCron($message)
     {
-        $this->log($message, "adyen_order_cron");
+        if ($this->_getInfoLoggingEnabled()) {
+            $this->log($message, "adyen_order_cron");
+        }
     }
 
     public function log($message, $filename)
@@ -47,6 +53,14 @@ class Adyen_Subscription_Helper_Data extends Mage_Core_Helper_Abstract
         {
             Mage::log($message, Zend_Log::DEBUG, "$filename.log", true);
         }
+    }
+
+    protected function _getInfoLoggingEnabled()
+    {
+        return Mage::getStoreConfigFlag(
+            'adyen_subscription/advanced/enable_logging',
+            Mage::app()->getStore()
+        );
     }
 
     /**
