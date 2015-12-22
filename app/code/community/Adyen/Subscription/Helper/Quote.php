@@ -152,4 +152,46 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
 
         return $subscriptionOption;
     }
+
+    /**
+     * @param Mage_Sales_Model_Quote_Item $quoteItem
+     * @return bool|Adyen_Subscription_Model_Product_Subscription
+     */
+    public function getSubscriptionQtyByQuoteItem(Mage_Sales_Model_Quote_Item $quoteItem)
+    {
+        $subscriptionOption = $this->getSubscriptionOptionFromQuoteItem($quoteItem);
+
+        if (! $subscriptionOption) {
+            return false;
+        }
+
+        $productSubscription = Mage::getModel('adyen_subscription/product_subscription')
+            ->load($subscriptionOption['option_value']);
+
+        return $productSubscription;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Quote_Item $quoteItem
+     * @return bool|array
+     */
+    public function getSubscriptionOptionFromQuoteItem(Mage_Sales_Model_Quote_Item $quoteItem)
+    {
+        $subscriptionOption = false;
+
+        $additionalOptions = $quoteItem->getOptionByCode('additional_options');
+
+        if ($quoteItem->getOptionByCode('additional_options')) {
+            $additionalOptions = unserialize($additionalOptions->getValue());
+
+            foreach ($additionalOptions as $option) {
+                if ($option['code'] == 'adyen_subscription') {
+                    $subscriptionOption = $option;
+                    break;
+                }
+            }
+        }
+
+        return $subscriptionOption;
+    }
 }

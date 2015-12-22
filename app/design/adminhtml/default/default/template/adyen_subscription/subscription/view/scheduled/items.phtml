@@ -55,7 +55,7 @@
             <?php $_items = $this->getAllVisibleItems(); ?>
             <?php $i = 1; foreach ($_items as $_item): ?>
                 <?php /** @var Mage_Sales_Model_Quote_Item $_item */ ?>
-                <?php $subscriptionOption = Mage::helper('ho_fitforme')->getSubscriptionOptionFromQuoteItem($_item); ?>
+                <?php $subscriptionOption = Mage::helper('adyen_subscription/quote')->getSubscriptionQtyByQuoteItem($_item); ?>
                 <tr class="<?php echo $i%2 ? 'even' : 'odd'; ?>">
                     <td><?php echo $_item->getSku(); ?></td>
                     <td>
