@@ -130,7 +130,7 @@ class Adyen_Subscription_Model_Service_Subscription
             $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
 
             if (! $subscription->getBillingAgreement()->getId()) {
-                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('No billing agreement found', $quoteItem));
+                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('No billing agreement found', $quote));
                 Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
                     'No billing agreement found'
                 ));
