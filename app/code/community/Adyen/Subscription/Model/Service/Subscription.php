@@ -66,7 +66,8 @@ class Adyen_Subscription_Model_Service_Subscription
                 $product = Mage::getModel('catalog/product')->load($productId);
                 $product->setData('is_created_from_subscription_item', $subscriptionItem->getId());
 
-                $quoteItem = $quote->addProduct($product, $subscriptionItem->getQty());
+                $quote->addProduct($product, $subscriptionItem->getQty());
+                $quoteItem = $quote->getItemByProduct($product);
 
                 if (! $quoteItem instanceof Mage_Sales_Model_Quote_Item) {
                     Mage::helper('adyen_subscription')->logQuoteCron(sprintf('An error occurred while adding a product to the quote: %s', $quoteItem));
