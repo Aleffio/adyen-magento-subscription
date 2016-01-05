@@ -101,9 +101,10 @@ class Adyen_Subscription_Model_Service_Subscription
             }
 
             // Set billing address data
-            /** @var Mage_Sales_Model_Quote_Address $billingAddress */
+            $billingAddressData = $subscription->getBillingAddressData();
+            unset($billingAddressData['address_type']);
             $quote->getBillingAddress()
-                ->addData($subscription->getBillingAddressData())
+                ->addData($billingAddressData)
                 ->setData('email', $customer->getEmail());
 
             if (! $subscription->getBillingAddress() instanceof Mage_Customer_Model_Address) {
@@ -111,15 +112,16 @@ class Adyen_Subscription_Model_Service_Subscription
             }
 
             // Set shipping address data
-            /** @var Mage_Sales_Model_Quote_Address $shippingAddress */
-            /** @noinspection PhpUndefinedMethodInspection */
+            $shippingAddressData = $subscription->getShippingAddressData();
+            unset($shippingAddressData['address_type']);
+
             $quote->getShippingAddress()
-                ->addData($subscription->getShippingAddressData())
+                ->addData($shippingAddressData)
                 ->setData('email', $customer->getEmail())
                 ->setStockId($subscription->getStockId())
                 ->setCollectShippingRates(true)
                 ->collectShippingRates();
-
+            
             $quote->getShippingAddress()->collectTotals();
 
             if (! $subscription->getShippingAddress() instanceof Mage_Customer_Model_Address) {
