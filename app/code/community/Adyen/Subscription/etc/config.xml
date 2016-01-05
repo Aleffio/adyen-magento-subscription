@@ -428,6 +428,9 @@
             <advanced>
                 <schedule_quotes_term>P2W</schedule_quotes_term>
             </advanced>
+            <subscription>
+                <retry_on_error>0</retry_on_error>
+            </subscription>
         </adyen_subscription>
     </default>
 </config>
