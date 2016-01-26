@@ -199,7 +199,7 @@ class Adyen_Subscription_Model_Service_Quote
 
             $billingAgreement = $this->getBillingAgreement($quote);
 
-            $this->updateQuotePayment($quote, $billingAgreement);
+            $this->updateQuotePayment($quote, $billingAgreement, $subscription->getData('payment'));
 
             if (!$quote->getShippingAddress()->getShippingMethod()) {
                 Adyen_Subscription_Exception::throwException('No shipping method selected');
@@ -363,23 +363,21 @@ class Adyen_Subscription_Model_Service_Quote
      */
     public function updateQuotePayment(
         Mage_Sales_Model_Quote $quote,
-        Adyen_Payment_Model_Billing_Agreement $billingAgreement
+        Adyen_Payment_Model_Billing_Agreement $billingAgreement,
+        $postPaymentData
     ) {
         Mage::dispatchEvent('adyen_subscription_quote_updatequotepayment_before', array(
             'billingAgreement' => $billingAgreement,
             'quote' => $quote
         ));
 
-        $subscriptionDetailReference = str_replace('adyen_oneclick_', '', $quote->getPayment()->getData('method'));
-
-        $quote->getPayment()->setAdditionalInformation('recurring_detail_reference', $subscriptionDetailReference);
-
-        $agreementData = $billingAgreement->getAgreementData();
-        if(isset($agreementData['variant'])) {
-            $quote->getPayment()->setCcType($agreementData['variant']);
-        } else {
-            $quote->getPayment()->setCcType(null);
+        // if there is payment data assign the data
+        if ($postPaymentData != null) {
+            $quote->getPayment()->getMethodInstance()->assignData($postPaymentData);
         }
+
+        // customer interaction not needed for subscription so set this to false
+        $quote->getPayment()->setAdditionalInformation('customer_interaction', false);
 
         $quote->getPayment()->save();
 

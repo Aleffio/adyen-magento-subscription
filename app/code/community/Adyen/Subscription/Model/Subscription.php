@@ -140,6 +140,9 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
                 : null;
             $data['shipping_as_billing'] = isset($postData['shipping_as_billing']) ? $postData['shipping_as_billing'] : null;
 
+            // add payment data
+            $data['payment'] = isset($postData['payment']) ? $postData['payment'] : null;
+
             $this->addData($data);
         }
         return $this;

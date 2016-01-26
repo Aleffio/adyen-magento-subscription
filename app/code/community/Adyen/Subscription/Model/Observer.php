@@ -327,21 +327,37 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
                     $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionOrder->getSubscriptionId());
                     $billingAgreementIdOfSubs = $subscription->getBillingAgreementId();
-                    if($billingAgreementIdOfSubs != $billingAgreementId) {
-                        try {
-                            $subscription->setBillingAgreementId($billingAgreementId);
-                            $subscription->save();
+                    $billingAgreementOfSubs = $subscription->getBillingAgreement();
 
-                            /*
-                             *  it could be that there is already a new quote scheduled
-                             *  so update this quote as well with the new recurringDetailReference
-                             */
-                            $quote = $subscription->getActiveQuote();
-                            if($quote) {
-                                Mage::getModel('adyen_subscription/service_subscription')->updateQuotePayment($subscription, $quote);
+                    // get the quote
+                    $quote = Mage::getModel('sales/quote')
+                        ->setStoreId($order->getStoreId())
+                        ->load($order->getQuoteId());
+
+                    // get recurring_detail_reference of this quote
+                    $recurringDetailRefQuote = $quote->getPayment()->getAdditionalInformation('recurring_detail_reference');
+
+                    /** Validate if the recurring_detail_reference of the quote is the same as the subscription if this
+                     * is not the case this payment method is only used for this order and not for the subscription
+                     */
+                    if($billingAgreementOfSubs->getReferenceId() == $recurringDetailRefQuote)
+                    {
+                        if($billingAgreementIdOfSubs != $billingAgreementId) {
+                            try {
+                                $subscription->setBillingAgreementId($billingAgreementId);
+                                $subscription->save();
+
+                                /*
+                                 *  it could be that there is already a new quote scheduled
+                                 *  so update this quote as well with the new recurringDetailReference
+                                 */
+                                $quote = $subscription->getActiveQuote();
+                                if($quote) {
+                                    Mage::getModel('adyen_subscription/service_subscription')->updateQuotePayment($subscription, $quote);
+                                }
+                            } catch(Exception $e) {
+                                new Adyen_Subscription_Exception('Could not update subscrription '.$e->getMessage());
                             }
-                        } catch(Exception $e) {
-                            new Adyen_Subscription_Exception('Could not update subscrription '.$e->getMessage());
                         }
                     }
                 }
