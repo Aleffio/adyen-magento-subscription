@@ -271,8 +271,10 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $result = [$nextFormatted];
 
         for($i = 0; $i < (int)$count; $i++) {
-            $result[] = $this->calculateNextUpcomingOrderDate($date, $timezone);
+            $date = $this->calculateNextUpcomingOrderDate($date, $timezone);
+            $result[] = $date;
         }
+
         return $result;
     }
 
