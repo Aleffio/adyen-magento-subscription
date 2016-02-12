@@ -276,6 +276,15 @@
                 </args>
             </adyen_subscription>
         </routers>
+        <translate>
+            <modules>
+                <Adyen_Payment>
+                    <files>
+                        <default>Adyen_Subscription.csv</default>
+                    </files>
+                </Adyen_Payment>
+            </modules>
+        </translate>
         <layout>
             <updates>
                 <adyen_subscription module="adyen_subscription">
