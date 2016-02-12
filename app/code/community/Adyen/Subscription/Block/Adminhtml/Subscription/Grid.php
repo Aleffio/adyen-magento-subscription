@@ -52,6 +52,17 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
         return parent::_prepareCollection();
     }
 
+    protected function _customCustomerIncrementIdSort($collection, $column)
+    {
+        if (!$value = $column->getFilter()->getValue()) {
+            return $this;
+        }
+
+        $collection->getSelect()->where("ce.increment_id = " . $value);
+
+        return $this;
+    }
+
     protected function _prepareColumns()
     {
         $helper = Mage::helper('adyen_subscription');
@@ -86,6 +97,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
             $this->addColumn('customer_increment_id', [
                 'header'    => $helper->__('Customer Inc.'),
                 'index'     => 'customer_increment_id',
+                'filter_condition_callback' => array($this, '_customCustomerIncrementIdSort')
             ]);
         }
 
