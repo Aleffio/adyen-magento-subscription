@@ -57,7 +57,7 @@
             <?php /** @var Adyen_Subscription_Model_Subscription $_subscription */ ?>
             <tr>
                 <td>#<?php echo $_subscription->getId() ?></td>
-                <td><em><?php echo ucfirst($_subscription->getStatus()); ?></em></td>
+                <td><em><?php echo ucfirst($_subscription->getStatusLabel()); ?></em></td>
                 <td><?php echo $_subscription->getShippingAddress()->getName(); ?></td>
                 <td><?php echo $_subscription->getCreatedAtFormatted(false); ?></td>
                 <td><?php echo $_subscription->getScheduledAtFormatted(false); ?></td>

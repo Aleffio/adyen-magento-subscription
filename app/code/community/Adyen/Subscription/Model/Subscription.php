@@ -707,7 +707,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
      */
     public function getStatusLabel($status = null)
     {
-        return self::getStatuses()[$status ? $status : $this->getStatus()];
+        return Mage::helper('adyen_subscription')->__(self::getStatuses()[$status ? $status : $this->getStatus()]);
     }
 
     /**
