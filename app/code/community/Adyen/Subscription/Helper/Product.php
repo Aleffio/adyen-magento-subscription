@@ -41,6 +41,9 @@ class Adyen_Subscription_Helper_Product extends Mage_Core_Helper_Abstract
             if (! $product->getStore()->isAdmin()) {
                 $subscriptionCollection->addStoreFilter($product->getStore());
             }
+            
+            $subscriptionCollection->setOrder('sort_order','ASC');
+            
             $product->setData('adyen_subscription_data', $subscriptionCollection);
         } else {
             $product->setData('adyen_subscription_data', null);
