@@ -26,3 +26,4 @@ app/design/frontend/base/default/layout/adyen_subscription.xml       app/design/
 app/design/frontend/base/default/template/adyen_subscription         app/design/frontend/base/default/template/adyen_subscription/
 skin/adminhtml/default/default/adyen_subscription                    skin/adminhtml/default/default/adyen_subscription
 shell/*                                                              shell/
+app/locale/pt_BR/*                                                   app/locale/pt_BR/

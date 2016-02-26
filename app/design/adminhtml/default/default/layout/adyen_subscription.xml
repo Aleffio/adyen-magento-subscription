@@ -68,13 +68,13 @@
         </reference>
     </adminhtml_customer_edit>
 
-    <adyen_subscription_adminhtml_subscription_index>
+    <adminhtml_subscription_index>
         <reference name="content">
             <block type="adyen_subscription/adminhtml_subscription" name="adminhtml_ho_subscription.grid.container" />
         </reference>
-    </adyen_subscription_adminhtml_subscription_index>
+    </adminhtml_subscription_index>
 
-    <adyen_subscription_adminhtml_subscription_view>
+    <adminhtml_subscription_view>
         <reference name="content">
             <block type="adyen_subscription/adminhtml_subscription_view" />
         </reference>
@@ -88,8 +88,10 @@
                 <block name="subscription_scheduled_order_block"
                        type="adyen_subscription/adminhtml_subscription_view_tabs_scheduled"
                        template="adyen_subscription/subscription/view/scheduled/items.phtml">
+                    <block type="adyen_subscription/adminhtml_subscription_view_tabs_scheduled_info"
+                           name="info" template="adyen_subscription/subscription/view/scheduled/info.phtml" />
                     <block type="adyen_subscription/adminhtml_subscription_view_tabs_scheduled_totals"
-                           name="order_totals" template="adyen_subscription/quote/totals.phtml"  />
+                           name="order_totals" template="adyen_subscription/quote/totals.phtml" />
                 </block>
                 <action method="addTab"><name>subscription_info</name><block>subscription_info_block</block></action>
                 <action method="addTab"><name>subscription_scheduled_order</name><block>subscription_scheduled_order_block</block></action>
@@ -97,21 +99,21 @@
                 <action method="addTab"><name>subscription_history</name><block>adyen_subscription/adminhtml_subscription_view_tabs_history</block></action>
             </block>
         </reference>
-    </adyen_subscription_adminhtml_subscription_view>
+    </adminhtml_subscription_view>
 
-    <adyen_subscription_adminhtml_subscription_ordersgrid>
+    <adminhtml_subscription_ordersgrid>
         <block type="adyen_subscription/adminhtml_subscription_view_tabs_pastOrders" name="orders.grid" output="toHtml"></block>
-    </adyen_subscription_adminhtml_subscription_ordersgrid>
+    </adminhtml_subscription_ordersgrid>
 
-    <adyen_subscription_adminhtml_subscription_historygrid>
+    <adminhtml_subscription_historygrid>
         <block type="adyen_subscription/adminhtml_subscription_view_tabs_history" name="history.grid" output="toHtml"></block>
-    </adyen_subscription_adminhtml_subscription_historygrid>
+    </adminhtml_subscription_historygrid>
 
-    <adyen_subscription_adminhtml_subscription_cancel>
+    <adminhtml_subscription_cancel>
         <reference name="content">
             <block type="adyen_subscription/adminhtml_subscription_cancel" name="adyen_subscription_cancel" />
         </reference>
-    </adyen_subscription_adminhtml_subscription_cancel>
+    </adminhtml_subscription_cancel>
 
     <adminhtml_catalog_product_edit>
         <reference name="product_tabs">
@@ -136,7 +138,30 @@
         <reference name="totals">
             <action method="setTemplate"><template>adyen_subscription/sales/create/totals.phtml</template></action>
         </reference>
+        <reference name="data">
+            <block type="adminhtml/sales_order_create_shipping_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="shipping_address" />
+            <block type="adminhtml/sales_order_create_billing_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="billing_address" />
+        </reference>
     </adminhtml_sales_order_create_index>
+
+    <adminhtml_sales_order_create_load_block_data>
+        <reference name="data">
+            <block type="adminhtml/sales_order_create_shipping_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="shipping_address" />
+            <block type="adminhtml/sales_order_create_billing_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="billing_address" />
+        </reference>
+    </adminhtml_sales_order_create_load_block_data>
+
+    <adminhtml_sales_order_create_load_block_shipping_address>
+        <reference name="content">
+            <block type="adminhtml/sales_order_create_shipping_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="shipping_address" />
+        </reference>
+    </adminhtml_sales_order_create_load_block_shipping_address>
+
+    <adminhtml_sales_order_create_load_block_billing_address>
+        <reference name="content">
+            <block type="adminhtml/sales_order_create_billing_address" template="adyen_subscription/sales/order/create/form/address.phtml" name="billing_address" />
+        </reference>
+    </adminhtml_sales_order_create_load_block_billing_address>
 
     <adminhtml_sales_order_create_load_block_totals>
         <reference name="totals">

@@ -38,7 +38,11 @@ class Adyen_Subscription_Model_Sales_Quote_Address_Total_SubscriptionFee extends
 
         $paymentMethod = $quote->getPayment()->getMethod();
 
-        if($grandTotal == 0 && $address->getAllItems())
+        // Only apply if subscription product is selected
+        $isSubscription = Mage::getSingleton('adyen_subscription/product_observer')
+            ->isQuoteAdyenSubscription($quote);
+
+        if($isSubscription && $grandTotal == 0 && $address->getAllItems())
         {
             if($paymentMethod != "adyen_oneclick" && strpos($paymentMethod, 'adyen_oneclick') !== false)
             {

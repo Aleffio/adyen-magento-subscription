@@ -89,13 +89,13 @@ class Adyen_Subscription_Shell extends Mage_Shell_Abstract
 
 	public function createQuotesAction()
 	{
-		$message = Mage::getSingleton('adyen_subscription/observer')->createQuotes();
+		$message = Mage::getSingleton('adyen_subscription/cron')->createQuotes();
 		echo $message."\n";
 	}
 
 	public function createOrdersAction()
 	{
-		$message = Mage::getSingleton('adyen_subscription/observer')->createOrders();
+		$message = Mage::getSingleton('adyen_subscription/cron')->createOrders();
 		echo $message."\n";
 	}
 }

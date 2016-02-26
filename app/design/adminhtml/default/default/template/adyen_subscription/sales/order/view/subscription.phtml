@@ -38,7 +38,7 @@ $_subscription = $this->getSubscription();
             <tr>
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Adyen Subscription ID') ?></label></td>
                 <td class="value">
-                    <a href="<?php echo $this->getUrl('adyen_subscription/adminhtml_subscription/view', ['id' => $this->getSubscription()->getId()]); ?>">
+                    <a href="<?php echo $this->getUrl('*/subscription/view', ['id' => $this->getSubscription()->getId()]); ?>">
                         <strong>#<?php echo $_subscription->getIncrementId(); ?></strong>
                     </a>
                 </td>

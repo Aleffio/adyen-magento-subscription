@@ -194,7 +194,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (!$subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -223,13 +223,13 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
      */
     public function cancelAction()
     {
-
-        // get cancelreasons
+        // Get cancel reasons
         $reasons = Mage::helper('adyen_subscription/config')->getCancelReasons();
-        if(!empty($reasons)) {
+        if (!empty($reasons)) {
             $this->_initAction()->renderLayout();
-        } else {
-            // just cancel without a reason
+        }
+        else {
+            // Just cancel without a reason
             $subscriptionId = $this->getRequest()->getParam('id');
             /** @var Adyen_Subscription_Model_Subscription $subscription */
             $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
@@ -238,10 +238,9 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
                 'Adyen Subscription %s successfully cancelled',
                 $subscription->getIncrementId()
             ));
-            $this->_redirect('*/*/');
+
+            $this->_redirectReferer();
         }
-
-
     }
 
     /**
@@ -254,7 +253,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (! $subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -276,7 +275,8 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
             'Adyen Subscription %s successfully cancelled',
             $subscription->getIncrementId()
         ));
-        $this->_redirect('*/*/');
+
+        $this->_redirect('*/*/view', ['id' => $subscriptionId]);
     }
 
     public function activateSubscriptionAction()
@@ -287,7 +287,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (!$subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -320,7 +320,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (! $subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -355,7 +355,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (! $subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -390,7 +390,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (! $subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
@@ -404,7 +404,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
 
             $this->_editSubscription($subscription, ['full_update' => true]);
             return;
-        } catch (Mage_Core_Exception $e) {
+        } catch (Exception $e) {
             $this->_getSession()->addError(Mage::helper('adyen_subscription')->__(
                 'An error occurred while trying to create a quote for this subscription: %s',
                 $e->getMessage()
@@ -424,14 +424,14 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (!$subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
         }
 
-        $postData = $this->getRequest()->getParam('adyen_subscription');
+        $postData = $this->getRequest()->getParams();
 
         try {
             $quote = $subscription->getActiveQuote();
@@ -444,10 +444,7 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
                 Mage::helper('adyen_subscription')->__('Adyen Subscription and scheduled order successfully updated')
             );
         }
-        catch (Mage_Core_Exception $e) {
-            $subscription->setErrorMessage($e->getMessage());
-            $subscription->setStatus($subscription::STATUS_SUBSCRIPTION_ERROR);
-            $subscription->save();
+        catch (Exception $e) {
 
             $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('An error occurred: ' . $e->getMessage())
@@ -467,21 +464,39 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
         $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionId);
 
         if (!$subscription->getId()) {
-            $this->_getSession()->addSuccess(
+            $this->_getSession()->addError(
                 Mage::helper('adyen_subscription')->__('Could not find subscription')
             );
             $this->_redirect('*/*/');
             return;
         }
 
-        $postData = $this->getRequest()->getParam('adyen_subscription');
+        $postData = $this->getRequest()->getParams();
 
         try {
             $quote = $subscription->getActiveQuote();
             $billingAgreement = Mage::getModel('adyen_subscription/service_quote')->getBillingAgreement($quote);
-            Mage::getModel('adyen_subscription/service_quote')->updateQuotePayment($quote, $billingAgreement);
-
             $subscription->importPostData($postData);
+
+            Mage::getModel('adyen_subscription/service_quote')->updateQuotePayment($quote, $billingAgreement, $subscription->getData('payment'));
+
+            $quote->getBillingAddress()->setCustomerAddressId(null)->save();
+            $quote->getShippingAddress()->setCustomerAddressId(null)->save();
+            if ($subscription->getData('billing_customer_address_id')
+                && $subscription->getData('billing_address_save_in_address_book')) {
+                $quote->getBillingAddress()
+                    ->setCustomerAddressId($subscription->getData('billing_customer_address_id'))->save();
+
+                if ($subscription->getData('shipping_as_billing')) {
+                    $quote->getShippingAddress()
+                        ->setCustomerAddressId($subscription->getData('billing_customer_address_id'))->save();
+                }
+            }
+            if ($subscription->getData('shipping_customer_address_id')
+                && $subscription->getData('shipping_address_save_in_address_book')) {
+                $quote->getShippingAddress()
+                    ->setCustomerAddressId($subscription->getData('shipping_customer_address_id'))->save();
+            }
 
             $subscription->save();
 

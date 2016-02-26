@@ -31,7 +31,7 @@
                 </recurring_profile>
                 <adyen_subscriptions translate="title" module="adyen_subscription">
                     <title>Adyen Subscriptions</title>
-                    <action>adyen_subscription/adminhtml_subscription</action>
+                    <action>*/subscription</action>
                     <sort_order>100</sort_order>
                 </adyen_subscriptions>
             </children>

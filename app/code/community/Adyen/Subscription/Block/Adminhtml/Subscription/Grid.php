@@ -52,6 +52,17 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
         return parent::_prepareCollection();
     }
 
+    protected function _customCustomerIncrementIdSort($collection, $column)
+    {
+        if (!$value = $column->getFilter()->getValue()) {
+            return $this;
+        }
+
+        $collection->getSelect()->where("ce.increment_id = " . $value);
+
+        return $this;
+    }
+
     protected function _prepareColumns()
     {
         $helper = Mage::helper('adyen_subscription');
@@ -76,6 +87,19 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
             'header'    => $helper->__('Error Message'),
             'index'     => 'error_message',
         ]);
+
+        if (! Mage::getStoreConfig(Mage_Customer_Model_Customer::XML_PATH_GENERATE_HUMAN_FRIENDLY_ID)) {
+            $this->addColumn('customer_id', [
+                'header'    => $helper->__('Customer ID'),
+                'index'     => 'customer_id',
+            ]);
+        } else {
+            $this->addColumn('customer_increment_id', [
+                'header'    => $helper->__('Customer Inc.'),
+                'index'     => 'customer_increment_id',
+                'filter_condition_callback' => array($this, '_customCustomerIncrementIdSort')
+            ]);
+        }
 
         $this->addColumn('customer_email', [
             'header'    => $helper->__('Customer Email'),
@@ -105,6 +129,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
         $this->addColumn('created_at', [
             'header'    => $helper->__('Created at'),
             'index'     => 'created_at',
+            'filter_index' => 'main_table.created_at',
             'type'      => 'datetime'
         ]);
 
@@ -137,7 +162,7 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
             'actions'   => [[
                 'caption' => $helper->__('View'),
                 'url'     => [
-                    'base'  => 'adyen_subscription/adminhtml_subscription/view',
+                    'base'  => '*/subscription/view',
                     'params'=> ['store' => $this->getRequest()->getParam('store')]
                 ],
                 'field'   => 'id'
@@ -165,6 +190,6 @@ class Adyen_Subscription_Block_Adminhtml_Subscription_Grid extends Mage_Adminhtm
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('adyen_subscription/adminhtml_subscription/view', array('id' => $row->getId()));
+        return $this->getUrl('*/subscription/view', array('id' => $row->getId()));
     }
 }

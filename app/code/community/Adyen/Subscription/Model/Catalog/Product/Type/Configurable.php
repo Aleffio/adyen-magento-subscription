@@ -24,6 +24,26 @@
 class Adyen_Subscription_Model_Catalog_Product_Type_Configurable extends Mage_Catalog_Model_Product_Type_Configurable
 {
     /**
+     * Prepare product and its configuration to be added to some products list.
+     * Perform standard preparation process and then prepare options belonging to specific product type.
+     *
+     * @param  Varien_Object $buyRequest
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  string $processMode
+     * @return array|string
+     */
+    protected function _prepareProduct(Varien_Object $buyRequest, $product, $processMode)
+    {
+        $subscriptionOption = Mage::helper('adyen_subscription/quote')->getProductAdditionalOptions($buyRequest, $product);
+
+        if ($subscriptionOption) {
+            $product->addCustomOption('additional_options', serialize([$subscriptionOption]));
+        }
+
+        return parent::_prepareProduct($buyRequest, $product, $processMode);
+    }
+
+    /**
      * Prepare selected options for simple subscription product
      *
      * @param  Mage_Catalog_Model_Product $product

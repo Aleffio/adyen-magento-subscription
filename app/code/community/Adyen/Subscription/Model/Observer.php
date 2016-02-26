@@ -194,9 +194,11 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Set the right amount of qty on the order items when reordering.
+     * Set the right amount of qty on the order items when reordering or editing order.
      * The qty of the ordered items is divided by the 'qty in subscription'
-     * amount of the selected product subscription.
+     * amount of the selected product subscription, when editing order or the config
+     * option is set to keep the subscription at reorder, else qty remains the same
+     * but the subscription is deleted from the quote item.
      *
      * @event create_order_session_quote_initialized
      * @param Varien_Event_Observer $observer
@@ -209,7 +211,10 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         /** @var Mage_Core_Model_Session $session */
         $session = $observer->getSessionQuote();
 
-        if ($session->getData('subscription_quote_initialized') || ! $session->getReordered()) {
+        $editOrder = Mage::app()->getRequest()->getControllerName() == 'sales_order_edit';
+
+        if ($session->getData('subscription_quote_initialized')
+            || (! $session->getReordered() && ! $editOrder)) {
             return;
         }
 
@@ -236,10 +241,11 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $productSubscription = Mage::getModel('adyen_subscription/product_subscription')->load($subscriptionOptions['option_value']);
 
-            if (Mage::helper('adyen_subscription/config')->getReorderSubscription()) {
+            if (Mage::helper('adyen_subscription/config')->getReorderSubscription() || $editOrder) {
                 if ($quoteItem->getParentItemId()) continue;
 
                 // Only divide qty if reorder keeps subscription(s)
+                // or is edit order action
                 $subscriptionQty = $productSubscription->getQty();
                 if ($subscriptionQty > 1) {
                     $qty = $quoteItem->getQty() / $subscriptionQty;
@@ -321,21 +327,37 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
                     $subscription = Mage::getModel('adyen_subscription/subscription')->load($subscriptionOrder->getSubscriptionId());
                     $billingAgreementIdOfSubs = $subscription->getBillingAgreementId();
-                    if($billingAgreementIdOfSubs != $billingAgreementId) {
-                        try {
-                            $subscription->setBillingAgreementId($billingAgreementId);
-                            $subscription->save();
+                    $billingAgreementOfSubs = $subscription->getBillingAgreement();
 
-                            /*
-                             *  it could be that there is already a new quote scheduled
-                             *  so update this quote as well with the new recurringDetailReference
-                             */
-                            $quote = $subscription->getActiveQuote();
-                            if($quote) {
-                                Mage::getModel('adyen_subscription/service_subscription')->updateQuotePayment($subscription, $quote);
+                    // get the quote
+                    $quote = Mage::getModel('sales/quote')
+                        ->setStoreId($order->getStoreId())
+                        ->load($order->getQuoteId());
+
+                    // get recurring_detail_reference of this quote
+                    $recurringDetailRefQuote = $quote->getPayment()->getAdditionalInformation('recurring_detail_reference');
+
+                    /** Validate if the recurring_detail_reference of the quote is the same as the subscription if this
+                     * is not the case this payment method is only used for this order and not for the subscription
+                     */
+                    if($billingAgreementOfSubs->getReferenceId() == $recurringDetailRefQuote)
+                    {
+                        if($billingAgreementIdOfSubs != $billingAgreementId) {
+                            try {
+                                $subscription->setBillingAgreementId($billingAgreementId);
+                                $subscription->save();
+
+                                /*
+                                 *  it could be that there is already a new quote scheduled
+                                 *  so update this quote as well with the new recurringDetailReference
+                                 */
+                                $quote = $subscription->getActiveQuote();
+                                if($quote) {
+                                    Mage::getModel('adyen_subscription/service_subscription')->updateQuotePayment($subscription, $quote);
+                                }
+                            } catch(Exception $e) {
+                                new Adyen_Subscription_Exception('Could not update subscrription '.$e->getMessage());
                             }
-                        } catch(Exception $e) {
-                            new Adyen_Subscription_Exception('Could not update subscrription '.$e->getMessage());
                         }
                     }
                 }
@@ -393,6 +415,54 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
         }
     }
 
+    /**
+     * Check if billing agreement is not linked to a subscription
+     * If this is the case return an exception when trying to delete
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function deleteBillingAgreement(Varien_Event_Observer $observer)
+    {
+        $agreement = $observer->getObject();
+
+        if (! $agreement instanceof Adyen_Payment_Model_Billing_Agreement) {
+            return;
+        }
+
+        $agreementId = $agreement->getId();
+
+        $subscriptionCollection = Mage::getModel('adyen_subscription/subscription')
+            ->getCollection()
+            ->addFieldToFilter('billing_agreement_id', $agreementId);
+
+        if ($subscriptionCollection->count() > 0) {
+            Mage::throwException(Mage::helper('adyen_subscription')->__(
+                'You cannot delete this billing agreement because it is used for a subscription.'
+            ));
+        }
+
+        /** @var Mage_Core_Model_Resource $resource */
+        $resource = Mage::getSingleton('core/resource');
+        $connection = $resource->getConnection('core_read');
+        $select = $connection->select();
+
+        $select->from(['a' => $resource->getTableName('sales/billing_agreement_order')]);
+        $select->joinLeft(['order' => $resource->getTableName('sales/order')], 'a.order_id = order.entity_id');
+        $select->reset(Zend_Db_Select::COLUMNS);
+        $select->columns(['a.order_id', 'order.state']);
+        $select->where('agreement_id = ?', $agreementId);
+        $select->where('order.state NOT IN (?)', [
+            Mage_Sales_Model_Order::STATE_CANCELED,
+            Mage_Sales_Model_Order::STATE_CLOSED,
+            Mage_Sales_Model_Order::STATE_COMPLETE,
+        ]);
+
+        if ($connection->fetchOne($select)) {
+            Mage::throwException(Mage::helper('adyen_subscription')->__(
+                'You cannot delete this billing agreement because it is used in active orders.'
+            ));
+        }
+    }
 
     /**
      * Do not delete products that are used for active subscriptions
@@ -447,5 +517,45 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
             /** @noinspection PhpUndefinedMethodInspection */
             $result->setIsAllowed(false);
         }
+    }
+
+    /**
+     * Save changed customer address at customer quotes that are linked
+     *
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     * @throws Exception
+     */
+    public function updateCustomerAddressAtQuotes(Varien_Event_Observer $observer)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Mage_Customer_Model_Address $address */
+        $address = $observer->getCustomerAddress();
+
+        $subscriptions = Mage::getModel('adyen_subscription/subscription')
+            ->getCollection()
+            ->addFieldToFilter('customer_id', $address->getCustomerId());
+
+        foreach ($subscriptions as $subscription) {
+            /** @var Adyen_Subscription_Model_Subscription $subscription */
+            foreach ($subscription->getQuoteAdditionalCollection() as $quoteAdditional) {
+                /** @var Adyen_Subscription_Model_Subscription_Quote $quoteAdditional */
+                $quote = $quoteAdditional->getQuote();
+
+                $billingAddress = $quote->getBillingAddress();
+                if ($billingAddress->getCustomerAddressId() == $address->getId()) {
+                    $billingAddress->addData($address->getData());
+                    $billingAddress->save();
+                }
+
+                $shippingAddress = $quote->getShippingAddress();
+                if ($shippingAddress->getCustomerAddressId() == $address->getId()) {
+                    $shippingAddress->addData($address->getData());
+                    $shippingAddress->save();
+                }
+            }
+        }
+
+        return $this;
     }
 }

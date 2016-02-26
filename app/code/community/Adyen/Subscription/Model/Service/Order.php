@@ -53,7 +53,7 @@ class Adyen_Subscription_Model_Service_Order
 
             if (!$productSubscription) {
                 Mage::helper('adyen_subscription')
-                    ->logSubscriptionCron(sprintf("No subscription found for orderItem %s", $orderItem));
+                    ->logSubscriptionCron(sprintf("No subscription found for orderItem %s", $orderItem->getSku()));
                 continue;
             }
 
@@ -86,7 +86,6 @@ class Adyen_Subscription_Model_Service_Order
                 ->setTerm($productTerm['term'])
                 ->setTermType($productTerm['type'])
                 ->setShippingMethod($order->getShippingMethod())
-                ->setCreatedAt(now())
                 ->setUpdatedAt(now());
 
             if (!$billingAgreement) {
@@ -122,8 +121,8 @@ class Adyen_Subscription_Model_Service_Order
                     ->setName($orderItem->getName())
                     ->setProductSubscriptionId($productSubscription->getId())
                     ->setLabel($productSubscription->getLabel())
-                    ->setPrice($orderItem->getRowTotal())
-                    ->setPriceInclTax($orderItem->getRowTotalInclTax())
+                    ->setPrice($orderItem->getRowTotal() / $qty)
+                    ->setPriceInclTax($orderItem->getRowTotalInclTax() / $qty)
                     ->setQty($qty)
                     ->setOnce(0)
                     // Currently not in use

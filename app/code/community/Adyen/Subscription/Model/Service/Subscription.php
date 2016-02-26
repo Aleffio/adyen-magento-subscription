@@ -66,7 +66,8 @@ class Adyen_Subscription_Model_Service_Subscription
                 $product = Mage::getModel('catalog/product')->load($productId);
                 $product->setData('is_created_from_subscription_item', $subscriptionItem->getId());
 
-                $quoteItem = $quote->addProduct($product, $subscriptionItem->getQty());
+                $quote->addProduct($product, $subscriptionItem->getQty());
+                $quoteItem = $quote->getItemByProduct($product);
 
                 if (! $quoteItem instanceof Mage_Sales_Model_Quote_Item) {
                     Mage::helper('adyen_subscription')->logQuoteCron(sprintf('An error occurred while adding a product to the quote: %s', $quoteItem));
@@ -100,29 +101,39 @@ class Adyen_Subscription_Model_Service_Subscription
             }
 
             // Set billing address data
-            /** @var Mage_Sales_Model_Quote_Address $billingAddress */
+            $billingAddressData = $subscription->getBillingAddressData();
+            unset($billingAddressData['address_type']);
             $quote->getBillingAddress()
-                ->addData($subscription->getBillingAddressData())
+                ->addData($billingAddressData)
                 ->setData('email', $customer->getEmail());
 
+            if (! $subscription->getBillingAddress() instanceof Mage_Customer_Model_Address) {
+                $quote->getBillingAddress()->setCustomerAddressId(null);
+            }
+
             // Set shipping address data
-            /** @var Mage_Sales_Model_Quote_Address $shippingAddress */
-            /** @noinspection PhpUndefinedMethodInspection */
+            $shippingAddressData = $subscription->getShippingAddressData();
+            unset($shippingAddressData['address_type']);
+
             $quote->getShippingAddress()
-                ->addData($subscription->getShippingAddressData())
+                ->addData($shippingAddressData)
                 ->setData('email', $customer->getEmail())
                 ->setStockId($subscription->getStockId())
                 ->setCollectShippingRates(true)
                 ->collectShippingRates();
-
+            
             $quote->getShippingAddress()->collectTotals();
+
+            if (! $subscription->getShippingAddress() instanceof Mage_Customer_Model_Address) {
+                $quote->getShippingAddress()->setCustomerAddressId(null);
+            }
 
             // Set shipping method
             $shippingMethod = $subscription->getShippingMethod();
             $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
 
             if (! $subscription->getBillingAgreement()->getId()) {
-                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('No billing agreement found', $quoteItem));
+                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('No billing agreement found', $quote));
                 Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
                     'No billing agreement found'
                 ));

@@ -110,10 +110,40 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     public function importPostData($postData)
     {
         if (is_array($postData)) {
-            if (array_key_exists('scheduled_at', $postData)) {
-                $postData['scheduled_at'] = Mage::getModel('core/date')->gmtDate(null, $postData['scheduled_at']);
+            $data = $postData['adyen_subscription'];
+            if (isset($postData['adyen_subscription']['scheduled_at'])) {
+                if (Mage::app()->getLocale()->getLocaleCode() != 'en_US') {
+                    /**
+                     * Bugfix: Replace scheduled_at date slashes with dashes when locale is US
+                     * This is done because dates with slashes (US) are handled differently,
+                     * as noted in the documentation (see below), but UK dates also have slashes in their format (d/m/y).
+                     * @see http://php.net/manual/en/function.strtotime.php
+                     * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
+                     * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
+                     * then the European d-m-y format is assumed.
+                     * If, however, the year is given in a two digit format and the separator is a dash (-), the date string is parsed as y-m-d.
+                     */
+                    $postData['adyen_subscription']['scheduled_at'] = str_replace('/', '-', $postData['adyen_subscription']['scheduled_at']);
+                }
+                $data['scheduled_at'] = Mage::getModel('core/date')->gmtDate(null, $postData['adyen_subscription']['scheduled_at']);
             }
-            $this->addData($postData);
+
+            $data['billing_customer_address_id'] = $postData['order']['billing_address']['customer_address_id'];
+            $data['shipping_customer_address_id'] = isset($postData['order']['shipping_address']['customer_address_id'])
+                ? $postData['order']['shipping_address']['customer_address_id']
+                : $postData['order']['billing_address']['customer_address_id'];
+            $data['billing_address_save_in_address_book'] = isset($postData['order']['billing_address']['save_in_address_book'])
+                ? $postData['order']['billing_address']['save_in_address_book']
+                : null;
+            $data['shipping_address_save_in_address_book'] = isset($postData['order']['shipping_address']['save_in_address_book'])
+                ? $postData['order']['shipping_address']['save_in_address_book']
+                : null;
+            $data['shipping_as_billing'] = isset($postData['shipping_as_billing']) ? $postData['shipping_as_billing'] : null;
+
+            // add payment data
+            $data['payment'] = isset($postData['payment']) ? $postData['payment'] : null;
+
+            $this->addData($data);
         }
         return $this;
     }
@@ -229,36 +259,22 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     }
 
 
-    public function getUpcomingOrders()
+     public function getUpcomingOrders($count = 0)
     {
-        $result = array();
+        $nextFormatted = $this->getScheduledAt();
+        $date = $this->getScheduledAt();
 
-        // check if setting is enabled
-        $showUpcomingOrders = Mage::getStoreConfigFlag(
-            'adyen_subscription/subscription/show_upcoming_orders', Mage::app()->getStore()
-        );
+        $timezone = new DateTimeZone(Mage::getStoreConfig(
+            Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
+        ));
 
-        if($showUpcomingOrders) {
-            $nextFormatted = $this->getScheduledAtFormatted();
-            $date = $this->getScheduledAt();
+        $result = [$nextFormatted];
 
-            $timezone = new DateTimeZone(Mage::getStoreConfig(
-                Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
-            ));
-
-            $result[] = $nextFormatted;
-
-            // count is minus 1 because first item is already in list
-            $count = (int) Mage::getStoreConfig(
-                'adyen_subscription/subscription/number_of_upcoming_orders', Mage::app()->getStore()
-            ) - 1;
-
-            for($i = 0; $i < $count; $i++) {
-                $date = $this->calculateNextUpcomingOrderDate($date, $timezone);
-                $result[] = Mage::helper('core')->formatDate($date, 'medium', true);
-
-            }
+        for($i = 0; $i < (int)$count; $i++) {
+            $date = $this->calculateNextUpcomingOrderDate($date, $timezone);
+            $result[] = $date;
         }
+
         return $result;
     }
 
@@ -431,6 +447,12 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         return $this->getData('_billing_agreement');
     }
 
+    /**
+     * Pause subscription, delete scheduled order (active quote) and hold linked orders (if possible)
+     *
+     * @return $this
+     * @throws Exception
+     */
     public function pause()
     {
         $this->setStatus(self::STATUS_PAUSED)
@@ -438,12 +460,56 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             ->setCancelCode(null)
             ->save();
 
+        $helper = Mage::helper('adyen_subscription/config');
+        $session = Mage::getSingleton('adminhtml/session');
+
+        if ($helper->getHoldOrders()) {
+            $activeQuote = $this->getActiveQuote();
+
+            if ($activeQuote instanceof Mage_Sales_Model_Quote) {
+                $session->addNotice(
+                    $helper->__('Scheduled quote #%s deleted', $activeQuote->getId())
+                );
+                $activeQuote->delete();
+            }
+
+            foreach ($this->getOrders() as $order) {
+                /** @var Mage_Sales_Model_Order $order */
+                if (! $order->canHold()) {
+                    $session->addError(
+                        $helper->__('Can\'t hold order %s',
+                            Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                            $order->getStatusLabel())
+                    );
+                    continue;
+                }
+
+                if (in_array($order->getStatus(), $helper->getProtectedStatuses())) {
+                    $session->addError(
+                        $helper->__('Can\'t hold order %s (protected status: %s)',
+                            Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                            $order->getStatusLabel())
+                    );
+                    continue;
+                }
+
+                $session->addNotice(
+                    $helper->__('Order %s on hold',
+                        Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                        $order->getStatusLabel())
+                );
+                $order->hold()->save();
+            }
+        }
+
         Mage::dispatchEvent('adyen_subscription_pause', array('subscription' => $this));
 
         return $this;
     }
 
     /**
+     * Activate subscription, create scheduled order (quote) and unhold linked orders
+     *
      * @return $this
      */
     public function activate()
@@ -453,6 +519,25 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
             ->setEndsAt('0000-00-00 00:00:00')
             ->setCancelCode(null)
             ->save();
+
+        $helper = Mage::helper('adyen_subscription/config');
+        $session = Mage::getSingleton('adminhtml/session');
+
+        if ($helper->getHoldOrders()) {
+            foreach ($this->getOrders() as $order) {
+                /** @var Mage_Sales_Model_Order $order */
+                if (! $order->canUnhold()) {
+                    continue;
+                }
+
+                $session->addNotice(
+                    $helper->__('Order %s released from hold',
+                        Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                        $order->getStatusLabel())
+                );
+                $order->unhold()->save();
+            }
+        }
 
         Mage::dispatchEvent('adyen_subscription_activate', array('subscription' => $this));
 
@@ -467,6 +552,48 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         $this->setStatus(self::STATUS_CANCELED);
         $this->setEndsAt(now());
         $this->save();
+
+        $helper = Mage::helper('adyen_subscription/config');
+        $session = Mage::getSingleton('adminhtml/session');
+
+        if ($helper->getCancelOrders()) {
+            $activeQuote = $this->getActiveQuote();
+
+            if ($activeQuote instanceof Mage_Sales_Model_Quote) {
+                $session->addNotice(
+                    $helper->__('Scheduled quote #%s deleted', $activeQuote->getId())
+                );
+                $activeQuote->delete();
+            }
+
+            foreach ($this->getOrders() as $order) {
+                /** @var Mage_Sales_Model_Order $order */
+                if (! $order->canCancel()) {
+                    $session->addError(
+                        $helper->__('Can\'t cancel order %s',
+                            Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                            $order->getStatusLabel())
+                    );
+                    continue;
+                }
+
+                if (in_array($order->getStatus(), $helper->getProtectedStatuses())) {
+                    $session->addError(
+                        $helper->__('Can\'t cancel order %s (protected status: %s)',
+                            Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                            $order->getStatusLabel())
+                    );
+                    continue;
+                }
+
+                $session->addNotice(
+                    $helper->__('Order %s canceled',
+                        Mage::helper('adyen_subscription')->getAdminOrderUrlHtml($order),
+                        $order->getStatusLabel())
+                );
+                $order->cancel()->save();
+            }
+        }
 
         Mage::dispatchEvent('adyen_subscription_cancel', array('subscription' => $this));
 
@@ -551,6 +678,20 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     /**
      * @return array
      */
+    public static function getErrorStatuses()
+    {
+        return [
+            self::STATUS_ORDER_ERROR,
+            self::STATUS_PAYMENT_ERROR,
+            self::STATUS_QUOTE_ERROR,
+            self::STATUS_SUBSCRIPTION_ERROR
+        ];
+    }
+
+
+    /**
+     * @return array
+     */
     public static function getInactiveStatuses()
     {
         return [
@@ -566,7 +707,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
      */
     public function getStatusLabel($status = null)
     {
-        return self::getStatuses()[$status ? $status : $this->getStatus()];
+        return Mage::helper('adyen_subscription')->__(self::getStatuses()[$status ? $status : $this->getStatus()]);
     }
 
     /**
@@ -761,15 +902,13 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         return $result->getData('is_allowed');
     }
 
-
     /**
      * @return bool
      */
     public function canEditSubscription()
     {
-        return true;
+        return ! $this->isCanceled();
     }
-
 
     /**
      * @return bool

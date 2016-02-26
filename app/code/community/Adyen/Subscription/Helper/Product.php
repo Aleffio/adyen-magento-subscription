@@ -21,42 +21,33 @@
  * Author: Adyen <magento@adyen.com>, H&O E-commerce specialists B.V. <info@h-o.nl>
  */
 
-class Adyen_Subscription_Helper_Data extends Mage_Core_Helper_Abstract
+class Adyen_Subscription_Helper_Product extends Mage_Core_Helper_Abstract
 {
-    public function logSubscriptionCron($message)
-    {
-        $this->log($message, "adyen_subscription_cron");
-    }
-
-    public function logQuoteCron($message)
-    {
-        $this->log($message, "adyen_quote_cron");
-    }
-
-    public function logOrderCron($message)
-    {
-        $this->log($message, "adyen_order_cron");
-    }
-
-    public function log($message, $filename)
-    {
-        if(Mage::getStoreConfigFlag(
-            'adyen_subscription/subscription/debug',
-            Mage::app()->getStore()
-        ))
-        {
-            Mage::log($message, Zend_Log::DEBUG, "$filename.log", true);
-        }
-    }
-
     /**
-     * @param Mage_Sales_Model_Order $order
-     * @return string
+     * @param Mage_Catalog_Model_Product $product
+     *
+     * @return $this
      */
-    public function getAdminOrderUrlHtml(Mage_Sales_Model_Order $order)
+    public function loadProductSubscriptionData(Mage_Catalog_Model_Product $product)
     {
-        return sprintf('<a href="%s">#%s</a>',
-            Mage::helper('adminhtml')->getUrl('*/sales_order/view', ['order_id' => $order->getId()]),
-            $order->getIncrementId());
+        if ($product->hasData('adyen_subscription_data')) {
+            return $this;
+        }
+        /** @var Mage_Catalog_Model_Product $product */
+        if ($product->getData('adyen_subscription_type') > 0) {
+            $subscriptionCollection = Mage::getResourceModel('adyen_subscription/product_subscription_collection')
+                ->addProductFilter($product);
+
+            if (! $product->getStore()->isAdmin()) {
+                $subscriptionCollection->addStoreFilter($product->getStore());
+            }
+            
+            $subscriptionCollection->setOrder('sort_order','ASC');
+            
+            $product->setData('adyen_subscription_data', $subscriptionCollection);
+        } else {
+            $product->setData('adyen_subscription_data', null);
+        }
+        return $this;
     }
 }

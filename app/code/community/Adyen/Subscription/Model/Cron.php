@@ -107,7 +107,8 @@ class Adyen_Subscription_Model_Cron
             Mage_Core_Model_Locale::XML_PATH_DEFAULT_TIMEZONE
         ));
         $scheduleBefore = new DateTime('now', $timezone);
-        $scheduleBefore->add(new DateInterval('P2W'));
+        $term = Mage::helper('adyen_subscription/config')->getScheduleQuotesTerm();
+        $scheduleBefore->add(new DateInterval($term));
 
         Mage::helper('adyen_subscription')->logQuoteCron(sprintf("Create quote if schedule is before %s", $scheduleBefore->format('Y-m-d H:i:s')));
 
@@ -171,6 +172,16 @@ class Adyen_Subscription_Model_Cron
         $skippedCount = 0;
         foreach ($subscriptionCollection as $subscription) {
             /** @var Adyen_Subscription_Model_Subscription $subscription */
+
+            // If the subscription has an error status check in config if it should be retried
+            $retryOnError = Mage::getStoreConfigFlag('adyen_subscription/subscription/retry_on_error');
+            if(in_array($subscription->getStatus(), [
+                Adyen_Subscription_Model_Subscription::STATUS_QUOTE_ERROR,
+                Adyen_Subscription_Model_Subscription::STATUS_ORDER_ERROR,
+                Adyen_Subscription_Model_Subscription::STATUS_SUBSCRIPTION_ERROR
+            ]) && !$retryOnError) {
+                continue;
+            }
 
             if($subscription->getStatus() == Adyen_Subscription_Model_Subscription::STATUS_PAYMENT_ERROR) {
 
