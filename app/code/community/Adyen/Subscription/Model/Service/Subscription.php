@@ -117,13 +117,17 @@ class Adyen_Subscription_Model_Service_Subscription
             $shippingAddressData = $subscription->getShippingAddressData();
             unset($shippingAddressData['address_type']);
 
+            // Collect totals, since we could need this when retrieving shipping rates
+            $quote->collectTotals();
+
             $quote->getShippingAddress()
                 ->addData($shippingAddressData)
                 ->setData('email', $customer->getEmail())
                 ->setStockId($subscription->getStockId())
                 ->setCollectShippingRates(true)
                 ->collectShippingRates();
-            
+
+            $quote->setTotalsCollectedFlag(false);
             $quote->getShippingAddress()->collectTotals();
 
             if (! $subscription->getShippingAddress() instanceof Mage_Customer_Model_Address) {
