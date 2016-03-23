@@ -66,10 +66,14 @@ class Adyen_Subscription_Model_Service_Subscription
                 $product = Mage::getModel('catalog/product')->load($productId);
                 $product->setData('is_created_from_subscription_item', $subscriptionItem->getId());
 
-                $quote->addProduct($product, $subscriptionItem->getQty());
+                // add buyRequest to varien_object so we can support configurable products
+                $buyRequest = $subscriptionItem->getBuyRequest();
+                $varienObject = new Varien_Object();
+                foreach ($buyRequest as $code => $value) {
+                    $varienObject->setData($code, $value);
+                }
 
-                // need to use this to retrieve the quoteItem because otherwise configurable products will not work
-                $quoteItem= $quote->getItemByProduct($product);
+                $quoteItem = $quote->addProduct($product, $varienObject);
 
                 if (! $quoteItem instanceof Mage_Sales_Model_Quote_Item) {
                     Mage::helper('adyen_subscription')->logQuoteCron(sprintf('An error occurred while adding a product to the quote: %s', $quoteItem));

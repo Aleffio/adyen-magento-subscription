@@ -69,7 +69,7 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Simple extends Mage_Catalog
         }
 
         if ($subscription = $this->_helper()->getProductSubscription($product)) {
-            return $subscription->getPrice();
+            return $this->_applyOptionsPrice($product, $qty, $subscription->getPrice());
         }
 
         return parent::getFinalPrice($qty, $product);
