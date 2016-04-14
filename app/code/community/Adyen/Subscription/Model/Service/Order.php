@@ -113,7 +113,6 @@ class Adyen_Subscription_Model_Service_Order
                 /** @var Adyen_Subscription_Model_Subscription_Item $subscriptionItem */
                 $subscriptionItem = Mage::getModel('adyen_subscription/subscription_item')
                     ->setSubscriptionId($subscription->getId())
-                    ->setProductSubscriptionId($productSubscription->getId())
                     ->setStatus(Adyen_Subscription_Model_Subscription_Item::STATUS_ACTIVE)
                     ->setProductId($orderItem->getProductId())
                     ->setProductOptions(serialize($orderItem->getProductOptions()))
