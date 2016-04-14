@@ -289,6 +289,7 @@ class Adyen_Subscription_Model_Service_Quote
                     ->setProductOptions(serialize($productOptions))
                     ->setSku($quoteItem->getSku())
                     ->setName($quoteItem->getName())
+                    ->setProductSubscriptionId($productSubscription->getId())
                     ->setLabel($productSubscription->getLabel())
                     ->setPrice($quoteItem->getPrice())
                     ->setPriceInclTax($quoteItem->getPriceInclTax())
