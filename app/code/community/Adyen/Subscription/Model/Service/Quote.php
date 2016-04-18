@@ -270,8 +270,9 @@ class Adyen_Subscription_Model_Service_Quote
                 /** @var Adyen_Subscription_Model_Product_Subscription $productSubscription */
                 $productSubscription = $this->_getProductSubscription($quoteItem);
 
-                if (!$productSubscription) {
+                if (!$productSubscription || $quoteItem->getParentItemId()) {
                     // No product subscription found, no subscription needs to be created
+                    // or item is child of bundle/configurable
                     continue;
                 }
 
