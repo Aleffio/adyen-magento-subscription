@@ -1,0 +1,16 @@
+{
+    "name": "adyen/subscription",
+    "description": "Official Magento Plugin for Adyen Subscriptions",
+    "type": "magento-module",
+    "homepage": "https://github.com/Adyen/adyen-magento-subscription/",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "Adyen",
+            "email": "support@adyen.com"
+        }
+    ],
+    "require": {
+        "adyen/payment": "2.5.*"
+    }
+}
