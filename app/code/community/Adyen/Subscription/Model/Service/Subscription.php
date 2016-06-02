@@ -66,8 +66,14 @@ class Adyen_Subscription_Model_Service_Subscription
                 $product = Mage::getModel('catalog/product')->load($productId);
                 $product->setData('is_created_from_subscription_item', $subscriptionItem->getId());
 
-                $quote->addProduct($product, $subscriptionItem->getQty());
-                $quoteItem = $quote->getItemByProduct($product);
+                // add buyRequest to varien_object so we can support configurable products
+                $buyRequest = $subscriptionItem->getBuyRequest();
+                $varienObject = new Varien_Object();
+                foreach ($buyRequest as $code => $value) {
+                    $varienObject->setData($code, $value);
+                }
+
+                $quoteItem = $quote->addProduct($product, $varienObject);
 
                 if (! $quoteItem instanceof Mage_Sales_Model_Quote_Item) {
                     Mage::helper('adyen_subscription')->logQuoteCron(sprintf('An error occurred while adding a product to the quote: %s', $quoteItem));
@@ -115,13 +121,17 @@ class Adyen_Subscription_Model_Service_Subscription
             $shippingAddressData = $subscription->getShippingAddressData();
             unset($shippingAddressData['address_type']);
 
+            // Collect totals, since we could need this when retrieving shipping rates
+            $quote->collectTotals();
+
             $quote->getShippingAddress()
                 ->addData($shippingAddressData)
                 ->setData('email', $customer->getEmail())
                 ->setStockId($subscription->getStockId())
                 ->setCollectShippingRates(true)
                 ->collectShippingRates();
-            
+
+            $quote->setTotalsCollectedFlag(false);
             $quote->getShippingAddress()->collectTotals();
 
             if (! $subscription->getShippingAddress() instanceof Mage_Customer_Model_Address) {

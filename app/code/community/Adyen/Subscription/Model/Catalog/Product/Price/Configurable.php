@@ -69,11 +69,16 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Configurable extends Mage_C
         }
 
         if ($subscription = $this->_helper()->getProductSubscription($product)) {
-            return $subscription->getPrice();
+            $basePrice = $subscription->getPrice();
+            $finalPrice = $basePrice;
+            $finalPrice += $this->getTotalConfigurableItemsPrice($product, $finalPrice);
+            $finalPrice += $this->_applyOptionsPrice($product, $qty, $basePrice) - $basePrice;
+            return $finalPrice;
         }
 
         return parent::getFinalPrice($qty, $product);
     }
+
 
     /**
      * @return Adyen_Subscription_Helper_Quote

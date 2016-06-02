@@ -35,7 +35,7 @@ $installer->run("
         MODIFY `subscription_id` int(11) unsigned NOT NULL;
     ALTER TABLE `{$this->getTable('adyen_subscription/subscription_quote')}`
         DROP PRIMARY KEY,
-        ADD COLUMN `entity_id` int(11) unsigned DEFAULT NULL AUTO_INCREMENT FIRST,
+        ADD COLUMN `entity_id` int(11) unsigned NOT NULL AUTO_INCREMENT FIRST,
         ADD PRIMARY KEY (`entity_id`),
         ADD CONSTRAINT `adyen_subscription_quote_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `{$installer->getTable('adyen_subscription')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -44,7 +44,7 @@ $installer->run("
         MODIFY `subscription_id` int(11) unsigned NOT NULL;
     ALTER TABLE `{$this->getTable('adyen_subscription/subscription_order')}`
         DROP PRIMARY KEY,
-        ADD COLUMN `entity_id` int(11) unsigned DEFAULT NULL AUTO_INCREMENT FIRST,
+        ADD COLUMN `entity_id` int(11) unsigned NOT NULL AUTO_INCREMENT FIRST,
         ADD PRIMARY KEY (`entity_id`),
         ADD CONSTRAINT `adyen_subscription_order_subscription_id` FOREIGN KEY (`subscription_id`) REFERENCES `{$installer->getTable('adyen_subscription')}` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 

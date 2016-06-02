@@ -620,4 +620,36 @@ class Adyen_Subscription_Adminhtml_SubscriptionController extends Mage_Adminhtml
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/adyen_subscriptions');
     }
+
+
+    /**
+     * Cutomer adyen subscription ajax action
+     *
+     */
+    public function customerGridAction()
+    {
+        $this->_initCustomer();
+        $this->loadLayout(false)
+            ->renderLayout();
+    }
+
+    /**
+     * Initialize customer by ID specified in request
+     *
+     * @return Mage_Adminhtml_Sales_Billing_AgreementController
+     */
+    protected function _initCustomer()
+    {
+        $customerId = (int) $this->getRequest()->getParam('id');
+        $customer = Mage::getModel('customer/customer');
+
+        if ($customerId) {
+            $customer->load($customerId);
+        }
+        Mage::register('current_customer', $customer);
+        return $this;
+    }
+
+
+
 }
