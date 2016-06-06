@@ -35,20 +35,22 @@ class Adyen_Subscription_Block_Adminhtml_Sales_Order_Invoice_Totals extends Adye
     {
         parent::_initTotals();
 
-        $this->addTotal(
-            new Varien_Object(
-                array(
-                    'code'      => 'subscription_fee',
-                    'strong'    => false,
-                    'value'     => $this->getSource()->getSubscriptionFeeAmount(),
-                    'base_value'=> $this->getSource()->getBaseSubscriptionFeeAmount(),
-                    'label'     => $this->helper('adyen_subscription')->__('Subscription Fee'),
-                    'area'      => '',
-                )
-            ),
-            'subtotal'
-        );
-
+        if($this->getSource()->getSubscriptionFeeAmount() != 0) {
+            $this->addTotal(
+                new Varien_Object(
+                    array(
+                        'code'      => 'subscription_fee',
+                        'strong'    => false,
+                        'value'     => $this->getSource()->getSubscriptionFeeAmount(),
+                        'base_value'=> $this->getSource()->getBaseSubscriptionFeeAmount(),
+                        'label'     => $this->helper('adyen_subscription')->__('Subscription Fee'),
+                        'area'      => '',
+                    )
+                ),
+                'subtotal'
+            );
+        }
+        
         return $this;
     }
 }
