@@ -1,4 +1,4 @@
-# Service #
+# Model/Service #
 
 ### Adyen_Subscription_Model_Service_Order
 _Methods for handling a Magento order_
