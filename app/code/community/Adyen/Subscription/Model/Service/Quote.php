@@ -95,7 +95,7 @@ class Adyen_Subscription_Model_Service_Quote
 
             $order->save();
             $subscription->getResource()->commit();
-        } catch (Mage_Payment_Exception $e) {
+        } catch (Adyen_Payment_Exception $e) {
             // 1. rollback everything
             $subscription->getResource()->rollBack();
 
