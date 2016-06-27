@@ -123,7 +123,7 @@ class Adyen_Subscription_Shell extends Mage_Shell_Abstract
                 continue;
             }
 
-            $line = '[' . trim($fileHeader) . '](' . trim($filename) . ')' . PHP_EOL;
+            $line = '[' . trim($fileHeader) . '](' . trim($filename) . ')  ' . PHP_EOL;
 
             fwrite($readme, $line);
         }
