@@ -192,7 +192,6 @@
 
     <PRODUCT_TYPE_simple>
         <reference name="product.composite.fieldset">
-            <remove name="product.composite.fieldset.qty"/>
             <block type="adyen_subscription/catalog_product_view_subscription"
                    before="product.composite.fieldset.options"
                    name="product.composite.fieldset.subscription"

@@ -62,6 +62,12 @@ class Adyen_Subscription_Model_Service_Quote
             $service->submitAll();
             $order = $service->getOrder();
 
+            if (!$order instanceof Mage_Sales_Model_Order) {
+                Adyen_Subscription_Exception::throwException(
+                    Mage::helper('adyen_subscription')->__("Couldn't create order from quote, probably no visible items")
+                );
+            }
+
             // Save order addresses at subscription when they're currently quote addresses
             $subscriptionBillingAddress = Mage::getModel('adyen_subscription/subscription_address')
                 ->getSubscriptionAddress($subscription, self::ADDRESS_TYPE_BILLING);
@@ -95,7 +101,7 @@ class Adyen_Subscription_Model_Service_Quote
 
             $order->save();
             $subscription->getResource()->commit();
-        } catch (Mage_Payment_Exception $e) {
+        } catch (Adyen_Payment_Exception $e) {
             // 1. rollback everything
             $subscription->getResource()->rollBack();
 
