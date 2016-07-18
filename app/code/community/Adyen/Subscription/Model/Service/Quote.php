@@ -90,7 +90,7 @@ class Adyen_Subscription_Model_Service_Quote
             $subscription->getOrderAdditional($order, true)->save();
             $subscription->getActiveQuoteAdditional()->setOrder($order)->save();
 
-            $subscription->setErrorMessage(null);
+            $subscription->setActive();
             $subscription->setScheduledAt($subscription->calculateNextScheduleDate());
             $subscription->save();
 

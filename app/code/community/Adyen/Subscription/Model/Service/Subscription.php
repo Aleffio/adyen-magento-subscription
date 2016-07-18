@@ -57,7 +57,7 @@ class Adyen_Subscription_Model_Service_Subscription
             $quote->setIsSuperMode(true);
             $quote->setIsActive(false); //always create an inactive quote, else it shows up on the frontend.
             $quote->setSubscriptionId($subscription->getId());
-            $subscription->setErrorMessage(null);
+            $subscription->setActive();
 
             // Add order items to quote
             foreach ($subscription->getItemCollection() as $subscriptionItem) {
