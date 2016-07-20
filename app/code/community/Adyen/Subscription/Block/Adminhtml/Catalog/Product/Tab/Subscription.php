@@ -292,10 +292,10 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
     {
         $product = $this->_getProduct();
 
-        if ($product->getTypeId() == 'bundle'
+        /*if ($product->getTypeId() == 'bundle'
             && $product->getPriceType() != Mage_Bundle_Model_Product_Price::PRICE_TYPE_FIXED) {
             return false;
-        }
+        }*/
 
         return array_key_exists('adyen_subscription_type', Mage::registry('product')->getAttributes());
     }
