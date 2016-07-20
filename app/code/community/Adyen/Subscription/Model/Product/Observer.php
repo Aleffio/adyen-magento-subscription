@@ -207,6 +207,10 @@ class Adyen_Subscription_Model_Product_Observer
         /** @noinspection PhpUndefinedMethodInspection */
         $quote = $observer->getQuote();
         if (! $quote) {
+            $quote = Mage::getSingleton('checkout/session')->getQuote();
+        }
+
+        if (! $quote) {
             return $this;
         }
 
