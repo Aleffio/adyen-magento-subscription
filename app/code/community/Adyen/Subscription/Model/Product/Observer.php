@@ -32,16 +32,18 @@ class Adyen_Subscription_Model_Product_Observer
     {
         /** @var Mage_Catalog_Model_Product $product */
         $product = $observer->getEvent()->getProduct();
+        $productSubscriptionsData = Mage::app()->getRequest()->getPost('product_subscription');
+        $storeId = Mage::app()->getRequest()->getParam('store');
 
         $subscriptionType = $product->getData('adyen_subscription_type');
         switch ($subscriptionType) {
             case Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ONLY_SUBSCRIPTION:
-                $this->_updateProductSubscriptions($product);
+                $this->_updateProductSubscriptions($product, $productSubscriptionsData, $storeId);
                 $product->setRequiredOptions(true);
                 $product->setHasOptions(true);
                 break;
             case Adyen_Subscription_Model_Product_Subscription::TYPE_ENABLED_ALLOW_STANDALONE:
-                $this->_updateProductSubscriptions($product);
+                $this->_updateProductSubscriptions($product, $productSubscriptionsData, $storeId);
                 $product->setHasOptions(true);
                 break;
             default:
@@ -51,13 +53,12 @@ class Adyen_Subscription_Model_Product_Observer
 
     /**
      * @param Mage_Catalog_Model_Product $product
+     * @param $productSubscriptionsData
+     * @param $storeId
      * @throws Exception
      */
-    protected function _updateProductSubscriptions(Mage_Catalog_Model_Product $product)
+    protected function _updateProductSubscriptions(Mage_Catalog_Model_Product $product, $productSubscriptionsData, $storeId)
     {
-        $productSubscriptionsData = Mage::app()->getRequest()->getPost('product_subscription');
-        $storeId = Mage::app()->getRequest()->getParam('store');
-
         if (! $productSubscriptionsData) {
             if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED) {
                 $product->setData('adyen_subscription_type', Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED);
@@ -69,10 +70,18 @@ class Adyen_Subscription_Model_Product_Observer
         }
 
         /** @var array $productSubscriptionIds */
-        $productSubscriptionIds = Mage::getModel('adyen_subscription/product_subscription')
+        $productSubscriptionCollection = Mage::getModel('adyen_subscription/product_subscription')
             ->getCollection()
-            ->addFieldToFilter('product_id', $product->getId())
-            ->getAllIds();
+            ->addFieldToFilter('product_id', $product->getId());
+
+        $isGlobal = Mage::app()->isSingleStoreMode();
+        if (!$isGlobal && (int)$storeId) {
+            /** @var $website Mage_Core_Model_Website */
+            $website = Mage::app()->getStore($storeId)->getWebsite();
+            $productSubscriptionCollection->addFieldToFilter('website_id', $website->getId());
+        }
+
+        $productSubscriptionIds = $productSubscriptionCollection->getAllIds();
 
         $resource = Mage::getSingleton('core/resource');
         $connection = $resource->getConnection('core_write');
