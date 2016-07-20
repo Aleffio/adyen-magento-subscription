@@ -102,6 +102,7 @@
                         <model>adyen_subscription/catalog_product_type_simple</model>
                     </simple>
                     <bundle translate="label" module="catalog">
+                        <price_model>adyen_subscription/catalog_product_price_bundle</price_model>
                         <model>adyen_subscription/catalog_product_type_bundle</model>
                     </bundle>
                     <configurable>
