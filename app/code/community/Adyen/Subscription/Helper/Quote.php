@@ -130,7 +130,6 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
 
         /** @var Adyen_Subscription_Model_Product_Subscription $subscription */
         $subscription = $subscriptionCollection->getItemById($subscriptionId);
-
         if ($subscription) {
             $subscriptionOption = [
                 'label'        => Mage::helper('adyen_subscription')->__('Subscription'),
@@ -138,6 +137,7 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
                 'option_value' => $subscriptionId,
                 'value'        => $subscription->getFrontendLabel(),
                 'print_value'  => $subscription->getFrontendLabel(),
+                'qty'          => $subscription->getQty(),
             ];
         }
         else {
@@ -147,6 +147,7 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
                 'option_value' => 'none',
                 'value'        => Mage::helper('adyen_subscription')->__('No subscription'),
                 'print_value'  => Mage::helper('adyen_subscription')->__('No subscription'),
+                'qty'          => 1,
             ];
         }
 
