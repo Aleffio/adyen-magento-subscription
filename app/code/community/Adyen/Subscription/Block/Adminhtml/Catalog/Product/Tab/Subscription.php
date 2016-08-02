@@ -54,6 +54,14 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
             ->addFieldToFilter('product_id', $product->getId())
             ->setOrder('sort_order', Zend_Db_Select::SQL_ASC);
 
+        $isGlobal = Mage::app()->isSingleStoreMode();
+        if (!$isGlobal && $product->getStoreId()) {
+            /** @var $website Mage_Core_Model_Website */
+            $website = Mage::app()->getStore($product->getStoreId())->getWebsite();
+
+            $productSubscriptions->addFieldToFilter('website_id', $website->getId());
+        }
+
         $subscriptionAttribute = $product->getAttributes()['adyen_subscription_type'];
         $subscriptionAttribute->setIsVisible(1);
         $this->_setFieldset([$subscriptionAttribute], $fieldset);
@@ -284,10 +292,10 @@ class Adyen_Subscription_Block_Adminhtml_Catalog_Product_Tab_Subscription extend
     {
         $product = $this->_getProduct();
 
-        if ($product->getTypeId() == 'bundle'
+        /*if ($product->getTypeId() == 'bundle'
             && $product->getPriceType() != Mage_Bundle_Model_Product_Price::PRICE_TYPE_FIXED) {
             return false;
-        }
+        }*/
 
         return array_key_exists('adyen_subscription_type', Mage::registry('product')->getAttributes());
     }

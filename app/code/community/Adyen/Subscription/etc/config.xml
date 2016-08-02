@@ -88,20 +88,6 @@
                     </subscription_history>
                 </entities>
             </adyen_subscription_resource>
-            <catalog>
-                <rewrite>
-                    <product_type_simple>Adyen_Subscription_Model_Catalog_Product_Type_Simple</product_type_simple>
-                    <product_type_price>Adyen_Subscription_Model_Catalog_Product_Price_Simple</product_type_price>
-                    <product_type_configurable>Adyen_Subscription_Model_Catalog_Product_Type_Configurable</product_type_configurable>
-                    <product_type_configurable_price>Adyen_Subscription_Model_Catalog_Product_Price_Configurable</product_type_configurable_price>
-                </rewrite>
-            </catalog>
-            <bundle>
-                <rewrite>
-                    <product_price>Adyen_Subscription_Model_Catalog_Product_Price_Bundle</product_price>
-                    <product_type>Adyen_Subscription_Model_Catalog_Product_Type_Bundle</product_type>
-                </rewrite>
-            </bundle>
             <enterprise_admingws>
                 <rewrite>
                     <collections>Adyen_Subscription_Model_AdminGws_Collections</collections>
@@ -113,7 +99,16 @@
                 <type>
                     <simple translate="label" module="catalog">
                         <price_model>adyen_subscription/catalog_product_price_simple</price_model>
+                        <model>adyen_subscription/catalog_product_type_simple</model>
                     </simple>
+                    <bundle translate="label" module="catalog">
+                        <price_model>adyen_subscription/catalog_product_price_bundle</price_model>
+                        <model>adyen_subscription/catalog_product_type_bundle</model>
+                    </bundle>
+                    <configurable>
+                        <price_model>adyen_subscription/catalog_product_price_configurable</price_model>
+                        <model>adyen_subscription/catalog_product_type_configurable</model>
+                    </configurable>
                 </type>
             </product>
         </catalog>

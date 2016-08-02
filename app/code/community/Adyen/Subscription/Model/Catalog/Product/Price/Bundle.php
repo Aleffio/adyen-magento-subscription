@@ -36,6 +36,7 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Bundle extends Mage_Bundle_
     public function getFinalPrice($qty = null, $product)
     {
         if ($subscriptionItem = $this->_helper()->getSubscriptionItem($product)) {
+
             $subscription = $subscriptionItem->getSubscription(); // @todo Performance
 
             $store = $product->getStore();
@@ -69,10 +70,27 @@ class Adyen_Subscription_Model_Catalog_Product_Price_Bundle extends Mage_Bundle_
         }
 
         if ($subscription = $this->_helper()->getProductSubscription($product)) {
-            return $subscription->getPrice();
+            return $this->_applyOptionsPrice($product, $qty, $subscription->getPrice());
         }
 
         return parent::getFinalPrice($qty, $product);
+    }
+
+    /**
+     * Get product tier price by qty
+     * Extended to hide tier pricing when product is a subscription product
+     *
+     * @param   float $qty
+     * @param   Mage_Catalog_Model_Product $product
+     * @return  float
+     */
+    public function getTierPrice($qty = null, $product)
+    {
+        if ($subscription = $this->_helper()->getProductSubscription($product)) {
+            return array();
+        }
+
+        return parent::getTierPrice($qty, $product);
     }
 
     /**
