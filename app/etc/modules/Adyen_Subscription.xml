@@ -29,6 +29,7 @@
             <codePool>community</codePool>
             <depends>
                 <Adyen_Payment />
+                <Mage_Bundle/>
             </depends>
         </Adyen_Subscription>
     </modules>

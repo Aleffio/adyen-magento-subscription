@@ -52,7 +52,11 @@ class Adyen_Subscription_Model_Service_Quote
                     Mage::helper('adyen_subscription')->__('Not allowed to create order from quote')
                 );
             }
-            foreach ($quote->getAllItems() as $item) {
+
+            /**
+             * only go into the visible items because bundles should use default final price
+             */
+            foreach ($quote->getAllVisableItems() as $item) {
                 /** @var Mage_Sales_Model_Quote_Item $item */
                 $item->getProduct()->setData('is_created_from_subscription_item', $item->getData('subscription_item_id'));
             }
@@ -90,7 +94,7 @@ class Adyen_Subscription_Model_Service_Quote
             $subscription->getOrderAdditional($order, true)->save();
             $subscription->getActiveQuoteAdditional()->setOrder($order)->save();
 
-            $subscription->setErrorMessage(null);
+            $subscription->setActive();
             $subscription->setScheduledAt($subscription->calculateNextScheduleDate());
             $subscription->save();
 
