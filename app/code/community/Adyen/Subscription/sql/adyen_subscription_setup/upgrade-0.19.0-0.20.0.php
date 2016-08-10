@@ -33,8 +33,10 @@ $subscriptionAddressTable = $installer->getTable('adyen_subscription/subscriptio
 
 $connection->modifyColumn($subscriptionAddressTable, 'item_id', [
     'type'           => Varien_Db_Ddl_Table::TYPE_INTEGER,
-    'auto_increment' => true,
+	'auto_increment' => true,
     'unsigned'       => true,
+	'nullable'       => false,
+    'primary'        => true,
 ]);
 
 $installer->endSetup();
