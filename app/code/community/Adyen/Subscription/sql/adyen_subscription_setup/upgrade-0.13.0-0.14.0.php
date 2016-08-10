@@ -44,7 +44,6 @@ $connection->addForeignKey(
     $subscriptionQuoteTable, 'order_id', $orderTable, 'entity_id'
 );
 
-$connection->dropIndex($subscriptionQuoteTable, 'quote_id');
 $quoteTable = $installer->getTable('sales/quote');
 $connection->addForeignKey(
     $installer->getFkName($subscriptionQuoteTable, 'quote_id', $quoteTable, 'entity_id'),
