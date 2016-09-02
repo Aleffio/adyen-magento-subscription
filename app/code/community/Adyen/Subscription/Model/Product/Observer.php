@@ -59,15 +59,15 @@ class Adyen_Subscription_Model_Product_Observer
      */
     protected function _updateProductSubscriptions(Mage_Catalog_Model_Product $product, $productSubscriptionsData, $storeId)
     {
-        if (! $productSubscriptionsData) {
-            if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED) {
-                $product->setData('adyen_subscription_type', Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED);
-                Mage::getSingleton('adminhtml/session')->addNotice(
-                    Mage::helper('adyen_subscription')->__('Adyen Subscription Type is set back to \'Disabled\' because no subscriptions were defined')
-                );
-            }
-            return;
-        }
+//        if (! $productSubscriptionsData) {
+//            if ($product->getData('adyen_subscription_type') != Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED) {
+//                $product->setData('adyen_subscription_type', Adyen_Subscription_Model_Product_Subscription::TYPE_DISABLED);
+//                Mage::getSingleton('adminhtml/session')->addNotice(
+//                    Mage::helper('adyen_subscription')->__('Adyen Subscription Type is set back to \'Disabled\' because no subscriptions were defined')
+//                );
+//            }
+//            return;
+//        }
 
         /** @var array $productSubscriptionIds */
         $productSubscriptionCollection = Mage::getModel('adyen_subscription/product_subscription')
@@ -258,7 +258,7 @@ class Adyen_Subscription_Model_Product_Observer
                 $observer->getResult()->isAvailable = true;
         }
 
-        //@todo move paymen specific logic to Adyen_Payments module, this causes tight coupling.
+        //@todo move payment specific logic to Adyen_Payments module, this causes tight coupling.
         // restrict MAESTRO payment method for creditcards because MEASTRO does not support Recurring
         if($code == "adyen_cc") {
             $types = $methodInstance->getAvailableCCTypes();
