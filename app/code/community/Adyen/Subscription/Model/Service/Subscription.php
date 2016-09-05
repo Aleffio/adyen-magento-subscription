@@ -141,36 +141,31 @@ class Adyen_Subscription_Model_Service_Subscription
             // Set shipping method
             $shippingMethod = $subscription->getShippingMethod();
             $quote->getShippingAddress()->setShippingMethod($shippingMethod)->save();
+            
+            if ($subscription->getBillingAgreement()->getId()) {
+                // Set payment method
+                $methodInstance = $subscription->getBillingAgreement()->getPaymentMethodInstance();
 
-            if (! $subscription->getBillingAgreement()->getId()) {
-                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('No billing agreement found', $quote));
-                Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
-                    'No billing agreement found'
-                ));
-            }
-
-            // Set payment method
-            $methodInstance = $subscription->getBillingAgreement()->getPaymentMethodInstance();
-
-            if (! method_exists($methodInstance, 'initBillingAgreementPaymentInfo')) {
-                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Payment method %s does not support Adyen_Subscription', $methodInstance->getCode()));
-                Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
-                    'Payment method %s does not support Adyen_Subscription', $methodInstance->getCode()
-                ));
-            }
+                if (! method_exists($methodInstance, 'initBillingAgreementPaymentInfo')) {
+                    Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Payment method %s does not support Adyen_Subscription', $methodInstance->getCode()));
+                    Adyen_Subscription_Exception::throwException(Mage::helper('adyen_subscription')->__(
+                        'Payment method %s does not support Adyen_Subscription', $methodInstance->getCode()
+                    ));
+                }
 
 
-            // Set billing agreement data
-            /** @noinspection PhpUndefinedMethodInspection */
-            try {
+                // Set billing agreement data
                 /** @noinspection PhpUndefinedMethodInspection */
-                $methodInstance->initBillingAgreementPaymentInfo($subscription->getBillingAgreement(), $quote->getPayment());
-            } catch(Mage_Core_Exception $e) {
-                Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Failed to set billing agreement data %s', $e->getMessage()));
-                $subscription->setErrorMessage($e->getMessage());
-                $subscription->setStatus($subscription::STATUS_QUOTE_ERROR);
+                try {
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    $methodInstance->initBillingAgreementPaymentInfo($subscription->getBillingAgreement(), $quote->getPayment());
+                } catch(Mage_Core_Exception $e) {
+                    Mage::helper('adyen_subscription')->logQuoteCron(sprintf('Failed to set billing agreement data %s', $e->getMessage()));
+                    $subscription->setErrorMessage($e->getMessage());
+                    $subscription->setStatus($subscription::STATUS_QUOTE_ERROR);
+                }
             }
-
+            
             $quote->collectTotals();
             $subscription->setActiveQuote($quote);
             $quoteAdditional = $subscription->getActiveQuoteAdditional(true);

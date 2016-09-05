@@ -393,6 +393,10 @@
                     <code>adyen_hpp_directEbanking</code>
                     <label>directEbanking (Sofort)</label>
                 </directebanking>
+                <paybymail>
+                    <code>adyen_pay_by_mail</code>
+                    <label>Pay By Mail</label>
+                </paybymail>
             </allowed_payment_methods>
         </adyen_subscription>
         <sales>

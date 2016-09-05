@@ -66,6 +66,11 @@ class Adyen_Subscription_Model_Service_Quote
             $service->submitAll();
             $order = $service->getOrder();
 
+            // sendOrderConfirmation if payment is adyen_pay_by_mail
+            if($order->getPayment()->getMethodInstance()->getCode() == Adyen_Payment_Model_Adyen_PayByMail::METHODCODE) {
+                $order->queueNewOrderEmail();
+            }
+
             if (!$order instanceof Mage_Sales_Model_Order) {
                 Adyen_Subscription_Exception::throwException(
                     Mage::helper('adyen_subscription')->__("Couldn't create order from quote, probably no visible items")
@@ -209,16 +214,33 @@ class Adyen_Subscription_Model_Service_Quote
 
             $billingAgreement = $this->getBillingAgreement($quote);
 
-            $this->updateQuotePayment($quote, $billingAgreement, $subscription->getData('payment'));
 
-            if (!$quote->getShippingAddress()->getShippingMethod()) {
-                Adyen_Subscription_Exception::throwException('No shipping method selected');
+            if($billingAgreement) {
+
+                $this->updateQuotePayment($quote, $billingAgreement, $subscription->getData('payment'));
+
+                if (!$quote->getShippingAddress()->getShippingMethod()) {
+                    Adyen_Subscription_Exception::throwException('No shipping method selected');
+                }
+
+                $status = Adyen_Subscription_Model_Subscription::STATUS_ACTIVE;
+                $billingAgreementId = $billingAgreement->getId();
+
+            } else {
+
+                // if billing agreement does not exists yet (with new payment)
+                // remove the current quote
+                // set in pending status
+                $status = Adyen_Subscription_Model_Subscription::STATUS_ACTIVE;
+                $billingAgreementId = null;
             }
 
+
+
             // Update subscription
-            $subscription->setStatus(Adyen_Subscription_Model_Subscription::STATUS_ACTIVE)
+            $subscription->setStatus($status)
                 ->setStockId($stockId)
-                ->setBillingAgreementId($billingAgreement->getId())
+                ->setBillingAgreementId($billingAgreementId)
                 ->setTerm($term)
                 ->setTermType($termType)
                 ->setShippingMethod($quote->getShippingAddress()->getShippingMethod())
@@ -408,13 +430,7 @@ class Adyen_Subscription_Model_Service_Quote
     public function getBillingAgreement(Mage_Sales_Model_Quote $quote)
     {
         $billingAgreement = $quote->getPayment()->getMethodInstance()->getBillingAgreement();
-
-        if (! $billingAgreement) {
-            Adyen_Subscription_Exception::throwException(
-                'Could not find billing agreement for quote ' . $quote->getId()
-            );
-        }
-
+        
         Mage::dispatchEvent('adyen_subscription_quote_getbillingagreement', array(
             'billingAgreement' => $billingAgreement,
             'quote' => $quote

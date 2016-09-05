@@ -59,7 +59,7 @@
 
         <div class="fieldset">
             <table cellspacing="0" class="form-list">
-                <?php if ($_billingAgreement->getId()): ?>
+                <?php if ($_billingAgreement && $_billingAgreement->getId()): ?>
                     <tr>
                         <td class="label"><label><?php echo Mage::helper('adyen_subscription')->__('Reference ID'); ?></label></td>
                         <td class="value">
