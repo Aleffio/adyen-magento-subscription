@@ -11,6 +11,6 @@
         }
     ],
     "require": {
-        "adyen/payment": "2.5.*"
+        "adyen/payment": "2.8.*"
     }
 }
