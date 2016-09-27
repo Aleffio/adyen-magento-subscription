@@ -74,6 +74,31 @@ class Adyen_Subscription_Helper_Quote extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * get selected subscription option for quote item
+     * @param Mage_Sales_Model_Quote_Item $quoteItem
+     * @return bool|array
+     */
+    public function getSubscriptionOptionFromQuoteItem(Mage_Sales_Model_Quote_Item $quoteItem)
+    {
+        $subscriptionOption = false;
+
+        $additionalOptions = $quoteItem->getOptionByCode('additional_options');
+
+        if ($quoteItem->getOptionByCode('additional_options')) {
+            $additionalOptions = unserialize($additionalOptions->getValue());
+
+            foreach ($additionalOptions as $option) {
+                if ($option['code'] == 'adyen_subscription') {
+                    $subscriptionOption = $option;
+                    break;
+                }
+            }
+        }
+
+        return $subscriptionOption;
+    }
+
+    /**
      * Retrieve current tax percent for customer based on subscription and product
      *
      * @param Adyen_Subscription_Model_Subscription $subscription
