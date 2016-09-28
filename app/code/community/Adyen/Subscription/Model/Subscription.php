@@ -515,7 +515,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
     public function activate()
     {
         $this->setActive()
-            ->setScheduledAt(now())
+            //->setScheduledAt(now())
             ->setEndsAt('0000-00-00 00:00:00')
             ->setCancelCode(null)
             ->save();
