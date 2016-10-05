@@ -67,7 +67,7 @@ class Adyen_Subscription_Model_Service_Quote
             $order = $service->getOrder();
 
             // sendOrderConfirmation if payment is adyen_pay_by_mail
-            if($order->getPayment()->getMethodInstance()->getCode() == Mage::getModel('payment/adyen_payByMail')->getCode()) {
+            if($order->getPayment()->getMethodInstance()->getCode() == Mage::getModel('adyen/adyen_payByMail')->getCode()) {
                 $order->queueNewOrderEmail();
             }
 
