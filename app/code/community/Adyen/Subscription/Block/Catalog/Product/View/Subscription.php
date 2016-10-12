@@ -127,6 +127,8 @@ class Adyen_Subscription_Block_Catalog_Product_View_Subscription extends Mage_Co
         $adminStoreId = (int)Mage::getSingleton('adminhtml/session_quote')->getData('store_id');
         if ($adminStoreId) {
             $collection->addFieldToFilter('website_id', Mage::getSingleton('adminhtml/session_quote')->getStore()->getWebsiteId());
+        } else {
+            $subscriptionCollection->addStoreFilter($this->getProduct()->getStore());
         }
 
         return $collection;
