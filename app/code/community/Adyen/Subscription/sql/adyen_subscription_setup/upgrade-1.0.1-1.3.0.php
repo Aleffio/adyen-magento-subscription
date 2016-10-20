@@ -20,38 +20,6 @@
  * Author: Adyen <magento@adyen.com>
  */
 
-/**
- * Add a preorder attribute for products that can be ordered in advance (later shipment date)
- */
-/* @var $installer Mage_Catalog_Model_Resource_Setup */
-$installer = Mage::getResourceModel('catalog/setup', 'catalog_setup');
-
-$installer->startSetup();
-
-$installer->addAttribute('catalog_product', 'can_preorder', array(
-    'group'                     => 'General',
-    'input'                     => 'select',
-    'type'                      => 'int',
-    'label'                     => 'Can preorder',
-    'source'                    => 'eav/entity_attribute_source_boolean',
-    'global'                    => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
-    'visible'                   => 1,
-    'required'                  => 0,
-    'visible_on_front'          => 0,
-    'is_html_allowed_on_front'  => 0,
-    'is_configurable'           => 0,
-    'searchable'                => 0,
-    'filterable'                => 0,
-    'comparable'                => 0,
-    'unique'                    => false,
-    'user_defined'              => false,
-    'default'                   => 0,
-    'is_user_defined'           => false,
-    'used_in_product_listing'   => true
-));
-
-$installer->endSetup();
-
 
 /**
  * Add the order shipment date to the sales tables
