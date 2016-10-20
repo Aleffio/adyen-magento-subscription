@@ -25,7 +25,7 @@
 <config>
     <modules>
         <Adyen_Subscription>
-            <version>1.2.0</version>
+            <version>1.3.0</version>
         </Adyen_Subscription>
     </modules>
     <global>
@@ -209,6 +209,14 @@
                     </adyen_subscription_update_address>
                 </observers>
             </customer_address_save_after>
+            <sales_order_load_after>
+                <observers>
+                    <adyen_subscription_sales_order_load_after>
+                        <class>Adyen_Subscription_Model_Sales_Observers_Order</class>
+                        <method>salesOrderLoadAfter</method>
+                    </adyen_subscription_sales_order_load_after>
+                </observers>
+            </sales_order_load_after>
         </events>
         <sales>
             <quote>
@@ -353,6 +361,14 @@
                     </adyen_subscription>
                 </observers>
             </controller_action_layout_load_before>
+            <adminhtml_sales_order_create_process_data_before>
+                <observers>
+                    <adyen_subscription_adminhtml_sales_order_create_process_data_before>
+                        <class>Adyen_Subscription_Model_Sales_Observers_Order</class>
+                        <method>adminhtmlSalesOrderCreateProcessDataBefore</method>
+                    </adyen_subscription_adminhtml_sales_order_create_process_data_before>
+                </observers>
+            </adminhtml_sales_order_create_process_data_before>
         </events>
     </adminhtml>
 

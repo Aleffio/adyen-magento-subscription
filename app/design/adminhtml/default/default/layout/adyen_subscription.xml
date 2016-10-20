@@ -216,4 +216,19 @@
                    template="adyen_subscription/product/composite/fieldset/options/subscription.phtml" />
         </reference>
     </PRODUCT_TYPE_bundle>
+
+    <!-- add a scheduled at field to the order creation view -->
+    <adminhtml_sales_order_create_totals_scheduledat>
+        <reference name="totals">
+            <block type="adyen_subscription/adminhtml_sales_order_create_totals_scheduledat" name="totals_additional" template="adyen_subscription/sales/order/create/totals/scheduledat.phtml"/>
+        </reference>
+    </adminhtml_sales_order_create_totals_scheduledat>
+
+    <adminhtml_sales_order_create_index>
+        <update handle="adminhtml_sales_order_create_totals_scheduledat"/>
+    </adminhtml_sales_order_create_index>
+
+    <adminhtml_sales_order_create_load_block_totals>
+        <update handle="adminhtml_sales_order_create_totals_scheduledat"/>
+    </adminhtml_sales_order_create_load_block_totals>
 </layout>

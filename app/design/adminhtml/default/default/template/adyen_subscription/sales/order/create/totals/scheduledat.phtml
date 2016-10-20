@@ -1,0 +1,26 @@
+<?php
+/* @var $this Adyen_Subscription_Block_Adminhtml_Sales_Order_Totals_Scheduledat */
+?>
+<div class="order-totals-bottom">
+    <label for="scheduled_at"><?php echo $this->__('Scheduled At');?></label>
+
+    <input id="scheduled_at" name="order[scheduled_at]"
+           value="<?php echo $this->getScheduledAt();?>"
+           style="width:150px;"
+           class="input-text" type="text">
+    <img title="<?php echo $this->__('Select date');?>" id="_scheduled_at"
+         src="<?php echo  $this->getSkinUrl('images/grid-cal.gif');?>"
+         class="v-middle">
+</div>
+
+<script type="text/javascript">
+Calendar.setup({
+    inputField: 'scheduled_at',
+    ifFormat: '<?php echo $this->getDateTimeFormat();?>',
+    button: '_scheduled_at',
+    showsTime: true,
+    align: 'Bl',
+    singleClick: true
+});
+</script>
+<div class="divider"></div>
