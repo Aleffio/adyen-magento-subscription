@@ -159,8 +159,11 @@ class Adyen_Subscription_Model_Cron
     public function createOrders()
     {
         Mage::helper('adyen_subscription')->logOrderCron("Start order cronjob");
+
+        $useTimeFetchingOrders = Mage::getStoreConfigFlag('adyen_subscription/subscription/create_order_regard_time');
+
         $subscriptionCollection = Mage::getResourceModel('adyen_subscription/subscription_collection');
-        $subscriptionCollection->addPlaceOrderFilter();
+        $subscriptionCollection->addPlaceOrderFilter($useTimeFetchingOrders);
 
         if ($subscriptionCollection->count() <= 0) {
             Mage::helper('adyen_subscription')->logOrderCron("There are no subscriptions that have quotes and a schedule date in the past");
