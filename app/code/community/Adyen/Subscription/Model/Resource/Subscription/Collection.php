@@ -146,9 +146,10 @@ class Adyen_Subscription_Model_Resource_Subscription_Collection extends Mage_Cor
 
 
     /**
+     * @param boolean $useTime
      * @return $this
      */
-    public function addPlaceOrderFilter()
+    public function addPlaceOrderFilter($useTime = true)
     {
         $this->addFieldToFilter('status', array('in' => Adyen_Subscription_Model_Subscription::getPlaceOrderStatuses()));
         $this->getSelect()->joinLeft(
@@ -157,8 +158,11 @@ class Adyen_Subscription_Model_Resource_Subscription_Collection extends Mage_Cor
             ['quote_id', 'order_id']
         );
 
+        // if use time is false 'scheduled_at' should be cast to date, truncating time
+        $whereClauseForScheduled = $useTime ? "scheduled_at <= ?" : "DATE(scheduled_at) <= ?" ;
+
         $this->getSelect()
-            ->where("scheduled_at < ?", now())
+            ->where($whereClauseForScheduled, now())
             ->where('subscription_quote.order_id IS NULL')
             ->where('subscription_quote.quote_id IS NOT NULL');
 

@@ -434,6 +434,7 @@
             </advanced>
             <subscription>
                 <retry_on_error>0</retry_on_error>
+                <create_order_regard_time>1</create_order_regard_time>
             </subscription>
         </adyen_subscription>
     </default>
