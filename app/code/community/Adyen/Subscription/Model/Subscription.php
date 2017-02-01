@@ -526,7 +526,7 @@ class Adyen_Subscription_Model_Subscription extends Mage_Core_Model_Abstract
         if ($helper->getHoldOrders()) {
             foreach ($this->getOrders() as $order) {
                 /** @var Mage_Sales_Model_Order $order */
-                if (! $order->canUnhold()) {
+                if (! $order->canUnhold() || ($order->getScheduledAt()!=null && strtotime($order->getScheduledAt()) < now())) {
                     continue;
                 }
 
