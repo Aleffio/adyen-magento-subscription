@@ -58,7 +58,7 @@ $_coreHelper = $this->helper('core');
                                    name="adyen_subscription" class="adyen-subscription-option validate-one-required-by-name" value="<?php echo $subscription->getId(); ?>"
                                    <?php if($this->isSubscriptionSelected($subscription)): ?>checked<?php endif; ?>
                                 />
-                            <?php echo $subscription->getFrontendLabel(); ?> <?php echo $_coreHelper->formatCurrency($subscription->getPrice()); ?>
+                            <?php echo $this->__($subscription->getFrontendLabel()); ?> <?php echo $_coreHelper->formatCurrency($subscription->getPrice()); ?>
                         </label>
                         <script type="text/javascript">
                             $('adyen_subscription_<?php echo  $subscription->getId(); ?>').advaiceContainer = 'adyen_subscription_advice';

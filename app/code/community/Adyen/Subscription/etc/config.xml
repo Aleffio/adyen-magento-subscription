@@ -25,7 +25,7 @@
 <config>
     <modules>
         <Adyen_Subscription>
-            <version>1.2.0</version>
+            <version>1.3.0</version>
         </Adyen_Subscription>
     </modules>
     <global>
@@ -434,6 +434,7 @@
             </advanced>
             <subscription>
                 <retry_on_error>0</retry_on_error>
+                <create_order_regard_time>1</create_order_regard_time>
             </subscription>
         </adyen_subscription>
     </default>
