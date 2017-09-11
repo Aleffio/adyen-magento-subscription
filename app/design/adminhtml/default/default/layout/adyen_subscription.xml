@@ -216,4 +216,13 @@
                    template="adyen_subscription/product/composite/fieldset/options/subscription.phtml" />
         </reference>
     </PRODUCT_TYPE_bundle>
+
+    <PRODUCT_TYPE_virtual>
+        <reference name="product.composite.fieldset">
+            <block type="adyen_subscription/catalog_product_view_subscription"
+                   before="product.composite.fieldset.options"
+                   name="product.composite.fieldset.subscription"
+                   template="adyen_subscription/product/composite/fieldset/options/subscription.phtml" />
+        </reference>
+    </PRODUCT_TYPE_virtual>
 </layout>
