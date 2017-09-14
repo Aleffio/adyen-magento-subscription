@@ -56,6 +56,7 @@ class Adyen_Subscription_Model_Cron
         $collection->addFieldToFilter('product_options', array('nlike' => '%;s:18:"adyen_subscription";s:4:"none"%'));
         $collection->addFieldToFilter('created_adyen_subscription', array('null' => true));
         $collection->addFieldToFilter('bao.agreement_id', array('notnull' => true)); // must have a billing agreements
+        $collection->addFieldToFilter('main_table.created_at', array('gteq' => date('Y-m-d', strtotime('-1 day')) . ' 00:00:00'));
         $collection->getSelect()->group('main_table.entity_id');
 
         $o = $p = $e = 0;
