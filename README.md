@@ -1,5 +1,12 @@
 # Adyen Magento Subscription module
 
+Adyen’s Subscription Plugin for Magento1 will help Adyen users such as gaming companies, digital content, and retailers, to give their customers the option to set up an automatic subscription, ensuring a significant positive effect on customer retention and recurring revenue. 
+
+Payment methods available for recurring payment are credit cards, Paypal, SOFORT, and iDEAL, in combination with SEPA Direct Debit.
+
+This extension will only work on Magento not on Magento2.
+
+
 
 ## Magento CE installation
 
