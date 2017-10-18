@@ -145,9 +145,9 @@ class Adyen_Subscription_Model_Service_Order
             /**
              * Order with only virtual product(s) do(es) not have shipping address
              *
-             * Check the order if it has shipping address avoiding throw exception
+             * Check the order if it is virtual avoiding throw exception
              */
-            if ($order->getShippingAddress()) {
+            if ($order->getIsNotVirtual()) {
                 $subscriptionShippingAddress = Mage::getModel('adyen_subscription/subscription_address')
                     ->initAddress($subscription, $order->getShippingAddress())
                     ->save();

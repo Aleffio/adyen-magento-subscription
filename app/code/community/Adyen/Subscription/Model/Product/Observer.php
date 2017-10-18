@@ -330,7 +330,7 @@ class Adyen_Subscription_Model_Product_Observer
                 $options = unserialize($additionalOptions->getValue());
 
                 foreach ($options as $option) {
-                    if ($option['code'] == 'adyen_subscription' && $option['option_value'] != 'none') {
+                    if (isset($option['code']) && $option['code'] == 'adyen_subscription' && $option['option_value'] != 'none') {
                         $quote->setData('_is_adyen_subscription', true);
                         $quoteItem->setData('_adyen_subscription', $option['option_value']);
                         return $quote->getData('_is_adyen_subscription');
