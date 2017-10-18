@@ -211,7 +211,12 @@ class Adyen_Subscription_Model_Service_Quote
 
             $this->updateQuotePayment($quote, $billingAgreement, $subscription->getData('payment'));
 
-            if (!$quote->getShippingAddress()->getShippingMethod()) {
+            /**
+             * Quote with only virtual product(s) do(es) not have shipping address
+             *
+             * Check the quote if it is virtual avoiding throw exception
+             */
+            if (!$quote->isVirtual() && !$quote->getShippingAddress()->getShippingMethod()) {
                 Adyen_Subscription_Exception::throwException('No shipping method selected');
             }
 
