@@ -34,7 +34,7 @@ This extension will only work on Magento not on Magento2.
 
 ## Getting started
 [You need to install the Adyen Payment module 2.4.0 or higher as well](https://github.com/Adyen/magento/releases) <br />
-<a href="https://docs.adyen.com/display/TD/Magento+Subscriptions" target="_blank">Click here to go into the manual</a>
+<a href="https://docs.adyen.com/developers/plug-ins-and-partners/magento/magento-subscriptions" target="_blank">Click here to go into the manual</a>
 
 ## Support
 For bugreports, please file a ticket, for store specific requests, please contact Adyen Magento support at magento@adyen.com
