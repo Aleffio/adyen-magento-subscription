@@ -142,7 +142,7 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
             $subscriptionOptions = false;
             foreach ($additionalOptions as $additionalOption) {
-                if ($additionalOption['code'] == 'adyen_subscription') {
+                if (isset($additionalOption['code']) && $additionalOption['code'] == 'adyen_subscription') {
                     $subscriptionOptions = $additionalOption;
                     break;
                 }
