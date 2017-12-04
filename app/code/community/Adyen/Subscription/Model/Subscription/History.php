@@ -67,7 +67,7 @@ class Adyen_Subscription_Model_Subscription_History extends Mage_Core_Model_Abst
     public function save()
     {
         $this->setDate(now());
-        parent::save();
+        return parent::save();
     }
 
     public function createHistoryFromSubscription(Adyen_Subscription_Model_Subscription $subscription)
