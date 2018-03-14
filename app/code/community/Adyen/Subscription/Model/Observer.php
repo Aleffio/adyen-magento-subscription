@@ -406,7 +406,8 @@ class Adyen_Subscription_Model_Observer extends Mage_Core_Model_Abstract
 
         $subscriptionCollection = Mage::getModel('adyen_subscription/subscription')
             ->getCollection()
-            ->addFieldToFilter('billing_agreement_id', $agreementId);
+            ->addFieldToFilter('billing_agreement_id', $agreementId)
+            ->addFieldToFilter('status', ['neq' => Adyen_Subscription_Model_Subscription::STATUS_CANCELED]);
 
         if ($subscriptionCollection->count() > 0) {
             Mage::throwException(Mage::helper('adyen_subscription')->__(
